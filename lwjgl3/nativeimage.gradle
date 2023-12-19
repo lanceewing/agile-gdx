@@ -1,0 +1,29 @@
+
+project(":lwjgl3") {
+  apply plugin: "org.graalvm.buildtools.native"
+
+  dependencies {
+    implementation "com.github.Berstanio.gdx-graalhelper:gdx-svmhelper-backend-lwjgl3:$graalHelperVersion"
+  }
+  graalvmNative {
+    binaries {
+      main {
+        imageName = appName
+        mainClass = project.mainClassName
+        requiredVersion = '23.0'
+        buildArgs.add("-march=compatibility")
+        jvmArgs.addAll("-Dfile.encoding=UTF8")
+        sharedLibrary = false
+      }
+    }
+  }
+  run {
+    doNotTrackState("Running the app should not be affected by Graal.")
+  }
+}
+
+project(":core") {
+  dependencies {
+    implementation "com.github.Berstanio.gdx-graalhelper:gdx-svmhelper-annotations:$graalHelperVersion"
+  }
+}
