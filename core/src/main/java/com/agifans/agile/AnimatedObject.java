@@ -1287,7 +1287,8 @@ public class AnimatedObject implements Comparable<AnimatedObject> {
      * @param deltaX Delta for the X position (signed, where negative is to the left)
      * @param deltaY Delta for the Y position (signed, where negative is to the top)
      */
-    public void reposition(int deltaX, int deltaY) {
+    public void reposition(byte deltaX, byte deltaY) {
+        // IMPORTANT: The deltaX and deltaY really are signed bytes.
         this.repositioned = true;
 
         if ((deltaX < 0) && (this.x < -deltaX)) {

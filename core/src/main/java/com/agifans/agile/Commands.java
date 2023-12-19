@@ -914,7 +914,7 @@ public class Commands {
             case 40: // reposition
                 {
                     AnimatedObject aniObj = state.animatedObjects[action.operands.get(0).asByte()];
-                    aniObj.reposition(state.vars[action.operands.get(1).asByte()], state.vars[action.operands.get(2).asByte()]);
+                    aniObj.reposition((byte)state.vars[action.operands.get(1).asByte()], (byte)state.vars[action.operands.get(2).asByte()]);
                 }
                 break;
 
