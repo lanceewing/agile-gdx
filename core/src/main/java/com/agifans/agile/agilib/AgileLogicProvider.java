@@ -3,7 +3,9 @@ package com.agifans.agile.agilib;
 import java.io.IOException;
 import java.io.InputStream;
 
+import com.sierra.agi.io.CryptedInputStream;
 import com.sierra.agi.io.IOUtils;
+import com.sierra.agi.io.LZWInputStream;
 import com.sierra.agi.logic.Logic;
 import com.sierra.agi.logic.LogicException;
 import com.sierra.agi.logic.LogicProvider;
@@ -18,7 +20,15 @@ public class AgileLogicProvider implements LogicProvider {
     public Logic loadLogic(short logicNumber, InputStream inputStream, int size) throws IOException, LogicException {
         byte[] rawData = new byte[size];
         IOUtils.fill(inputStream, rawData, 0, size);
-        return new AgileLogicWrapper(new com.agifans.agile.agilib.Logic(rawData, false));
+        // If the game is an AGIV2 one, then the JAGI InputStream used is the 
+        // CryptedInputStream, which already takes care of decrypting the messages
+        // for us. In that scenario, we pass false in for messagesCrypted, since
+        // they will not be crypted, as far as the AGILE Logic class is concerned. 
+        // For AGIV3 games, the InputStream can be either the LZWInputStream or the
+        // SegmentedInputStream. In the first case, the messages are not crypted, but
+        // in the second case they are.
+        boolean messagesCrypted = !((inputStream instanceof CryptedInputStream) || (inputStream instanceof LZWInputStream));
+        return new AgileLogicWrapper(new com.agifans.agile.agilib.Logic(rawData, messagesCrypted));
     }
 
     public static class AgileLogicWrapper implements Logic {

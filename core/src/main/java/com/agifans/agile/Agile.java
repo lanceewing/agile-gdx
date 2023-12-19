@@ -54,10 +54,8 @@ public class Agile extends ApplicationAdapter {
      */
     private String selectGame() {
         // TODO: Implement selection logic. This is a placeholder for now.
-        // TODO: Space Quest 1 VIEW on title screen is mis-placed.
-        // TODO: MH2 and GR both complain that logic is null.
         // TODO: Game clock should stop when in menus or window showing, as should animations.
-        return "C:\\dev\\agi\\winagi\\sq1";
+        return "C:\\dev\\agi\\winagi\\mh2";
     }
         
     @Override

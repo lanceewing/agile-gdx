@@ -103,7 +103,7 @@ public class ResourceProviderV3 extends com.sierra.agi.res.v2.ResourceProviderV2
      * Find volumes files
      */
     protected void readVolumes() throws NoVolumeAvailableException {
-        vols = path.listFiles(new VolumeFilenameFilter());
+        File[] vols = path.listFiles(new VolumeFilenameFilter());
 
         if (vols == null) {
             throw new NoVolumeAvailableException();
@@ -113,7 +113,20 @@ public class ResourceProviderV3 extends com.sierra.agi.res.v2.ResourceProviderV2
             throw new NoVolumeAvailableException();
         }
 
-        Arrays.sort(vols, new VolumeSorter());
+        this.vols = new File[16];
+        
+        // In order to cater for games like GR, where there are gaps in the VOL
+        // numbering, we use the actual number from the file extension as the index
+        // when putting a vol into the vols array.
+        for (File vol : vols) {
+            try {
+                String extension = vol.getName().substring(vol.getName().lastIndexOf(".") + 1);
+                int volNumber = Integer.parseInt(extension);
+                this.vols[volNumber] = vol;
+            } catch(Exception e) {
+                // Ignore. Must not be a proper VOL file.
+            }
+        }
     }
 
     protected int calculateCRCFromScratch() throws IOException {
