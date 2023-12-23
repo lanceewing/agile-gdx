@@ -131,6 +131,7 @@ public class Interpreter {
             // Proceed only if the animation tick count has reached the set animation interval x 3.
             if (++state.animationTicks < (state.vars[Defines.ANIMATION_INT] * 3)) {
                 inTick = false;
+                return;
             }
 
             // Reset animation tick count.
