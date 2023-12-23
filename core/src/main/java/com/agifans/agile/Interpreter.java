@@ -90,14 +90,11 @@ public class Interpreter {
      * Updates the internal AGI game clock. This method is invoked once a second.
      */
     private void updateGameClock() {
-        if (++state.vars[Defines.SECONDS] >= 60)
-        {
+        if (++state.vars[Defines.SECONDS] >= 60) {
             // One minute has passed.
-            if (++state.vars[Defines.MINUTES] >= 60)
-            { 
+            if (++state.vars[Defines.MINUTES] >= 60) {
                 // One hour has passed.
-                if (++state.vars[Defines.HOURS] >= 24)
-                {
+                if (++state.vars[Defines.HOURS] >= 24) {
                     // One day has passed.
                     state.vars[Defines.DAYS]++;
                     state.vars[Defines.HOURS] = 0;
@@ -123,21 +120,17 @@ public class Interpreter {
         // deliberately do this outside of the main Tick block because some scripts wait for 
         // the clock to reach a certain clock value, which will never happen if the block isn't
         // updated outside of the Tick block.
-        if ((state.totalTicks % 60) == 0)
-        {
+        if ((state.totalTicks % 60) == 0) {
             updateGameClock();
         }
 
         // Only one thread can be running the core interpreter cycle at a time.
-        if (!inTick)
-        {
+        if (!inTick) {
             inTick = true;
 
             // Proceed only if the animation tick count has reached the set animation interval x 3.
-            if (++state.animationTicks < (state.vars[Defines.ANIMATION_INT] * 3))
-            {
+            if (++state.animationTicks < (state.vars[Defines.ANIMATION_INT] * 3)) {
                 inTick = false;
-                return;
             }
 
             // Reset animation tick count.
@@ -150,12 +143,10 @@ public class Interpreter {
             textGraphics.updateInputLine(false);
 
             // If ego is under program control, override user input as to his direction.
-            if (!state.userControl)
-            {
+            if (!state.userControl) {
                 state.vars[Defines.EGODIR] = ego.direction;
             }
-            else
-            {
+            else {
                 ego.direction = (byte)state.vars[Defines.EGODIR];
             }
 
@@ -169,8 +160,7 @@ public class Interpreter {
             boolean soundStatus = state.flags[Defines.SOUNDON];
 
             // Continue scanning LOGIC 0 while the return value is true (which is what indicates a rescan).
-            while (commands.executeLogic(0))
-            {
+            while (commands.executeLogic(0)) {
                 state.vars[Defines.OBJHIT] = 0;
                 state.vars[Defines.OBJEDGE] = 0;
                 state.vars[Defines.UNKNOWN_WORD] = 0;
@@ -182,8 +172,7 @@ public class Interpreter {
             ego.direction = (byte)state.vars[Defines.EGODIR];
 
             // Update the status line, if the score or sound status have changed.
-            if ((state.vars[Defines.SCORE] != previousScore) || (soundStatus != state.flags[Defines.SOUNDON]))
-            {
+            if ((state.vars[Defines.SCORE] != previousScore) || (soundStatus != state.flags[Defines.SOUNDON])) {
                 // If the SOUND ON flag is off, then immediately stop any currently playing sound.
                 if (!state.flags[Defines.SOUNDON]) soundPlayer.stopSound();
 
@@ -199,14 +188,12 @@ public class Interpreter {
             state.flags[Defines.RESTORE] = false;
 
             // If in graphics mode, animate the AnimatedObjects.
-            if (state.graphicsMode)
-            {
+            if (state.graphicsMode) {
                 animateObjects();
             }
 
             // If there is an open text window, we render it now.
-            if (textGraphics.isWindowOpen())
-            {
+            if (textGraphics.isWindowOpen()) {
                 textGraphics.drawWindow();
             }
 
