@@ -52,11 +52,11 @@ public class Game {
             // types are converted from the JAGI types, after being loaded. It didn't make
             // sense to do that for the Logic and Sound types, as it is quite different. Luckily
             // JAGI already provided a way to plug in a custom implementations via properties.
-            System.setProperty("com.sierra.agi.logic.LogicProvider", "com.agifans.agile.agilib.AgileLogicProvider");
-            System.setProperty("com.sierra.agi.sound.SoundProvider", "com.agifans.agile.agilib.AgileSoundProvider");
             
             // Use JAGI to fully load the AGI game's files.
             resourceCache = new ResourceCacheFile(new File(gameFolder));
+            resourceCache.setLogicProvider(new com.agifans.agile.agilib.AgileLogicProvider());
+            resourceCache.setSoundProvider(new com.agifans.agile.agilib.AgileSoundProvider());
             version = resourceCache.getVersion();
             v3GameSig = resourceCache.getV3GameSig();
             logics = loadLogics();
