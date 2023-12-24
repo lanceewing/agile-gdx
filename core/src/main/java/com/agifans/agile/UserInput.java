@@ -2,9 +2,9 @@ package com.agifans.agile;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputAdapter;
@@ -42,7 +42,7 @@ public class UserInput extends InputAdapter {
     /**
      * A queue of all key presses that the user has made.
      */
-    public ConcurrentLinkedQueue<Integer> keyPressQueue;
+    public LinkedList<Integer> keyPressQueue;
 
     /**
      * Current state of every key on the keyboard.
@@ -98,7 +98,7 @@ public class UserInput extends InputAdapter {
     public UserInput() {
         this.keys = new boolean[256];
         this.oldKeys = new boolean[256];
-        this.keyPressQueue = new ConcurrentLinkedQueue<Integer>();
+        this.keyPressQueue = new LinkedList<Integer>();
         this.keyCodeMap = createKeyConversionMap();
         this.reverseKeyCodeMap = new HashMap<Integer, Integer>();
         for (Map.Entry<Integer, Integer> entry : keyCodeMap.entrySet()) {
@@ -144,16 +144,16 @@ public class UserInput extends InputAdapter {
         Integer character = Character.KEYSTROKE_TO_CHAR_MAP.get(modifiers + keycode);
         if (character != null) {
             // Enqueue the mapped character. This covers CTRL combinations and ESC.
-            keyPressQueue.add(ASCII | character);
+            keyPressQueueAdd(ASCII | character);
         } 
         else if (modifiers != 0) {
             // Enqueues the ALT combinations.
-            keyPressQueue.add(modifiers | keycode);
+            keyPressQueueAdd(modifiers | keycode);
         } 
         else if (UNMODIFIED_KEY_LIST.contains(keycode)) {
             // Any other keycode that didn't map to a character, and isn't affected
             // by modifiers, is enqueued as-is.
-            keyPressQueue.add(keycode);
+            keyPressQueueAdd(keycode);
         }
         
         return true;
@@ -194,7 +194,7 @@ public class UserInput extends InputAdapter {
 
         // We handle ENTER ourselves in keyDown, via the HashMap in Character class.
         if ((character != 0x0A) && (character != 0x0D)) {
-            keyPressQueue.add(ASCII | (int)character);
+            keyPressQueueAdd(ASCII | (int)character);
         }
         
         return true;
@@ -209,7 +209,7 @@ public class UserInput extends InputAdapter {
         int action;
 
         // Ignore anything currently on the key press queue.
-        while (keyPressQueue.poll() != null) ;
+        while (keyPressQueuePoll() != null) ;
 
         // Now wait for the the next key.
         while ((action = checkAcceptAbort()) == -1) {
@@ -246,7 +246,7 @@ public class UserInput extends InputAdapter {
 
         if (clearQueue) {
             // Ignore anything currently on the key press queue.
-            while (keyPressQueue.poll() != null) ;
+            while (keyPressQueuePoll() != null) ;
         }
 
         // Now wait for the the next key.
@@ -287,9 +287,27 @@ public class UserInput extends InputAdapter {
      * @return Either the key from the queue, or 0 if none available.
      */
     public int getKey() {
-        return (keyPressQueue.peek() != null? keyPressQueue.poll() : 0);
+        return (keyPressQueuePeek() != null? keyPressQueuePoll() : 0);
     }
 
+    private Integer keyPressQueuePeek() {
+        synchronized (keyPressQueue) {
+            return keyPressQueue.peek();
+        }
+    }
+    
+    private Integer keyPressQueuePoll() {
+        synchronized (keyPressQueue) {
+            return keyPressQueue.poll();
+        }
+    }
+    
+    private boolean keyPressQueueAdd(Integer key) {
+        synchronized (keyPressQueue) {
+            return keyPressQueue.add(key);
+        }
+    }
+    
     /**
      * Creates the Map between key codes as understood by the PC AGI interpreter 
      * and the libGDX Key codes.
