@@ -1,6 +1,8 @@
 package com.agifans.agile;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import com.agifans.agile.agilib.Game;
@@ -105,7 +107,7 @@ public abstract class AgileRunner {
                         if (logic.index == 159) {
                             // Modifies LOGIC.159 to jump to the code that is run when a successful answer is entered.
                             if ((actions.get(134).operation.opcode == 18) && (actions.get(134).operands.get(0).asInt() == 153)) {
-                                actions.set(0, logic.new GotoAction(List.of(logic.new Operand(OperandType.ADDRESS, actions.get(132).address))));
+                                actions.set(0, logic.new GotoAction(new ArrayList<>(Arrays.asList(logic.new Operand(OperandType.ADDRESS, actions.get(132).address)))));
                                 actions.get(0).logic = logic;
                             }
                         }
@@ -127,7 +129,7 @@ public abstract class AgileRunner {
                             Action action = actions.get(0);                                
                             // Verify that the action is the if-condition to check if the user can enter the game.
                             if (action.operation.opcode == 255 && action.operands.size() == 2) {
-                                actions.set(0, logic.new GotoAction(List.of(logic.new Operand(OperandType.ADDRESS, actions.get(1).address))));
+                                actions.set(0, logic.new GotoAction(new ArrayList<>(Arrays.asList(logic.new Operand(OperandType.ADDRESS, actions.get(1).address)))));
                                 actions.get(0).logic = logic;
     
                                 // Skips the 'Thank you. And now, slip into your leisure suit and prepare to enter the
@@ -138,7 +140,7 @@ public abstract class AgileRunner {
                                 // Verify it's the print function
                                 if (printAction.operation.opcode == 101) {
                                     // Go to next command in the logic, which is the new.room command
-                                    actions.set(printIndex, logic.new GotoAction(List.of(logic.new Operand(OperandType.ADDRESS, actions.get(printIndex + 1).address))));
+                                    actions.set(printIndex, logic.new GotoAction(new ArrayList<>(Arrays.asList(logic.new Operand(OperandType.ADDRESS, actions.get(printIndex + 1).address)))));
                                     actions.get(printIndex).logic = logic;
                                 }
                             }                               
