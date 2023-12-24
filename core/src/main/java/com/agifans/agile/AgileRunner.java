@@ -62,7 +62,7 @@ public abstract class AgileRunner {
         
         // Game detection logic and update windows title.
         Detection gameDetection = new Detection(game);
-        Gdx.graphics.setTitle(String.format("AGILE v0.0.0.0 | %s", gameDetection.gameName));
+        Gdx.graphics.setTitle("AGILE v0.0.0.0 | " + gameDetection.gameName);
         
         // Patch game option.
         patchGame(game, gameDetection.gameId, gameDetection.gameName);
