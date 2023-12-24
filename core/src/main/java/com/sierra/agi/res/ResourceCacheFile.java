@@ -37,7 +37,6 @@ public class ResourceCacheFile extends ResourceCache {
         try {
             resProvider = new com.sierra.agi.res.v2.ResourceProviderV2(file);
         } catch (ResourceException e) {
-            System.out.println("Found AGI Version 3 Game.");
             resProvider = new com.sierra.agi.res.v3.ResourceProviderV3(file);
         }
     }
