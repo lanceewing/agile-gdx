@@ -55,7 +55,7 @@ public class Agile extends ApplicationAdapter {
     private String selectGame() {
         // TODO: Implement selection logic. This is a placeholder for now.
         // TODO: Game clock should stop when in menus or window showing, as should animations.
-        return "C:\\dev\\agi\\winagi\\mh2";
+        return "C:\\dev\\agi\\winagi\\kq3";
     }
         
     @Override
@@ -69,6 +69,9 @@ public class Agile extends ApplicationAdapter {
         batch.begin();
         batch.draw(screen.getDrawScreen(), 0, 0, 960, 600);
         batch.end();
+        
+        // Trigger tick.
+        agileRunner.tick();
     }
 
     @Override

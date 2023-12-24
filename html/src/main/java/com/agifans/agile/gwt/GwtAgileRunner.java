@@ -16,8 +16,14 @@ public class GwtAgileRunner extends AgileRunner {
 		// TODO Auto-generated method stub
 		
 	}
-
+	
 	@Override
+    public void animationTick() {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
 	public void stop() {
 		// TODO Auto-generated method stub
 		

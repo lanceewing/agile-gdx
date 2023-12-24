@@ -108,9 +108,7 @@ public class Interpreter {
     }
 
     /**
-     * Executes a single AGI interpreter tick, or cycle. This method is invoked 60 times a
-     * second, but the rate at which the logics are run and the animation updated is determined
-     * by the animation interval variable.
+     * Updates the total tick count and AGI game clock. 
      */
     public void tick() {
         // Regardless of whether we're already in a Tick, we keep counting the number of Ticks.
@@ -123,7 +121,14 @@ public class Interpreter {
         if ((state.totalTicks % 60) == 0) {
             updateGameClock();
         }
-
+    }
+    
+    /**
+     * Executes a single AGI interpreter animation tick. This method is invoked 60 times a
+     * second, but the rate at which the logics are run and the animation updated is determined
+     * by the animation interval variable.
+     */
+    public void animationTick() {
         // Only one thread can be running the core interpreter cycle at a time.
         if (!inTick) {
             inTick = true;

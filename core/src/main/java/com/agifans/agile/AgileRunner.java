@@ -9,6 +9,7 @@ import com.agifans.agile.agilib.Logic.Action;
 import com.agifans.agile.agilib.Logic.OperandType;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.utils.TimeUtils;
 
 /**
  * Performs the actual loading and then running of the AGI game. This is an abstract
@@ -19,6 +20,8 @@ import com.badlogic.gdx.Gdx;
  */
 public abstract class AgileRunner {
     
+    private static final int NANOS_PER_FRAME = (1000000000 / 60);
+    
     protected Interpreter interpreter;
     
     private String gameFolder;
@@ -26,11 +29,15 @@ public abstract class AgileRunner {
     private UserInput userInput;
     private short[] pixels;
     
+    private long lastTime;
+    private long deltaTime;
+    
     public void init(String gameFolder, UserInput userInput, WavePlayer wavePlayer, short[] pixels) {
         this.gameFolder = gameFolder;
         this.userInput = userInput;
         this.wavePlayer = wavePlayer;
         this.pixels = pixels;
+        this.lastTime = TimeUtils.nanoTime();
     }
     
     /**
@@ -147,7 +154,38 @@ public abstract class AgileRunner {
         return game;
     }
     
+    /**
+     * Invoked by the main UI thread to trigger an AGI tick. The first part, i.e. updating the
+     * total ticks and the AGI game clock, is done within the UI thread. The actual animation tick
+     * is done within the background thread/worker.
+     */
+    public void tick() {
+        // Calculate the time since the last call.
+        long currentTime = TimeUtils.nanoTime();
+        deltaTime += (currentTime - lastTime);
+        lastTime = currentTime;
+
+        // We can't be certain that this method is being invoked at exactly 60 times a
+        // second, or that a call hasn't been skipped, so we adjust as appropriate based
+        // on the delta time and play catch up if needed. This should avoid drift in the
+        // AGI clock and keep the animation smooth.
+        while (deltaTime > NANOS_PER_FRAME) {
+            deltaTime -= NANOS_PER_FRAME;
+            
+            if (interpreter != null) {
+                interpreter.tick();
+                
+                // The animation tick is the platform specific bit, as it needs to be run 
+                // outside of the UI thread, which is done differently depending on the 
+                // platform.
+                animationTick();
+            }
+        }
+    }
+    
     public abstract void start();
+    
+    public abstract void animationTick();
     
     public abstract void stop();
     

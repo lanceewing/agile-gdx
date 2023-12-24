@@ -636,7 +636,8 @@ public class TextGraphics {
                 try {
                     Thread.sleep(1);
                 } catch (InterruptedException e) {
-                    // Ignore.
+                    // Interrupt indicates AGILE is stopping, so throw QuitAction.
+                    QuitAction.exit();
                 }
             }
 
