@@ -7,8 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.sierra.agi.inv.InventoryObject;
-import com.sierra.agi.inv.InventoryObjects;
+import com.agifans.agile.agilib.jagi.inv.InventoryObject;
+import com.agifans.agile.agilib.jagi.inv.InventoryObjects;
 
 public class Objects extends Resource {
 

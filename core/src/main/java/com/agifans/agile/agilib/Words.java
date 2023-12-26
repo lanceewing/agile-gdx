@@ -37,10 +37,10 @@ public class Words extends Resource {
      * 
      * @param jagiWords The JAGI Words object to construct an AGILE Words object from.
      */
-    public Words(com.sierra.agi.word.Words jagiWords) {
+    public Words(com.agifans.agile.agilib.jagi.word.Words jagiWords) {
         this.wordToNumber = new HashMap<String, Integer>();
         this.numberToWords = new HashMap<Integer, SortedSet<String>>();
-        for (com.sierra.agi.word.Word jagiWord : jagiWords.words()) {
+        for (com.agifans.agile.agilib.jagi.word.Word jagiWord : jagiWords.words()) {
             addWord(jagiWord.number, jagiWord.text);
         }
     }

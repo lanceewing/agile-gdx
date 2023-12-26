@@ -1,18 +1,18 @@
 package com.agifans.agile.agilib;
 
-import com.sierra.agi.pic.PictureContext;
-import com.sierra.agi.pic.PictureException;
+import com.agifans.agile.agilib.jagi.pic.PictureContext;
+import com.agifans.agile.agilib.jagi.pic.PictureException;
 
 /**
  * A wrapper around the JAGI Picture to provide the methods that AGILE needs.
  */
 public class Picture extends Resource {
 
-    private com.sierra.agi.pic.Picture jagiPicture;
+    private com.agifans.agile.agilib.jagi.pic.Picture jagiPicture;
     
     private PictureContext jagiPictureContext;
     
-    public Picture(com.sierra.agi.pic.Picture jagiPicture) {
+    public Picture(com.agifans.agile.agilib.jagi.pic.Picture jagiPicture) {
         this.jagiPicture = jagiPicture;
         this.jagiPictureContext = new PictureContext();
     }

@@ -4,8 +4,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import com.sierra.agi.sound.Sound;
-import com.sierra.agi.sound.SoundProvider;
+import com.agifans.agile.agilib.jagi.sound.Sound;
+import com.agifans.agile.agilib.jagi.sound.SoundProvider;
 
 /**
  * An implementation of the JAGI SoundProvider interface that loads the Sound 

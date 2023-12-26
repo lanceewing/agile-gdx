@@ -5,9 +5,9 @@ import java.io.IOException;
 
 import com.agifans.agile.agilib.AgileLogicProvider.AgileLogicWrapper;
 import com.agifans.agile.agilib.AgileSoundProvider.AgileSoundWrapper;
-import com.sierra.agi.res.ResourceCache;
-import com.sierra.agi.res.ResourceCacheFile;
-import com.sierra.agi.res.ResourceException;
+import com.agifans.agile.agilib.jagi.res.ResourceCache;
+import com.agifans.agile.agilib.jagi.res.ResourceCacheFile;
+import com.agifans.agile.agilib.jagi.res.ResourceException;
 
 /**
  * An adapter between the interface that AGILE expects and the JAGI library.
