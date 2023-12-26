@@ -1,15 +1,8 @@
 package com.agifans.agile.gwt;
 
 import com.agifans.agile.AgileRunner;
-import com.agifans.agile.Interpreter;
 
 public class GwtAgileRunner extends AgileRunner {
-
-	//@Override
-	//public void init(Interpreter interpreter) {
-	//	// TODO Auto-generated method stub
-	//	
-	//}
 
 	@Override
 	public void start() {
