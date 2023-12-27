@@ -8,8 +8,9 @@
 
 package com.agifans.agile.agilib.jagi.pic;
 
-import java.awt.*;
 import java.util.Enumeration;
+
+import com.agifans.agile.agilib.jagi.awt.Point;
 
 public class PictureEntryPlot extends PictureEntryMulti {
     /**

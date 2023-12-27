@@ -57,7 +57,7 @@ public class Agile extends ApplicationAdapter {
         // return "C:\\dev\\agi\\winagi\\kq4agi";
         // return "file:/C:/dev/agi/winagi/kq4agi/";
         // return "file://localhost/C:/dev/agi/winagi/kq4agi/";
-        return "file:///C:/dev/agi/winagi/kq4agi/";
+        return "file:///C:/dev/agi/winagi/sq2/";
     }
         
     @Override

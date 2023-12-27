@@ -8,8 +8,9 @@
 
 package com.agifans.agile.agilib.jagi.pic;
 
-import java.awt.*;
 import java.util.Vector;
+
+import com.agifans.agile.agilib.jagi.awt.Point;
 
 public abstract class PictureEntryMulti extends PictureEntry {
     protected Vector points = new Vector();

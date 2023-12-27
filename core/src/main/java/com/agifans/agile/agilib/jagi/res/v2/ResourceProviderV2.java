@@ -386,8 +386,8 @@ public class ResourceProviderV2 implements ResourceProvider {
                 int j;
                 for (j = i + 8; fileContent[j] != 0; j++) {
                 }
-
-                this.version = new String(fileContent, i + 8, j - (i + 8), StandardCharsets.US_ASCII);
+                // Note: ISO_8859_1 used as it is supported by GWT. In this case, we only need 7-bits, so it works.
+                this.version = new String(fileContent, i + 8, j - (i + 8), StandardCharsets.ISO_8859_1);
                 break;
             }
         }
