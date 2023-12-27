@@ -1,12 +1,11 @@
 package com.agifans.agile.agilib;
 
-import java.io.File;
 import java.io.IOException;
+import java.util.Map;
 
 import com.agifans.agile.agilib.AgileLogicProvider.AgileLogicWrapper;
 import com.agifans.agile.agilib.AgileSoundProvider.AgileSoundWrapper;
 import com.agifans.agile.agilib.jagi.res.ResourceCache;
-import com.agifans.agile.agilib.jagi.res.ResourceCacheFile;
 import com.agifans.agile.agilib.jagi.res.ResourceException;
 
 /**
@@ -16,8 +15,8 @@ public class Game {
 
     private ResourceCache resourceCache;
     
-    public String gameFolder;
-
+    public Map<String, byte[]> gameFilesMap;
+    
     public String v3GameSig;
 
     public String version;
@@ -37,24 +36,19 @@ public class Game {
     /**
      * Constructor for Game.
      * 
-     * @param gameFolder The folder to load the AGI game from.
+     * @param gameFilesMap Map containing the data files for the AGI game.
      */
-    public Game(String gameFolder) {
-        this.gameFolder = gameFolder;
-        
-        // The aim is to try to use JAGI as untouched as possible to load resources 
-        // for use in AGILE, i.e. JAGI becomes the AGI library for the Java version 
-        // of AGILE.
-        
+    public Game(Map<String, byte[]> gameFilesMap) {
         try {
+            this.gameFilesMap = gameFilesMap;
+            
             // We use our own LogicProvider & SoundProvider implementations, so that we can 
             // load LOGICs and SOUNDs directly in the form required by AGILE. The other 
             // types are converted from the JAGI types, after being loaded. It didn't make
-            // sense to do that for the Logic and Sound types, as it is quite different. Luckily
-            // JAGI already provided a way to plug in a custom implementations via properties.
+            // sense to do that for the Logic and Sound types, as it is quite different.
             
             // Use JAGI to fully load the AGI game's files.
-            resourceCache = new ResourceCacheFile(new File(gameFolder));
+            resourceCache = new ResourceCache(gameFilesMap);
             resourceCache.setLogicProvider(new com.agifans.agile.agilib.AgileLogicProvider());
             resourceCache.setSoundProvider(new com.agifans.agile.agilib.AgileSoundProvider());
             version = resourceCache.getVersion();

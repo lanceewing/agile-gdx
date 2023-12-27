@@ -24,347 +24,185 @@ import com.agifans.agile.agilib.jagi.view.ViewProvider;
 import com.agifans.agile.agilib.jagi.word.Words;
 import com.agifans.agile.agilib.jagi.word.WordsProvider;
 
-import java.io.File;
 import java.io.IOException;
-import java.lang.ref.Reference;
-import java.lang.ref.WeakReference;
-import java.lang.reflect.Constructor;
+import java.util.Map;
 
 public class ResourceCache {
-    protected static Class[] providerParameters = {ResourceConfiguration.class};
-    protected LogicProvider logProvider;
-    protected InventoryProvider invProvider;
-    protected PictureProvider picProvider;
-    protected ResourceProvider resProvider;
-    protected SoundProvider sndProvider;
-    protected ViewProvider viwProvider;
-    protected WordsProvider wrdProvider;
-    protected Object[] logics;
-    protected int[] logicsc;
-    protected Object[] pictures;
-    protected int[] picturesc;
-    protected Object[] sounds;
-    protected int[] soundsc;
-    protected Object[] views;
-    protected int[] viewsc;
+    
+    protected LogicProvider logicProvider;
+    protected InventoryProvider inventoryProvider;
+    protected PictureProvider pictureProvider;
+    protected ResourceProvider resourceProvider;
+    protected SoundProvider soundProvider;
+    protected ViewProvider viewProvider;
+    protected WordsProvider wordsProvider;
+    
+    protected Logic[] logics;
+    protected Picture[] pictures;
+    protected Sound[] sounds;
+    protected View[] views;
     protected Words words;
     protected InventoryObjects objects;
 
-    protected ResourceCache() {
-    }
-
-    public ResourceCache(ResourceProvider resProvider) {
-        this.resProvider = resProvider;
-    }
-
-    public synchronized ResourceProvider getResourceProvider() {
-        return resProvider;
-    }
-
-    protected Object getProvider(String clazzName) {
+    public ResourceCache(Map<String, byte[]> gameFilesMap) throws IOException, ResourceException {
         try {
-            try {
-                return Class.forName(clazzName).newInstance();
-            } catch (InstantiationException e) {
-                Class clazz = Class.forName(clazzName);
-                Constructor cons = clazz.getConstructor(providerParameters);
-                Object[] o = new Object[1];
-
-                o[0] = resProvider.getConfiguration();
-
-                return cons.newInstance(o);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException(e.getClass().getName() + ": " + clazzName);
+            resourceProvider = new com.agifans.agile.agilib.jagi.res.v2.ResourceProviderV2(gameFilesMap);
+        } catch (ResourceException e) {
+            resourceProvider = new com.agifans.agile.agilib.jagi.res.v3.ResourceProviderV3(gameFilesMap);
         }
     }
 
-    public synchronized SoundProvider getSoundProvider() {
-        if (sndProvider == null) {
-            sndProvider = (SoundProvider) getProvider(System.getProperty("com.sierra.agi.sound.SoundProvider", "com.agifans.agile.agilib.jagi.sound.StandardSoundProvider"));
+    public ResourceProvider getResourceProvider() {
+        return resourceProvider;
+    }
+
+    public SoundProvider getSoundProvider() {
+        return soundProvider;
+    }
+
+    public void setSoundProvider(SoundProvider sndProvider) {
+        this.soundProvider = sndProvider;
+    }
+
+    public InventoryProvider getInventoryProvider() {
+        if (inventoryProvider == null) {
+            inventoryProvider = new com.agifans.agile.agilib.jagi.inv.InventoryObjects();
         }
-
-        return sndProvider;
+        return inventoryProvider;
     }
 
-    public synchronized void setSoundProvider(SoundProvider sndProvider) {
-        this.sndProvider = sndProvider;
+    public void setInventoryProvider(InventoryProvider invProvider) {
+        this.inventoryProvider = invProvider;
     }
 
-    public synchronized InventoryProvider getInventoryProvider() {
-        if (invProvider == null) {
-            invProvider = (InventoryProvider) getProvider(System.getProperty("com.sierra.agi.inv.LogicProvider", "com.agifans.agile.agilib.jagi.inv.InventoryObjects"));
+    public LogicProvider getLogicProvider() {
+        return logicProvider;
+    }
+
+    public void setLogicProvider(LogicProvider logProvider) {
+        this.logicProvider = logProvider;
+    }
+
+    public ViewProvider getViewProvider() {
+        if (viewProvider == null) {
+            viewProvider = new com.agifans.agile.agilib.jagi.view.StandardViewProvider();
         }
-
-        return invProvider;
+        return viewProvider;
     }
 
-    public synchronized void setInventoryProvider(InventoryProvider invProvider) {
-        this.invProvider = invProvider;
+    public void setViewProvider(ViewProvider viwProvider) {
+        this.viewProvider = viwProvider;
     }
 
-    public synchronized LogicProvider getLogicProvider() {
-        if (logProvider == null) {
-            logProvider = (LogicProvider) getProvider(System.getProperty("com.sierra.agi.logic.LogicProvider", "com.agifans.agile.agilib.jagi.logic.StandardLogicProvider"));
+    public WordsProvider getWordsProvider() {
+        if (wordsProvider == null) {
+            wordsProvider = new com.agifans.agile.agilib.jagi.word.Words();
         }
-
-        return logProvider;
+        return wordsProvider;
     }
 
-    public synchronized void setLogicProvider(LogicProvider logProvider) {
-        this.logProvider = logProvider;
+    public void setWordsProvider(WordsProvider wrdProvider) {
+        this.wordsProvider = wrdProvider;
     }
 
-    public synchronized ViewProvider getViewProvider() {
-        if (viwProvider == null) {
-            viwProvider = (ViewProvider) getProvider(System.getProperty("com.sierra.agi.view.ViewProvider", "com.agifans.agile.agilib.jagi.view.StandardViewProvider"));
+    public PictureProvider getPictureProvider() {
+        if (pictureProvider == null) {
+            pictureProvider = new com.agifans.agile.agilib.jagi.pic.StandardPictureProvider();
         }
-
-        return viwProvider;
+        return pictureProvider;
     }
 
-    public synchronized void setViewProvider(ViewProvider viwProvider) {
-        this.viwProvider = viwProvider;
-    }
-
-    public synchronized WordsProvider getWordsProvider() {
-        if (wrdProvider == null) {
-            wrdProvider = (WordsProvider) getProvider(System.getProperty("com.sierra.agi.word.WordsProvider", "com.agifans.agile.agilib.jagi.word.Words"));
-        }
-
-        return wrdProvider;
-    }
-
-    public synchronized void setWordsProvider(WordsProvider wrdProvider) {
-        this.wrdProvider = wrdProvider;
-    }
-
-    public synchronized PictureProvider getPictureProvider() {
-        if (picProvider == null) {
-            picProvider = (PictureProvider) getProvider(System.getProperty("com.sierra.agi.pic.PictureProvider", "com.agifans.agile.agilib.jagi.pic.StandardPictureProvider"));
-        }
-
-        return picProvider;
-    }
-
-    public synchronized void setPictureProvider(PictureProvider picProvider) {
-        this.picProvider = picProvider;
-    }
-
-    protected Object obtainResource(Object[] objects, int[] objectsc, short resNumber, boolean inc) {
-        Object obj = objects[resNumber];
-
-        if (obj != null) {
-            if (obj instanceof Reference) {
-                obj = ((Reference) obj).get();
-
-                if (inc) {
-                    objects[resNumber] = obj;
-                }
-
-                if (obj == null) {
-                    return null;
-                }
-            }
-
-            if (inc) {
-                objectsc[resNumber]++;
-            }
-
-            return obj;
-        }
-
-        return null;
-    }
-
-    protected void flushResource(Object[] objects, int[] objectsc, short resNumber) {
-        if (objectsc[resNumber] > 0) {
-            objectsc[resNumber]--;
-        }
-
-        if (objects[resNumber] == null) {
-            return;
-        }
-
-        if (objectsc[resNumber] <= 0) {
-            if (!(objects[resNumber] instanceof Reference)) {
-                objects[resNumber] = generateReference(objects[resNumber]);
-            }
-        }
-    }
-
-    protected synchronized Sound obtainSound(short resNumber, boolean inc) throws IOException, ResourceException {
-        Object o;
-
-        if (sounds == null) {
-            sounds = new Object[256];
-            soundsc = new int[256];
-        }
-
-        o = obtainResource(sounds, soundsc, resNumber, inc);
-
-        if (o == null) {
-            o = getSoundProvider().loadSound(resProvider.open(ResourceProvider.TYPE_SOUND, resNumber));
-
-            if (inc) {
-                sounds[resNumber] = o;
-                soundsc[resNumber] = 1;
-            } else {
-                sounds[resNumber] = generateReference(o);
-            }
-        }
-
-        return (Sound) o;
-    }
-
-    public void loadSound(short resNumber) throws IOException, ResourceException {
-        obtainSound(resNumber, true);
+    public void setPictureProvider(PictureProvider picProvider) {
+        this.pictureProvider = picProvider;
     }
 
     public Sound getSound(short resNumber) throws IOException, ResourceException {
-        return obtainSound(resNumber, false);
-    }
+        Sound sound;
 
-    public synchronized void unloadSound(short resNumber) {
-        flushResource(sounds, soundsc, resNumber);
-    }
-
-    protected synchronized Logic obtainLogic(short resNumber, boolean inc) throws IOException, ResourceException, LogicException {
-        Object o;
-
-        if (logics == null) {
-            logics = new Object[256];
-            logicsc = new int[256];
+        if (sounds == null) {
+            sounds = new Sound[256];
         }
 
-        o = obtainResource(logics, logicsc, resNumber, inc);
+        sound = sounds[resNumber];
 
-        if (o == null) {
-            o = getLogicProvider().loadLogic(resNumber, resProvider.open(ResourceProvider.TYPE_LOGIC, resNumber), resProvider.getSize(ResourceProvider.TYPE_LOGIC, resNumber));
-
-            if (inc) {
-                logics[resNumber] = o;
-                logicsc[resNumber] = 1;
-            } else {
-                logics[resNumber] = generateReference(o);
-            }
+        if (sound == null) {
+            sound = getSoundProvider().loadSound(resourceProvider.open(ResourceProvider.TYPE_SOUND, resNumber));
+            sounds[resNumber] = sound;
         }
 
-        return (Logic) o;
-    }
-
-    public void loadLogic(short resNumber) throws IOException, ResourceException, LogicException {
-        obtainLogic(resNumber, true);
+        return sound;
     }
 
     public Logic getLogic(short resNumber) throws IOException, ResourceException, LogicException {
-        return obtainLogic(resNumber, false);
-    }
+        Logic logic;
 
-    public synchronized void unloadLogic(short resNumber) {
-        flushResource(logics, logicsc, resNumber);
-    }
-
-    protected synchronized Picture obtainPicture(short resNumber, boolean inc) throws IOException, ResourceException, PictureException {
-        Object o;
-
-        if (pictures == null) {
-            pictures = new Object[256];
-            picturesc = new int[256];
+        if (logics == null) {
+            logics = new Logic[256];
         }
 
-        o = obtainResource(pictures, picturesc, resNumber, inc);
+        logic = logics[resNumber];
 
-        if (o == null) {
-            o = getPictureProvider().loadPicture(resProvider.open(ResourceProvider.TYPE_PICTURE, resNumber));
-
-            if (inc) {
-                pictures[resNumber] = o;
-                picturesc[resNumber] = 1;
-            } else {
-                pictures[resNumber] = generateReference(o);
-            }
+        if (logic == null) {
+            logic = getLogicProvider().loadLogic(resNumber, resourceProvider.open(ResourceProvider.TYPE_LOGIC, resNumber), resourceProvider.getSize(ResourceProvider.TYPE_LOGIC, resNumber));
+            logics[resNumber] = logic;
         }
 
-        return (Picture) o;
-    }
-
-    public void loadPicture(short resNumber) throws IOException, ResourceException, PictureException {
-        obtainPicture(resNumber, true);
+        return logic;
     }
 
     public Picture getPicture(short resNumber) throws IOException, ResourceException, PictureException {
-        return obtainPicture(resNumber, false);
-    }
+        Picture picture;
 
-    public synchronized void unloadPicture(short resNumber) {
-        flushResource(pictures, picturesc, resNumber);
-    }
-
-    protected synchronized View obtainView(short resNumber, boolean inc) throws IOException, ResourceException, ViewException {
-        if (views == null) {
-            views = new Object[256];
-            viewsc = new int[256];
+        if (pictures == null) {
+            pictures = new Picture[256];
         }
 
-        Object o = obtainResource(views, viewsc, resNumber, inc);
+        picture = pictures[resNumber];
 
-        if (o == null) {
-            o = getViewProvider().loadView(resProvider.open(ResourceProvider.TYPE_VIEW, resNumber), resProvider.getSize(ResourceProvider.TYPE_VIEW, resNumber));
-
-            if (inc) {
-                views[resNumber] = o;
-                viewsc[resNumber] = 1;
-            } else {
-                views[resNumber] = generateReference(o);
-            }
+        if (picture == null) {
+            picture = getPictureProvider().loadPicture(resourceProvider.open(ResourceProvider.TYPE_PICTURE, resNumber));
+            pictures[resNumber] = picture;
         }
 
-        return (View) o;
-    }
-
-    public void loadView(short resNumber) throws IOException, ResourceException, ViewException {
-        obtainView(resNumber, true);
+        return picture;
     }
 
     public View getView(short resNumber) throws IOException, ResourceException, ViewException {
-        return obtainView(resNumber, false);
-    }
-
-    public synchronized void unloadView(short resNumber) {
-        flushResource(views, viewsc, resNumber);
-    }
-
-    public synchronized Words getWords() throws IOException, ResourceException {
-        if (words == null) {
-            words = getWordsProvider().loadWords(resProvider.open(ResourceProvider.TYPE_WORD, (short) 0));
+        View view;
+        
+        if (views == null) {
+            views = new View[256];
         }
 
+        view = views[resNumber];
+
+        if (view == null) {
+            view = getViewProvider().loadView(resourceProvider.open(ResourceProvider.TYPE_VIEW, resNumber), resourceProvider.getSize(ResourceProvider.TYPE_VIEW, resNumber));
+            views[resNumber] = view;
+        }
+
+        return view;
+    }
+
+    public Words getWords() throws IOException, ResourceException {
+        if (words == null) {
+            words = getWordsProvider().loadWords(resourceProvider.open(ResourceProvider.TYPE_WORD, (short) 0));
+        }
         return words;
     }
 
-    public synchronized InventoryObjects getObjects() throws IOException, ResourceException {
+    public InventoryObjects getObjects() throws IOException, ResourceException {
         if (objects == null) {
-            objects = getInventoryProvider().loadInventory(resProvider.open(ResourceProvider.TYPE_OBJECT, (short) 0));
+            objects = getInventoryProvider().loadInventory(resourceProvider.open(ResourceProvider.TYPE_OBJECT, (short) 0));
         }
-
         return objects;
     }
 
-    protected Reference generateReference(Object o) {
-        return new WeakReference(o);
-    }
-
-    public File getPath() {
-        return resProvider.getPath();
-    }
-
     public String getVersion() {
-        return this.resProvider.getVersion();
+        return resourceProvider.getVersion();
     }
     
     public String getV3GameSig() {
-        return this.resProvider.getV3GameSig();
+        return resourceProvider.getV3GameSig();
     }
 }

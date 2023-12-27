@@ -1,5 +1,7 @@
 package com.agifans.agile.gwt;
 
+import java.util.Map;
+
 import com.agifans.agile.AgileRunner;
 
 public class GwtAgileRunner extends AgileRunner {
@@ -26,5 +28,11 @@ public class GwtAgileRunner extends AgileRunner {
     public boolean isRunning() {
         // TODO Auto-generated method stub
         return false;
+    }
+
+    @Override
+    public Map<String, byte[]> fetchGameFiles(String gameUri) {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

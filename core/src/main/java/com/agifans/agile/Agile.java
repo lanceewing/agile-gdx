@@ -54,7 +54,10 @@ public class Agile extends ApplicationAdapter {
      */
     private String selectGame() {
         // TODO: Implement selection logic. This is a placeholder for now.
-        return "C:\\dev\\agi\\winagi\\kq4agi";
+        // return "C:\\dev\\agi\\winagi\\kq4agi";
+        // return "file:/C:/dev/agi/winagi/kq4agi/";
+        // return "file://localhost/C:/dev/agi/winagi/kq4agi/";
+        return "file:///C:/dev/agi/winagi/kq4agi/";
     }
         
     @Override

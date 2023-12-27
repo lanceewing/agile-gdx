@@ -5,7 +5,6 @@
 package com.agifans.agile.agilib.jagi.inv;
 
 import com.agifans.agile.agilib.jagi.io.ByteCasterStream;
-import com.agifans.agile.agilib.jagi.res.ResourceConfiguration;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -73,10 +72,6 @@ public class InventoryObjects implements InventoryProvider {
      */
     protected InventoryObject[] objects = null;
     protected int numOfAnimatedObjects;
-
-    public InventoryObjects(ResourceConfiguration config) {
-
-    }
 
     /**
      * Loads the String Table from a AGI Object file. Internal Uses only.

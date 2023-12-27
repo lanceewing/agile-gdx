@@ -1,10 +1,5 @@
 package com.agifans.agile;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 
@@ -32,19 +27,11 @@ public class Detection {
      */
     public Detection(Game game) {
         try {
-            StringBuilder dirFilePath = new StringBuilder();
-            dirFilePath.append(game.gameFolder);
-            dirFilePath.append(File.separator);
-            if (game.v3GameSig != null) {
-                dirFilePath.append(game.v3GameSig.toUpperCase());
-                dirFilePath.append("DIR");
-            }
-            else {
-                dirFilePath.append("LOGDIR");
-            }
+            String dirPrefix = (game.v3GameSig != null? game.v3GameSig.toLowerCase() : "log");
             
             // Calculate MD5 hash of the game.
-            byte[] data = readBytesFromFile(dirFilePath.toString());
+            byte[] data = game.gameFilesMap.get(dirPrefix + "dir");
+            // TODO: GWT only supports SHA256, not MD5
             byte[] hash = MessageDigest.getInstance("MD5").digest(data);
             String md5HashString = new BigInteger(1, hash).toString(16);
 
@@ -60,18 +47,6 @@ public class Detection {
         catch (Exception e) {
             // Failure in game detection code. Continue with the default unrecognised game values.
             e.printStackTrace();
-        }
-    }
-    
-    private byte[] readBytesFromFile(String filePath) throws FileNotFoundException, IOException {
-        try (FileInputStream fis = new FileInputStream(filePath)) {
-            int numOfBytesReads;
-            byte[] data = new byte[256];
-            ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-            while ((numOfBytesReads = fis.read(data, 0, data.length)) != -1) {
-                buffer.write(data, 0, numOfBytesReads);
-            }
-            return buffer.toByteArray();
         }
     }
 

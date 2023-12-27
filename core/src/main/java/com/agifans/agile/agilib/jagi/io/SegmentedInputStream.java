@@ -10,7 +10,6 @@ package com.agifans.agile.agilib.jagi.io;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.RandomAccessFile;
 
 /**
  * Implentation of <CODE>InputStream</CODE> that gives access
@@ -79,10 +78,6 @@ public class SegmentedInputStream extends InputStream {
 
     public int getOffset() {
         return offset;
-    }
-
-    public RandomAccessFile getRandomAccessFile() {
-        return randomFile;
     }
 
     /**

@@ -8,8 +8,10 @@ import com.agifans.agile.agilib.jagi.io.*;
 import com.agifans.agile.agilib.jagi.res.*;
 import com.agifans.agile.agilib.jagi.res.dir.ResourceDirectory;
 
-import java.io.*;
-import java.util.Arrays;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Map;
 
 /**
  * Provide access to resources via the standard storage methods.
@@ -85,66 +87,42 @@ import java.util.Arrays;
  * @version 0.00.00.01
  */
 public class ResourceProviderV3 extends com.agifans.agile.agilib.jagi.res.v2.ResourceProviderV2 {
-    protected File[] vols;
-    protected File[] dirs;
 
+    protected byte[][] vols;
+    protected byte[][] dirs;
+
+    private String v3GameSignature;
+    
     /**
-     * Initialize the ResourceProvider implentation to access
+     * Initialize the ResourceProvider implementation to access
      * resource on the file system.
      *
-     * @param folder Resource's folder or File inside the resource's
-     *               folder.
+     * @param gamesFilesMap Map of the AGI game's data file content.
      */
-    public ResourceProviderV3(File folder) throws IOException, ResourceException {
-        super(folder);
+    public ResourceProviderV3(Map<String, byte[]> gameFilesMap) throws IOException, ResourceException {
+        super(gameFilesMap);
     }
 
     /**
      * Find volumes files
      */
-    protected void readVolumes() throws NoVolumeAvailableException {
-        File[] vols = path.listFiles(new VolumeFilenameFilter());
-
-        if (vols == null) {
-            throw new NoVolumeAvailableException();
-        }
-
-        if (vols.length == 0) {
-            throw new NoVolumeAvailableException();
-        }
-
-        this.vols = new File[16];
+    protected void readVolumes() {
+        this.vols = new byte[16][];
         
         // In order to cater for games like GR, where there are gaps in the VOL
         // numbering, we use the actual number from the file extension as the index
         // when putting a vol into the vols array.
-        for (File vol : vols) {
-            try {
-                String extension = vol.getName().substring(vol.getName().lastIndexOf(".") + 1);
-                int volNumber = Integer.parseInt(extension);
-                this.vols[volNumber] = vol;
-            } catch(Exception e) {
-                // Ignore. Must not be a proper VOL file.
+        for (String fileName : gameFilesMap.keySet()) {
+            if (fileName.matches("^[a-z0-9]*vol.[0-9]+$")) {
+                try {
+                    String extension = fileName.substring(fileName.lastIndexOf(".") + 1);
+                    int volNumber = Integer.parseInt(extension);
+                    this.vols[volNumber] = gameFilesMap.get(fileName);
+                } catch(Exception e) {
+                    // Ignore. Must not be a proper VOL file.
+                }
             }
         }
-    }
-
-    protected int calculateCRCFromScratch() throws IOException {
-        byte[] b = new byte[8];
-        int c, i;
-        InputStream stream;
-
-        c = super.calculateCRCFromScratch();
-
-        stream = new FileInputStream(dirs[0]);
-        stream.read(b, 0, 8);
-        stream.close();
-
-        for (i = 0; i < 8; i++) {
-            c += (b[i] & 0xff);
-        }
-
-        return c;
     }
 
     /**
@@ -158,7 +136,7 @@ public class ResourceProviderV3 extends com.agifans.agile.agilib.jagi.res.v2.Res
         int i, j, ax;
 
         findDirectories();
-        stream = new FileInputStream(dirs[0]);
+        stream = new ByteArrayInputStream(dirs[0]);
         stream.read(b, 0, 8);
         stream.close();
 
@@ -176,13 +154,13 @@ public class ResourceProviderV3 extends com.agifans.agile.agilib.jagi.res.v2.Res
             }
 
             if (ax == 0xffffff) {
-                ax = (int) dirs[0].length();
+                ax = (int) dirs[0].length;
             }
 
             o[i + 4] = ax;
         }
 
-        dirfile = new RandomAccessFile(dirs[0], "r");
+        dirfile = new RandomAccessFile(new ByteArrayInputStream(dirs[0]));
         o[4] -= o[0];
         entries[0] = new ResourceDirectory(new SegmentedInputStream(dirfile, o[0], o[4]));
 
@@ -200,17 +178,21 @@ public class ResourceProviderV3 extends com.agifans.agile.agilib.jagi.res.v2.Res
      * Find all directory files
      */
     protected void findDirectories() throws NoDirectoryAvailableException {
-        dirs = path.listFiles(new DirectoryFilenameFilter());
-
-        if (dirs == null) {
-            throw new NoDirectoryAvailableException();
+        dirs = new byte[3][];
+        
+        for (String fileName : gameFilesMap.keySet()) {
+            if (fileName.equalsIgnoreCase("object")) {
+                dirs[1] = gameFilesMap.get(fileName);
+            }
+            else if (fileName.equalsIgnoreCase("words.tok")) {
+                dirs[2] = gameFilesMap.get(fileName);
+            }
+            else if (fileName.toLowerCase().endsWith("dir")) {
+                dirs[0] = gameFilesMap.get(fileName);
+                
+                v3GameSignature = fileName.toUpperCase().replaceAll("DIR$", "");
+            }
         }
-
-        if (dirs.length == 0) {
-            throw new NoDirectoryAvailableException();
-        }
-
-        Arrays.sort(dirs, new DirectorySorter());
     }
 
     /**
@@ -239,13 +221,13 @@ public class ResourceProviderV3 extends com.agifans.agile.agilib.jagi.res.v2.Res
         switch (resType) {
             case ResourceProvider.TYPE_OBJECT:
                 if (isCrypted(dirs[1])) {
-                    return new CryptedInputStream(new FileInputStream(dirs[1]), getKey(false));
+                    return new CryptedInputStream(new ByteArrayInputStream(dirs[1]), getKey(false));
                 }
 
-                return new FileInputStream(dirs[1]);
+                return new ByteArrayInputStream(dirs[1]);
 
             case ResourceProvider.TYPE_WORD:
-                return new FileInputStream(dirs[2]);
+                return new ByteArrayInputStream(dirs[2]);
         }
 
         try {
@@ -262,7 +244,7 @@ public class ResourceProviderV3 extends com.agifans.agile.agilib.jagi.res.v2.Res
 
                     try {
                         b = new byte[7];
-                        file = new RandomAccessFile(vols[vol], "r");
+                        file = new RandomAccessFile(new ByteArrayInputStream(vols[vol]));
                         file.seek(offset);
                         file.read(b, 0, 7);
                     } catch (IndexOutOfBoundsException ioobex) {
@@ -295,104 +277,43 @@ public class ResourceProviderV3 extends com.agifans.agile.agilib.jagi.res.v2.Res
         throw new ResourceNotExistingException();
     }
 
-    protected File getVolumeFile(int vol) throws IOException {
-        File file = vols[vol];
+    protected byte[] getVolumeFile(int vol) throws VolumeNotFoundException {
+        byte[] fileData = vols[vol];
 
-        if (!file.exists()) {
-            throw new FileNotFoundException();
+        if (fileData == null) {
+            throw new VolumeNotFoundException();
         }
 
-        return file;
+        return fileData;
     }
 
-    protected File getDirectoryFile(int resType) throws IOException {
-        File file;
+    protected byte[] getDirectoryFile(int resType) throws IOException, VolumeNotFoundException {
+        byte[] fileData;
 
         switch (resType) {
             case ResourceProvider.TYPE_OBJECT:
-                file = dirs[1];
+                fileData = dirs[1];
                 break;
             case ResourceProvider.TYPE_WORD:
-                file = dirs[2];
+                fileData = dirs[2];
                 break;
             case ResourceProvider.TYPE_LOGIC:
             case ResourceProvider.TYPE_PICTURE:
             case ResourceProvider.TYPE_SOUND:
             case ResourceProvider.TYPE_VIEW:
-                file = dirs[0];
+                fileData = dirs[0];
             default:
-                return null;
+                fileData = null;
         }
 
-        if (!file.exists()) {
-            throw new FileNotFoundException();
+        if (fileData == null) {
+            throw new VolumeNotFoundException();
         }
 
-        return file;
+        return fileData;
     }
 
     public String getV3GameSig() {
-        return dirs[0].getName().toUpperCase().replaceAll("DIR$", "");
-    }
-    
-    protected static class VolumeFilenameFilter implements java.io.FilenameFilter {
-        public boolean accept(File dir, String name) {
-            int c;
-            String s;
-
-            c = name.lastIndexOf('.');
-
-            if (c == -1) {
-                return false;
-            }
-
-            if (!Character.isDigit(name.charAt(c + 1))) {
-                return false;
-            }
-
-            s = name.substring(0, c);
-            s = s.toLowerCase();
-
-            return s.endsWith("vol");
-        }
-    }
-
-    protected static class VolumeSorter implements java.util.Comparator {
-        public int compare(Object o1, Object o2) {
-            return ((File) o1).getName().compareToIgnoreCase(((File) o2).getName());
-        }
-    }
-
-    protected static class DirectoryFilenameFilter implements java.io.FilenameFilter {
-        public boolean accept(File dir, String name) {
-            if (name.equalsIgnoreCase("object")) {
-                return true;
-            }
-
-            if (name.equalsIgnoreCase("words.tok")) {
-                return true;
-            }
-
-            return name.toLowerCase().endsWith("dir");
-        }
-    }
-
-    protected static class DirectorySorter implements java.util.Comparator {
-        public int compare(Object o1, Object o2) {
-            String s1 = ((File) o1).getName();
-            String s2 = ((File) o2).getName();
-
-            if (s1.toLowerCase().endsWith("dir")) {
-                if (!s2.toLowerCase().endsWith("dir")) {
-                    return -1;
-                }
-            } else {
-                if (s2.toLowerCase().endsWith("dir")) {
-                    return 1;
-                }
-            }
-
-            return s1.compareToIgnoreCase(s2);
-        }
+        return v3GameSignature;
     }
 }

@@ -1,9 +1,9 @@
 package com.agifans.agile;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import com.agifans.agile.agilib.Game;
 import com.agifans.agile.agilib.Logic;
@@ -26,7 +26,7 @@ public abstract class AgileRunner {
     
     protected Interpreter interpreter;
     
-    private String gameFolder;
+    private String gameUri;
     private WavePlayer wavePlayer;
     private UserInput userInput;
     private short[] pixels;
@@ -34,8 +34,8 @@ public abstract class AgileRunner {
     private long lastTime;
     private long deltaTime;
     
-    public void init(String gameFolder, UserInput userInput, WavePlayer wavePlayer, short[] pixels) {
-        this.gameFolder = gameFolder;
+    public void init(String gameUri, UserInput userInput, WavePlayer wavePlayer, short[] pixels) {
+        this.gameUri = gameUri;
         this.userInput = userInput;
         this.wavePlayer = wavePlayer;
         this.pixels = pixels;
@@ -48,15 +48,15 @@ public abstract class AgileRunner {
     protected void loadGame() {
         Game game = null;
         
+        Map<String, byte[]> gameFilesMap = fetchGameFiles(gameUri);
+        
         // Use a dummy TextGraphics instance to render the "Loading" text in grand AGI fashion.
         TextGraphics textGraphics = new TextGraphics(pixels, null, null);
         try {
-            // TODO: Change to libgdx files??
-            File wordsFile = new File(gameFolder + "\\WORDS.TOK");
-            if (wordsFile.exists()) {
+            if (gameFilesMap.containsKey("words.tok")) {
                 textGraphics.drawString(pixels, "Loading... Please wait", 72, 88, 15, 0);
             }
-            game = new Game(gameFolder);
+            game = new Game(gameFilesMap);
         }
         finally {
             textGraphics.clearLines(0, 24, 0);
@@ -193,4 +193,19 @@ public abstract class AgileRunner {
     
     public abstract boolean isRunning();
     
+    public abstract Map<String, byte[]> fetchGameFiles(String gameUri);
+    
+    public boolean isGameFile(String filename) {
+        String lowerCaseName = filename.toLowerCase();
+        if (lowerCaseName.matches("^[a-z0-9]*vol.[0-9]+$") || 
+                lowerCaseName.endsWith("dir") || 
+                lowerCaseName.equals("agidata.ovl") || 
+                lowerCaseName.equals("object") || 
+                lowerCaseName.equals("words.tok")) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
 }

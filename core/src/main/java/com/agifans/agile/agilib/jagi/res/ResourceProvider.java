@@ -8,7 +8,6 @@
 
 package com.agifans.agile.agilib.jagi.res;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -39,13 +38,6 @@ public interface ResourceProvider {
 
     /** Word Tokenizer File. */
     byte TYPE_WORD = 11;
-
-    /**
-     * Calculate the CRC of the resources.
-     *
-     * @return CRC of the resources.
-     */
-    long getCRC();
 
     /**
      * Retreive the count of resources of the specified type.
@@ -83,13 +75,6 @@ public interface ResourceProvider {
      * @return InputStream linked to the specified resource.
      */
     InputStream open(byte resType, short resNumber) throws ResourceException, IOException;
-
-    /**
-     * Return the resource configuration.
-     */
-    ResourceConfiguration getConfiguration();
-
-    File getPath();
 
     String getVersion();
     

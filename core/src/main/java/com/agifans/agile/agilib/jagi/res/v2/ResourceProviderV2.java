@@ -11,29 +11,23 @@ package com.agifans.agile.agilib.jagi.res.v2;
 import com.agifans.agile.agilib.jagi.io.ByteCaster;
 import com.agifans.agile.agilib.jagi.io.ByteCasterStream;
 import com.agifans.agile.agilib.jagi.io.CryptedInputStream;
+import com.agifans.agile.agilib.jagi.io.RandomAccessFile;
 import com.agifans.agile.agilib.jagi.io.SegmentedInputStream;
 import com.agifans.agile.agilib.jagi.res.CorruptedResourceException;
+import com.agifans.agile.agilib.jagi.res.DirectoryNotFoundException;
 import com.agifans.agile.agilib.jagi.res.NoDirectoryAvailableException;
-import com.agifans.agile.agilib.jagi.res.NoVolumeAvailableException;
-import com.agifans.agile.agilib.jagi.res.ResourceConfiguration;
 import com.agifans.agile.agilib.jagi.res.ResourceException;
 import com.agifans.agile.agilib.jagi.res.ResourceNotExistingException;
 import com.agifans.agile.agilib.jagi.res.ResourceProvider;
 import com.agifans.agile.agilib.jagi.res.ResourceTypeInvalidException;
+import com.agifans.agile.agilib.jagi.res.VolumeNotFoundException;
 import com.agifans.agile.agilib.jagi.res.dir.ResourceDirectory;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.RandomAccessFile;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.util.Properties;
+import java.util.Map;
 
 /**
  * Provide access to resources via the standard storage methods.
@@ -59,71 +53,50 @@ import java.util.Properties;
  * @version 0.00.00.01
  */
 public class ResourceProviderV2 implements ResourceProvider {
-    /**
-     * AGDS's Decryption Key. This key is used to decrypt
-     * AGDS games.
-     */
-    public static final String AGDS_KEY = "Alex Simkin";
+
     /**
      * Sierra's Decryption Key. This key used to decrypt
      * original sierra games.
      */
     public static final String SIERRA_KEY = "Avis Durgan";
-    /**
-     * Resource's CRC.
-     */
-    protected long crc;
+    
     /**
      * Resource's Entries Tables.
      */
     protected ResourceDirectory[] entries = new ResourceDirectory[4];
+    
     /**
-     * Path to resources files.
+     * A Map of AGI game data file name to byte array content of that AGI file.
      */
-    protected File path;
-    /**
-     * Resource Configuration
-     */
-    protected ResourceConfiguration configuration = new ResourceConfiguration();
-
+    protected Map<String, byte[]> gameFilesMap;
+    
     protected String version = "unknown";
 
     /**
      * Initialize the ResourceProvider implementation to access
      * resource on the file system.
      *
-     * @param folder Resource's folder or File inside the resource's
-     *               folder.
+     * @param gamesFilesMap Map of the AGI game's data file content.
      */
-    public ResourceProviderV2(File folder) throws IOException, ResourceException {
-        if (!folder.exists()) {
-            throw new FileNotFoundException();
-        }
-
-        if (folder.isDirectory()) {
-            path = folder.getAbsoluteFile();
-        } else {
-            path = folder.getParentFile();
-        }
-
+    public ResourceProviderV2(Map<String, byte[]> gameFilesMap) throws IOException, ResourceException {
+        this.gameFilesMap = gameFilesMap;
+        
         readVolumes();
         readDirectories();
         readVersion();
-        calculateCRC();
-        calculateConfiguration();
     }
 
     public static String getKey(boolean agds) {
-        return System.getProperty("com.sierra.agi.res.key", agds ? AGDS_KEY : SIERRA_KEY);
+        return SIERRA_KEY;
     }
 
-    public static boolean isCrypted(File file) {
+    public static boolean isCrypted(byte[] fileData) {
         boolean b = false;
 
         try {
-            ByteCasterStream bstream = new ByteCasterStream(new FileInputStream(file));
+            ByteCasterStream bstream = new ByteCasterStream(new ByteArrayInputStream(fileData));
 
-            if (bstream.lohiReadUnsignedShort() > file.length()) {
+            if (bstream.lohiReadUnsignedShort() > fileData.length) {
                 b = true;
             }
 
@@ -199,20 +172,20 @@ public class ResourceProviderV2 implements ResourceProvider {
      * @see com.agifans.agile.agilib.jagi.res.ResourceProvider#TYPE_WORD
      */
     public InputStream open(byte resType, short resNumber) throws ResourceException, IOException {
-        File volf;
+        byte[] volf;
 
         switch (resType) {
             case ResourceProvider.TYPE_OBJECT:
                 volf = getDirectoryFile(resType);
 
                 if (isCrypted(volf)) {
-                    return new CryptedInputStream(new FileInputStream(volf), getKey(false));
+                    return new CryptedInputStream(new ByteArrayInputStream(volf), getKey(false));
                 } else {
-                    return new FileInputStream(volf);
+                    return new ByteArrayInputStream(volf);
                 }
 
             case ResourceProvider.TYPE_WORD:
-                return new FileInputStream(getDirectoryFile(resType));
+                return new ByteArrayInputStream(getDirectoryFile(resType));
         }
 
         try {
@@ -228,7 +201,7 @@ public class ResourceProviderV2 implements ResourceProvider {
                     InputStream in;
 
                     b = new byte[5];
-                    file = new RandomAccessFile(getVolumeFile(vol), "r");
+                    file = new RandomAccessFile(new ByteArrayInputStream(getVolumeFile(vol)));
                     file.seek(offset);
                     file.read(b, 0, 5);
 
@@ -264,87 +237,59 @@ public class ResourceProviderV2 implements ResourceProvider {
         }
     }
 
-    /**
-     * Calculate the CRC of the resources. In this implentation
-     * the CRC is not calculated by this function, it only return
-     * the cached CRC value.
-     *
-     * @return CRC of the resources.
-     */
-    public long getCRC() {
-        return crc;
-    }
+    protected byte[] getVolumeFile(int vol) throws VolumeNotFoundException {
+        byte[] fileData = getGameFile("vol." + vol);
 
-    public ResourceConfiguration getConfiguration() {
-        return configuration;
-    }
-
-    protected File getVolumeFile(int vol) throws IOException {
-        File file = getGameFile(path, "vol." + vol);
-
-        if (!file.exists()) {
-            throw new FileNotFoundException("File " + file.getPath() + " can't be found.");
+        if (fileData == null) {
+            throw new VolumeNotFoundException("File vol." + vol + " can't be found.");
         }
 
-        return file;
+        return fileData;
     }
 
     /**
-     * To account for different platforms, where there may or may not be a case
-     * sensitive file system, and where the game files may or may not have been
-     * copied from another platform, we attempt here to look for the requested
-     * game file firstly as-is, then in uppercase form, and then in lowercase.
+     * Gets the content of the AGI game data file as a byte array.
      *
-     * @param path     The File that represents the folder that contains the game files.
      * @param fileName The name of the file to get.
-     * @return A File representing the game file.
+     * 
+     * @return A byte array representing the game file.
      */
-    protected File getGameFile(File path, String fileName) {
-        File file = new File(path, fileName);
-        if (!file.exists()) {
-            file = new File(path, fileName.toUpperCase());
-            if (!file.exists()) {
-                file = new File(path, fileName.toLowerCase());
-            }
-        }
-        return file;
+    protected byte[] getGameFile(String fileName) {
+        return gameFilesMap.get(fileName);
     }
 
-    protected File getDirectoryFile(byte resType) throws IOException {
-        File file;
+    protected byte[] getDirectoryFile(byte resType) throws IOException, DirectoryNotFoundException {
+        byte[] fileData;
 
         switch (resType) {
             case ResourceProvider.TYPE_OBJECT:
-                file = getGameFile(path, "object");
+                fileData = getGameFile("object");
                 break;
             case ResourceProvider.TYPE_WORD:
-                file = getGameFile(path, "words.tok");
+                fileData = getGameFile("words.tok");
                 break;
             case ResourceProvider.TYPE_LOGIC:
-                file = getGameFile(path, "logdir");
+                fileData = getGameFile("logdir");
                 break;
             case ResourceProvider.TYPE_PICTURE:
-                file = getGameFile(path, "picdir");
+                fileData = getGameFile("picdir");
                 break;
             case ResourceProvider.TYPE_SOUND:
-                file = getGameFile(path, "snddir");
+                fileData = getGameFile("snddir");
                 break;
             case ResourceProvider.TYPE_VIEW:
-                file = getGameFile(path, "viewdir");
+                fileData = getGameFile("viewdir");
                 break;
             default:
-                return null;
+                // This game is missing a key AGI file!!!
+                throw new DirectoryNotFoundException();
         }
 
-        if (!file.exists()) {
-            throw new FileNotFoundException();
-        }
-
-        return file;
+        return fileData;
     }
 
     /**
-     * Retreive the size in bytes of the specified resource.
+     * Retrieve the size in bytes of the specified resource.
      *
      * @param resType   Resource type
      * @param resNumber Resource number. Ignored if resource type
@@ -362,7 +307,7 @@ public class ResourceProviderV2 implements ResourceProvider {
         switch (resType) {
             case ResourceProvider.TYPE_OBJECT:
             case ResourceProvider.TYPE_WORD:
-                return (int) getDirectoryFile(resType).length();
+                return (int) getDirectoryFile(resType).length;
         }
 
         try {
@@ -377,7 +322,7 @@ public class ResourceProviderV2 implements ResourceProvider {
                     RandomAccessFile file;
 
                     b = new byte[5];
-                    file = new RandomAccessFile(getVolumeFile(vol), "r");
+                    file = new RandomAccessFile(new ByteArrayInputStream(getVolumeFile(vol)));
                     file.seek(offset);
                     file.read(b);
                     file.close();
@@ -396,48 +341,28 @@ public class ResourceProviderV2 implements ResourceProvider {
         }
     }
 
-    /**
-     * Find volumes files
-     */
-    protected void readVolumes() throws NoVolumeAvailableException {
-        boolean founded = false;
-        int i = 0;
-        File volf;
-
-        while (true) {
-            volf = getGameFile(path, "vol." + i);
-
-            if (volf.exists()) {
-                founded = true;
-                break;
-            }
-
-            if (i > 50) {
-                break;
-            }
-
-            i++;
-        }
-
-        if (!founded) {
-            throw new NoVolumeAvailableException();
-        }
+    protected void readVolumes() {
+        // Template method. Not implemented by V2 provider.
     }
-
+    
     /**
      * Read all directory files
+     * 
+     * @throws NoDirectoryAvailableException
+     * @throws IOException
+     * @throws DirectoryNotFoundException
      */
-    protected void readDirectories() throws NoDirectoryAvailableException, IOException {
+    protected void readDirectories() throws NoDirectoryAvailableException, IOException, DirectoryNotFoundException {
         byte i;
         int j;
-        File dir;
+        byte[] dir;
         InputStream stream;
 
         for (i = 0, j = 0; i < 4; i++) {
             dir = getDirectoryFile(i);
 
             if (dir != null) {
-                stream = new FileInputStream(dir);
+                stream = new ByteArrayInputStream(dir);
                 entries[i] = new ResourceDirectory(stream);
                 stream.close();
                 j++;
@@ -449,95 +374,12 @@ public class ResourceProviderV2 implements ResourceProvider {
         }
     }
 
-    /**
-     * Calculate the Resource's CRC
-     */
-    protected void calculateCRC() throws IOException {
-        File dirf = new File(path, "vol.crc");
-
-        try {
-            /* Check if the CRC has been pre-calculated */
-            DataInputStream meta = new DataInputStream(new FileInputStream(dirf));
-
-            crc = meta.readLong();
-            meta.close();
-        } catch (IOException ex) {
-            /* CRC need to be calculated from scratch */
-            crc = calculateCRCFromScratch();
-
-            /* Write down the CRC for next times */
-            DataOutputStream meta = new DataOutputStream(new FileOutputStream(dirf));
-
-            meta.writeLong(crc);
-            meta.close();
-        }
-    }
-
-    protected int calculateCRCFromScratch() throws IOException {
-        File[] dir;
-        int i, j, c;
-
-        c = 0;
-        dir = new File[2];
-        dir[0] = getGameFile(path, "object");
-        dir[1] = getGameFile(path, "words.tok");
-
-        for (i = 0; i < entries.length; i++) {
-            if (entries[i] != null) {
-                c += entries[i].getCRC();
-            }
-        }
-
-        for (i = 0; i < dir.length; i++) {
-            FileInputStream stream = new FileInputStream(dir[i]);
-
-            while (true) {
-                j = stream.read();
-
-                if (j == -1)
-                    break;
-
-                c += j;
-            }
-
-            stream.close();
-        }
-
-        return c;
-    }
-
-    protected void calculateConfiguration() {
-        Properties props = new Properties();
-        String scrc = "0x" + Long.toString(crc, 16);
-
-        String ver = props.getProperty(scrc, "0x2917");
-        configuration.amiga = ver.indexOf('a') != -1;
-        configuration.agds = ver.indexOf('g') != -1;
-        ver = ver.substring(2);
-
-        while (!Character.isDigit(ver.charAt(ver.length() - 1))) {
-            ver = ver.substring(0, ver.length() - 1);
-        }
-
-        configuration.engineEmulation = (Integer.valueOf(ver, 16).shortValue());
-
-        props = new Properties();
-
-        configuration.name = props.getProperty(scrc, "Unknown Game");
-    }
-
-    public File getPath() {
-        return this.path;
-    }
-
     private void readVersion() throws IOException {
-        File file = getGameFile(path, "agidata.ovl");
+        byte[] fileContent = getGameFile("agidata.ovl");
 
-        if (!file.exists()) {
+        if (fileContent == null) {
             return;
         }
-
-        byte[] fileContent = Files.readAllBytes(file.toPath());
 
         for (int i = 0; i < fileContent.length; i++) {
             if (fileContent[i] == 86 && fileContent[i + 1] == 101 && fileContent[i + 2] == 114 && fileContent[i + 3] == 115 && fileContent[i + 4] == 105 && fileContent[i + 5] == 111 && fileContent[i + 6] == 110 && fileContent[i + 7] == 32) {
