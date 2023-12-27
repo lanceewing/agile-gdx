@@ -54,7 +54,6 @@ public class Agile extends ApplicationAdapter {
      */
     private String selectGame() {
         // TODO: Implement selection logic. This is a placeholder for now.
-        // TODO: Game clock should stop when in menus or window showing, as should animations.
         return "C:\\dev\\agi\\winagi\\kq4agi";
     }
         
