@@ -1,6 +1,5 @@
 package com.agifans.agile;
 
-import java.awt.Color;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -11,44 +10,23 @@ import java.util.Map;
  */
 public class EgaPalette {
 
-    // The Color constants for the 16 EGA colours (and also the transparent colour we use).
-    public final static Color BLACK = new Color(0x000000);
-    public final static Color BLUE = new Color(0x0000AA);
-    public final static Color GREEN = new Color(0x00AA00);
-    public final static Color CYAN = new Color(0x00AAAA);
-    public final static Color RED = new Color(0xAA0000);
-    public final static Color MAGENTA = new Color(0xAA00AA);
-    public final static Color BROWN = new Color(0xAA5500);
-    public final static Color GREY = new Color(0xAAAAAA);
-    public final static Color DARKGREY = new Color(0x555555);
-    public final static Color LIGHTBLUE = new Color(0x5555FF);
-    public final static Color LIGHTGREEN = new Color(0x55FF55);
-    public final static Color LIGHTCYAN = new Color(0x55FFFF);
-    public final static Color PINK = new Color(0xFF5555);
-    public final static Color LIGHTMAGENTA = new Color(0xFF55FF);
-    public final static Color YELLOW = new Color(0xFFFF55);
-    public final static Color WHITE = new Color(0xFFFFFF);
-
-    // JAGI RGB values
-    // 0x005454FC
-    
     // RGB values for use in colors array.
-    public final static int black = BLACK.getRGB();
-    public final static int blue = BLUE.getRGB();
-    public final static int green = GREEN.getRGB();
-    public final static int cyan = CYAN.getRGB();
-    public final static int red = RED.getRGB();
-    public final static int magenta = MAGENTA.getRGB();
-    public final static int brown = BROWN.getRGB();
-    public final static int grey = GREY.getRGB();
-    public final static int darkgrey = DARKGREY.getRGB();
-    public final static int lightblue = LIGHTBLUE.getRGB();
-    public final static int lightgreen = LIGHTGREEN.getRGB();
-    public final static int lightcyan = LIGHTCYAN.getRGB();
-    public final static int pink = PINK.getRGB();
-    public final static int lightmagenta = LIGHTMAGENTA.getRGB();
-    public final static int yellow = YELLOW.getRGB();
-    public final static int white = WHITE.getRGB();
+    public final static int black = 0x00000000;
+    public final static int blue = 0x000000AA;
+    public final static int green = 0x0000AA00;
+    public final static int cyan = 0x0000AAAA;
+    public final static int red = 0x00AA0000;
+    public final static int magenta = 0x00AA00AA;
+    public final static int brown = 0x00AA5500;
+    public final static int grey = 0x00AAAAAA;
+    public final static int darkgrey = 0x00555555;
+    public final static int lightblue = 0x005555FF;
+    public final static int lightgreen = 0x0055FF55;
+    public final static int lightcyan = 0x0055FFFF;
+    public final static int pink = 0x00FF5555;
+    public final static int lightmagenta = 0x00FF55FF;
+    public final static int yellow = 0x00FFFF55;
+    public final static int white = 0x00FFFFFF;
     
     private static short toRGB565(int argb8888) {
         com.badlogic.gdx.graphics.Color color = new com.badlogic.gdx.graphics.Color();
@@ -80,11 +58,8 @@ public class EgaPalette {
     }
     
     /**
-     * Holds the RGB values for the 16 EGA colours.
+     * Holds the RGB565 values for the 16 EGA colours.
      */
-    // TODO: Remove when satisfied that RGB565 is working.
-    //public final static int[] colours = { black, blue, green, cyan, red, magenta, brown, grey, darkgrey, lightblue, lightgreen, lightcyan, pink, lightmagenta, yellow, white };
-
     public final static short[] colours = { 
         RGB888_TO_RGB565_MAP.get(black & 0xFFFFFF), 
         RGB888_TO_RGB565_MAP.get(blue & 0xFFFFFF), 
