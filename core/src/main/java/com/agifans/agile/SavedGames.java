@@ -5,7 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Map.Entry;
@@ -278,12 +278,12 @@ public class SavedGames {
         // 0 - 30(31 bytes) SAVED GAME DESCRIPTION.
         int textEnd = 0;
         while (theGame.savedGameData[textEnd] != 0) textEnd++;
-        String savedGameDescription = new String(theGame.savedGameData, 0, textEnd, Charset.forName("Cp437"));
+        String savedGameDescription = new String(theGame.savedGameData, 0, textEnd, StandardCharsets.ISO_8859_1);
 
         // 33 - 39(7 bytes) Game ID("SQ2", "KQ3", "LLLLL", etc.), NUL padded.
         textEnd = 33;
         while ((theGame.savedGameData[textEnd] != 0) && ((textEnd - 33) < 7)) textEnd++;
-        String gameId = new String(theGame.savedGameData, 33, textEnd - 33, Charset.forName("Cp437"));
+        String gameId = new String(theGame.savedGameData, 33, textEnd - 33, StandardCharsets.ISO_8859_1);
 
         // If the saved Game ID  doesn't match the current, don't use  this game.
         if (!gameId.equals(state.gameId)) {
@@ -487,7 +487,7 @@ public class SavedGames {
         int pos = 0;
 
         // 0 - 30(31 bytes) SAVED GAME DESCRIPTION.
-        for (byte b : savedGame.description.getBytes(Charset.forName("Cp437"))) {
+        for (byte b : savedGame.description.getBytes(StandardCharsets.ISO_8859_1)) {
             savedGameData[pos++] = b;
         }
         
@@ -500,7 +500,7 @@ public class SavedGames {
 
         // [2] 33 - 39(7 bytes) Game ID("SQ2", "KQ3", "LLLLL", etc.), NUL padded.
         pos = 33;
-        for (byte b : state.gameId.getBytes(Charset.forName("Cp437"))) {
+        for (byte b : state.gameId.getBytes(StandardCharsets.ISO_8859_1)) {
             savedGameData[pos++] = b;
         }
         
@@ -580,7 +580,7 @@ public class SavedGames {
         for (int i = 0; i < numOfStrings; i++) {
             pos = postKeyMapOffset + (i * Defines.STRLENGTH);
             if ((state.strings[i] != null) && (state.strings[i].length() > 0)) {
-                for (byte b : state.strings[i].getBytes(Charset.forName("Cp437"))) {
+                for (byte b : state.strings[i].getBytes(StandardCharsets.ISO_8859_1)) {
                     savedGameData[pos++] = b;
                 }
             }
@@ -839,7 +839,7 @@ public class SavedGames {
         // 0 - 30(31 bytes) SAVED GAME DESCRIPTION.
         int textEnd = 0;
         while (savedGameData[textEnd] != 0) textEnd++;
-        String savedGameDescription = new String(savedGameData, 0, textEnd, Charset.forName("Cp437"));
+        String savedGameDescription = new String(savedGameData, 0, textEnd, StandardCharsets.ISO_8859_1);
 
         // FIRST PIECE: SAVE VARIABLES
         // [0] 31 - 32(2 bytes) Length of save variables piece. Length depends on AGI interpreter version. [e.g. (0xE1 0x05) for some games, (0xDB 0x03) for some] 
@@ -849,7 +849,7 @@ public class SavedGames {
         // [2] 33 - 39(7 bytes) Game ID("SQ2", "KQ3", "LLLLL", etc.), NUL padded.
         textEnd = 33;
         while ((savedGameData[textEnd] != 0) && ((textEnd - 33) < 7)) textEnd++;
-        String gameId = new String(savedGameData, 33, textEnd - 33, Charset.forName("Cp437"));
+        String gameId = new String(savedGameData, 33, textEnd - 33, StandardCharsets.ISO_8859_1);
         if (!gameId.equals(state.gameId)) return false;
 
         // If we're sure that this saved game file is for this game, then continue.
@@ -919,7 +919,7 @@ public class SavedGames {
             int stringOffset = postKeyMapOffset + (i * Defines.STRLENGTH);
             textEnd = stringOffset;
             while (((savedGameData[textEnd] & 0xFF) != 0) && ((textEnd - stringOffset) < Defines.STRLENGTH)) textEnd++;
-            state.strings[i] = new String(savedGameData, stringOffset, textEnd - stringOffset, Charset.forName("Cp437"));
+            state.strings[i] = new String(savedGameData, stringOffset, textEnd - stringOffset, StandardCharsets.ISO_8859_1);
         }
 
         int postStringsOffset = postKeyMapOffset + (numOfStrings * Defines.STRLENGTH);
