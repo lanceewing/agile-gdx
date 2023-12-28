@@ -8,12 +8,9 @@
 
 package com.agifans.agile.agilib.jagi.pic;
 
-import java.awt.Image;
-import java.awt.Toolkit;
-import java.awt.image.MemoryImageSource;
 import java.util.Arrays;
 
-import com.agifans.agile.agilib.jagi.awt.EgaUtils;
+import com.agifans.agile.EgaPalette;
 
 /**
  * @author Dr. Z
@@ -51,8 +48,6 @@ public class PictureContext {
      */
     public byte penStyle = 0;
 
-    protected int[] pixel = new int[1];
-
     protected int whitePixel;
 
     /**
@@ -86,8 +81,7 @@ public class PictureContext {
         if (b == -1) {
             return -1;
         } else {
-            EgaUtils.getNativeColorModel().getDataElements(EgaUtils.getIndexColorModel().getRGB(b), pixel);
-            return pixel[0];
+            return (EgaPalette.colours[b] & 0xFFFF);
         }
     }
 
@@ -251,6 +245,7 @@ public class PictureContext {
     }
 
     public boolean isFillCorrect(int x, int y) {
+        // TODO: This doesn't work anymore, since RGB565 values can be negative.
         if ((picColor < 0) && (priColor < 0)) {
             return false;
         }
@@ -264,40 +259,6 @@ public class PictureContext {
         }
 
         return ((picColor >= 0) && (getPixel(x, y) == whitePixel) && (picColor != whitePixel));
-    }
-
-    protected Image loadImage(Toolkit toolkit, byte[] data) {
-        MemoryImageSource mis;
-
-        if (toolkit == null) {
-            toolkit = Toolkit.getDefaultToolkit();
-        }
-
-        mis = new MemoryImageSource(width, height, EgaUtils.getIndexColorModel(), data, 0, width);
-        return toolkit.createImage(mis);
-    }
-
-    protected Image loadImage(Toolkit toolkit, int[] data) {
-        MemoryImageSource mis;
-
-        if (toolkit == null) {
-            toolkit = Toolkit.getDefaultToolkit();
-        }
-
-        mis = new MemoryImageSource(width, height, EgaUtils.getNativeColorModel(), data, 0, width);
-        return toolkit.createImage(mis);
-    }
-
-    public Image getPictureImage(Toolkit toolkit) {
-        return loadImage(toolkit, picData);
-    }
-
-    public Image getPriorityImage(Toolkit toolkit) {
-        byte[] asByte = new byte[priData.length];
-        for (int i = 0; i < priData.length; i++) {
-            asByte[i] = (byte) priData[i];
-        }
-        return loadImage(toolkit, asByte);
     }
 
     public int[] getPictureData() {

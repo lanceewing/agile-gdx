@@ -121,9 +121,8 @@ public class Commands {
 
         // Copy the pixels to our VisualPixels array, doubling each one as we go.
         for (int i = 0, ii = 0; i < (160 * 168); i++, ii += 2) {
-            // NOTE: Visual pixel array in JAGI is in RGB888 format
-            // TODO: Remove conversion when PICTURE is using RGB565 directly.
-            short rgb565Color = EgaPalette.RGB888_TO_RGB565_MAP.get(visualPixels[i]);
+            // NOTE: Visual pixel array in JAGI is in RGB565 format
+            short rgb565Color = (short)visualPixels[i];
             state.visualPixels[ii + 0] = rgb565Color;
             state.visualPixels[ii + 1] = rgb565Color;
         }
