@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.text.MessageFormat;
 import java.util.Map.Entry;
 
 import com.agifans.agile.AnimatedObject.CycleType;
@@ -16,6 +15,7 @@ import com.agifans.agile.AnimatedObject.MotionType;
 import com.agifans.agile.ScriptBuffer.ScriptBufferEvent;
 import com.agifans.agile.ScriptBuffer.ScriptBufferEventType;
 import com.agifans.agile.TextGraphics.TextWindow;
+import com.agifans.agile.util.StringUtils;
 import com.badlogic.gdx.Input.Keys;
 
 /**
@@ -141,7 +141,7 @@ public class SavedGames {
             if (numGames == 0) {
                 if (!simpleSave) {
                     // For normal save, if there are no games to display, tell the user so.
-                    textGraphics.windowPrint(MessageFormat.format(noGamesMsg, getSavePath().replace("\\", "\\\\")));
+                    textGraphics.windowPrint(StringUtils.format(noGamesMsg, getSavePath().replace("\\", "\\\\")));
                 }
 
                 // If there are no games to restore, exit at this point.
@@ -186,7 +186,7 @@ public class SavedGames {
 
         // Print the game descriptions within the open window..
         for (gameNum = 0; gameNum < numGames; gameNum++) {
-            textGraphics.drawString(this.pixels, MessageFormat.format(" - {0}", game[gameNum].description),
+            textGraphics.drawString(this.pixels, StringUtils.format(" - {0}", game[gameNum].description),
                 textWin.left * 8, (descriptTop + gameNum) * 8, 0, 15);
         }
 
@@ -245,7 +245,7 @@ public class SavedGames {
         theGame.num = num;
 
         // Build full path to the saved game of this number for this game ID.
-        theGame.fileName = MessageFormat.format("{0}\\{1}SG.{2}", getSavePath(), state.gameId, num);
+        theGame.fileName = StringUtils.format("{0}\\{1}SG.{2}", getSavePath(), state.gameId, num);
 
         File savedGameFile = new File(theGame.fileName);
         theGame.savedGameData = new byte[(int)savedGameFile.length()];
@@ -470,7 +470,7 @@ public class SavedGames {
         // If it is Simple Save mode then we skip asking them if they want to save.
         if (!simpleSave) {
             // Otherwise we prompt the user to confirm.
-            String msg = MessageFormat.format(
+            String msg = StringUtils.format(
                 "About to save the game\ndescribed as:\n\n{0}\n\nin file:\n{1}\n\n{2}",
                 savedGame.description, savedGame.fileName.replace("\\", "\\\\"),
                 "Press ENTER to continue.\nPress ESC to cancel.");
@@ -824,7 +824,7 @@ public class SavedGames {
         // If it is Simple Save mode then we skip asking them if they want to restore.
         if (!simpleSave) {
             // Otherwise we prompt the user to confirm.
-            String msg = MessageFormat.format(
+            String msg = StringUtils.format(
                 "About to restore the game\ndescribed as:\n\n{0}\n\nfrom file:\n{1}\n\n{2}",
                 savedGame.description, savedGame.fileName.replace("\\", "\\\\"), 
                 "Press ENTER to continue.\nPress ESC to cancel.");
