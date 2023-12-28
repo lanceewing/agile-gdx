@@ -28,16 +28,19 @@ public abstract class AgileRunner {
     
     private String gameUri;
     private WavePlayer wavePlayer;
+    private SavedGameStore savedGameStore;
     private UserInput userInput;
     private short[] pixels;
     
     private long lastTime;
     private long deltaTime;
     
-    public void init(String gameUri, UserInput userInput, WavePlayer wavePlayer, short[] pixels) {
+    public void init(String gameUri, UserInput userInput, WavePlayer wavePlayer, 
+            SavedGameStore savedGameStore, short[] pixels) {
         this.gameUri = gameUri;
         this.userInput = userInput;
         this.wavePlayer = wavePlayer;
+        this.savedGameStore = savedGameStore;
         this.pixels = pixels;
         this.lastTime = TimeUtils.nanoTime();
     }
@@ -70,7 +73,7 @@ public abstract class AgileRunner {
         patchGame(game, gameDetection.gameId, gameDetection.gameName);
         
         // Create the Interpreter to run this Game.
-        this.interpreter = new Interpreter(game, userInput, wavePlayer, pixels);
+        this.interpreter = new Interpreter(game, userInput, wavePlayer, savedGameStore, pixels);
     }
     
     /**

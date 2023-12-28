@@ -74,8 +74,11 @@ public class Commands {
      * @param parser 
      * @param soundPlayer 
      * @param menu 
+     * @param savedGameStore 
      */
-    public Commands(short[] pixels, GameState state, UserInput userInput, TextGraphics textGraphics, Parser parser, SoundPlayer soundPlayer, Menu menu) {
+    public Commands(short[] pixels, GameState state, UserInput userInput, 
+            TextGraphics textGraphics, Parser parser, SoundPlayer soundPlayer, 
+            Menu menu, SavedGameStore savedGameStore) {
         this.pixels = pixels;
         this.state = state;
         this.userInput = userInput;
@@ -83,7 +86,7 @@ public class Commands {
         this.parser = parser;
         this.menu = menu;
         this.inventory = new Inventory(state, userInput, textGraphics, pixels);
-        this.savedGames = new SavedGames(state, userInput, textGraphics, pixels);
+        this.savedGames = new SavedGames(state, userInput, textGraphics, pixels, savedGameStore);
         this.soundPlayer = soundPlayer;
     }
 

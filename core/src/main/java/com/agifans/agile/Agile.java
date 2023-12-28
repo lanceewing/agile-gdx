@@ -12,16 +12,19 @@ public class Agile extends ApplicationAdapter {
     private GameScreen screen;
     private AgileRunner agileRunner;
     private WavePlayer wavePlayer;
+    private SavedGameStore savedGameStore;
     
     /**
      * Constructor for Agile.
      * 
      * @param agileRunner
      * @param wavePlayer 
+     * @param savedGameStore 
      */
-    public Agile(AgileRunner agileRunner, WavePlayer wavePlayer) {
+    public Agile(AgileRunner agileRunner, WavePlayer wavePlayer, SavedGameStore savedGameStore) {
         this.agileRunner = agileRunner;
         this.wavePlayer = wavePlayer;
+        this.savedGameStore = savedGameStore;
     }
     
     @Override
@@ -41,7 +44,7 @@ public class Agile extends ApplicationAdapter {
         UserInput userInput = new UserInput();
         Gdx.input.setInputProcessor(userInput);
         
-        agileRunner.init(gameFolder, userInput, wavePlayer, screen.getPixels());
+        agileRunner.init(gameFolder, userInput, wavePlayer, savedGameStore, screen.getPixels());
         
         // Start up the AgileRunner to run the interpreter in the background.
         agileRunner.start();

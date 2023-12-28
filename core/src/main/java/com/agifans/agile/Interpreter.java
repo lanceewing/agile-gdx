@@ -70,9 +70,11 @@ public class Interpreter {
      * @param game
      * @param userInput
      * @param wavePlayer 
+     * @param savedGameStore 
      * @param pixels
      */
-    public Interpreter(Game game, UserInput userInput, WavePlayer wavePlayer, short[] pixels) {
+    public Interpreter(Game game, UserInput userInput, WavePlayer wavePlayer, 
+            SavedGameStore savedGameStore, short[] pixels) {
         this.state = new GameState(game);
         this.userInput = userInput;
         this.pixels = pixels;
@@ -80,7 +82,7 @@ public class Interpreter {
         this.parser = new Parser(state);
         this.soundPlayer = new SoundPlayer(state, wavePlayer);
         this.menu = new Menu(state, textGraphics, pixels, userInput);
-        this.commands = new Commands(pixels, state, userInput, textGraphics, parser, soundPlayer, menu);
+        this.commands = new Commands(pixels, state, userInput, textGraphics, parser, soundPlayer, menu, savedGameStore);
         this.ego = state.ego;
         this.state.init();
         this.textGraphics.updateInputLine();

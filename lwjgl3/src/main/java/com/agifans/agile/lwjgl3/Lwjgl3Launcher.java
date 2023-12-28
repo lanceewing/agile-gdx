@@ -14,7 +14,9 @@ public class Lwjgl3Launcher {
     private static Lwjgl3Application createApplication() {
     	DesktopAgileRunner desktopAgileRunner = new DesktopAgileRunner();
     	DesktopWavePlayer desktopWavePlayer = new DesktopWavePlayer();
-        return new Lwjgl3Application(new Agile(desktopAgileRunner, desktopWavePlayer), 
+    	DesktopSavedGameStore desktopSavedGameStore = new DesktopSavedGameStore();
+        return new Lwjgl3Application(
+                new Agile(desktopAgileRunner, desktopWavePlayer, desktopSavedGameStore), 
         		getDefaultConfiguration());
     }
 

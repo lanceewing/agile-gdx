@@ -1,13 +1,6 @@
 package com.agifans.agile;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Map.Entry;
 
 import com.agifans.agile.AnimatedObject.CycleType;
@@ -41,7 +34,7 @@ public class SavedGames {
     private String noGamesMsg = "There are no games to\nrestore in\n\n{0}\n\nPress ENTER to continue.";
 
     // Data type for storing data about a single saved game file.
-    class SavedGame {
+    public static class SavedGame {
         public int num;
         public boolean exists;
         public String fileName;
@@ -73,18 +66,28 @@ public class SavedGames {
     private short[] pixels;
     
     /**
+     * The interface through which the SavedGame class reads and writes saved game
+     * files. The implementation is platform specific, e.g. on Windows and the Mac,
+     * they will be stored under the user home directory.
+     */
+    private SavedGameStore savedGameStore;
+    
+    /**
      * Constructor for SavedGames.
      * 
      * @param state
      * @param userInput
      * @param textGraphics
      * @param pixels
+     * @param savedGameStore 
      */
-    public SavedGames(GameState state, UserInput userInput, TextGraphics textGraphics, short[] pixels) {
+    public SavedGames(GameState state, UserInput userInput, TextGraphics textGraphics, 
+            short[] pixels, SavedGameStore savedGameStore) {
         this.state = state;
         this.userInput = userInput;
         this.textGraphics = textGraphics;
         this.pixels = pixels;
+        this.savedGameStore = savedGameStore;
     }
 
     /**
@@ -101,18 +104,14 @@ public class SavedGames {
         long mostRecentTime = 0;
         boolean simpleSave = (state.simpleName.length() > 0);
 
-        try {
-            // Create saved game directory for this game if it doesn't yet exist.
-            Files.createDirectories(Paths.get(getSavePath()));
-        } catch (IOException ioe) {
-            // TODO: Handle this exception.
-        }
-
+        // Create saved game folder for this game if it doesn't yet exist.
+        savedGameStore.createFolderForGame(state.gameId);
+        
         // Look for the game files and get their data and meta data.
         if (function == 's') {
             // We're saving a game.
             for (gameNum = 0; gameNum < NUM_GAMES; gameNum++) {
-                game[gameNum] = getGameByNumber(gameNum + 1);
+                game[gameNum] = savedGameStore.getSavedGameByNumber(state.gameId, gameNum + 1);
 
                 if (game[gameNum].exists && (game[gameNum].fileTime > mostRecentTime)) {
                     mostRecentTime = game[gameNum].fileTime;
@@ -125,7 +124,7 @@ public class SavedGames {
         else {
             // We're restoring a game.
             for (gameNum = numGames = 0; gameNum < NUM_GAMES; gameNum++) {
-                game[numGames] = getGameByNumber(gameNum + 1);
+                game[numGames] = savedGameStore.getSavedGameByNumber(state.gameId, gameNum + 1);
                 
                 if (game[numGames].exists) {
                     if (game[numGames].fileTime > mostRecentTime) {
@@ -141,7 +140,8 @@ public class SavedGames {
             if (numGames == 0) {
                 if (!simpleSave) {
                     // For normal save, if there are no games to display, tell the user so.
-                    textGraphics.windowPrint(StringUtils.format(noGamesMsg, getSavePath().replace("\\", "\\\\")));
+                    textGraphics.windowPrint(StringUtils.format(noGamesMsg, 
+                            savedGameStore.getFolderNameForGame(state.gameId).replace("\\", "\\\\")));
                 }
 
                 // If there are no games to restore, exit at this point.
@@ -235,70 +235,6 @@ public class SavedGames {
     }
 
     /**
-     * 
-     * @param num 
-     * 
-     * @return
-     */ 
-    private SavedGame getGameByNumber(int num) {
-        SavedGame theGame = new SavedGame();
-        theGame.num = num;
-
-        // Build full path to the saved game of this number for this game ID.
-        theGame.fileName = StringUtils.format("{0}\\{1}SG.{2}", getSavePath(), state.gameId, num);
-
-        File savedGameFile = new File(theGame.fileName);
-        theGame.savedGameData = new byte[(int)savedGameFile.length()];
-
-        try (FileInputStream fis = new FileInputStream(savedGameFile)) {
-            int bytesRead = fis.read(theGame.savedGameData);
-            if (bytesRead != savedGameFile.length()) {
-                theGame.description = "";
-                theGame.exists = false;
-                return theGame;
-            }
-        }
-        catch (FileNotFoundException fnfe) {
-            // There is no saved game file of this name, so return false.
-            theGame.description = "";
-            theGame.exists = false;
-            return theGame;
-        }
-        catch (Exception e) {
-            // Something unexpected happened. Bad file I guess. Return false.
-            theGame.description = "";
-            theGame.exists = false;
-            return theGame;
-        }
-
-        // Get last modified time as an epoch time, i.e. seconds since start of
-        // 1970 (which I guess must have been when the big bang was).
-        theGame.fileTime = ((new File(theGame.fileName)).lastModified() / 1000);
-
-        // 0 - 30(31 bytes) SAVED GAME DESCRIPTION.
-        int textEnd = 0;
-        while (theGame.savedGameData[textEnd] != 0) textEnd++;
-        String savedGameDescription = new String(theGame.savedGameData, 0, textEnd, StandardCharsets.ISO_8859_1);
-
-        // 33 - 39(7 bytes) Game ID("SQ2", "KQ3", "LLLLL", etc.), NUL padded.
-        textEnd = 33;
-        while ((theGame.savedGameData[textEnd] != 0) && ((textEnd - 33) < 7)) textEnd++;
-        String gameId = new String(theGame.savedGameData, 33, textEnd - 33, StandardCharsets.ISO_8859_1);
-
-        // If the saved Game ID  doesn't match the current, don't use  this game.
-        if (!gameId.equals(state.gameId)) {
-            theGame.description = "";
-            theGame.exists = false;
-            return theGame;
-        }
-
-        // If we get this far, there is a valid saved game with this number for this game.
-        theGame.description = savedGameDescription;
-        theGame.exists = true;
-        return theGame;
-    }
-
-    /**
      * Displays the pointer character at the specified screen position.
      * 
      * @param col 
@@ -350,22 +286,6 @@ public class SavedGames {
         textGraphics.closeWindow();
 
         return line;
-    }
-
-    /**
-     * Gets the full path of the folder to use for reading and writing saved games.
-     * 
-     * @return The full path of the folder to use for reading and writing saved games.
-     */
-    private String getSavePath() {
-        // TODO: Will need an alternative approach when GWT is supported.
-        StringBuilder savedGamesPath = new StringBuilder();
-        savedGamesPath.append(System.getProperty("user.home"));
-        savedGamesPath.append(System.getProperty("file.separator"));
-        savedGamesPath.append("Saved Games");
-        savedGamesPath.append(System.getProperty("file.separator"));
-        savedGamesPath.append(state.gameId);
-        return savedGamesPath.toString();
     }
 
     /**
@@ -799,12 +719,7 @@ public class SavedGames {
         savedGameData[pos++] = 0;
 
         // Write out the saved game data to the file.
-        try {
-            try (FileOutputStream outputStream = new FileOutputStream(savedGame.fileName)) {
-                outputStream.write(savedGameData, 0, pos);
-            }
-        }
-        catch (Exception e) {
+        if (!savedGameStore.saveGame(savedGame, savedGameData, pos)) {
             this.textGraphics.print("Error in saving game.\nPress ENTER to continue.");
         }
     }
