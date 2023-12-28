@@ -37,6 +37,7 @@ public class EgaPalette {
     /**
      * Holds a mapping from RGB8888 value to libgdx RGB565 value.
      */
+    // TODO: Remove conversion map and change colours array to use RGR565 directly.
     public final static Map<Integer, Short> RGB888_TO_RGB565_MAP = new HashMap<>();
     static {
         RGB888_TO_RGB565_MAP.put(black & 0xFFFFFF, toRGB565(black));

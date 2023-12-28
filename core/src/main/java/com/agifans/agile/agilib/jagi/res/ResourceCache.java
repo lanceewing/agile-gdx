@@ -84,9 +84,6 @@ public class ResourceCache {
     }
 
     public ViewProvider getViewProvider() {
-        if (viewProvider == null) {
-            viewProvider = new com.agifans.agile.agilib.jagi.view.StandardViewProvider();
-        }
         return viewProvider;
     }
 

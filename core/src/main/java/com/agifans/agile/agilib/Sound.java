@@ -10,8 +10,6 @@ public class Sound extends Resource {
      */
     public List<List<Note>> notes;
 
-    byte[] rawData = null;
-
     /**
      * Constructor for Sound.
      * 
@@ -35,7 +33,6 @@ public class Sound extends Resource {
 
             for (int pos = start; pos < end; pos += 5) {
                 Note note = new Note(n);
-                // TODO: Decide if byte array is appropriate in Java version.
                 byte[] noteData = new byte[5];
                 noteData[0] = (byte)(pos + 0 < rawData.length ? rawData[pos + 0] : 0);
                 noteData[1] = (byte)(pos + 1 < rawData.length ? rawData[pos + 1] : 0);

@@ -1474,12 +1474,9 @@ public class AnimatedObject implements Comparable<AnimatedObject> {
 
                         // If the colourIndex is not the transparent index, then we'll draw the pixel.
                         if (cellPixelRGB != transparentPixelRGB) {
-                            // Get the RGB565 value from the AGI Color Palette.
-                            short colorRGB565 = EgaPalette.RGB888_TO_RGB565_MAP.get(cellPixelRGB);
-
                             // Draw two pixels (due to AGI picture pixels being 2x1).
-                            state.visualPixels[screenPos] = colorRGB565;
-                            state.visualPixels[screenPos + 1] = colorRGB565;
+                            state.visualPixels[screenPos] = (short)cellPixelRGB;
+                            state.visualPixels[screenPos + 1] = (short)cellPixelRGB;
 
                             // Priority screen is only stored 160x168 though.
                             state.priorityPixels[priorityPos] = this.priority;

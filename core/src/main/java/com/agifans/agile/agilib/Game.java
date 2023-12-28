@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.agifans.agile.agilib.AgileLogicProvider.AgileLogicWrapper;
 import com.agifans.agile.agilib.AgileSoundProvider.AgileSoundWrapper;
+import com.agifans.agile.agilib.AgileViewProvider.AgileViewWrapper;
 import com.agifans.agile.agilib.jagi.res.ResourceCache;
 import com.agifans.agile.agilib.jagi.res.ResourceException;
 
@@ -42,15 +43,11 @@ public class Game {
         try {
             this.gameFilesMap = gameFilesMap;
             
-            // We use our own LogicProvider & SoundProvider implementations, so that we can 
-            // load LOGICs and SOUNDs directly in the form required by AGILE. The other 
-            // types are converted from the JAGI types, after being loaded. It didn't make
-            // sense to do that for the Logic and Sound types, as it is quite different.
-            
             // Use JAGI to fully load the AGI game's files.
             resourceCache = new ResourceCache(gameFilesMap);
-            resourceCache.setLogicProvider(new com.agifans.agile.agilib.AgileLogicProvider());
-            resourceCache.setSoundProvider(new com.agifans.agile.agilib.AgileSoundProvider());
+            resourceCache.setLogicProvider(new AgileLogicProvider());
+            resourceCache.setSoundProvider(new AgileSoundProvider());
+            resourceCache.setViewProvider(new AgileViewProvider());
             version = resourceCache.getVersion();
             v3GameSig = resourceCache.getV3GameSig();
             logics = loadLogics();
@@ -97,7 +94,7 @@ public class Game {
         View[] views = new View[256];
         for (short i=0; i<256; i++) {
             try {
-                View view = new View(resourceCache.getView(i));
+                View view = ((AgileViewWrapper)resourceCache.getView(i)).getAgileView();
                 view.index = i;
                 views[i] = view;
             } catch (Exception e) {
