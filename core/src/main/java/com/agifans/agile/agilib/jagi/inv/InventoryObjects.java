@@ -12,7 +12,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
@@ -82,8 +81,8 @@ public class InventoryObjects implements InventoryProvider {
      * the Hash key.
      * @throws IOException Caller must handle IOException from his stream.
      */
-    protected static Hashtable loadStringTable(InputStream stream, int offset) throws IOException {
-        Hashtable h = new Hashtable(64);
+    protected static HashMap<Integer, String> loadStringTable(InputStream stream, int offset) throws IOException {
+        HashMap<Integer, String> h = new HashMap<>(64);
         String o = "";
         int s = offset;
 
@@ -139,7 +138,7 @@ public class InventoryObjects implements InventoryProvider {
             offset += padSize;
         }
 
-        Hashtable hash = loadStringTable(byteArrayInputStream, offset);
+        HashMap<Integer, String> hash = loadStringTable(byteArrayInputStream, offset);
 
         for (int i = 0; i < nobject; i++) {
             objects[i].name = (String) hash.get(Integer.valueOf(offsets[i]));

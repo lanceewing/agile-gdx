@@ -47,7 +47,7 @@ public class StandardViewProvider implements ViewProvider {
             } catch (IndexOutOfBoundsException e) {
             }
 
-            description = new String(b, desc, i - desc, StandardCharsets.US_ASCII);
+            description = new String(b, desc, i - desc, StandardCharsets.ISO_8859_1);
         }
 
         j = 5;

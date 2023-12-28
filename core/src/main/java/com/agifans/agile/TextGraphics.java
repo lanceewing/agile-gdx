@@ -4,6 +4,8 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.agifans.agile.util.StringUtils.*;
+
 /**
  * Provides methods for drawing text on to the AGI screen.
  */
@@ -430,12 +432,11 @@ public class TextGraphics {
             scoreStatus.append(state.vars[Defines.SCORE]);
             scoreStatus.append(" of ");
             scoreStatus.append(state.vars[Defines.MAXSCORE]);
-            drawString(this.pixels, String.format("%-30s", scoreStatus.toString()), 0, state.statusLineRow * 8, 0, 15);
-
+            drawString(this.pixels, padRightSpaces(scoreStatus.toString(), 30), 0, state.statusLineRow * 8, 0, 15);
             StringBuilder soundStatus = new StringBuilder();
             soundStatus.append("Sound:");
             soundStatus.append(state.flags[Defines.SOUNDON] ? "on" : "off");
-            drawString(this.pixels, String.format("%-10s", soundStatus.toString()), 30 * 8, state.statusLineRow * 8, 0, 15);
+            drawString(this.pixels, padRightSpaces(soundStatus.toString(), 10), 30 * 8, state.statusLineRow * 8, 0, 15);
         }
     }
 
@@ -461,8 +462,7 @@ public class TextGraphics {
                     // Cursor character is optional. There isn't one at the start of the game.
                     inputLine.append(state.cursorCharacter);
                 }
-
-                drawString(this.pixels, String.format("%-" + Defines.MAXINPUT +"s", inputLine.toString()), 0, state.inputLineRow * 8);
+                drawString(this.pixels, padRightSpaces(inputLine.toString(), Defines.MAXINPUT), 0, state.inputLineRow * 8);
             }
             else if (clearWhenNotEnabled) {
                 // If not accepting input, clear the prompt and text input.
@@ -705,7 +705,7 @@ public class TextGraphics {
             }
 
             if (numLines > (WINBOT - WINTOP)) {
-                str = String.format("Message too verbose:\n\n\"%s...\"\n\nPress ESC to continue.", str.substring(0, 20));
+                str = format("Message too verbose:\n\n\"{0}...\"\n\nPress ESC to continue.", str.substring(0, 20));
             }
             else {
                 break;
@@ -765,8 +765,8 @@ public class TextGraphics {
             StringBuilder currentLine = new StringBuilder();
 
             // Pad the first line with however many spaces required to begin at starting column.
-            if (startColumn > 0) currentLine.append(String.format("%-" + startColumn + "s", ""));
-
+            if (startColumn > 0) currentLine.append(padRightSpaces("", startColumn));
+            
             for (int i = 0; i < processedMessage.length(); i++) {
                 int addLines = (i == (processedMessage.length() - 1)) ? 1 : 0;
 
@@ -890,7 +890,7 @@ public class TextGraphics {
                             numPos = numberFromString(str, i);
                             width = numPos[0];
                             i = numPos[1];
-                            output.append(String.format("%0" + width + "d", state.vars[num]));
+                            output.append(padLeftZeros(Integer.toString(state.vars[num]), width));
                         }
                         else {
                             output.append(state.vars[num]);

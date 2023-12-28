@@ -4,6 +4,7 @@ import com.agifans.agile.agilib.Picture;
 import com.agifans.agile.agilib.View;
 import com.agifans.agile.agilib.View.Cel;
 import com.agifans.agile.agilib.View.Loop;
+import com.agifans.agile.util.StringUtils;
 
 /**
  * The AnimatedObject class is one of the core classes in the AGI interpreter. An instance of
@@ -1586,7 +1587,7 @@ public class AnimatedObject implements Comparable<AnimatedObject> {
      * debug mode. 
      */
     public String getStatusStr() {
-        return String.format(
+        return StringUtils.format(
             "Object %d:\nx: %d  xsize: %d\ny: %d  ysize: %d\npri: %d\nstepsize: %d",
             objectNumber, x, xSize(), y, ySize(), priority, stepSize);
     }
