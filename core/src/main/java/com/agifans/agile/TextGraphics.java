@@ -1,8 +1,9 @@
 package com.agifans.agile;
 
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.agifans.agile.util.StringUtils;
 
 import static com.agifans.agile.util.StringUtils.*;
 
@@ -357,15 +358,11 @@ public class TextGraphics {
             }
         }
 
-        try {
-            byte[] textBytes = text.getBytes("Cp437");
-            
-            for (int charPos = 0; charPos < textBytes.length; charPos++) {
-                drawChar(pixels, textBytes[charPos], x + (charPos * 8), y, foregroundColour, backgroundColour, halfTone);
-            }
-        } catch (UnsupportedEncodingException e) {
-            // Shouldn't happen.
-            System.out.println("Unsupport encoding Cp437. AGI games need this to render text.");
+        // GWT backend doesn't support IBM437/CP437.
+        byte[] textBytes = StringUtils.getBytesFromString(text);
+
+        for (int charPos = 0; charPos < textBytes.length; charPos++) {
+            drawChar(pixels, textBytes[charPos], x + (charPos * 8), y, foregroundColour, backgroundColour, halfTone);
         }
     }
 
