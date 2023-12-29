@@ -1,7 +1,9 @@
 package com.agifans.agile.util;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.nio.charset.UnsupportedCharsetException;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Application.ApplicationType;
@@ -94,5 +96,23 @@ public class StringUtils {
         }
         
         return textBytes;
+    }
+    
+    public static String getStringFromBytes(byte[] textBytes, int offset, int length) {
+        String text = "";
+        
+        try {
+            // GWT backend doesn't support IBM437/CP437.
+            if (Gdx.app.getType() == ApplicationType.WebGL) {
+                text = new String(textBytes, offset, length, StandardCharsets.ISO_8859_1);
+            }
+            else {
+                text = new String(textBytes, offset, length, Charset.forName("Cp437"));
+            }
+        } catch (UnsupportedCharsetException e) {
+            text = new String(textBytes, offset, length, StandardCharsets.ISO_8859_1);
+        }
+        
+        return text;
     }
 }
