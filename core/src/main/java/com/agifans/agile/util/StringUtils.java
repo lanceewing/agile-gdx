@@ -1,5 +1,11 @@
 package com.agifans.agile.util;
 
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Application.ApplicationType;
+
 /**
  * GWT doesn't support String.format, so doing things like padding a String value 
  * needs to be done at a lower level.
@@ -69,5 +75,24 @@ public class StringUtils {
             }
         }
         return sb.toString();
+    }
+    
+    public static byte[] getBytesFromString(String text) {
+        byte[] textBytes = null;
+        
+        try {
+            // GWT backend doesn't support IBM437/CP437.
+            if (Gdx.app.getType() == ApplicationType.WebGL) {
+                textBytes = text.getBytes(StandardCharsets.ISO_8859_1);
+            }
+            else {
+                textBytes = text.getBytes("Cp437");
+            }
+        } catch (UnsupportedEncodingException e) {
+            // Shouldn't happen.
+            textBytes = text.getBytes(StandardCharsets.ISO_8859_1);
+        }
+        
+        return textBytes;
     }
 }
