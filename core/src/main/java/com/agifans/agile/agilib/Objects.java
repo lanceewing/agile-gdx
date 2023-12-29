@@ -1,7 +1,6 @@
 package com.agifans.agile.agilib;
 
 import java.io.ByteArrayOutputStream;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -9,6 +8,7 @@ import java.util.Map;
 
 import com.agifans.agile.agilib.jagi.inv.InventoryObject;
 import com.agifans.agile.agilib.jagi.inv.InventoryObjects;
+import com.agifans.agile.util.StringUtils;
 
 public class Objects extends Resource {
 
@@ -52,17 +52,14 @@ public class Objects extends Resource {
         Map<String, Integer> nameToOffsetMap = new HashMap<>();
         List<String> distinctNames = new ArrayList<>();
         int nextNameOffset = startOfNames;
-        for (int i=0; i < numOfObjects; i++)
-        {
+        for (int i=0; i < numOfObjects; i++) {
             Object o = this.objects.get(i);
             int nameOffset = nextNameOffset;
-            if (nameToOffsetMap.containsKey(o.name))
-            {
+            if (nameToOffsetMap.containsKey(o.name)) {
                 // Reuse existing name offset if the name matches one we've already seen.
                 nameOffset = nameToOffsetMap.get(o.name);
             }
-            else
-            {
+            else {
                 // Otherwise use a new name slot.
                 nameToOffsetMap.put(o.name, nameOffset);
                 distinctNames.add(o.name);
@@ -74,23 +71,14 @@ public class Objects extends Resource {
         }
 
         // Write out the distinct names.
-        for (String name : distinctNames)
-        {
-            for (byte b : name.getBytes(Charset.forName("Cp437")))
-            {
+        for (String name : distinctNames) {
+            for (byte b : StringUtils.getBytesFromString(name)) {
                 stream.write(b);
             }
             stream.write(0);
         }
 
         byte[] rawData = stream.toByteArray();
-
-        // Encrypt the raw data if required.
-        // TODO: Don't think this is required. SavedGames handles crypt.
-        //if (crypted)
-        //{
-        //    crypt(rawData, 0, rawData.length);
-        //}
 
         return rawData;
     }
