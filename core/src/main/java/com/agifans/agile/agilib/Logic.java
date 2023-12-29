@@ -2,11 +2,12 @@ package com.agifans.agile.agilib;
 
 import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.agifans.agile.util.StringUtils;
 
 public class Logic extends Resource {
 
@@ -233,7 +234,7 @@ public class Logic extends Resource {
                 while ((rawData[msgEnd++] & 0xFF) != 0) ;
 
                 // Convert the byte data between the message start and end in to an ASCII string.
-                msgText = new String(rawData, msgStart, msgEnd - msgStart - 1, Charset.forName("Cp437"));
+                msgText = StringUtils.getStringFromBytes(rawData, msgStart, msgEnd - msgStart - 1);
             }
 
             this.messages.add(msgText);
