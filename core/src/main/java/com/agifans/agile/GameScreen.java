@@ -1,5 +1,8 @@
 package com.agifans.agile;
 
+import java.nio.ByteBuffer;
+
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.BufferUtils;
@@ -34,8 +37,24 @@ public class GameScreen {
     }
     
     public boolean render() {
-        // TODO: After implementing web worker/separate background thread, need to response to message instead.
-        BufferUtils.copy(pixels, 0, screenPixmap.getPixels(), 320 * 200);
+        switch (Gdx.app.getType()) {
+            case Android:
+            case Desktop:
+                BufferUtils.copy(pixels, 0, screenPixmap.getPixels(), 320 * 200);
+                break;
+            case WebGL:
+                // The buffer is faked/emulated in the GWT/HTML backend, so we can't
+                // use the getPixels method. The setPixels method has been implemented
+                // to update the HTML5 canvas though, so we can use that instead.
+                // TODO: Is there a faster way to do this?
+                // NOTE: Must be a direct ByteBuffer.
+                ByteBuffer pixelsBuffer = ByteBuffer.allocateDirect(pixels.length * 2);
+                BufferUtils.copy(pixels, 0, pixelsBuffer, 320 * 200);
+                screenPixmap.setPixels(pixelsBuffer);
+                break;
+            default:
+                // No other platforms are supported.
+        }
         screens[updateScreen].draw(screenPixmap, 0, 0);
         updateScreen = (updateScreen + 1) % 3;
         drawScreen = (drawScreen + 1) % 3;
