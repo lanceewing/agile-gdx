@@ -1,5 +1,6 @@
 package com.agifans.agile;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
@@ -32,6 +33,8 @@ public class Agile extends ApplicationAdapter {
         batch = new SpriteBatch();
         screen = new GameScreen();
         startGame(selectGame());
+        
+        Gdx.app.setLogLevel(Application.LOG_DEBUG);
     }
 
     /**
