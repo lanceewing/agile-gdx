@@ -30,6 +30,8 @@ public class GameScreen implements Screen {
 
     private static final int AGI_SCREEN_WIDTH = 320;
     private static final int AGI_SCREEN_HEIGHT = 200;
+    private static final int ADJUSTED_WIDTH = ((AGI_SCREEN_HEIGHT / 3) * 4);
+    private static final int ADJUSTED_HEIGHT = AGI_SCREEN_HEIGHT;
     
     /**
      * SpriteBatch shared by all rendered components.
@@ -94,7 +96,7 @@ public class GameScreen implements Screen {
     
         camera = new OrthographicCamera();
         // TODO: Test if this is appropriate. Compare with AGILE C# and JOric.
-        viewport = new ExtendViewport(((AGI_SCREEN_HEIGHT / 3) * 4), AGI_SCREEN_HEIGHT, camera);
+        viewport = new ExtendViewport(ADJUSTED_WIDTH, ADJUSTED_HEIGHT, camera);
         
         keyboardIcon = new Texture("png/keyboard_icon.png");
         joystickIcon = new Texture("png/joystick_icon.png");
@@ -231,7 +233,6 @@ public class GameScreen implements Screen {
 
         long renderStartTime = TimeUtils.nanoTime();
         long fps = Gdx.graphics.getFramesPerSecond();
-        long maxFrameDuration = (long) (1000000000L * (fps == 0 ? 0.016667f : delta));
         boolean draw = false;
 
         // TODO: Paused place holder.
@@ -279,8 +280,6 @@ public class GameScreen implements Screen {
         agileRunner.tick();
     }
 
-    private boolean showFPS = true;
-    
     private void draw(float delta) {
         // Get the KeyboardType currently being used by the MachineScreenProcessor.
         //KeyboardType keyboardType = machineInputProcessor.getKeyboardType();
@@ -295,10 +294,11 @@ public class GameScreen implements Screen {
         batch.begin();
         Color c = batch.getColor();
         batch.setColor(c.r, c.g, c.b, 1f);
-        // TODO: Can properly use a more succinct draw method for AGILE.
-        batch.draw(getDrawScreen(), 0, 0, AGI_SCREEN_WIDTH, AGI_SCREEN_HEIGHT,
-                0, 0, AGI_SCREEN_WIDTH,
-                AGI_SCREEN_HEIGHT, false, false);
+        batch.draw(
+                getDrawScreen(), 
+                0, 0, ADJUSTED_WIDTH, ADJUSTED_HEIGHT,
+                0, 0, AGI_SCREEN_WIDTH, AGI_SCREEN_HEIGHT, 
+                false, false);
         batch.end();
 
         // Render the UI elements, e.g. the keyboard and joystick icons.
@@ -371,8 +371,8 @@ public class GameScreen implements Screen {
         
         // Align AGI screen's top edge to top of the viewport.
         Camera camera = viewport.getCamera();
-        camera.position.x = AGI_SCREEN_WIDTH /2;
-        camera.position.y = AGI_SCREEN_HEIGHT - viewport.getWorldHeight() / 2;
+        camera.position.x = ADJUSTED_WIDTH / 2;
+        camera.position.y = ADJUSTED_HEIGHT - viewport.getWorldHeight() / 2;
         camera.update();
         
         // TODO: Add in when input processor is introduced.
