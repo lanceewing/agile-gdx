@@ -38,7 +38,7 @@ public class GwtAgileRunner extends AgileRunner {
     public Map<String, byte[]> fetchGameFiles(String gameUri) {
         Map<String, byte[]> gameFileMap = new HashMap<>();
         
-        Gdx.app.error("fetchGameFiles", "Attempting to list game folder.");
+        Gdx.app.debug("fetchGameFiles", "Attempting to list game folder.");
         
         // TODO: Map gameUri to an internal path. Expected to be a directory.
         FileHandle gameDirectory = Gdx.files.internal("games/kq1/");
@@ -51,7 +51,7 @@ public class GwtAgileRunner extends AgileRunner {
             });
                 
             for (FileHandle gameFile : gameFiles) {
-                Gdx.app.error("fetchGameFiles", "Reading game file " + gameFile.name());
+                Gdx.app.debug("fetchGameFiles", "Reading game file " + gameFile.name());
                 gameFileMap.put(gameFile.name().toLowerCase(), gameFile.readBytes());
             }
         }
