@@ -95,7 +95,6 @@ public class GameScreen implements Screen {
         screens[2].setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
     
         camera = new OrthographicCamera();
-        // TODO: Test if this is appropriate. Compare with AGILE C# and JOric.
         viewport = new ExtendViewport(ADJUSTED_WIDTH, ADJUSTED_HEIGHT, camera);
         
         keyboardIcon = new Texture("png/keyboard_icon.png");
@@ -220,17 +219,6 @@ public class GameScreen implements Screen {
     
     @Override
     public void render(float delta) {
-        // Copy pixels form interpreter into Pixmap.
-        // copyPixels();
-
-        // OLD LOGIC PRIOR TO JORIC CODE BEING ADDED
-        // // Render.
-        // Gdx.gl.glClearColor(0.15f, 0.15f, 0.2f, 1f);
-        // Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        // batch.begin();
-        // batch.draw(getDrawScreen(), 0, 0, 960, 600);
-        // batch.end();
-
         long renderStartTime = TimeUtils.nanoTime();
         long fps = Gdx.graphics.getFramesPerSecond();
         boolean draw = false;
