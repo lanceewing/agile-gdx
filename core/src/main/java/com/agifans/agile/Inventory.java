@@ -29,7 +29,7 @@ public class Inventory {
     /**
      * The pixels array for the AGI screen, in which the text will be drawn.
      */
-    private short[] pixels;
+    private int[] pixels;
 
     /**
      * Constructor for Inventory.
@@ -39,7 +39,7 @@ public class Inventory {
      * @param textGraphics Provides methods for drawing text on to the AGI screen.
      * @param pixels The pixels array for the AGI screen, in which the text will be drawn.
      */
-    public Inventory(GameState state, UserInput userInput, TextGraphics textGraphics, short[] pixels) {
+    public Inventory(GameState state, UserInput userInput, TextGraphics textGraphics, int[] pixels) {
         this.state = state;
         this.userInput = userInput;
         this.textGraphics = textGraphics;

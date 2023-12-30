@@ -23,7 +23,7 @@ public class Interpreter {
      * The pixels array for the AGI screen on which the background Picture and 
      * AnimatedObjects will be drawn to.
      */
-    private short[] pixels;
+    private int[] pixels;
 
     /**
      * Provides methods for drawing text on to the AGI screen.
@@ -74,7 +74,7 @@ public class Interpreter {
      * @param pixels
      */
     public Interpreter(Game game, UserInput userInput, WavePlayer wavePlayer, 
-            SavedGameStore savedGameStore, short[] pixels) {
+            SavedGameStore savedGameStore, int[] pixels) {
         this.state = new GameState(game);
         this.userInput = userInput;
         this.pixels = pixels;

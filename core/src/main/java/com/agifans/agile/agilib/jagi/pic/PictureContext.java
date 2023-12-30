@@ -17,6 +17,7 @@ import com.agifans.agile.EgaPalette;
  * @version 0.00.00.01
  */
 public class PictureContext {
+    
     /**
      * Picture Dimensions
      */
@@ -36,12 +37,12 @@ public class PictureContext {
     /**
      * Picture Picture Color.
      */
-    public int picColor = -1;
+    public Integer picColor = null;
 
     /**
      * Picture Priority Color.
      */
-    public byte priColor = -1;
+    public Byte priColor = null;
 
     /**
      * Pen Style
@@ -77,11 +78,11 @@ public class PictureContext {
         return v;
     }
 
-    public int translatePixel(byte b) {
-        if (b == -1) {
-            return -1;
+    public Integer translatePixel(Byte b) {
+        if (b == null) {
+            return null;
         } else {
-            return (EgaPalette.colours[b] & 0xFFFF);
+            return (EgaPalette.colours[b]);
         }
     }
 
@@ -135,11 +136,11 @@ public class PictureContext {
 
         i = (y * width) + x;
 
-        if (picColor >= 0) {
+        if (picColor != null) {
             picData[i] = picColor;
         }
 
-        if (priColor >= 0) {
+        if (priColor != null) {
             priData[i] = priColor;
         }
     }
@@ -245,20 +246,19 @@ public class PictureContext {
     }
 
     public boolean isFillCorrect(int x, int y) {
-        // TODO: This doesn't work anymore, since RGB565 values can be negative.
-        if ((picColor < 0) && (priColor < 0)) {
+        if ((picColor == null) && (priColor == null)) {
             return false;
         }
 
-        if ((priColor < 0) && (picColor >= 0) && (picColor != whitePixel)) {
+        if ((priColor == null) && (picColor != null) && (picColor != whitePixel)) {
             return (getPixel(x, y) == whitePixel);
         }
 
-        if ((priColor >= 0) && (picColor < 0) && (priColor != 4)) {
+        if ((priColor != null) && (picColor == null) && (priColor != 4)) {
             return (getPriorityPixel(x, y) == 4);
         }
 
-        return ((picColor >= 0) && (getPixel(x, y) == whitePixel) && (picColor != whitePixel));
+        return ((picColor != null) && (getPixel(x, y) == whitePixel) && (picColor != whitePixel));
     }
 
     public int[] getPictureData() {

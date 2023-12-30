@@ -28,7 +28,7 @@ public class Menu {
     /**
      * The pixels array for the AGI screen, in which the text will be drawn.
      */
-    private short[] pixels;
+    private int[] pixels;
 
     /**
      * Holds the data and state for the user input, i.e. keyboard and mouse input.
@@ -87,7 +87,7 @@ public class Menu {
      * @param pixels 
      * @param userInput 
      */
-    public Menu(GameState state, TextGraphics textGraphics, short[] pixels, UserInput userInput) {
+    public Menu(GameState state, TextGraphics textGraphics, int[] pixels, UserInput userInput) {
         this.state = state;
         this.textGraphics = textGraphics;
         this.headers = new ArrayList<MenuHeader>();

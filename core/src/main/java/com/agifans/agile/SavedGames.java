@@ -63,7 +63,7 @@ public class SavedGames {
      * The pixels array for the AGI screen on which the background Picture and 
      * AnimatedObjects will be drawn to.
      */
-    private short[] pixels;
+    private int[] pixels;
     
     /**
      * The interface through which the SavedGame class reads and writes saved game
@@ -82,7 +82,7 @@ public class SavedGames {
      * @param savedGameStore 
      */
     public SavedGames(GameState state, UserInput userInput, TextGraphics textGraphics, 
-            short[] pixels, SavedGameStore savedGameStore) {
+            int[] pixels, SavedGameStore savedGameStore) {
         this.state = state;
         this.userInput = userInput;
         this.textGraphics = textGraphics;

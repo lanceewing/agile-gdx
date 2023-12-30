@@ -30,13 +30,13 @@ public abstract class AgileRunner {
     private WavePlayer wavePlayer;
     private SavedGameStore savedGameStore;
     private UserInput userInput;
-    private short[] pixels;
+    private int[] pixels;
     
     private long lastTime;
     private long deltaTime;
     
     public void init(String gameUri, UserInput userInput, WavePlayer wavePlayer, 
-            SavedGameStore savedGameStore, short[] pixels) {
+            SavedGameStore savedGameStore, int[] pixels) {
         this.gameUri = gameUri;
         this.userInput = userInput;
         this.wavePlayer = wavePlayer;

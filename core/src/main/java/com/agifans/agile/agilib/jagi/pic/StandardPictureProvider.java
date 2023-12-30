@@ -55,12 +55,12 @@ public class StandardPictureProvider implements PictureProvider {
                         break;
 
                     case CMD_DISABLEPICDRAW:
-                        entries.add(new PictureEntryChangePicColor((byte) -1));
+                        entries.add(new PictureEntryChangePicColor(null));
                         command = in.read();
                         break;
 
                     case CMD_DISABLEPRIDRAW:
-                        entries.add(new PictureEntryChangePriColor((byte) -1));
+                        entries.add(new PictureEntryChangePriColor(null));
                         command = in.read();
                         break;
 

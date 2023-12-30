@@ -32,7 +32,7 @@ public class Commands {
      * The pixels array for the AGI screen on which the background Picture and 
      * AnimatedObjects will be drawn to.
      */
-    private short[] pixels;
+    private int[] pixels;
 
     /**
      * Provides methods for drawing text on to the AGI screen.
@@ -76,7 +76,7 @@ public class Commands {
      * @param menu 
      * @param savedGameStore 
      */
-    public Commands(short[] pixels, GameState state, UserInput userInput, 
+    public Commands(int[] pixels, GameState state, UserInput userInput, 
             TextGraphics textGraphics, Parser parser, SoundPlayer soundPlayer, 
             Menu menu, SavedGameStore savedGameStore) {
         this.pixels = pixels;
@@ -124,8 +124,7 @@ public class Commands {
 
         // Copy the pixels to our VisualPixels array, doubling each one as we go.
         for (int i = 0, ii = 0; i < (160 * 168); i++, ii += 2) {
-            // NOTE: Visual pixel array in JAGI is in RGB565 format
-            short rgb565Color = (short)visualPixels[i];
+            int rgb565Color = visualPixels[i];
             state.visualPixels[ii + 0] = rgb565Color;
             state.visualPixels[ii + 1] = rgb565Color;
         }
@@ -207,16 +206,21 @@ public class Commands {
      * Shows the current priority pixels and control pixels to screen.
      */
     public void showPriorityScreen() {
-        short[] backPixels = new short[pixels.length];
+        int[] backPixels = new int[pixels.length];
         
         System.arraycopy(pixels, 0, backPixels, 0, pixels.length);
         
         for (int i = 0, ii = (8 * state.pictureRow) * 320; i < (160 * 168); i++, ii += 2) {
+            try {
             int priColorIndex = state.priorityPixels[i];
             int ctrlColorIndex = state.controlPixels[i];
-            short rgb565Color = EgaPalette.colours[ctrlColorIndex <= 3 ? ctrlColorIndex : priColorIndex];
+            int rgb565Color = EgaPalette.colours[ctrlColorIndex <= 3 ? ctrlColorIndex : priColorIndex];
             pixels[ii + 0] = rgb565Color;
             pixels[ii + 1] = rgb565Color;
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
         userInput.waitForKey(true);
@@ -268,8 +272,8 @@ public class Commands {
      */
     private void shakeScreen(int repeatCount) {
         int shakeCount = (repeatCount * 8);
-        short backgroundRGB565 = EgaPalette.colours[0];
-        short[] backPixels = new short[pixels.length];
+        int backgroundRGB565 = EgaPalette.colours[0];
+        int[] backPixels = new int[pixels.length];
 
         System.arraycopy(pixels, 0, backPixels, 0, pixels.length);
         

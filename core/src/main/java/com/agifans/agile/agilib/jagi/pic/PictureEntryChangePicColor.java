@@ -9,9 +9,9 @@
 package com.agifans.agile.agilib.jagi.pic;
 
 public class PictureEntryChangePicColor extends PictureEntry {
-    protected byte picColor;
+    protected Byte picColor;
 
-    public PictureEntryChangePicColor(byte picColor) {
+    public PictureEntryChangePicColor(Byte picColor) {
         this.picColor = picColor;
     }
 

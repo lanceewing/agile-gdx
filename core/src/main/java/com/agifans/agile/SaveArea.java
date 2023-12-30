@@ -13,7 +13,7 @@ public class SaveArea {
     
     public int height;
     
-    public short[][] visBackPixels;
+    public int[][] visBackPixels;
     
     public int[][] priBackPixels;
     

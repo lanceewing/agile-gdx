@@ -38,7 +38,7 @@ public class TextGraphics {
         public int borderColour;
 
         // Items set by OpenWindow.
-        public short[] backPixels;
+        public int[] backPixels;
 
         // Items always set by WindowNoWait.
         public int top;
@@ -97,7 +97,7 @@ public class TextGraphics {
     /**
      * The pixels array for the AGI screen, in which the text will be drawn.
      */
-    private short[] pixels;
+    private int[] pixels;
 
     /**
      * Constructor for TextGraphics.
@@ -106,7 +106,7 @@ public class TextGraphics {
      * @param state The GameState class holds all of the data and state for the Game currently running.
      * @param userInput Holds the data and state for the user input, i.e. keyboard and mouse input.
      */
-    public TextGraphics(short[] pixels, GameState state, UserInput userInput) {
+    public TextGraphics(int[] pixels, GameState state, UserInput userInput) {
         this.state = state;
         this.userInput = userInput;
         this.pixels = pixels;
@@ -174,7 +174,7 @@ public class TextGraphics {
     public void clearLines(int top, int bottom, int backgroundColour) {
         int startPos = top * 8 * 320;
         int endPos = ((bottom + 1) * 8 * 320) - 1;
-        short colour = EgaPalette.colours[backgroundColour & 0x0F];
+        int colour = EgaPalette.colours[backgroundColour & 0x0F];
 
         for (int i=startPos; i <= endPos; i++) {
             this.pixels[i] = colour;
@@ -191,7 +191,7 @@ public class TextGraphics {
      * @param backgroundColour
      */
     public void clearRect(int top, int left, int bottom, int right, int backgroundColour) {
-        short backgroundRGB565 = EgaPalette.colours[backgroundColour & 0x0F];
+        int backgroundRGB565 = EgaPalette.colours[backgroundColour & 0x0F];
         int height = ((bottom - top) + 1) * 8;
         int width = ((right - left) + 1) * 8;
         int startY = (top * 8);
@@ -252,7 +252,7 @@ public class TextGraphics {
      * @param foregroundColour The foreground colour of the character.
      * @param backgroundColour The background colour of the character.
      */
-    public void drawChar(short[] pixels, byte charNum, int x, int y, int foregroundColour, int backgroundColour) {
+    public void drawChar(int[] pixels, byte charNum, int x, int y, int foregroundColour, int backgroundColour) {
         drawChar(pixels, charNum, x, y, foregroundColour, backgroundColour, false);
     }
     
@@ -270,7 +270,7 @@ public class TextGraphics {
      * @param backgroundColour The background colour of the character.
      * @param halfTone If true then character are only half drawn.
      */
-    public void drawChar(short[] pixels, byte charNum, int x, int y, int foregroundColour, int backgroundColour, boolean halfTone) {
+    public void drawChar(int[] pixels, byte charNum, int x, int y, int foregroundColour, int backgroundColour, boolean halfTone) {
         for (int byteNum = 0; byteNum < 8; byteNum++) {
             int fontByte = (IBM_BIOS_FONT[(charNum << 3) + byteNum] & 0xFF);
             boolean halfToneState = ((byteNum % 2) == 0);
@@ -298,7 +298,7 @@ public class TextGraphics {
      * @param x The X position of the text.
      * @param y The Y position of the text.
      */
-    public void drawString(short[] pixels, String text, int x, int y) {
+    public void drawString(int[] pixels, String text, int x, int y) {
         drawString(pixels, text, x, y, UNASSIGNED, UNASSIGNED, false);
     }
 
@@ -312,7 +312,7 @@ public class TextGraphics {
      * @param foregroundColour Optional foreground colour. Defaults to currently active foreground colour if not specified.
      * @param backgroundColour Optional background colour. Defaults to currently active background colour if not specified.
      */
-    public void drawString(short[]pixels, String text, int x, int y, int foregroundColour, int backgroundColour) {
+    public void drawString(int[]pixels, String text, int x, int y, int foregroundColour, int backgroundColour) {
         drawString(pixels, text, x, y, foregroundColour, backgroundColour, false);
     }
     
@@ -327,7 +327,7 @@ public class TextGraphics {
      * @param backgroundColour Optional background colour. Defaults to currently active background colour if not specified.
      * @param halfTone If true then character are only half drawn.
      */
-    public void drawString(short[]pixels, String text, int x, int y, int foregroundColour, int backgroundColour, boolean halfTone) {
+    public void drawString(int[]pixels, String text, int x, int y, int foregroundColour, int backgroundColour, boolean halfTone) {
         // This method is used as both a general text drawing method, for things like the menu 
         // and inventory, and also for the print and display commands. The print and display
         // commands will operate using the currently set text attribute, foreground and background
@@ -983,14 +983,14 @@ public class TextGraphics {
         textWindow = (textWindow == null ? openWindow : textWindow);
 
         if (textWindow != null) {
-            short backgroundRGB565 = EgaPalette.colours[textWindow.backgroundColour];
-            short borderRGB565 = EgaPalette.colours[textWindow.borderColour];
+            int backgroundRGB565 = EgaPalette.colours[textWindow.backgroundColour];
+            int borderRGB565 = EgaPalette.colours[textWindow.borderColour];
             int startScreenPos = (textWindow.y() * 320) + textWindow.x();
             int screenYAdd = (320 - textWindow.width());
 
             // The first time that DrawWindow is invoke for a TextWindow, we store the back pixels.
             boolean storeBackPixels = (textWindow.backPixels == null);
-            if (storeBackPixels) textWindow.backPixels = new short[textWindow.width() * textWindow.height()];
+            if (storeBackPixels) textWindow.backPixels = new int[textWindow.width() * textWindow.height()];
 
             // Draw a box in the background colour and store the pixels that were behind it.
             int backPixelsPos = 0;
