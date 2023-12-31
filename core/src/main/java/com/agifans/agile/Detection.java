@@ -31,7 +31,6 @@ public class Detection {
             
             // Calculate MD5 hash of the game.
             byte[] data = game.gameFilesMap.get(dirPrefix + "dir");
-            // TODO: GWT only supports SHA256, not MD5
             byte[] hash = MessageDigest.getInstance("MD5").digest(data);
             String md5HashString = new BigInteger(1, hash).toString(16);
 
