@@ -26,9 +26,9 @@ public class Menu {
     private GameState state;
 
     /**
-     * The pixels array for the AGI screen, in which the text will be drawn.
+     * The pixels data for the AGI screen, in which the text will be drawn.
      */
-    private short[] pixels;
+    private PixelData pixelData;
 
     /**
      * Holds the data and state for the user input, i.e. keyboard and mouse input.
@@ -80,18 +80,18 @@ public class Menu {
     }
 
     /**
-     * static finalructor for Menu.
+     * Constructor for Menu.
      *
      * @param state 
      * @param textGraphics 
-     * @param pixels 
+     * @param pixelData 
      * @param userInput 
      */
-    public Menu(GameState state, TextGraphics textGraphics, short[] pixels, UserInput userInput) {
+    public Menu(GameState state, TextGraphics textGraphics, PixelData pixelData, UserInput userInput) {
         this.state = state;
         this.textGraphics = textGraphics;
         this.headers = new ArrayList<MenuHeader>();
-        this.pixels = pixels;
+        this.pixelData = pixelData;
         this.userInput = userInput;
     }
 
@@ -397,7 +397,7 @@ public class Menu {
      * @param item The MenuItem to render in the selected state.
      */
     private void select(MenuItem item) {
-        textGraphics.drawString(pixels, item.name, item.col * 8, item.row * 8, 15, 0, !item.enabled);
+        textGraphics.drawString(pixelData, item.name, item.col * 8, item.row * 8, 15, 0, !item.enabled);
     }
 
     /**
@@ -406,6 +406,6 @@ public class Menu {
      * @param item The MenuItem to render in the deselected state.
      */
     private void deselect(MenuItem item) {
-        textGraphics.drawString(pixels, item.name, item.col * 8, item.row * 8, 0, 15, !item.enabled);
+        textGraphics.drawString(pixelData, item.name, item.col * 8, item.row * 8, 0, 15, !item.enabled);
     }
 }

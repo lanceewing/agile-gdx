@@ -1135,7 +1135,7 @@ public class AnimatedObject implements Comparable<AnimatedObject> {
      * @param controlBoxColour 
      * @param pixels 
      */
-    public void addToPicture(int viewNum, int loopNum, int celNum, int x, int y, int priority, int controlBoxColour, short[] pixels) {
+    public void addToPicture(int viewNum, int loopNum, int celNum, int x, int y, int priority, int controlBoxColour, PixelData pixelData) {
         // Add the add.to.pic details to the script event buffer.
         state.scriptBuffer.addScript(ScriptBuffer.ScriptBufferEventType.ADD_TO_PIC, 0, new byte[] {
             (byte)viewNum, (byte)loopNum, (byte)celNum, (byte)x, (byte)y, (byte)(priority | (controlBoxColour << 4))
@@ -1189,7 +1189,7 @@ public class AnimatedObject implements Comparable<AnimatedObject> {
         state.restoreBackgrounds();
         draw();
         state.drawObjects();
-        show(pixels);
+        show(pixelData);
     }
 
     /**
@@ -1446,7 +1446,7 @@ public class AnimatedObject implements Comparable<AnimatedObject> {
         int cellYAdd = 0;
 
         // Allocate new background pixel array for the current cell size.
-        this.saveArea.visBackPixels = new short[cellWidth][cellHeight];
+        this.saveArea.visBackPixels = new int[cellWidth][cellHeight];
         this.saveArea.priBackPixels = new int[cellWidth][cellHeight];
         this.saveArea.x = this.x;
         this.saveArea.y = this.y;
@@ -1475,8 +1475,8 @@ public class AnimatedObject implements Comparable<AnimatedObject> {
                         // If the colourIndex is not the transparent index, then we'll draw the pixel.
                         if (cellPixelRGB != transparentPixelRGB) {
                             // Draw two pixels (due to AGI picture pixels being 2x1).
-                            state.visualPixels[screenPos] = (short)cellPixelRGB;
-                            state.visualPixels[screenPos + 1] = (short)cellPixelRGB;
+                            state.visualPixels[screenPos] = cellPixelRGB;
+                            state.visualPixels[screenPos + 1] = cellPixelRGB;
 
                             // Priority screen is only stored 160x168 though.
                             state.priorityPixels[priorityPos] = this.priority;
@@ -1518,7 +1518,7 @@ public class AnimatedObject implements Comparable<AnimatedObject> {
      * 
      * @param pixels The screen pixels to blit the AnimatedObject to.
      */
-    public void show(short[] pixels) {
+    public void show(PixelData pixelData) {
         // We will only render an AnimatedObject to the screen if the picture is currently visible.
         if (state.pictureVisible) {
             // Work out the rectangle that covers the previous and current cells.
@@ -1542,8 +1542,8 @@ public class AnimatedObject implements Comparable<AnimatedObject> {
 
             for (int y = 0; y < height; y++, picturePos += pictureLineAdd, screenPos += pictureLineAdd) {
                 for (int x = 0; x < width; x++, screenPos++, picturePos++) {
-                    if (((topmostY + y) >= 0) && ((topmostY + y) < 168) && ((leftmostX + x) >= 0) && ((leftmostX + x) < 320) && (screenPos >= 0) && (screenPos < pixels.length)) {
-                        pixels[screenPos] = state.visualPixels[picturePos];
+                    if (((topmostY + y) >= 0) && ((topmostY + y) < 168) && ((leftmostX + x) >= 0) && ((leftmostX + x) < 320) && (screenPos >= 0) && (screenPos < 64000 /* 320*200 */)) {
+                        pixelData.putPixel(screenPos, state.visualPixels[picturePos]);
                     }
                 }
             }

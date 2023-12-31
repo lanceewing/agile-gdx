@@ -27,9 +27,9 @@ public class Inventory {
     private TextGraphics textGraphics;
 
     /**
-     * The pixels array for the AGI screen, in which the text will be drawn.
+     * The pixels data for the AGI screen, in which the text will be drawn.
      */
-    private short[] pixels;
+    private PixelData pixelData;
 
     /**
      * Constructor for Inventory.
@@ -37,13 +37,13 @@ public class Inventory {
      * @param state Holds all of the data and state for the Game currently running.
      * @param userInput Holds the data and state for the user input, i.e. keyboard and mouse input.
      * @param textGraphics Provides methods for drawing text on to the AGI screen.
-     * @param pixels The pixels array for the AGI screen, in which the text will be drawn.
+     * @param pixelData The pixel data for the AGI screen, in which the text will be drawn.
      */
-    public Inventory(GameState state, UserInput userInput, TextGraphics textGraphics, short[] pixels) {
+    public Inventory(GameState state, UserInput userInput, TextGraphics textGraphics, PixelData pixelData) {
         this.state = state;
         this.userInput = userInput;
         this.textGraphics = textGraphics;
-        this.pixels = pixels;
+        this.pixelData = pixelData;
     }
 
     /**
@@ -154,7 +154,7 @@ public class Inventory {
 
         // Restore the pixels that were behind the item's image.
         aniObj.restoreBackPixels();
-        aniObj.show(pixels);
+        aniObj.show(pixelData);
     }
 
     /**
@@ -164,22 +164,22 @@ public class Inventory {
      * @param selectedItem The currently selected item.
      */
     private void drawInventoryItems(List<InvItem> invItems, InvItem selectedItem) {
-        textGraphics.drawString(this.pixels, "You are carrying:", 11 * 8, 0 * 8, 0, 15);
+        textGraphics.drawString(this.pixelData, "You are carrying:", 11 * 8, 0 * 8, 0, 15);
 
         for (InvItem invItem : invItems) {
             if ((invItem == selectedItem) && state.flags[Defines.ENABLE_SELECT]) {
-                textGraphics.drawString(this.pixels, invItem.name, invItem.col * 8, invItem.row * 8, 15, 0);
+                textGraphics.drawString(this.pixelData, invItem.name, invItem.col * 8, invItem.row * 8, 15, 0);
             }
             else {
-                textGraphics.drawString(this.pixels, invItem.name, invItem.col * 8, invItem.row * 8, 0, 15);
+                textGraphics.drawString(this.pixelData, invItem.name, invItem.col * 8, invItem.row * 8, 0, 15);
             }
         }
 
         if (state.flags[Defines.ENABLE_SELECT]) {
-            textGraphics.drawString(this.pixels, "Press ENTER to select, ESC to cancel", 2 * 8, 24 * 8, 0, 15);
+            textGraphics.drawString(this.pixelData, "Press ENTER to select, ESC to cancel", 2 * 8, 24 * 8, 0, 15);
         }
         else {
-            textGraphics.drawString(this.pixels, "Press a key to return to the game", 4 * 8, 24 * 8, 0, 15);
+            textGraphics.drawString(this.pixelData, "Press a key to return to the game", 4 * 8, 24 * 8, 0, 15);
         }
     }
 
@@ -218,8 +218,8 @@ public class Inventory {
         else {
             InvItem previousItem = invItems.get(oldSelectedItemIndex);
             InvItem newItem = invItems.get(newSelectedItemIndex);
-            textGraphics.drawString(this.pixels, previousItem.name, previousItem.col * 8, previousItem.row * 8, 0, 15);
-            textGraphics.drawString(this.pixels, newItem.name, newItem.col * 8, newItem.row * 8, 15, 0);
+            textGraphics.drawString(this.pixelData, previousItem.name, previousItem.col * 8, previousItem.row * 8, 0, 15);
+            textGraphics.drawString(this.pixelData, newItem.name, newItem.col * 8, newItem.row * 8, 15, 0);
         }
 
         return newSelectedItemIndex;

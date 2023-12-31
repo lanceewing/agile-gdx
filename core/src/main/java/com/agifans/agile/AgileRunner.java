@@ -30,18 +30,18 @@ public abstract class AgileRunner {
     private WavePlayer wavePlayer;
     private SavedGameStore savedGameStore;
     private UserInput userInput;
-    private short[] pixels;
+    private PixelData pixelData;
     
     private long lastTime;
     private long deltaTime;
     
     public void init(String gameUri, UserInput userInput, WavePlayer wavePlayer, 
-            SavedGameStore savedGameStore, short[] pixels) {
+            SavedGameStore savedGameStore, PixelData pixelData) {
         this.gameUri = gameUri;
         this.userInput = userInput;
         this.wavePlayer = wavePlayer;
         this.savedGameStore = savedGameStore;
-        this.pixels = pixels;
+        this.pixelData = pixelData;
         this.lastTime = TimeUtils.nanoTime();
     }
     
@@ -54,10 +54,10 @@ public abstract class AgileRunner {
         Map<String, byte[]> gameFilesMap = fetchGameFiles(gameUri);
         
         // Use a dummy TextGraphics instance to render the "Loading" text in grand AGI fashion.
-        TextGraphics textGraphics = new TextGraphics(pixels, null, null);
+        TextGraphics textGraphics = new TextGraphics(pixelData, null, null);
         try {
             if (gameFilesMap.containsKey("words.tok")) {
-                textGraphics.drawString(pixels, "Loading... Please wait", 72, 88, 15, 0);
+                textGraphics.drawString(pixelData, "Loading... Please wait", 72, 88, 15, 0);
             }
             game = new Game(gameFilesMap);
         }
@@ -73,7 +73,7 @@ public abstract class AgileRunner {
         patchGame(game, gameDetection.gameId, gameDetection.gameName);
         
         // Create the Interpreter to run this Game.
-        this.interpreter = new Interpreter(game, userInput, wavePlayer, savedGameStore, pixels);
+        this.interpreter = new Interpreter(game, userInput, wavePlayer, savedGameStore, pixelData);
     }
     
     /**

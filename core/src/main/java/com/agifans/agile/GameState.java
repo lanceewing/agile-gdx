@@ -80,7 +80,7 @@ public class GameState {
      * are the ARGB values. The dimensions of this are 320x168, i.e. two pixels per 
      * AGI pixel. Makes it easier to copy to the main pixels array when required.
      */
-    public short[] visualPixels;
+    public int[] visualPixels;
 
     /**
      * The pixel array for the priority data for the current Picture, where the values
@@ -188,7 +188,7 @@ public class GameState {
         this.recognisedWords = new ArrayList<>();
         this.scriptBuffer = new ScriptBuffer(this);
 
-        this.visualPixels = new short[320 * 168];
+        this.visualPixels = new int[320 * 168];
         this.priorityPixels = new int[160 * 168];
         this.controlPixels = new int[160 * 168];
 
@@ -332,12 +332,12 @@ public class GameState {
      * pixels. Also updates the Stopped flag and previous position as per the original AGI 
      * interpreter behaviour.
      * 
-     * @param pixels The screen pixels to blit the AnimatedObjects to.
+     * @param pixelData The screen pixels to blit the AnimatedObjects to.
      */
-    public void showObjects(short[] pixels) {
+    public void showObjects(PixelData pixelData) {
         // If no list specified, then draw stopped list then update list.
-        showObjects(pixels, stoppedObjectList);
-        showObjects(pixels, updateObjectList);
+        showObjects(pixelData, stoppedObjectList);
+        showObjects(pixelData, updateObjectList);
     }
     
     /**
@@ -345,13 +345,13 @@ public class GameState {
      * pixels. Also updates the Stopped flag and previous position as per the original AGI 
      * interpreter behaviour.
      * 
-     * @param pixels The screen pixels to blit the AnimatedObjects to.
+     * @param pixelData The screen pixels to blit the AnimatedObjects to.
      * @param objectShowList
      */
-    public void showObjects(short[] pixels, List<AnimatedObject> objectShowList) {
+    public void showObjects(PixelData pixelData, List<AnimatedObject> objectShowList) {
         for (AnimatedObject aniObj : objectShowList)
         {
-            aniObj.show(pixels);
+            aniObj.show(pixelData);
 
             // Check if the AnimatedObject moved this cycle and if it did then set the flags accordingly. The
             // position of an AnimatedObject is updated only when the StepTimeCount hits 0, at which point it 
