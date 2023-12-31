@@ -27,17 +27,6 @@ public class DesktopPixelData implements PixelData {
     }
 
     @Override
-    public void putPixel(int x, int y, int rgba8888Colour) {
-        int index = (x + (y * height)) * 4;
-        
-        // Adds RGBA8888 colour to byte array in expected R, G, B, A order.
-        imageData[index + 0] = (byte)((rgba8888Colour >> 24) & 0xFF);
-        imageData[index + 1] = (byte)((rgba8888Colour >> 16) & 0xFF);
-        imageData[index + 2] = (byte)((rgba8888Colour >>  8) & 0xFF);
-        imageData[index + 3] = (byte)((rgba8888Colour >>  0) & 0xFF);
-    }
-
-    @Override
     public void putPixel(int agiScreenIndex, int rgba8888Colour) {
         int index = agiScreenIndex * 4;
         

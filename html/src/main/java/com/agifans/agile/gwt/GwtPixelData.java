@@ -18,18 +18,15 @@ import com.google.gwt.core.client.JavaScriptObject;
  */
 public class GwtPixelData implements PixelData {
 
-    private int width;
-    
-    private int height;
-    
     /**
      * OffscreenCanvas is very new (only 9 months at the time of writing this), which
-     * means that GWT doesn't yet have support for it.
+     * means that GWT doesn't yet have support for it. We therefore store it as a
+     * generic JavaScriptObject instance.
      */
     private JavaScriptObject offscreenCanvas;
 
     /**
-     * Context for the OffscreenCanvas.
+     * The 2d Context for the OffscreenCanvas.
      */
     private Context2d context;
 
@@ -39,36 +36,26 @@ public class GwtPixelData implements PixelData {
     
     @Override
     public void init(Pixmap pixmap) {
-        this.width = pixmap.getWidth();
-        this.height = pixmap.getHeight();
-        
-        createOffscreenCanvas();
+        // As its very new, we need to use a native method to create the OffscreenCanvas.
+        createOffscreenCanvasAndContext(pixmap.getWidth(), pixmap.getHeight());
         
         // Create an empty ImageData for use with AGILE.
-        this.imageData = this.context.createImageData(this.width, this.height);
+        this.imageData = this.context.createImageData(pixmap.getWidth(), pixmap.getHeight());
         
         // Create a backup array for when we need to restore an earlier state.
         this.backupPixelArray = new int[this.imageData.getData().getLength()];
     }
 
-    private native static void createOffscreenCanvas()/*-{
+    private native void createOffscreenCanvasAndContext(int width, int height)/*-{
         // We can't use transferControlToOffscreen method, since libgdx has already
         // called getContext on the Pixmap canvas. So we instead create our own
         // OffscreenCanvas of the same size and will then use ImageBitmap to transfer
         // it back to the UI thread and main canvas.
-        this.offscreenCanvas = new OffscreenCanvas(width, height);
-        this.context = this.offscreenCanvas.getContext('2d');
+        
+        var offscreenCanvas = new OffscreenCanvas(width, height);
+        this.@com.agifans.agile.gwt.GwtPixelData::offscreenCanvas = offscreenCanvas;
+        this.@com.agifans.agile.gwt.GwtPixelData::context = offscreenCanvas.getContext('2d');
     }-*/;
-    
-    @Override
-    public void putPixel(int x, int y, int rgba8888Colour) {
-        int index = (x + (y * height)) * 4;
-        CanvasPixelArray pixelArray = imageData.getData();
-        pixelArray.set(index, (rgba8888Colour >> 24) & 0xFF);
-        pixelArray.set(index + 1, (rgba8888Colour >> 16) & 0xFF);
-        pixelArray.set(index + 2, (rgba8888Colour >> 8) & 0xFF);
-        pixelArray.set(index + 3, rgba8888Colour & 0xFF);
-    }
     
     @Override
     public void putPixel(int agiScreenIndex, int rgba8888Colour) {
@@ -139,13 +126,14 @@ public class GwtPixelData implements PixelData {
         // Update the OffscreenCanvas with the latest changes.
         context.putImageData(imageData, 0, 0);
         
-        copyImageBitmap(pixmap.getContext());
+        copyImageBitmapToRealCanvas(pixmap.getContext());
         
         // TODO: Get ImageBitmap and send message to UI thread. ImageBitmap is transferrable.
     }
     
-    private native static void copyImageBitmap(Context2d realCanvasContext)/*-{
-        let imageBitmap = this.offscreenCanvas.transferToImageBitmap();
+    private native void copyImageBitmapToRealCanvas(Context2d realCanvasContext)/*-{
+        var offscreenCanvas = this.@com.agifans.agile.gwt.GwtPixelData::offscreenCanvas;
+        var imageBitmap = offscreenCanvas.transferToImageBitmap();
         realCanvasContext.drawImage(imageBitmap, 0, 0);
         imageBitmap.close();
     }-*/;

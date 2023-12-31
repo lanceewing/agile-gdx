@@ -22,15 +22,6 @@ public interface PixelData {
     void init(Pixmap pixmap);
     
     /**
-     * Puts a single pixel into the pixel data.
-     * 
-     * @param x
-     * @param y
-     * @param rgba8888Colour
-     */
-    void putPixel(int x, int y, int rgba8888Colour);
-    
-    /**
      * Puts a single pixel into the pixel data using an AGI screen position, i.e.
      * where agiScreenIndex = (y * 320) + x.
      * 
