@@ -1,7 +1,5 @@
 package com.agifans.agile;
 
-import java.nio.ByteBuffer;
-
 import com.agifans.agile.ui.ViewportManager;
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
@@ -18,7 +16,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad.TouchpadStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -44,11 +41,9 @@ public class GameScreen implements Screen {
     private SavedGameStore savedGameStore;;
     
     /**
-     * The pixels array for the AGI screen. Any change made to this array will be copied 
+     * The pixels data for the AGI screen. Any change made to this array will be copied 
      * to the Pixmap on every frame.
      */
-    // TODO: Remove: private int[] pixels;
-    
     private PixelData pixelData;
     
     private Pixmap screenPixmap;
@@ -87,7 +82,6 @@ public class GameScreen implements Screen {
         batch = new SpriteBatch();
         
         // Uses an approach used successfully in my various libgdx emulators.
-        // TODO: Remove: pixels = new int[AGI_SCREEN_WIDTH * AGI_SCREEN_HEIGHT];
         screenPixmap = new Pixmap(AGI_SCREEN_WIDTH, AGI_SCREEN_HEIGHT, Pixmap.Format.RGBA8888);
         screenPixmap.setBlending(Pixmap.Blending.None);
         pixelData.init(screenPixmap);
@@ -134,41 +128,12 @@ public class GameScreen implements Screen {
     }
     
     public boolean copyPixels() {
-        // TODO: WebGL and Desktop currently expect different endian byte ordering!!!
-        /*
-        switch (Gdx.app.getType()) {
-            case Android:
-            case Desktop:
-                // For some reason, drawPixel responses the RRGGBBAA format, but using
-                // this copy method expects the ints to be AABBGGRR instead.
-                BufferUtils.copy(pixels, 0, screenPixmap.getPixels(), AGI_SCREEN_WIDTH * AGI_SCREEN_HEIGHT);
-                break;
-            case WebGL:
-                // The buffer is faked/emulated in the GWT/HTML backend, so we can't
-                // use the getPixels method. The setPixels method has been implemented
-                // to update the HTML5 canvas though, so we can use that instead.
-                // TODO: Is there a faster way to do this?
-                // NOTE: Must be a direct ByteBuffer.
-                ByteBuffer pixelsBuffer = ByteBuffer.allocateDirect(pixels.length * 4);
-                BufferUtils.copy(pixels, 0, pixelsBuffer, AGI_SCREEN_WIDTH * AGI_SCREEN_HEIGHT);
-                screenPixmap.setPixels(pixelsBuffer);
-                break;
-            default:
-                // No other platforms are supported.
-        }
-        */
-        
         pixelData.updatePixmap(screenPixmap);
-        
         screens[updateScreen].draw(screenPixmap, 0, 0);
         updateScreen = (updateScreen + 1) % 3;
         drawScreen = (drawScreen + 1) % 3;
         return true;
     }
-    
-    //    public int[] getPixels() {
-    //        return pixels;
-    //    }
     
     public Texture getDrawScreen() {
         return screens[drawScreen];
