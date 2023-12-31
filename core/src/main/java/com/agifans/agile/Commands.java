@@ -124,9 +124,9 @@ public class Commands {
 
         // Copy the pixels to our VisualPixels array, doubling each one as we go.
         for (int i = 0, ii = 0; i < (160 * 168); i++, ii += 2) {
-            int rgb565Color = visualPixels[i];
-            state.visualPixels[ii + 0] = rgb565Color;
-            state.visualPixels[ii + 1] = rgb565Color;
+            int rgba8888Color = visualPixels[i];
+            state.visualPixels[ii + 0] = rgba8888Color;
+            state.visualPixels[ii + 1] = rgba8888Color;
         }
         
         splitPriorityPixels();
@@ -211,9 +211,9 @@ public class Commands {
         for (int i = 0, ii = (8 * state.pictureRow) * 320; i < (160 * 168); i++, ii += 2) {
             int priColorIndex = state.priorityPixels[i];
             int ctrlColorIndex = state.controlPixels[i];
-            int rgb565Color = EgaPalette.colours[ctrlColorIndex <= 3 ? ctrlColorIndex : priColorIndex];
-            pixelData.putPixel(ii + 0, rgb565Color);
-            pixelData.putPixel(ii + 1, rgb565Color);
+            int rgba8888Color = EgaPalette.colours[ctrlColorIndex <= 3 ? ctrlColorIndex : priColorIndex];
+            pixelData.putPixel(ii + 0, rgba8888Color);
+            pixelData.putPixel(ii + 1, rgba8888Color);
         }
 
         userInput.waitForKey(true);
@@ -265,7 +265,7 @@ public class Commands {
      */
     private void shakeScreen(int repeatCount) {
         int shakeCount = (repeatCount * 8);
-        int backgroundRGB565 = EgaPalette.colours[0];
+        int backgroundRGBA8888 = EgaPalette.colours[0];
 
         pixelData.savePixels();
         
@@ -277,7 +277,7 @@ public class Commands {
                 for (int y = 0, screenPos = 0; y < 200; y++) {
                     for (int x = 0; x < 320; x++, screenPos++) {
                         if ((x < 8) || (y < 4)) {
-                            pixelData.putPixel(screenPos, backgroundRGB565);
+                            pixelData.putPixel(screenPos, backgroundRGBA8888);
                         }
                         else {
                             pixelData.putPixel(screenPos, pixelData.getBackupPixel(screenPos - 1288));

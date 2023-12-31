@@ -26,7 +26,7 @@ public class EgaPalette {
     public final static int white = 0xFFFFFFFF;
 
     /**
-     * Holds the RGB565 values for the 16 EGA colours.
+     * Holds the RGBA8888 values for the 16 EGA colours.
      */
     public final static int[] colours = { 
         black, 

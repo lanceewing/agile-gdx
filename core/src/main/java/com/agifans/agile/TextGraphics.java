@@ -191,7 +191,7 @@ public class TextGraphics {
      * @param backgroundColour
      */
     public void clearRect(int top, int left, int bottom, int right, int backgroundColour) {
-        int backgroundRGB565 = EgaPalette.colours[backgroundColour & 0x0F];
+        int backgroundRGBA8888 = EgaPalette.colours[backgroundColour & 0x0F];
         int height = ((bottom - top) + 1) * 8;
         int width = ((right - left) + 1) * 8;
         int startY = (top * 8);
@@ -201,7 +201,7 @@ public class TextGraphics {
 
         for (int y = 0, screenPos = startScreenPos; y < height; y++, screenPos += screenYAdd) {
             for (int x = 0; x < width; x++, screenPos++) {
-                pixelData.putPixel(screenPos, backgroundRGB565);
+                pixelData.putPixel(screenPos, backgroundRGBA8888);
             }
         }
     }
@@ -983,8 +983,8 @@ public class TextGraphics {
         textWindow = (textWindow == null ? openWindow : textWindow);
 
         if (textWindow != null) {
-            int backgroundRGB565 = EgaPalette.colours[textWindow.backgroundColour];
-            int borderRGB565 = EgaPalette.colours[textWindow.borderColour];
+            int backgroundRGBA8888 = EgaPalette.colours[textWindow.backgroundColour];
+            int borderRGBA8888 = EgaPalette.colours[textWindow.borderColour];
             int startScreenPos = (textWindow.y() * 320) + textWindow.x();
             int screenYAdd = (320 - textWindow.width());
 
@@ -1000,22 +1000,22 @@ public class TextGraphics {
                     if (storeBackPixels) textWindow.backPixels[backPixelsPos++] = pixelData.getPixel(screenPos);
 
                     // Overwrite the pixel with the window's background colour.
-                    pixelData.putPixel(screenPos, backgroundRGB565);
+                    pixelData.putPixel(screenPos, backgroundRGBA8888);
                 }
             }
 
             // Draw a line just in a bit from the edge of the box in the border colour.
             for (int x = 0, screenPos = (startScreenPos + 320 + 2); x < (textWindow.width() - 4); x++, screenPos++) {
-                pixelData.putPixel(screenPos, borderRGB565);
+                pixelData.putPixel(screenPos, borderRGBA8888);
             }
             for (int x = 0, screenPos = (startScreenPos + (320 * (textWindow.height() - 2) + 2)); x < (textWindow.width() - 4); x++, screenPos++) {
-                pixelData.putPixel(screenPos, borderRGB565);
+                pixelData.putPixel(screenPos, borderRGBA8888);
             }
             for (int y = 1, screenPos = (startScreenPos + 640 + 2); y < (textWindow.height() - 2); y++, screenPos += 320) {
-                pixelData.putPixel(screenPos, borderRGB565);
-                pixelData.putPixel(screenPos + 1, borderRGB565);
-                pixelData.putPixel(screenPos + (textWindow.width() - 6), borderRGB565);
-                pixelData.putPixel(screenPos + (textWindow.width() - 5), borderRGB565);
+                pixelData.putPixel(screenPos, borderRGBA8888);
+                pixelData.putPixel(screenPos + 1, borderRGBA8888);
+                pixelData.putPixel(screenPos + (textWindow.width() - 6), borderRGBA8888);
+                pixelData.putPixel(screenPos + (textWindow.width() - 5), borderRGBA8888);
             }
 
             // Draw the text lines (if applicable).
