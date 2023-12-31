@@ -47,7 +47,9 @@ public class GameScreen implements Screen {
      * The pixels array for the AGI screen. Any change made to this array will be copied 
      * to the Pixmap on every frame.
      */
-    private int[] pixels;
+    // TODO: Remove: private int[] pixels;
+    
+    private PixelData pixelData;
     
     private Pixmap screenPixmap;
     private Viewport viewport;
@@ -75,17 +77,20 @@ public class GameScreen implements Screen {
      * @param wavePlayer 
      * @param agileRunner 
      */
-    public GameScreen(AgileRunner agileRunner, WavePlayer wavePlayer, SavedGameStore savedGameStore) {
+    public GameScreen(AgileRunner agileRunner, WavePlayer wavePlayer, SavedGameStore savedGameStore,
+            PixelData pixelData) {
         this.agileRunner = agileRunner;
         this.wavePlayer = wavePlayer;
         this.savedGameStore = savedGameStore;
+        this.pixelData = pixelData;
         
         batch = new SpriteBatch();
         
         // Uses an approach used successfully in my various libgdx emulators.
-        pixels = new int[AGI_SCREEN_WIDTH * AGI_SCREEN_HEIGHT];
+        // TODO: Remove: pixels = new int[AGI_SCREEN_WIDTH * AGI_SCREEN_HEIGHT];
         screenPixmap = new Pixmap(AGI_SCREEN_WIDTH, AGI_SCREEN_HEIGHT, Pixmap.Format.RGBA8888);
         screenPixmap.setBlending(Pixmap.Blending.None);
+        pixelData.init(screenPixmap);
         screens = new Texture[3];
         screens[0] = new Texture(screenPixmap, Pixmap.Format.RGBA8888, false);
         screens[0].setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
@@ -130,13 +135,12 @@ public class GameScreen implements Screen {
     
     public boolean copyPixels() {
         // TODO: WebGL and Desktop currently expect different endian byte ordering!!!
-        
+        /*
         switch (Gdx.app.getType()) {
             case Android:
             case Desktop:
                 // For some reason, drawPixel responses the RRGGBBAA format, but using
                 // this copy method expects the ints to be AABBGGRR instead.
-                
                 BufferUtils.copy(pixels, 0, screenPixmap.getPixels(), AGI_SCREEN_WIDTH * AGI_SCREEN_HEIGHT);
                 break;
             case WebGL:
@@ -152,15 +156,19 @@ public class GameScreen implements Screen {
             default:
                 // No other platforms are supported.
         }
+        */
+        
+        pixelData.updatePixmap(screenPixmap);
+        
         screens[updateScreen].draw(screenPixmap, 0, 0);
         updateScreen = (updateScreen + 1) % 3;
         drawScreen = (drawScreen + 1) % 3;
         return true;
     }
     
-    public int[] getPixels() {
-        return pixels;
-    }
+    //    public int[] getPixels() {
+    //        return pixels;
+    //    }
     
     public Texture getDrawScreen() {
         return screens[drawScreen];
@@ -176,7 +184,7 @@ public class GameScreen implements Screen {
         UserInput userInput = new UserInput();
         Gdx.input.setInputProcessor(userInput);
         
-        agileRunner.init(gameFolder, userInput, wavePlayer, savedGameStore, getPixels());
+        agileRunner.init(gameFolder, userInput, wavePlayer, savedGameStore, pixelData);
         
         // Start up the AgileRunner to run the interpreter in the background.
         agileRunner.start();

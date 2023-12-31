@@ -60,10 +60,10 @@ public class SavedGames {
     private TextGraphics textGraphics;
 
     /**
-     * The pixels array for the AGI screen on which the background Picture and 
+     * The pixels data for the AGI screen on which the background Picture and 
      * AnimatedObjects will be drawn to.
      */
-    private int[] pixels;
+    private PixelData pixelData;
     
     /**
      * The interface through which the SavedGame class reads and writes saved game
@@ -78,15 +78,15 @@ public class SavedGames {
      * @param state
      * @param userInput
      * @param textGraphics
-     * @param pixels
+     * @param pixelData
      * @param savedGameStore 
      */
     public SavedGames(GameState state, UserInput userInput, TextGraphics textGraphics, 
-            int[] pixels, SavedGameStore savedGameStore) {
+            PixelData pixelData, SavedGameStore savedGameStore) {
         this.state = state;
         this.userInput = userInput;
         this.textGraphics = textGraphics;
-        this.pixels = pixels;
+        this.pixelData = pixelData;
         this.savedGameStore = savedGameStore;
     }
 
@@ -186,7 +186,7 @@ public class SavedGames {
 
         // Print the game descriptions within the open window..
         for (gameNum = 0; gameNum < numGames; gameNum++) {
-            textGraphics.drawString(this.pixels, StringUtils.format(" - {0}", game[gameNum].description),
+            textGraphics.drawString(this.pixelData, StringUtils.format(" - {0}", game[gameNum].description),
                 textWin.left * 8, (descriptTop + gameNum) * 8, 0, 15);
         }
 
@@ -241,7 +241,7 @@ public class SavedGames {
      * @param row 
      */
     private void writePointer(int col, int row) {
-        textGraphics.drawChar(this.pixels, (byte)POINTER_CHAR, col * 8, row * 8, 0, 15);
+        textGraphics.drawChar(this.pixelData, (byte)POINTER_CHAR, col * 8, row * 8, 0, 15);
     }
 
     /**
@@ -251,7 +251,7 @@ public class SavedGames {
      * @param row 
      */
     private void erasePointer(int col, int row) {
-        textGraphics.drawChar(this.pixels, (byte)ERASE_CHAR, col * 8, row * 8, 0, 15);
+        textGraphics.drawChar(this.pixelData, (byte)ERASE_CHAR, col * 8, row * 8, 0, 15);
     }
 
     /**

@@ -28,41 +28,41 @@ public class EgaPalette {
     //    public final static int yellow = 0x00FFFF55;
     //    public final static int white = 0x00FFFFFF;
     
-    //    // RGBA8888 format, so that we can more easily support HTML5.
-    //    public final static int black = 0x000000FF;
-    //    public final static int blue = 0x0000AAFF;
-    //    public final static int green = 0x00AA00FF;
-    //    public final static int cyan = 0x00AAAAFF;
-    //    public final static int red = 0xAA0000FF;
-    //    public final static int magenta = 0xAA00AAFF;
-    //    public final static int brown = 0xAA5500FF;
-    //    public final static int grey = 0xAAAAAAFF;
-    //    public final static int darkgrey = 0x555555FF;
-    //    public final static int lightblue = 0x5555FFFF;
-    //    public final static int lightgreen = 0x55FF55FF;
-    //    public final static int lightcyan = 0x55FFFFFF;
-    //    public final static int pink = 0xFF5555FF;
-    //    public final static int lightmagenta = 0xFF55FFFF;
-    //    public final static int yellow = 0xFFFF55FF;
-    //    public final static int white = 0xFFFFFFFF;
-    
-    // RGBA8888 format, litte-endian, since BufferUtils seems to require it like that.
-    public final static int black = 0xFF000000;
-    public final static int blue = 0xFFAA0000;
-    public final static int green = 0xFF00AA00;
-    public final static int cyan = 0xFFAAAA00;
-    public final static int red = 0xFF0000AA;
-    public final static int magenta = 0xFFAA00AA;
-    public final static int brown = 0xFF0055AA;
-    public final static int grey = 0xFFAAAAAA;
-    public final static int darkgrey = 0xFF555555;
-    public final static int lightblue = 0xFFFF5555;
-    public final static int lightgreen = 0xFF55FF55;
-    public final static int lightcyan = 0xFFFFFF55;
+    // RGBA8888 format, so that we can more easily support HTML5.
+    public final static int black = 0x000000FF;
+    public final static int blue = 0x0000AAFF;
+    public final static int green = 0x00AA00FF;
+    public final static int cyan = 0x00AAAAFF;
+    public final static int red = 0xAA0000FF;
+    public final static int magenta = 0xAA00AAFF;
+    public final static int brown = 0xAA5500FF;
+    public final static int grey = 0xAAAAAAFF;
+    public final static int darkgrey = 0x555555FF;
+    public final static int lightblue = 0x5555FFFF;
+    public final static int lightgreen = 0x55FF55FF;
+    public final static int lightcyan = 0x55FFFFFF;
     public final static int pink = 0xFF5555FF;
-    public final static int lightmagenta = 0xFFFF55FF;
-    public final static int yellow = 0xFF55FFFF;
+    public final static int lightmagenta = 0xFF55FFFF;
+    public final static int yellow = 0xFFFF55FF;
     public final static int white = 0xFFFFFFFF;
+    
+    //    // RGBA8888 format, litte-endian, since BufferUtils seems to require it like that.
+    //    public final static int black = 0xFF000000;
+    //    public final static int blue = 0xFFAA0000;
+    //    public final static int green = 0xFF00AA00;
+    //    public final static int cyan = 0xFFAAAA00;
+    //    public final static int red = 0xFF0000AA;
+    //    public final static int magenta = 0xFFAA00AA;
+    //    public final static int brown = 0xFF0055AA;
+    //    public final static int grey = 0xFFAAAAAA;
+    //    public final static int darkgrey = 0xFF555555;
+    //    public final static int lightblue = 0xFFFF5555;
+    //    public final static int lightgreen = 0xFF55FF55;
+    //    public final static int lightcyan = 0xFFFFFF55;
+    //    public final static int pink = 0xFF5555FF;
+    //    public final static int lightmagenta = 0xFFFF55FF;
+    //    public final static int yellow = 0xFF55FFFF;
+    //    public final static int white = 0xFFFFFFFF;
     
     private static short toRGB565(int argb8888) {
         com.badlogic.gdx.graphics.Color color = new com.badlogic.gdx.graphics.Color();

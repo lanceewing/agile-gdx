@@ -95,21 +95,21 @@ public class TextGraphics {
     private UserInput userInput;
 
     /**
-     * The pixels array for the AGI screen, in which the text will be drawn.
+     * The pixel data for the AGI screen, in which the text will be drawn.
      */
-    private int[] pixels;
+    private PixelData pixelData;
 
     /**
      * Constructor for TextGraphics.
      * 
-     * @param pixels The GameScreen pixels. This is what TextGraphics draws windows (and indirectly menus) to.
+     * @param pixelData The GameScreen pixels. This is what TextGraphics draws windows (and indirectly menus) to.
      * @param state The GameState class holds all of the data and state for the Game currently running.
      * @param userInput Holds the data and state for the user input, i.e. keyboard and mouse input.
      */
-    public TextGraphics(int[] pixels, GameState state, UserInput userInput) {
+    public TextGraphics(PixelData pixelData, GameState state, UserInput userInput) {
         this.state = state;
         this.userInput = userInput;
-        this.pixels = pixels;
+        this.pixelData = pixelData;
         this.openWindow = null;
         this.clearLines(0, 24, 0);
     }
@@ -175,9 +175,9 @@ public class TextGraphics {
         int startPos = top * 8 * 320;
         int endPos = ((bottom + 1) * 8 * 320) - 1;
         int colour = EgaPalette.colours[backgroundColour & 0x0F];
-
+        
         for (int i=startPos; i <= endPos; i++) {
-            this.pixels[i] = colour;
+            pixelData.putPixel(i, colour);
         }
     }
 
@@ -201,7 +201,7 @@ public class TextGraphics {
 
         for (int y = 0, screenPos = startScreenPos; y < height; y++, screenPos += screenYAdd) {
             for (int x = 0; x < width; x++, screenPos++) {
-                this.pixels[screenPos] = backgroundRGB565;
+                pixelData.putPixel(screenPos, backgroundRGB565);
             }
         }
     }
@@ -233,7 +233,7 @@ public class TextGraphics {
         clearLines(0, 24, 0);
 
         // Copy VisualPixels to game screen.
-        System.arraycopy(state.visualPixels, 0, this.pixels, (8 * state.pictureRow) * 320, state.visualPixels.length);
+        pixelData.pixelCopy(state.visualPixels, (8 * state.pictureRow) * 320, state.visualPixels.length);
         
         updateStatusLine();
         updateInputLine();
@@ -245,15 +245,15 @@ public class TextGraphics {
      * drawn directly to the GameScreen pixels, but Display action commands are drawn to the
      * VisualPixels array.
      * 
-     * @param pixels The pixel array to draw the character to.
+     * @param pixelData The pixel data to draw the character to.
      * @param charNum The ASCII code number of the character to draw.
      * @param x The X position of the character.
      * @param y The Y position of the character.
      * @param foregroundColour The foreground colour of the character.
      * @param backgroundColour The background colour of the character.
      */
-    public void drawChar(int[] pixels, byte charNum, int x, int y, int foregroundColour, int backgroundColour) {
-        drawChar(pixels, charNum, x, y, foregroundColour, backgroundColour, false);
+    public void drawChar(PixelData pixelData, byte charNum, int x, int y, int foregroundColour, int backgroundColour) {
+        drawChar(pixelData, charNum, x, y, foregroundColour, backgroundColour, false);
     }
     
     /**
@@ -262,7 +262,7 @@ public class TextGraphics {
      * drawn directly to the GameScreen pixels, but Display action commands are drawn to the
      * VisualPixels array.
      * 
-     * @param pixels The pixel array to draw the character to.
+     * @param pixelData The pixel data to draw the character to.
      * @param charNum The ASCII code number of the character to draw.
      * @param x The X position of the character.
      * @param y The Y position of the character.
@@ -270,7 +270,7 @@ public class TextGraphics {
      * @param backgroundColour The background colour of the character.
      * @param halfTone If true then character are only half drawn.
      */
-    public void drawChar(int[] pixels, byte charNum, int x, int y, int foregroundColour, int backgroundColour, boolean halfTone) {
+    public void drawChar(PixelData pixelData, byte charNum, int x, int y, int foregroundColour, int backgroundColour, boolean halfTone) {
         for (int byteNum = 0; byteNum < 8; byteNum++) {
             int fontByte = (IBM_BIOS_FONT[(charNum << 3) + byteNum] & 0xFF);
             boolean halfToneState = ((byteNum % 2) == 0);
@@ -278,10 +278,10 @@ public class TextGraphics {
             for (int bytePos = 7; bytePos >= 0; bytePos--) {
                 if (!halfTone || halfToneState) {
                     if ((fontByte & (1 << bytePos)) != 0) {
-                        pixels[((y + byteNum) * 320) + x + (7 - bytePos)] = EgaPalette.colours[foregroundColour];
+                        pixelData.putPixel(((y + byteNum) * 320) + x + (7 - bytePos), EgaPalette.colours[foregroundColour]);
                     }
                     else {
-                        pixels[((y + byteNum) * 320) + x + (7 - bytePos)] = EgaPalette.colours[backgroundColour];
+                        pixelData.putPixel(((y + byteNum) * 320) + x + (7 - bytePos), EgaPalette.colours[backgroundColour]);
                     }
                 }
 
@@ -293,33 +293,33 @@ public class TextGraphics {
     /**
      * Draws the given string to the AGI screen, at the given x/y position, in the given colours.
      * 
-     * @param pixels The pixel array to draw the character to.
+     * @param pixelData The pixel data to draw the character to.
      * @param text The text to draw to the screen.
      * @param x The X position of the text.
      * @param y The Y position of the text.
      */
-    public void drawString(int[] pixels, String text, int x, int y) {
-        drawString(pixels, text, x, y, UNASSIGNED, UNASSIGNED, false);
+    public void drawString(PixelData pixelData, String text, int x, int y) {
+        drawString(pixelData, text, x, y, UNASSIGNED, UNASSIGNED, false);
     }
 
     /**
      * Draws the given string to the AGI screen, at the given x/y position, in the given colours.
      * 
-     * @param pixels The pixel array to draw the character to.
+     * @param pixelData The pixel data to draw the character to.
      * @param text The text to draw to the screen.
      * @param x The X position of the text.
      * @param y The Y position of the text.
      * @param foregroundColour Optional foreground colour. Defaults to currently active foreground colour if not specified.
      * @param backgroundColour Optional background colour. Defaults to currently active background colour if not specified.
      */
-    public void drawString(int[]pixels, String text, int x, int y, int foregroundColour, int backgroundColour) {
-        drawString(pixels, text, x, y, foregroundColour, backgroundColour, false);
+    public void drawString(PixelData pixelData, String text, int x, int y, int foregroundColour, int backgroundColour) {
+        drawString(pixelData, text, x, y, foregroundColour, backgroundColour, false);
     }
     
     /**
      * Draws the given string to the AGI screen, at the given x/y position, in the given colours.
      * 
-     * @param pixels The pixel array to draw the character to.
+     * @param pixelData The pixel data to draw the character to.
      * @param text The text to draw to the screen.
      * @param x The X position of the text.
      * @param y The Y position of the text.
@@ -327,7 +327,7 @@ public class TextGraphics {
      * @param backgroundColour Optional background colour. Defaults to currently active background colour if not specified.
      * @param halfTone If true then character are only half drawn.
      */
-    public void drawString(int[]pixels, String text, int x, int y, int foregroundColour, int backgroundColour, boolean halfTone) {
+    public void drawString(PixelData pixelData, String text, int x, int y, int foregroundColour, int backgroundColour, boolean halfTone) {
         // This method is used as both a general text drawing method, for things like the menu 
         // and inventory, and also for the print and display commands. The print and display
         // commands will operate using the currently set text attribute, foreground and background
@@ -362,7 +362,7 @@ public class TextGraphics {
         byte[] textBytes = StringUtils.getBytesFromString(text);
 
         for (int charPos = 0; charPos < textBytes.length; charPos++) {
-            drawChar(pixels, textBytes[charPos], x + (charPos * 8), y, foregroundColour, backgroundColour, halfTone);
+            drawChar(pixelData, textBytes[charPos], x + (charPos * 8), y, foregroundColour, backgroundColour, halfTone);
         }
     }
 
@@ -379,7 +379,7 @@ public class TextGraphics {
         String[] lines = buildMessageLines(str, Defines.TEXTCOLS + 1, col);
 
         for (int i = 0; i < lines.length; i++) {
-            drawString(this.pixels, lines[i], col * 8, (row + i) * 8);
+            drawString(this.pixelData, lines[i], col * 8, (row + i) * 8);
 
             // For subsequent lines, we start at column 0 and ignore what was passed in.
             col = 0;
@@ -429,11 +429,11 @@ public class TextGraphics {
             scoreStatus.append(state.vars[Defines.SCORE]);
             scoreStatus.append(" of ");
             scoreStatus.append(state.vars[Defines.MAXSCORE]);
-            drawString(this.pixels, padRightSpaces(scoreStatus.toString(), 30), 0, state.statusLineRow * 8, 0, 15);
+            drawString(this.pixelData, padRightSpaces(scoreStatus.toString(), 30), 0, state.statusLineRow * 8, 0, 15);
             StringBuilder soundStatus = new StringBuilder();
             soundStatus.append("Sound:");
             soundStatus.append(state.flags[Defines.SOUNDON] ? "on" : "off");
-            drawString(this.pixels, padRightSpaces(soundStatus.toString(), 10), 30 * 8, state.statusLineRow * 8, 0, 15);
+            drawString(this.pixelData, padRightSpaces(soundStatus.toString(), 10), 30 * 8, state.statusLineRow * 8, 0, 15);
         }
     }
 
@@ -459,7 +459,7 @@ public class TextGraphics {
                     // Cursor character is optional. There isn't one at the start of the game.
                     inputLine.append(state.cursorCharacter);
                 }
-                drawString(this.pixels, padRightSpaces(inputLine.toString(), Defines.MAXINPUT), 0, state.inputLineRow * 8);
+                drawString(this.pixelData, padRightSpaces(inputLine.toString(), Defines.MAXINPUT), 0, state.inputLineRow * 8);
             }
             else if (clearWhenNotEnabled) {
                 // If not accepting input, clear the prompt and text input.
@@ -553,7 +553,7 @@ public class TextGraphics {
         // Process entered keys until either ENTER or ESC is pressed.
         while (true) {
             // Show the currently entered text.
-            drawString(this.pixels, (line.toString() + state.cursorCharacter), col * 8, row * 8, foregroundColour, backgroundColour);
+            drawString(this.pixelData, (line.toString() + state.cursorCharacter), col * 8, row * 8, foregroundColour, backgroundColour);
 
             int key = userInput.waitForKey(false);
             
@@ -567,7 +567,7 @@ public class TextGraphics {
                 else if (character == Character.ENTER) {
                     // If ENTER is hit, we break out of the loop and return the entered line of text.
                     // Render Line without the cursor by replacing the cursor with empty string
-                    drawString(this.pixels, line.toString() + " ", col * 8, row * 8, foregroundColour, backgroundColour);
+                    drawString(this.pixelData, line.toString() + " ", col * 8, row * 8, foregroundColour, backgroundColour);
                     break;
                 }
                 else if (character == Character.BACKSPACE) {
@@ -575,7 +575,7 @@ public class TextGraphics {
                     if (line.length() > 0) line.delete(line.length() - 1, line.length());
 
                     // Render Line with a space overwriting the previous position of the cursor.
-                    drawString(this.pixels, (line.toString() + state.cursorCharacter + " "), col * 8, row * 8, foregroundColour, backgroundColour);
+                    drawString(this.pixelData, (line.toString() + state.cursorCharacter + " "), col * 8, row * 8, foregroundColour, backgroundColour);
                 }
                 else { // Standard char from a keypress event.
                     // If we haven't reached the max length, add the char to the line of text.
@@ -997,39 +997,39 @@ public class TextGraphics {
             for (int y = 0, screenPos = startScreenPos; y < textWindow.height(); y++, screenPos += screenYAdd) {
                 for (int x = 0; x < textWindow.width(); x++, screenPos++) {
                     // Store the pixel currently at this position (if applicable).
-                    if (storeBackPixels) textWindow.backPixels[backPixelsPos++] = this.pixels[screenPos];
+                    if (storeBackPixels) textWindow.backPixels[backPixelsPos++] = pixelData.getPixel(screenPos);
 
                     // Overwrite the pixel with the window's background colour.
-                    this.pixels[screenPos] = backgroundRGB565;
+                    pixelData.putPixel(screenPos, backgroundRGB565);
                 }
             }
 
             // Draw a line just in a bit from the edge of the box in the border colour.
             for (int x = 0, screenPos = (startScreenPos + 320 + 2); x < (textWindow.width() - 4); x++, screenPos++) {
-                this.pixels[screenPos] = borderRGB565;
+                pixelData.putPixel(screenPos, borderRGB565);
             }
             for (int x = 0, screenPos = (startScreenPos + (320 * (textWindow.height() - 2) + 2)); x < (textWindow.width() - 4); x++, screenPos++) {
-                this.pixels[screenPos] = borderRGB565;
+                pixelData.putPixel(screenPos, borderRGB565);
             }
             for (int y = 1, screenPos = (startScreenPos + 640 + 2); y < (textWindow.height() - 2); y++, screenPos += 320) {
-                this.pixels[screenPos] = borderRGB565;
-                this.pixels[screenPos + 1] = borderRGB565;
-                this.pixels[screenPos + (textWindow.width() - 6)] = borderRGB565;
-                this.pixels[screenPos + (textWindow.width() - 5)] = borderRGB565;
+                pixelData.putPixel(screenPos, borderRGB565);
+                pixelData.putPixel(screenPos + 1, borderRGB565);
+                pixelData.putPixel(screenPos + (textWindow.width() - 6), borderRGB565);
+                pixelData.putPixel(screenPos + (textWindow.width() - 5), borderRGB565);
             }
 
             // Draw the text lines (if applicable).
             if (textWindow.textLines != null) {
                 // Draw the text black on white.
                 for (int i = 0; i < textWindow.textLines.length; i++) {
-                    drawString(this.pixels, textWindow.textLines[i], (textWindow.left << 3), ((textWindow.top + i) << 3), textWindow.textColour, textWindow.backgroundColour);
+                    drawString(pixelData, textWindow.textLines[i], (textWindow.left << 3), ((textWindow.top + i) << 3), textWindow.textColour, textWindow.backgroundColour);
                 }
             }
 
             // Draw the embedded AnimatedObject (if applicable). Supports inventory item description windows.
             if (textWindow.aniObj != null) {
                 textWindow.aniObj.draw();
-                textWindow.aniObj.show(pixels);
+                textWindow.aniObj.show(pixelData);
             }
         }
     }
@@ -1065,7 +1065,7 @@ public class TextGraphics {
                 int backPixelsPos = 0;
                 for (int y = 0, screenPos = startScreenPos; y < openWindow.height(); y++, screenPos += screenYAdd) {
                     for (int x = 0; x < openWindow.width(); x++, screenPos++) {
-                        this.pixels[screenPos] = openWindow.backPixels[backPixelsPos++];
+                        pixelData.putPixel(screenPos, openWindow.backPixels[backPixelsPos++]);
                     }
                 }
             }

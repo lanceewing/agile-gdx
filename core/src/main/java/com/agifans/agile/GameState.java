@@ -332,12 +332,12 @@ public class GameState {
      * pixels. Also updates the Stopped flag and previous position as per the original AGI 
      * interpreter behaviour.
      * 
-     * @param pixels The screen pixels to blit the AnimatedObjects to.
+     * @param pixelData The screen pixels to blit the AnimatedObjects to.
      */
-    public void showObjects(int[] pixels) {
+    public void showObjects(PixelData pixelData) {
         // If no list specified, then draw stopped list then update list.
-        showObjects(pixels, stoppedObjectList);
-        showObjects(pixels, updateObjectList);
+        showObjects(pixelData, stoppedObjectList);
+        showObjects(pixelData, updateObjectList);
     }
     
     /**
@@ -345,13 +345,13 @@ public class GameState {
      * pixels. Also updates the Stopped flag and previous position as per the original AGI 
      * interpreter behaviour.
      * 
-     * @param pixels The screen pixels to blit the AnimatedObjects to.
+     * @param pixelData The screen pixels to blit the AnimatedObjects to.
      * @param objectShowList
      */
-    public void showObjects(int[] pixels, List<AnimatedObject> objectShowList) {
+    public void showObjects(PixelData pixelData, List<AnimatedObject> objectShowList) {
         for (AnimatedObject aniObj : objectShowList)
         {
-            aniObj.show(pixels);
+            aniObj.show(pixelData);
 
             // Check if the AnimatedObject moved this cycle and if it did then set the flags accordingly. The
             // position of an AnimatedObject is updated only when the StepTimeCount hits 0, at which point it 

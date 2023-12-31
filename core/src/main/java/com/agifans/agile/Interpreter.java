@@ -20,10 +20,10 @@ public class Interpreter {
     private UserInput userInput;
 
     /**
-     * The pixels array for the AGI screen on which the background Picture and 
+     * The pixels data for the AGI screen on which the background Picture and 
      * AnimatedObjects will be drawn to.
      */
-    private int[] pixels;
+    private PixelData pixelData;
 
     /**
      * Provides methods for drawing text on to the AGI screen.
@@ -74,15 +74,15 @@ public class Interpreter {
      * @param pixels
      */
     public Interpreter(Game game, UserInput userInput, WavePlayer wavePlayer, 
-            SavedGameStore savedGameStore, int[] pixels) {
+            SavedGameStore savedGameStore, PixelData pixelData) {
         this.state = new GameState(game);
         this.userInput = userInput;
-        this.pixels = pixels;
-        this.textGraphics = new TextGraphics(pixels, state, userInput);
+        this.pixelData = pixelData;
+        this.textGraphics = new TextGraphics(pixelData, state, userInput);
         this.parser = new Parser(state);
         this.soundPlayer = new SoundPlayer(state, wavePlayer);
-        this.menu = new Menu(state, textGraphics, pixels, userInput);
-        this.commands = new Commands(pixels, state, userInput, textGraphics, parser, soundPlayer, menu, savedGameStore);
+        this.menu = new Menu(state, textGraphics, pixelData, userInput);
+        this.commands = new Commands(pixelData, state, userInput, textGraphics, parser, soundPlayer, menu, savedGameStore);
         this.ego = state.ego;
         this.state.init();
         this.textGraphics.updateInputLine();
@@ -243,7 +243,7 @@ public class Interpreter {
 
         // Draw the AnimatedObjects to screen in priority order.
         state.drawObjects(state.makeUpdateObjectList());
-        state.showObjects(pixels, state.updateObjectList);
+        state.showObjects(pixelData, state.updateObjectList);
 
         // Clear the 'must be on water or land' bits for ego.
         state.ego.stayOnLand = false;

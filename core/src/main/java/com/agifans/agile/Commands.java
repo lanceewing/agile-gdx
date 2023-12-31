@@ -29,10 +29,10 @@ public class Commands {
     private UserInput userInput;
 
     /**
-     * The pixels array for the AGI screen on which the background Picture and 
+     * The pixels data for the AGI screen on which the background Picture and 
      * AnimatedObjects will be drawn to.
      */
-    private int[] pixels;
+    private PixelData pixelData;
 
     /**
      * Provides methods for drawing text on to the AGI screen.
@@ -67,7 +67,7 @@ public class Commands {
     /**
      * Constructor for Commands.
      *
-     * @param pixels 
+     * @param pixelData 
      * @param state 
      * @param userInput 
      * @param textGraphics 
@@ -76,17 +76,17 @@ public class Commands {
      * @param menu 
      * @param savedGameStore 
      */
-    public Commands(int[] pixels, GameState state, UserInput userInput, 
+    public Commands(PixelData pixelData, GameState state, UserInput userInput, 
             TextGraphics textGraphics, Parser parser, SoundPlayer soundPlayer, 
             Menu menu, SavedGameStore savedGameStore) {
-        this.pixels = pixels;
+        this.pixelData = pixelData;
         this.state = state;
         this.userInput = userInput;
         this.textGraphics = textGraphics;
         this.parser = parser;
         this.menu = menu;
-        this.inventory = new Inventory(state, userInput, textGraphics, pixels);
-        this.savedGames = new SavedGames(state, userInput, textGraphics, pixels, savedGameStore);
+        this.inventory = new Inventory(state, userInput, textGraphics, pixelData);
+        this.savedGames = new SavedGames(state, userInput, textGraphics, pixelData, savedGameStore);
         this.soundPlayer = soundPlayer;
     }
 
@@ -206,26 +206,19 @@ public class Commands {
      * Shows the current priority pixels and control pixels to screen.
      */
     public void showPriorityScreen() {
-        int[] backPixels = new int[pixels.length];
-        
-        System.arraycopy(pixels, 0, backPixels, 0, pixels.length);
+        pixelData.savePixels();
         
         for (int i = 0, ii = (8 * state.pictureRow) * 320; i < (160 * 168); i++, ii += 2) {
-            try {
             int priColorIndex = state.priorityPixels[i];
             int ctrlColorIndex = state.controlPixels[i];
             int rgb565Color = EgaPalette.colours[ctrlColorIndex <= 3 ? ctrlColorIndex : priColorIndex];
-            pixels[ii + 0] = rgb565Color;
-            pixels[ii + 1] = rgb565Color;
-            }
-            catch (Exception e) {
-                e.printStackTrace();
-            }
+            pixelData.putPixel(ii + 0, rgb565Color);
+            pixelData.putPixel(ii + 1, rgb565Color);
         }
 
         userInput.waitForKey(true);
 
-        System.arraycopy(backPixels, 0, pixels, 0, pixels.length);
+        pixelData.restorePixels();
     }
 
     /**
@@ -233,7 +226,7 @@ public class Commands {
      */
     private void showVisualPixels() {
         // Perform the copy to the pixels array of the VisualPixels. This is where the PictureRow comes in to effect.
-        System.arraycopy(state.visualPixels, 0, this.pixels, (8 * state.pictureRow) * 320, state.visualPixels.length);
+        pixelData.pixelCopy(state.visualPixels, (8 * state.pictureRow) * 320, state.visualPixels.length);
     }
 
     /**
@@ -273,22 +266,21 @@ public class Commands {
     private void shakeScreen(int repeatCount) {
         int shakeCount = (repeatCount * 8);
         int backgroundRGB565 = EgaPalette.colours[0];
-        int[] backPixels = new int[pixels.length];
 
-        System.arraycopy(pixels, 0, backPixels, 0, pixels.length);
+        pixelData.savePixels();
         
         for (int shakeNumber = 0; shakeNumber < shakeCount; shakeNumber++) {
             if ((shakeNumber & 1) == 1) {
-                System.arraycopy(backPixels, 0, pixels, 0, pixels.length);
+                pixelData.restorePixels();
             }
             else {
                 for (int y = 0, screenPos = 0; y < 200; y++) {
                     for (int x = 0; x < 320; x++, screenPos++) {
                         if ((x < 8) || (y < 4)) {
-                            this.pixels[screenPos] = backgroundRGB565;
+                            pixelData.putPixel(screenPos, backgroundRGB565);
                         }
                         else {
-                            this.pixels[screenPos] = backPixels[screenPos - 1288];
+                            pixelData.putPixel(screenPos, pixelData.getBackupPixel(screenPos - 1288));
                         }
                     }
                 }
@@ -300,7 +292,7 @@ public class Commands {
             }
         }
 
-        System.arraycopy(backPixels, 0, pixels, 0, pixels.length);
+        pixelData.restorePixels();
     }
 
     /**
@@ -325,7 +317,7 @@ public class Commands {
                             (scriptBufferEvent.data[4] & 0xFF), 
                             (scriptBufferEvent.data[5] & 0x0F),
                             ((scriptBufferEvent.data[5] >> 4) & 0x0F), 
-                            pixels);
+                            pixelData);
                         splitPriorityPixels();
                     }
                     break;
@@ -870,7 +862,7 @@ public class Commands {
                         state.restoreBackgrounds(state.updateObjectList);
                         aniObj.drawn = true;
                         state.drawObjects(state.makeUpdateObjectList());
-                        aniObj.show(pixels);
+                        aniObj.show(pixelData);
                         aniObj.noAdvance = false;
                     }
                 }
@@ -890,7 +882,7 @@ public class Commands {
                         state.drawObjects(state.makeStoppedObjectList());
                     }
                     state.drawObjects(state.makeUpdateObjectList());
-                    aniObj.show(pixels);
+                    aniObj.show(pixelData);
                 }
                 break;
 
@@ -1078,7 +1070,7 @@ public class Commands {
                     // every AnimatedObject is redrawn and blitted to the screen.
                     state.restoreBackgrounds();
                     state.drawObjects();
-                    state.showObjects(pixels);
+                    state.showObjects(pixelData);
                 }
                 break;
 
@@ -1559,9 +1551,9 @@ public class Commands {
                     picObj.addToPicture(
                         action.operands.get(0).asByte(), action.operands.get(1).asByte(), action.operands.get(2).asByte(), 
                         action.operands.get(3).asByte(), action.operands.get(4).asByte(), action.operands.get(5).asByte(), 
-                        action.operands.get(6).asByte(), pixels);
+                        action.operands.get(6).asByte(), pixelData);
                     splitPriorityPixels();
-                    picObj.show(pixels);
+                    picObj.show(pixelData);
                 }
                 break;
 
@@ -1572,7 +1564,7 @@ public class Commands {
                         state.vars[action.operands.get(0).asByte()], state.vars[action.operands.get(1).asByte()], 
                         state.vars[action.operands.get(2).asByte()], state.vars[action.operands.get(3).asByte()], 
                         state.vars[action.operands.get(4).asByte()], state.vars[action.operands.get(5).asByte()],
-                        state.vars[action.operands.get(6).asByte()], pixels);
+                        state.vars[action.operands.get(6).asByte()], pixelData);
                     splitPriorityPixels();
                 }
                 break;
