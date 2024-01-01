@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 2.10.0//EN" "https://www.gwtproject.org/doctype/2.10.0/gwt-module.dtd">
 <module rename-to="html">
-  <source path="" />
+  <source path="">
+    <exclude name="worker/**"/>
+  </source>
   <inherits name="com.badlogic.gdx.backends.gdx_backends_gwt" />
   <inherits name="com.agifans.agile.Agile" />
+  <inherits name='com.google.gwt.webworker.WebWorker' />
   <entry-point class="com.agifans.agile.gwt.GwtLauncher" />
   <set-configuration-property name="gdx.assetpath" value="../assets" />
   <set-configuration-property name="xsiframe.failIfScriptTag" value="FALSE"/>

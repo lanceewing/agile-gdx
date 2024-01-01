@@ -17,14 +17,14 @@ gwt {
   minHeapSize = '1G'
 
   src = files(file('src/main/java')) // Needs to be in front of "modules" below.
-  modules 'com.agifans.agile.GdxDefinition'
+  modules 'com.agifans.agile.GdxDefinition','com.agifans.agile.AgileWebWorker'
   devModules 'com.agifans.agile.GdxDefinitionSuperdev'
   project.webAppDirName = 'webapp'
 
   compiler.strict = true
   compiler.disableCastChecking = true
   //// The next line can be useful to uncomment if you want output that hasn't been obfuscated.
-//  compiler.style = org.docstr.gradle.plugins.gwt.Style.DETAILED
+  compiler.style = org.docstr.gradle.plugins.gwt.Style.DETAILED
 
   sourceLevel = 1.11
 }
@@ -34,6 +34,7 @@ dependencies {
   implementation "com.github.tommyettinger:gdx-backend-gwt:1.1210.0"
   implementation "com.github.tommyettinger:gdx-backend-gwt:1.1210.0:sources"
   implementation "com.google.jsinterop:jsinterop-annotations:2.0.2:sources"
+  implementation "de.knightsoft-net:gwt-webworker:1.0.8"
   implementation project(':core')
 
 }

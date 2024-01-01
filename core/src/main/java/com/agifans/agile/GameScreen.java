@@ -149,6 +149,10 @@ public class GameScreen implements Screen {
         UserInput userInput = new UserInput();
         Gdx.input.setInputProcessor(userInput);
         
+        // TODO: Move WavePlayer, SavedGameStore, PixelData directly into AgileRunners,
+        // so that we don't need to pass them to the web worker. The worker can itself
+        // create them. We need to minimise what is transferred to the worker. The 
+        // work could perhaps also fetch the game. The UI thread doesn't need to.
         agileRunner.init(gameFolder, userInput, wavePlayer, savedGameStore, pixelData);
         
         // Start up the AgileRunner to run the interpreter in the background.
