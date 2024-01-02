@@ -11,6 +11,7 @@ import com.agifans.agile.agilib.Logic.Action;
 import com.agifans.agile.agilib.Logic.OperandType;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.utils.TimeUtils;
 
 /**
@@ -26,31 +27,53 @@ public abstract class AgileRunner {
     
     protected Interpreter interpreter;
     
-    private String gameUri;
-    private WavePlayer wavePlayer;
-    private SavedGameStore savedGameStore;
-    private UserInput userInput;
-    private PixelData pixelData;
+    protected WavePlayer wavePlayer;
+    protected SavedGameStore savedGameStore;
+    protected UserInput userInput;
+    protected PixelData pixelData;
     
     private long lastTime;
     private long deltaTime;
     
-    public void init(String gameUri, UserInput userInput, WavePlayer wavePlayer, 
-            SavedGameStore savedGameStore, PixelData pixelData) {
-        this.gameUri = gameUri;
+    public AgileRunner(UserInput userInput, WavePlayer wavePlayer, SavedGameStore savedGameStore, 
+            PixelData pixelData) {
         this.userInput = userInput;
         this.wavePlayer = wavePlayer;
         this.savedGameStore = savedGameStore;
         this.pixelData = pixelData;
+        // TODO: Move this to be closer to actual start?
         this.lastTime = TimeUtils.nanoTime();
+    }
+    
+    /**
+     * Initialises the AgileRunner with anything that needs setting up before it starts.
+     * 
+     * @param pixmap
+     */
+    public void init(Pixmap pixmap) {
+        pixelData.init(pixmap);
+        
+        // TODO: Unset this when the AgileRunner is stopped?
+        Gdx.input.setInputProcessor(userInput);
+    }
+    
+    /**
+     * Updates Pixmap with the latest local changes within our implementation specific
+     * PixelData.
+     * 
+     * @param pixmap
+     */
+    public void updatePixmap(Pixmap pixmap) {
+        pixelData.updatePixmap(pixmap);
     }
     
     /**
      * Attempts to load an AGI game from the game folder.
      */
-    protected void loadGame() {
+    protected void loadGame(String gameUri) {
         Game game = null;
-        
+                
+        // As is how the data is fetched.
         Map<String, byte[]> gameFilesMap = fetchGameFiles(gameUri);
         
         // Use a dummy TextGraphics instance to render the "Loading" text in grand AGI fashion.
@@ -188,7 +211,9 @@ public abstract class AgileRunner {
         }
     }
     
-    public abstract void start();
+    public abstract void start(String gameUri);
+    
+    public abstract String selectGame();
     
     public abstract void animationTick();
     

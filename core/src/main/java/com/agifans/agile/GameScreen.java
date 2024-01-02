@@ -35,16 +35,8 @@ public class GameScreen implements Screen {
      */
     private SpriteBatch batch;
     
-    // Platform specific implementations.
+    // Platform specific AgileRunner implementation.
     private AgileRunner agileRunner;
-    private WavePlayer wavePlayer;
-    private SavedGameStore savedGameStore;;
-    
-    /**
-     * The pixels data for the AGI screen. Any change made to this array will be copied 
-     * to the Pixmap on every frame.
-     */
-    private PixelData pixelData;
     
     private Pixmap screenPixmap;
     private Viewport viewport;
@@ -68,23 +60,18 @@ public class GameScreen implements Screen {
     
     /**
      * Constructor for GameScreen.
-     * @param savedGameStore 
-     * @param wavePlayer 
+     * 
      * @param agileRunner 
      */
-    public GameScreen(AgileRunner agileRunner, WavePlayer wavePlayer, SavedGameStore savedGameStore,
-            PixelData pixelData) {
+    public GameScreen(AgileRunner agileRunner) {
         this.agileRunner = agileRunner;
-        this.wavePlayer = wavePlayer;
-        this.savedGameStore = savedGameStore;
-        this.pixelData = pixelData;
         
         batch = new SpriteBatch();
         
         // Uses an approach used successfully in my various libgdx emulators.
         screenPixmap = new Pixmap(AGI_SCREEN_WIDTH, AGI_SCREEN_HEIGHT, Pixmap.Format.RGBA8888);
         screenPixmap.setBlending(Pixmap.Blending.None);
-        pixelData.init(screenPixmap);
+        agileRunner.init(screenPixmap);
         screens = new Texture[3];
         screens[0] = new Texture(screenPixmap, Pixmap.Format.RGBA8888, false);
         screens[0].setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
@@ -128,7 +115,7 @@ public class GameScreen implements Screen {
     }
     
     public boolean copyPixels() {
-        pixelData.updatePixmap(screenPixmap);
+        agileRunner.updatePixmap(screenPixmap);
         screens[updateScreen].draw(screenPixmap, 0, 0);
         updateScreen = (updateScreen + 1) % 3;
         drawScreen = (drawScreen + 1) % 3;
@@ -137,39 +124,6 @@ public class GameScreen implements Screen {
     
     public Texture getDrawScreen() {
         return screens[drawScreen];
-    }
-    
-    /**
-     * Starts the AGI game contained in the given game folder.
-     * 
-     * @param gameFolder The folder from which we'll get all of the game data.
-     */
-    private void startGame(String gameFolder) {
-        // Register the key event handlers for keyUp, keyDown, and keyTyped.
-        UserInput userInput = new UserInput();
-        Gdx.input.setInputProcessor(userInput);
-        
-        // TODO: Move WavePlayer, SavedGameStore, PixelData directly into AgileRunners,
-        // so that we don't need to pass them to the web worker. The worker can itself
-        // create them. We need to minimise what is transferred to the worker. The 
-        // work could perhaps also fetch the game. The UI thread doesn't need to.
-        agileRunner.init(gameFolder, userInput, wavePlayer, savedGameStore, pixelData);
-        
-        // Start up the AgileRunner to run the interpreter in the background.
-        agileRunner.start();
-    }
-    
-    /**
-     * Selects am AGI game folder to run.
-     * 
-     * @return The folder containing the AGI game's resources.
-     */
-    private String selectGame() {
-        // TODO: Implement selection logic. This is a placeholder for now.
-        // return "C:\\dev\\agi\\winagi\\kq4agi";
-        // return "file:/C:/dev/agi/winagi/kq4agi/";
-        // return "file://localhost/C:/dev/agi/winagi/kq4agi/";
-        return "file:///C:/dev/agi/winagi/kq1/";
     }
     
     @Override
@@ -184,7 +138,8 @@ public class GameScreen implements Screen {
 
     @Override
     public void show() {
-        startGame(selectGame());
+        // TODO: When we introduce the home screen, the game will already be selected.
+        agileRunner.start(agileRunner.selectGame());
     }
 
     // TODO: Remove once satisfied with performance.

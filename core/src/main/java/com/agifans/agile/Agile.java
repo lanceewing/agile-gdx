@@ -15,33 +15,22 @@ public class Agile extends Game {
     private GameScreen gameScreen;
     private HomeScreen homeScreen;
     
-    // Platform specific implementations.
+    // Platform specific AgileRunner implementation.
     private AgileRunner agileRunner;
-    private WavePlayer wavePlayer;
-    private SavedGameStore savedGameStore;
-    private PixelData pixelData;
     
     /**
      * Constructor for Agile.
      * 
      * @param agileRunner
-     * @param wavePlayer 
-     * @param savedGameStore 
-     * @param pixelData 
      */
-    public Agile(AgileRunner agileRunner, WavePlayer wavePlayer, SavedGameStore savedGameStore,
-            PixelData pixelData) {
+    public Agile(AgileRunner agileRunner) {
         this.agileRunner = agileRunner;
-        this.wavePlayer = wavePlayer;
-        this.savedGameStore = savedGameStore;
-        this.pixelData = pixelData;
-        
     }
     
     @Override
     public void create() {
         homeScreen = new HomeScreen();
-        gameScreen = new GameScreen(agileRunner, wavePlayer, savedGameStore, pixelData);
+        gameScreen = new GameScreen(agileRunner);
         
         setScreen(gameScreen);
         

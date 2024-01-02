@@ -6,6 +6,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.agifans.agile.AgileRunner;
+import com.agifans.agile.PixelData;
+import com.agifans.agile.SavedGameStore;
+import com.agifans.agile.UserInput;
+import com.agifans.agile.WavePlayer;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.google.gwt.core.client.JavaScriptObject;
@@ -19,14 +23,25 @@ public class GwtAgileRunner extends AgileRunner {
 
     private Worker worker;
     
+    public GwtAgileRunner(UserInput userInput, WavePlayer wavePlayer, SavedGameStore savedGameStore, 
+            PixelData pixelData) {
+        super(userInput, wavePlayer, savedGameStore, pixelData);
+    }
+    
     @Override
-    public void start() {
+    public void start(String gameUri) {
         createWorker();
         
         // TODO: This may need to be done by the web worker.
-        loadGame();
+        loadGame(gameUri);
     }
 
+    @Override
+    public String selectGame() {
+        // TODO: Convert this into a URI format.
+        return "games/kq1/";
+    }
+    
     // NOTE 1: importScripts won't work, because all URLs need to be absolute.
     // NOTE 2: direct URL doesn't work because security headers are not present.
     // NOTE 3: Will probably need to customise gwt-webworker to add SharedArrayBuffer support.
@@ -95,7 +110,7 @@ public class GwtAgileRunner extends AgileRunner {
         Gdx.app.debug("fetchGameFiles", "Attempting to list game folder.");
         
         // TODO: Map gameUri to an internal path. Expected to be a directory.
-        FileHandle gameDirectory = Gdx.files.internal("games/kq1/");
+        FileHandle gameDirectory = Gdx.files.internal(gameUri);
         if (gameDirectory != null) {
             FileHandle[] gameFiles = gameDirectory.list(new FilenameFilter() {
                 @Override

@@ -13,7 +13,7 @@ import com.badlogic.gdx.InputAdapter;
  * Handles the input of keyboard events, mapping them to a form that the AGILE
  * interpreter can query as required. 
  */
-public class UserInput extends InputAdapter {
+public abstract class UserInput extends InputAdapter {
 
     /**
      * The SHIFT modifier key.

@@ -11,19 +11,47 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.agifans.agile.AgileRunner;
+import com.agifans.agile.PixelData;
 import com.agifans.agile.QuitAction;
+import com.agifans.agile.SavedGameStore;
+import com.agifans.agile.UserInput;
+import com.agifans.agile.WavePlayer;
 import com.badlogic.gdx.Gdx;
 
-public class DesktopAgileRunner extends AgileRunner implements Runnable {
+public class DesktopAgileRunner extends AgileRunner {
     
     private Thread interpreterThread;
     
     private boolean exit;
+    
+    public DesktopAgileRunner(UserInput userInput, WavePlayer wavePlayer, 
+            SavedGameStore savedGameStore, PixelData pixelData) {
+        super(userInput, wavePlayer, savedGameStore, pixelData);
+    }
 
     @Override
-    public void start() {
-        interpreterThread = new Thread(this);
+    public void start(String gameUri) {
+        interpreterThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                runGame(gameUri);
+            }
+        });
         interpreterThread.start();
+    }
+    
+    /**
+     * Selects am AGI game folder to run.
+     * 
+     * @return The folder containing the AGI game's resources.
+     */
+    @Override
+    public String selectGame() {
+        // TODO: Implement selection logic. This is a placeholder for now.
+        // return "C:\\dev\\agi\\winagi\\kq4agi";
+        // return "file:/C:/dev/agi/winagi/kq4agi/";
+        // return "file://localhost/C:/dev/agi/winagi/kq4agi/";
+        return "file:///C:/dev/agi/winagi/kq1/";
     }
     
     @Override
@@ -33,11 +61,10 @@ public class DesktopAgileRunner extends AgileRunner implements Runnable {
         }
     }
 
-    @Override
-    public void run() {
+    private void runGame(String gameUri) {
         // Start by loading game. We deliberately do this within the thread and
         // not in the main libgdx UI thread.
-        loadGame();
+        loadGame(gameUri);
         
         while (true) {
             if (exit) {
