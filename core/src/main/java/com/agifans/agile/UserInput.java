@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputAdapter;
@@ -42,7 +43,7 @@ public abstract class UserInput extends InputAdapter {
     /**
      * A queue of all key presses that the user has made.
      */
-    public LinkedList<Integer> keyPressQueue;
+    public Queue<Integer> keyPressQueue;
 
     /**
      * Current state of every key on the keyboard.
@@ -287,12 +288,12 @@ public abstract class UserInput extends InputAdapter {
      * @return Either the key from the queue, or 0 if none available.
      */
     public int getKey() {
-        return (keyPressQueuePeek() != null? keyPressQueuePoll() : 0);
+        return (!keyPressQueueIsEmpty()? keyPressQueuePoll() : 0);
     }
 
-    private Integer keyPressQueuePeek() {
+    private boolean keyPressQueueIsEmpty() {
         synchronized (keyPressQueue) {
-            return keyPressQueue.peek();
+            return keyPressQueue.isEmpty();
         }
     }
     
