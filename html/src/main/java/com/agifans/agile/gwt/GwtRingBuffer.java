@@ -94,7 +94,111 @@ public class GwtRingBuffer {
         return to_write;
     }-*/;
     
+    /**
+     * Read a single int from the ring buffer.
+     * 
+     * @return The int value read from the queue.
+     */
+    public native int pop()/*-{
+        var rd = Atomics.load(this.read_ptr, 0);
+        var wr = Atomics.load(this.write_ptr, 0);
+
+        if (wr === rd) {
+            return 0;
+        }
+
+        var elements = new Uint32Array(1);
+        var len = elements.length;
+        var to_read = Math.min(this._available_read(rd, wr), len);
+
+        var first_part = Math.min(this._storage_capacity() - rd, to_read);
+        var second_part = to_read - first_part;
+
+        this._copy(this.storage, rd, elements, offset, first_part);
+        this._copy(this.storage, 0, elements, offset + first_part, second_part);
+
+        Atomics.store(this.read_ptr, 0, (rd + to_read) % this._storage_capacity());
+
+        return elements[0];
+    }-*/;
     
+    /**
+     * @return True if the ring buffer is empty false otherwise. This can be late
+     * on the reader side: it can return true even if something has just been
+     * pushed.
+     */
+    public native boolean empty()/*-{
+        var rd = Atomics.load(this.read_ptr, 0);
+        var wr = Atomics.load(this.write_ptr, 0);
+
+        return wr === rd;
+    }-*/;
+
+    /**
+     * @return True if the ring buffer is full, false otherwise. This can be late
+     * on the write side: it can return true when something has just been popped.
+     */
+    public native boolean full()/*-{
+        var rd = Atomics.load(this.read_ptr, 0);
+        var wr = Atomics.load(this.write_ptr, 0);
+
+        return (wr + 1) % this._storage_capacity() === rd;
+    }-*/;
+
+    /**
+     * @return The usable capacity for the ring buffer: the number of elements
+     * that can be stored.
+     */
+    public native boolean capacity()/*-{
+        return this._capacity - 1;
+    }-*/;
+
+    /**
+     * @return The number of elements available for reading. This can be late, and
+     * report less elements that is actually in the queue, when something has just
+     * been enqueued.
+     */
+    public native int availableRead()/*-{
+        var rd = Atomics.load(this.read_ptr, 0);
+        var wr = Atomics.load(this.write_ptr, 0);
+        return this._available_read(rd, wr);
+    }-*/;
+
+    /**
+     * @return The number of elements available for writing. This can be late, and
+     * report less elements that is actually available for writing, when something
+     * has just been dequeued.
+     */
+    public native int availableWrite()/*-{
+        var rd = Atomics.load(this.read_ptr, 0);
+        var wr = Atomics.load(this.write_ptr, 0);
+        return this._available_write(rd, wr);
+    }-*/;
+    
+    /**
+     * @return Number of elements available for reading, given a read and write
+     * pointer.
+     */
+    private native int _available_read(int rd, int wr)/*-{
+        return (wr + this._storage_capacity() - rd) % this._storage_capacity();
+    }-*/;
+
+    /**
+     * @return Number of elements available from writing, given a read and write
+     * pointer.
+     */
+    private native int _available_write(int rd, int wr)/*-{
+        return this.capacity() - this._available_read(rd, wr);
+    }-*/;
+
+    /**
+     * @return The size of the storage for elements not accounting the space for
+     * the index, counting the empty slot.
+     * @private
+     */
+    private native int _storage_capacity()/*-{
+        return this._capacity;
+    }-*/;
     
     /**
      * Copy `size` elements from `input`, starting at offset `offset_input`, to
