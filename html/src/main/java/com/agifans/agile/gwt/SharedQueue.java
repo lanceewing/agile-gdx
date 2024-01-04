@@ -90,7 +90,7 @@ public class SharedQueue {
         Atomics.store(
             this.write_ptr,
             0,
-            (wr + to_write) % this._storage_capacity(),
+            (wr + to_write) % this._storage_capacity()
         );
 
         return true;
