@@ -2,10 +2,8 @@ package com.agifans.agile;
 
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
 
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputAdapter;
@@ -39,21 +37,6 @@ public abstract class UserInput extends InputAdapter {
     // AGI ACCEPT/ABORT input values.
     public static final int ACCEPT = 0;
     public static final int ABORT = 1;
-    
-    /**
-     * A queue of all key presses that the user has made.
-     */
-    public Queue<Integer> keyPressQueue;
-
-    /**
-     * Current state of every key on the keyboard.
-    */
-    public boolean[] keys;
-
-    /**
-     * Stores the state of every key on the previous cycle.
-     */
-    public boolean[] oldKeys;
 
     /**
      * Current state of the ALT/SHIFT/CONTROL modifiers, as bit mask.
@@ -97,9 +80,6 @@ public abstract class UserInput extends InputAdapter {
      * Constructor for UserInput.
      */
     public UserInput() {
-        this.keys = new boolean[256];
-        this.oldKeys = new boolean[256];
-        this.keyPressQueue = new LinkedList<Integer>();
         this.keyCodeMap = createKeyConversionMap();
         this.reverseKeyCodeMap = new HashMap<Integer, Integer>();
         for (Map.Entry<Integer, Integer> entry : keyCodeMap.entrySet()) {
@@ -108,7 +88,7 @@ public abstract class UserInput extends InputAdapter {
             }
         }
     }
-
+    
     /**
      * Handles the key down event.
      * 
@@ -122,7 +102,7 @@ public abstract class UserInput extends InputAdapter {
             return false;
         }
 
-        this.keys[keycode & 0xFF] = true;
+        setKey((keycode & 0xFF), true);
 
         // Update modifies for ALT/SHIFT/CONTROL but do not enqueue key presses that 
         // are Alt/Shift/Ctrl by themselves. AGI doesn't support mapping those.
@@ -161,7 +141,7 @@ public abstract class UserInput extends InputAdapter {
      * Handles the key up event.
      */
     public boolean keyUp(int keycode) {
-        this.keys[keycode & 0xFF] = false;
+        setKey((keycode & 0xFF), false);
         
         // Update modifiers for ALT/CONTROL
         if ((keycode == Keys.ALT_LEFT) || (keycode == Keys.ALT_RIGHT)) {
@@ -282,21 +262,27 @@ public abstract class UserInput extends InputAdapter {
         return (!keyPressQueueIsEmpty()? keyPressQueuePoll() : 0);
     }
 
-    private boolean keyPressQueueIsEmpty() {
-        synchronized (keyPressQueue) {
-            return keyPressQueue.isEmpty();
-        }
-    }
+    protected abstract boolean keyPressQueueIsEmpty();
     
-    private Integer keyPressQueuePoll() {
-        synchronized (keyPressQueue) {
-            return keyPressQueue.poll();
-        }
-    }
+    protected abstract Integer keyPressQueuePoll();
     
-    private boolean keyPressQueueAdd(Integer key) {
-        synchronized (keyPressQueue) {
-            return keyPressQueue.add(key);
+    protected abstract boolean keyPressQueueAdd(Integer key);
+    
+    public abstract boolean keys(int keycode);
+    
+    public abstract boolean oldKeys(int keycode);
+    
+    protected abstract void setKey(int keycode, boolean value);
+    
+    protected abstract void setOldKey(int keycode, boolean value);
+
+    /**
+     * Copies the current state of the 256 keys to the old keys array, so that we know 
+     * what state it was in in the previous interpreter tick.
+     */
+    public void copyKeysToOldKeys() {
+        for (int i = 0; i < 256; i++) {
+            setOldKey(i, keys(i));
         }
     }
     

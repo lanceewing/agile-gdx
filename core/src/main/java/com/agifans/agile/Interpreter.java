@@ -206,8 +206,8 @@ public class Interpreter {
             }
 
             // Store what the key states were in this cycle before leaving.
-            for (int i = 0; i < 256; i++) userInput.oldKeys[i] = userInput.keys[i];
-
+            userInput.copyKeysToOldKeys();
+            
             inTick = false;
         }
     }
@@ -275,7 +275,7 @@ public class Interpreter {
         }
 
         // F12 shows the priority and control screens.
-        if (userInput.keys[(int)Keys.F12] && !userInput.oldKeys[(int)Keys.F12]) {
+        if (userInput.keys((int)Keys.F12) && !userInput.oldKeys((int)Keys.F12)) {
             commands.showPriorityScreen();
         }
 
@@ -284,27 +284,27 @@ public class Interpreter {
             if (state.holdKey) {
                 // In "hold key" mode, the ego direction directly reflects the direction key currently being held down.
                 byte direction = 0;
-                if (userInput.keys[(int)Keys.UP]) direction = 1;
-                if (userInput.keys[(int)Keys.PAGE_UP]) direction = 2;
-                if (userInput.keys[(int)Keys.RIGHT]) direction = 3;
-                if (userInput.keys[(int)Keys.PAGE_DOWN]) direction = 4;
-                if (userInput.keys[(int)Keys.DOWN]) direction = 5;
-                if (userInput.keys[(int)Keys.END]) direction = 6;
-                if (userInput.keys[(int)Keys.LEFT]) direction = 7;
-                if (userInput.keys[(int)Keys.HOME]) direction = 8;
+                if (userInput.keys((int)Keys.UP)) direction = 1;
+                if (userInput.keys((int)Keys.PAGE_UP)) direction = 2;
+                if (userInput.keys((int)Keys.RIGHT)) direction = 3;
+                if (userInput.keys((int)Keys.PAGE_DOWN)) direction = 4;
+                if (userInput.keys((int)Keys.DOWN)) direction = 5;
+                if (userInput.keys((int)Keys.END)) direction = 6;
+                if (userInput.keys((int)Keys.LEFT)) direction = 7;
+                if (userInput.keys((int)Keys.HOME)) direction = 8;
                 state.vars[Defines.EGODIR] = direction;
             }
             else {
                 // Whereas in "release key" mode, the direction key press will toggle movement in that direction.
                 byte direction = 0;
-                if (userInput.keys[(int)Keys.UP] && !userInput.oldKeys[(int)Keys.UP]) direction = 1;
-                if (userInput.keys[(int)Keys.PAGE_UP] && !userInput.oldKeys[(int)Keys.PAGE_UP]) direction = 2;
-                if (userInput.keys[(int)Keys.RIGHT] && !userInput.oldKeys[(int)Keys.RIGHT]) direction = 3;
-                if (userInput.keys[(int)Keys.PAGE_DOWN] && !userInput.oldKeys[(int)Keys.PAGE_DOWN]) direction = 4;
-                if (userInput.keys[(int)Keys.DOWN] && !userInput.oldKeys[(int)Keys.DOWN]) direction = 5;
-                if (userInput.keys[(int)Keys.END] && !userInput.oldKeys[(int)Keys.END]) direction = 6;
-                if (userInput.keys[(int)Keys.LEFT] && !userInput.oldKeys[(int)Keys.LEFT]) direction = 7;
-                if (userInput.keys[(int)Keys.HOME] && !userInput.oldKeys[(int)Keys.HOME]) direction = 8;
+                if (userInput.keys((int)Keys.UP) && !userInput.oldKeys((int)Keys.UP)) direction = 1;
+                if (userInput.keys((int)Keys.PAGE_UP) && !userInput.oldKeys((int)Keys.PAGE_UP)) direction = 2;
+                if (userInput.keys((int)Keys.RIGHT) && !userInput.oldKeys((int)Keys.RIGHT)) direction = 3;
+                if (userInput.keys((int)Keys.PAGE_DOWN) && !userInput.oldKeys((int)Keys.PAGE_DOWN)) direction = 4;
+                if (userInput.keys((int)Keys.DOWN) && !userInput.oldKeys((int)Keys.DOWN)) direction = 5;
+                if (userInput.keys((int)Keys.END) && !userInput.oldKeys((int)Keys.END)) direction = 6;
+                if (userInput.keys((int)Keys.LEFT) && !userInput.oldKeys((int)Keys.LEFT)) direction = 7;
+                if (userInput.keys((int)Keys.HOME) && !userInput.oldKeys((int)Keys.HOME)) direction = 8;
                 if (direction > 0) {
                     state.vars[Defines.EGODIR] = (state.vars[Defines.EGODIR] == direction ? (byte)0 : direction);
                 }
