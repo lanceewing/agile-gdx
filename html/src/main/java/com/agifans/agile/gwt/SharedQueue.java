@@ -43,13 +43,13 @@ public class SharedQueue {
     }
     
     private native void initialise(JavaScriptObject sab)/*-{
-        // Maximum usable size is 1<<32 - type.BYTES_PER_ELEMENT bytes in the ring
+        // Maximum usable size is 1<<32 - BYTES_PER_ELEMENT bytes in the ring
         // buffer for this version, easily changeable.
         // -4 for the write ptr (uint32_t offsets)
         // -4 for the read ptr (uint32_t offsets)
         // capacity counts the empty slot to distinguish between full and empty.
-        this._type = type;
-        this._capacity = (sab.byteLength - 8) / type.BYTES_PER_ELEMENT;
+        var BYTES_PER_ELEMENT = 4;
+        this._capacity = (sab.byteLength - 8) / BYTES_PER_ELEMENT;
         this.buf = sab;
         this.write_ptr = new Uint32Array(this.buf, 0, 1);
         this.read_ptr = new Uint32Array(this.buf, 4, 1);
