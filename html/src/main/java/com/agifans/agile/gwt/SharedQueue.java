@@ -4,7 +4,7 @@ import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.typedarrays.shared.Uint32Array;
 
 /** 
- * GWT RingBuffer based onPaul Adenot's ringbuf.js JavaScript class. Paul works for
+ * GWT Queue based on Paul Adenot's ringbuf.js JavaScript class. Paul works for
  * Mozilla on Firefox and wrote the RingBuffer JS class as a way to use the 
  * SharedArrayBuffer to send data between two JS thread (e.g. two workers, or 
  * a worker and the UI thread) without using the postMessage mechanism, which is
@@ -15,12 +15,12 @@ import com.google.gwt.typedarrays.shared.Uint32Array;
  * 
  * Original JS code: https://github.com/padenot/ringbuf.js/blob/main/js/ringbuf.js
  */
-public class GwtRingBuffer {
+public class SharedQueue {
 
     /** 
-     * Allocate the SharedArrayBuffer for a RingBuffer, based on the capacity required.
+     * Allocate the SharedArrayBuffer for a Queue, based on the capacity required.
      * 
-     * @param capacity The number of elements the ring buffer will be able to hold.
+     * @param capacity The number of elements the queue will be able to hold.
      * 
      * @return A SharedArrayBuffer of the right size.
      */
@@ -34,11 +34,11 @@ public class GwtRingBuffer {
     }-*/;
     
     /**
-     * Constructor for RingBuffer.
+     * Constructor for SharedQueue.
      * 
-     * @param sab SharedArrayBuffer to use for RingBuffer. Obtained by calling RingBuffer.getStorageForCapacity.
+     * @param sab SharedArrayBuffer to use for SharedQueue. Obtained by calling SharedQueue.getStorageForCapacity.
      */
-    public GwtRingBuffer(JavaScriptObject sab) {
+    public SharedQueue(JavaScriptObject sab) {
         initialise(sab);
     }
     
@@ -57,19 +57,21 @@ public class GwtRingBuffer {
     }-*/;
 
     /**
-     * Push an int value to the ring buffer.
+     * Inserts the specified int value into this queue if it is possible to do so
+     * immediately without violating capacity restrictions, returning
+     * {@code true} upon success or {@code false} if no space is currently available.
      * 
-     * @param value The int to push on to the ring buffer.
+     * @param value The int value to add to the queue.
      * 
-     * @return 1 if added; otherwise 0.
+     * @return {@code true} if successfully added; otherwise {@code false}.
      */
-    public native int push(int value)/*-{
+    public native int add(int value)/*-{
         var rd = Atomics.load(this.read_ptr, 0);
         var wr = Atomics.load(this.write_ptr, 0);
 
         if ((wr + 1) % this._storage_capacity() === rd) {
             // full
-            return 0;
+            return false;
         }
         
         var elements = new Uint32Array(1);
@@ -91,20 +93,21 @@ public class GwtRingBuffer {
             (wr + to_write) % this._storage_capacity(),
         );
 
-        return to_write;
+        return true;
     }-*/;
     
     /**
-     * Read a single int from the ring buffer.
+     * Retrieves and removes the head of this queue, or returns {@code null} if 
+     * this queue is empty.
      * 
-     * @return The int value read from the queue.
+     * @return the head of this queue, or {@code null} if this queue is empty
      */
-    public native int pop()/*-{
+    public native Integer poll()/*-{
         var rd = Atomics.load(this.read_ptr, 0);
         var wr = Atomics.load(this.write_ptr, 0);
 
         if (wr === rd) {
-            return 0;
+            return null;
         }
 
         var elements = new Uint32Array(1);
@@ -123,26 +126,17 @@ public class GwtRingBuffer {
     }-*/;
     
     /**
-     * @return True if the ring buffer is empty false otherwise. This can be late
-     * on the reader side: it can return true even if something has just been
+     * Returns {@code true} if this queue contains no elements.
+     * 
+     * @return {@code true} if the queue is empty; {@code false} otherwise. This can 
+     * be late on the reader side: it can return true even if something has just been
      * pushed.
      */
-    public native boolean empty()/*-{
+    public native boolean isEmpty()/*-{
         var rd = Atomics.load(this.read_ptr, 0);
         var wr = Atomics.load(this.write_ptr, 0);
 
         return wr === rd;
-    }-*/;
-
-    /**
-     * @return True if the ring buffer is full, false otherwise. This can be late
-     * on the write side: it can return true when something has just been popped.
-     */
-    public native boolean full()/*-{
-        var rd = Atomics.load(this.read_ptr, 0);
-        var wr = Atomics.load(this.write_ptr, 0);
-
-        return (wr + 1) % this._storage_capacity() === rd;
     }-*/;
 
     /**
@@ -151,28 +145,6 @@ public class GwtRingBuffer {
      */
     public native boolean capacity()/*-{
         return this._capacity - 1;
-    }-*/;
-
-    /**
-     * @return The number of elements available for reading. This can be late, and
-     * report less elements that is actually in the queue, when something has just
-     * been enqueued.
-     */
-    public native int availableRead()/*-{
-        var rd = Atomics.load(this.read_ptr, 0);
-        var wr = Atomics.load(this.write_ptr, 0);
-        return this._available_read(rd, wr);
-    }-*/;
-
-    /**
-     * @return The number of elements available for writing. This can be late, and
-     * report less elements that is actually available for writing, when something
-     * has just been dequeued.
-     */
-    public native int availableWrite()/*-{
-        var rd = Atomics.load(this.read_ptr, 0);
-        var wr = Atomics.load(this.write_ptr, 0);
-        return this._available_write(rd, wr);
     }-*/;
     
     /**
