@@ -65,7 +65,7 @@ public class SharedQueue {
      * 
      * @return {@code true} if successfully added; otherwise {@code false}.
      */
-    public native int add(int value)/*-{
+    public native boolean add(int value)/*-{
         var rd = Atomics.load(this.read_ptr, 0);
         var wr = Atomics.load(this.write_ptr, 0);
 

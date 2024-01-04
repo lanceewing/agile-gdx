@@ -83,19 +83,16 @@ public class GwtUserInput extends UserInput {
 
     @Override
     protected boolean keyPressQueueIsEmpty() {
-        // TODO Auto-generated method stub
-        return false;
+        return keyPressQueue.isEmpty();
     }
 
     @Override
     protected Integer keyPressQueuePoll() {
-        // TODO Auto-generated method stub
-        return null;
+        return keyPressQueue.poll();
     }
 
     @Override
     protected boolean keyPressQueueAdd(Integer key) {
-        // TODO Auto-generated method stub
-        return false;
+        return keyPressQueue.add(key);
     }
 }
