@@ -117,9 +117,6 @@ public abstract class UserInput extends InputAdapter {
      * @return whether the input was processed 
      */
     public boolean keyDown (int keycode) {
-        //System.out.println(String.format("keyDown: 0x%04X [modifiers=0x%05X]", 
-        //        (int)keycode, modifiers));
-        
         // AGILE interpreter ignores some keys completely, e.g. F11.
         if (keycode == Keys.F11) {
             return false;
@@ -164,9 +161,6 @@ public abstract class UserInput extends InputAdapter {
      * Handles the key up event.
      */
     public boolean keyUp(int keycode) {
-        //System.out.println(String.format("keyUp: 0x%04X [modifiers=0x%05X]", 
-        //        (int)keycode, modifiers));
-        
         this.keys[keycode & 0xFF] = false;
         
         // Update modifiers for ALT/CONTROL
@@ -188,9 +182,6 @@ public abstract class UserInput extends InputAdapter {
      * @param character The character that was typed.
      */
     public boolean keyTyped(char character) {
-        //System.out.println(String.format("keyTyped: 0x%02X [modifiers=0x%05X]", 
-        //        (int)character, modifiers));
-        
         // NOTE: The keyTyped method isn't invoked when ALT and CTRL are used.
 
         // We handle ENTER ourselves in keyDown, via the HashMap in Character class.
