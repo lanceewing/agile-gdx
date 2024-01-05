@@ -101,17 +101,21 @@ public class SharedQueue {
     }-*/;
     
     /**
-     * Retrieves and removes the head of this queue, or returns {@code null} if 
-     * this queue is empty.
+     * Retrieves and removes the head of this queue, or returns -1 if 
+     * this queue is empty. We don't appear to be able to set the return type to
+     * the Integer type since we get unpredictable behaviour on the Java side, e.g. 
+     * it mysteriously becomes undefined when it should contain a number. We therefore
+     * rely on the fact that we are not expecting any negative values to be stored in
+     * this queue and return -1 instead of null. Not ideal but it works.
      * 
-     * @return the head of this queue, or {@code null} if this queue is empty
+     * @return the head of this queue, or -1 if this queue is empty
      */
-    public native Integer poll()/*-{
+    public native int poll()/*-{
         var rd = Atomics.load(this.read_ptr, 0);
         var wr = Atomics.load(this.write_ptr, 0);
 
         if (wr === rd) {
-            return null;
+            return -1;
         }
 
         var elements = new Uint32Array(1);

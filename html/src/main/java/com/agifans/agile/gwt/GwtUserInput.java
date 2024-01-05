@@ -88,7 +88,13 @@ public class GwtUserInput extends UserInput {
 
     @Override
     protected Integer keyPressQueuePoll() {
-        return keyPressQueue.poll();
+        int keyCode = keyPressQueue.poll();
+        // We don't appear to be able to use a return type of Integer for the native
+        // JS poll method, as that leads to unpredictable behaviour, e.g. it mysteriously
+        // becomes undefined when it should contain a number. For that reason, we use -1
+        // to indicate absence of a waiting key and convert that to null to match what
+        // the other platforms are doing.
+        return (keyCode == -1? null : keyCode);
     }
 
     @Override
