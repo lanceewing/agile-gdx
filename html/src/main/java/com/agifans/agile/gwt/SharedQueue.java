@@ -69,7 +69,7 @@ public class SharedQueue {
         var rd = Atomics.load(this.read_ptr, 0);
         var wr = Atomics.load(this.write_ptr, 0);
 
-        if ((wr + 1) % this._storage_capacity() === rd) {
+        if ((wr + 1) % (this.@com.agifans.agile.gwt.SharedQueue::_storage_capacity()()) === rd) {
             // full
             return false;
         }
@@ -78,19 +78,23 @@ public class SharedQueue {
         elements[0] = value;
 
         var len = elements.length;
-        var to_write = Math.min(this._available_write(rd, wr), len);
-        var first_part = Math.min(this._storage_capacity() - wr, to_write);
+        var to_write = Math.min(this.@com.agifans.agile.gwt.SharedQueue::_available_write(II)(rd, wr), len);
+        var first_part = Math.min((this.@com.agifans.agile.gwt.SharedQueue::_storage_capacity()()) - wr, to_write);
         var second_part = to_write - first_part;
 
         // Handles wrapping around in the buffer.
-        this._copy(elements, offset, this.storage, wr, first_part);
-        this._copy(elements, offset + first_part, this.storage, 0, second_part);
+        this.@com.agifans.agile.gwt.SharedQueue::_copy(Lcom/google/gwt/typedarrays/shared/Uint32Array;ILcom/google/gwt/typedarrays/shared/Uint32Array;II)(
+            elements, 0, this.storage, wr, first_part
+        );
+        this.@com.agifans.agile.gwt.SharedQueue::_copy(Lcom/google/gwt/typedarrays/shared/Uint32Array;ILcom/google/gwt/typedarrays/shared/Uint32Array;II)(
+            elements, 0 + first_part, this.storage, 0, second_part
+        );
 
         // publish the enqueued data to the other side
         Atomics.store(
             this.write_ptr,
             0,
-            (wr + to_write) % this._storage_capacity()
+            (wr + to_write) % (this.@com.agifans.agile.gwt.SharedQueue::_storage_capacity()())
         );
 
         return true;
@@ -112,15 +116,19 @@ public class SharedQueue {
 
         var elements = new Uint32Array(1);
         var len = elements.length;
-        var to_read = Math.min(this._available_read(rd, wr), len);
+        var to_read = Math.min(this.@com.agifans.agile.gwt.SharedQueue::_available_read(II)(rd, wr), len);
 
-        var first_part = Math.min(this._storage_capacity() - rd, to_read);
+        var first_part = Math.min((this.@com.agifans.agile.gwt.SharedQueue::_storage_capacity()()) - rd, to_read);
         var second_part = to_read - first_part;
 
-        this._copy(this.storage, rd, elements, offset, first_part);
-        this._copy(this.storage, 0, elements, offset + first_part, second_part);
+        this.@com.agifans.agile.gwt.SharedQueue::_copy(Lcom/google/gwt/typedarrays/shared/Uint32Array;ILcom/google/gwt/typedarrays/shared/Uint32Array;II)(
+            this.storage, rd, elements, 0, first_part
+        );
+        this.@com.agifans.agile.gwt.SharedQueue::_copy(Lcom/google/gwt/typedarrays/shared/Uint32Array;ILcom/google/gwt/typedarrays/shared/Uint32Array;II)(
+            this.storage, 0, elements, 0 + first_part, second_part
+        );
 
-        Atomics.store(this.read_ptr, 0, (rd + to_read) % this._storage_capacity());
+        Atomics.store(this.read_ptr, 0, (rd + to_read) % (this.@com.agifans.agile.gwt.SharedQueue::_storage_capacity()()));
 
         return elements[0];
     }-*/;
@@ -152,7 +160,7 @@ public class SharedQueue {
      * pointer.
      */
     private native int _available_read(int rd, int wr)/*-{
-        return (wr + this._storage_capacity() - rd) % this._storage_capacity();
+        return (wr + (this.@com.agifans.agile.gwt.SharedQueue::_storage_capacity()()) - rd) % (this.@com.agifans.agile.gwt.SharedQueue::_storage_capacity()());
     }-*/;
 
     /**
@@ -160,7 +168,7 @@ public class SharedQueue {
      * pointer.
      */
     private native int _available_write(int rd, int wr)/*-{
-        return this.capacity() - this._available_read(rd, wr);
+        return (this.@com.agifans.agile.gwt.SharedQueue::capacity()()) - (this.@com.agifans.agile.gwt.SharedQueue::_available_read(II)(rd, wr));
     }-*/;
 
     /**
