@@ -8,6 +8,10 @@ import com.google.gwt.core.client.JavaScriptObject;
  */
 public class MessageEvent extends com.google.gwt.webworker.client.MessageEvent {
 
+    protected MessageEvent() {
+        // required protected constructor for JavaScriptObject
+    }
+    
     public final native JavaScriptObject getDataAsObject() /*-{
         return this.data;
     }-*/;
