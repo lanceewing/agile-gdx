@@ -14,7 +14,7 @@ public class GwtVariableData implements VariableData {
      * total ticks variable, which is actually not an AGI variable. We're just doing this
      * for convenience, rather than creating a separate 1 slot SharedArray.
      */
-    private static final int TOTAL_TICKS = 257;
+    private static final int TOTAL_TICKS = 256;
     
     /**
      * Stores the value for each of the AGI variables.
