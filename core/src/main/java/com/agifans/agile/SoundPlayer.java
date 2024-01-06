@@ -197,7 +197,7 @@ public class SoundPlayer {
             // Add master volume and dissolve value to current channel volume. Noise channel doesn't dissolve.
             if (channel < 3) volume += dissolveValue;
             
-            volume += this.state.vars[Defines.ATTENUATION];
+            volume += this.state.getVar(Defines.ATTENUATION);
 
             if (volume < 0) volume = 0;
             if (volume > 0x0F) volume = 0x0F;

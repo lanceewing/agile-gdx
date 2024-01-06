@@ -60,10 +60,19 @@ public class AgileWebWorker extends DedicatedWorkerEntryPoint implements Message
         
         // The gwt-webworker module works well for Strings, but doesn't support
         // transferable objects and the SharedArrayBuffer.
-        this.postMessage("Worker received: " + event.getDataAsString());
+        
+        
+        
+        // TODO: This works, which proves that the new methods are working.
+        JavaScriptObject testObj = event.getDataAsObject();
+        this.postMessage("Worker received: " + getTestObjValue(testObj));
         
     }
 
+    private native int getTestObjValue(JavaScriptObject obj)/*-{
+        return obj.object.value;
+    }-*/;
+    
     protected final void postObject(String name, JavaScriptObject object) {
         getGlobalScope().postObject(name, object);
     }

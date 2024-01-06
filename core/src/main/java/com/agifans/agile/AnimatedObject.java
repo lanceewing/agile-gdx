@@ -395,7 +395,7 @@ public class AnimatedObject implements Comparable<AnimatedObject> {
 
             // If the AnimatedObject is ego, then set the EGODIR var.
             if (objectNumber == 0) {
-                state.vars[Defines.EGODIR] = direction;
+                state.setVar(Defines.EGODIR, direction);
             }
 
             motionParam1 = (short)((state.random.nextInt((Defines.MAXDIST - Defines.MINDIST)) + Defines.MINDIST) & 0xFF);
@@ -546,7 +546,7 @@ public class AnimatedObject implements Comparable<AnimatedObject> {
 
         // If this AnimatedObject is ego, set var[EGODIR]
         if (this.objectNumber == 0) {
-            this.state.vars[Defines.EGODIR] = this.direction;
+            this.state.setVar(Defines.EGODIR, this.direction);
         }
 
         // If 0, signal completion.
@@ -596,7 +596,7 @@ public class AnimatedObject implements Comparable<AnimatedObject> {
         // If this AnimatedObject is ego, then give back user control.
         if (this.objectNumber == 0) {
             state.userControl = true;
-            state.vars[Defines.EGODIR] = 0;
+            state.setVar(Defines.EGODIR, 0);
         }
     }
 
@@ -664,7 +664,7 @@ public class AnimatedObject implements Comparable<AnimatedObject> {
 
             // When Ego is the blocked object also set ego's direction to zero.
             if (this.objectNumber == 0) {
-                state.vars[Defines.EGODIR] = 0;
+                state.setVar(Defines.EGODIR, 0);
             }
         }
     }
@@ -755,11 +755,11 @@ public class AnimatedObject implements Comparable<AnimatedObject> {
             // If the object hit the border, set the appropriate flags.
             if (border > 0) {
                 if (this.objectNumber == 0) {
-                    state.vars[Defines.EGOEDGE] = border;
+                    state.setVar(Defines.EGOEDGE, border);
                 }
                 else {
-                    state.vars[Defines.OBJHIT] = this.objectNumber;
-                    state.vars[Defines.OBJEDGE] = border;
+                    state.setVar(Defines.OBJHIT, this.objectNumber);
+                    state.setVar(Defines.OBJEDGE, border);
                 }
 
                 // If the object was on a 'moveobj', set the move as finished.

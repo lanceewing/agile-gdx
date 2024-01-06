@@ -15,6 +15,7 @@ import com.agifans.agile.PixelData;
 import com.agifans.agile.QuitAction;
 import com.agifans.agile.SavedGameStore;
 import com.agifans.agile.UserInput;
+import com.agifans.agile.VariableData;
 import com.agifans.agile.WavePlayer;
 import com.badlogic.gdx.Gdx;
 
@@ -25,8 +26,8 @@ public class DesktopAgileRunner extends AgileRunner {
     private boolean exit;
     
     public DesktopAgileRunner(UserInput userInput, WavePlayer wavePlayer, 
-            SavedGameStore savedGameStore, PixelData pixelData) {
-        super(userInput, wavePlayer, savedGameStore, pixelData);
+            SavedGameStore savedGameStore, PixelData pixelData, VariableData variableData) {
+        super(userInput, wavePlayer, savedGameStore, pixelData, variableData);
     }
 
     @Override

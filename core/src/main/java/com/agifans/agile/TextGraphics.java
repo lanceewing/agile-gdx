@@ -426,9 +426,9 @@ public class TextGraphics {
 
             StringBuilder scoreStatus = new StringBuilder();
             scoreStatus.append(" Score:");
-            scoreStatus.append(state.vars[Defines.SCORE]);
+            scoreStatus.append(state.getVar(Defines.SCORE));
             scoreStatus.append(" of ");
-            scoreStatus.append(state.vars[Defines.MAXSCORE]);
+            scoreStatus.append(state.getVar(Defines.MAXSCORE));
             drawString(this.pixelData, padRightSpaces(scoreStatus.toString(), 30), 0, state.statusLineRow * 8, 0, 15);
             StringBuilder soundStatus = new StringBuilder();
             soundStatus.append("Sound:");
@@ -622,12 +622,12 @@ public class TextGraphics {
         }
 
         // Get the response.
-        if (state.vars[Defines.PRINT_TIMEOUT] == 0) {
+        if (state.getVar(Defines.PRINT_TIMEOUT) == 0) {
             retVal = (userInput.waitAcceptAbort() == UserInput.ACCEPT);
         }
         else {
             // The timeout value is given in half seconds and the TotalTicks in 1/60ths of a second.
-            timeOut = state.totalTicks + state.vars[Defines.PRINT_TIMEOUT] * 30;
+            timeOut = state.totalTicks + state.getVar(Defines.PRINT_TIMEOUT) * 30;
 
             while ((state.totalTicks < timeOut) && (userInput.checkAcceptAbort() == -1))  {
                 try {
@@ -640,7 +640,7 @@ public class TextGraphics {
 
             retVal = true;
 
-            state.vars[Defines.PRINT_TIMEOUT] = 0;
+            state.setVar(Defines.PRINT_TIMEOUT, 0);
         }
 
         // Close the window.
@@ -887,10 +887,10 @@ public class TextGraphics {
                             numPos = numberFromString(str, i);
                             width = numPos[0];
                             i = numPos[1];
-                            output.append(padLeftZeros(Integer.toString(state.vars[num]), width));
+                            output.append(padLeftZeros(Integer.toString(state.getVar(num)), width));
                         }
                         else {
-                            output.append(state.vars[num]);
+                            output.append(state.getVar(num));
                         }
                         break;
 

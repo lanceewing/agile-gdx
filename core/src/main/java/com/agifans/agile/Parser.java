@@ -106,7 +106,7 @@ public class Parser {
                             // Unrecognised single word. Stores the word, use ANYWORD (word number 1, place holder for any word)
                             state.recognisedWords.add(wordToMatch);
                             this.recognisedWordNumbers.add(ANYWORD);
-                            state.vars[Defines.UNKNOWN_WORD] = (byte)(state.recognisedWords.size());
+                            state.setVar(Defines.UNKNOWN_WORD, (byte)(state.recognisedWords.size()));
                             inputLineStartPos = sanitisedInputLine.length();
                             break;
                         }

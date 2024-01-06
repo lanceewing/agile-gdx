@@ -74,8 +74,8 @@ public class Interpreter {
      * @param pixels
      */
     public Interpreter(Game game, UserInput userInput, WavePlayer wavePlayer, 
-            SavedGameStore savedGameStore, PixelData pixelData) {
-        this.state = new GameState(game);
+            SavedGameStore savedGameStore, PixelData pixelData, VariableData variableData) {
+        this.state = new GameState(game, variableData);
         this.userInput = userInput;
         this.pixelData = pixelData;
         this.textGraphics = new TextGraphics(pixelData, state, userInput);
@@ -92,20 +92,20 @@ public class Interpreter {
      * Updates the internal AGI game clock. This method is invoked once a second.
      */
     private void updateGameClock() {
-        if (++state.vars[Defines.SECONDS] >= 60) {
+        if (state.incrementVar(Defines.SECONDS) >= 60) {
             // One minute has passed.
-            if (++state.vars[Defines.MINUTES] >= 60) {
+            if (state.incrementVar(Defines.MINUTES) >= 60) {
                 // One hour has passed.
-                if (++state.vars[Defines.HOURS] >= 24) {
+                if (state.incrementVar(Defines.HOURS) >= 24) {
                     // One day has passed.
-                    state.vars[Defines.DAYS]++;
-                    state.vars[Defines.HOURS] = 0;
+                    state.incrementVar(Defines.DAYS);
+                    state.setVar(Defines.HOURS, 0);
                 }
 
-                state.vars[Defines.MINUTES] = 0;
+                state.setVar(Defines.MINUTES, 0);
             }
 
-            state.vars[Defines.SECONDS] = 0;
+            state.setVar(Defines.SECONDS, 0);
         }
     }
 
@@ -136,7 +136,7 @@ public class Interpreter {
             inTick = true;
 
             // Proceed only if the animation tick count has reached the set animation interval x 3.
-            if (++state.animationTicks < (state.vars[Defines.ANIMATION_INT] * 3)) {
+            if (++state.animationTicks < (state.getVar(Defines.ANIMATION_INT) * 3)) {
                 inTick = false;
                 return;
             }
@@ -152,10 +152,10 @@ public class Interpreter {
 
             // If ego is under program control, override user input as to his direction.
             if (!state.userControl) {
-                state.vars[Defines.EGODIR] = ego.direction;
+                state.setVar(Defines.EGODIR, ego.direction);
             }
             else {
-                ego.direction = (byte)state.vars[Defines.EGODIR];
+                ego.direction = (byte)state.getVar(Defines.EGODIR);
             }
 
             // Calculate the direction in which objects will move, based on their MotionType. We do
@@ -164,31 +164,31 @@ public class Interpreter {
             updateObjectDirections();
 
             // Store score and sound state prior to scanning LOGIC 0, so we can determine if they change.
-            int previousScore = state.vars[Defines.SCORE];
+            int previousScore = state.getVar(Defines.SCORE);
             boolean soundStatus = state.flags[Defines.SOUNDON];
 
             // Continue scanning LOGIC 0 while the return value is true (which is what indicates a rescan).
             while (commands.executeLogic(0)) {
-                state.vars[Defines.OBJHIT] = 0;
-                state.vars[Defines.OBJEDGE] = 0;
-                state.vars[Defines.UNKNOWN_WORD] = 0;
+                state.setVar(Defines.OBJHIT, 0);
+                state.setVar(Defines.OBJEDGE, 0);
+                state.setVar(Defines.UNKNOWN_WORD, 0);
                 state.flags[Defines.INPUT] = false;
-                previousScore = state.vars[Defines.SCORE];
+                previousScore = state.getVar(Defines.SCORE);
             }
 
             // Set ego's direction from the variable.
-            ego.direction = (byte)state.vars[Defines.EGODIR];
+            ego.direction = (byte)state.getVar(Defines.EGODIR);
 
             // Update the status line, if the score or sound status have changed.
-            if ((state.vars[Defines.SCORE] != previousScore) || (soundStatus != state.flags[Defines.SOUNDON])) {
+            if ((state.getVar(Defines.SCORE) != previousScore) || (soundStatus != state.flags[Defines.SOUNDON])) {
                 // If the SOUND ON flag is off, then immediately stop any currently playing sound.
                 if (!state.flags[Defines.SOUNDON]) soundPlayer.stopSound();
 
                 textGraphics.updateStatusLine();
             }
 
-            state.vars[Defines.OBJHIT] = 0;
-            state.vars[Defines.OBJEDGE] = 0;
+            state.setVar(Defines.OBJHIT, 0);
+            state.setVar(Defines.OBJEDGE, 0);
 
             // Clear the restart, restore, & init logics flags.
             state.flags[Defines.INITLOGS] = false;
@@ -229,9 +229,9 @@ public class Interpreter {
             aniObj.updateLoopAndCel();
         }
 
-        state.vars[Defines.EGOEDGE] = 0;
-        state.vars[Defines.OBJHIT] = 0;
-        state.vars[Defines.OBJEDGE] = 0;
+        state.setVar(Defines.EGOEDGE, 0);
+        state.setVar(Defines.OBJHIT, 0);
+        state.setVar(Defines.OBJEDGE, 0);
 
         // Restore the backgrounds of the previous drawn cels for each AnimatedObject.
         state.restoreBackgrounds(state.updateObjectList);
@@ -266,8 +266,8 @@ public class Interpreter {
         state.clearControllers();
         state.flags[Defines.INPUT] = false;
         state.flags[Defines.HADMATCH] = false;
-        state.vars[Defines.UNKNOWN_WORD] = 0;
-        state.vars[Defines.LAST_CHAR] = 0;
+        state.setVar(Defines.UNKNOWN_WORD, 0);
+        state.setVar(Defines.LAST_CHAR, 0);
 
         // If opening of the menu was "triggered" in the last cycle, we open it now before processing the rest of the input.
         if (state.menuOpen) {
@@ -292,7 +292,7 @@ public class Interpreter {
                 if (userInput.keys((int)Keys.END)) direction = 6;
                 if (userInput.keys((int)Keys.LEFT)) direction = 7;
                 if (userInput.keys((int)Keys.HOME)) direction = 8;
-                state.vars[Defines.EGODIR] = direction;
+                state.setVar(Defines.EGODIR, direction);
             }
             else {
                 // Whereas in "release key" mode, the direction key press will toggle movement in that direction.
@@ -306,7 +306,7 @@ public class Interpreter {
                 if (userInput.keys((int)Keys.LEFT) && !userInput.oldKeys((int)Keys.LEFT)) direction = 7;
                 if (userInput.keys((int)Keys.HOME) && !userInput.oldKeys((int)Keys.HOME)) direction = 8;
                 if (direction > 0) {
-                    state.vars[Defines.EGODIR] = (state.vars[Defines.EGODIR] == direction ? (byte)0 : direction);
+                    state.setVar(Defines.EGODIR, (state.getVar(Defines.EGODIR) == direction ? (byte)0 : direction));
                 }
             }
         }
@@ -322,7 +322,7 @@ public class Interpreter {
             else if ((ch & 0xF0000) == UserInput.ASCII) {  // Standard char from a keypress event.
                 char character = (char)(ch & 0xFF);
                 
-                state.vars[Defines.LAST_CHAR] = character;
+                state.setVar(Defines.LAST_CHAR, character);
 
                 if (state.acceptInput) {
                     // Handle enter and backspace for user input line.

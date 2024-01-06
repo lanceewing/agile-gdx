@@ -399,37 +399,37 @@ public class Commands {
 
             case 1: // equaln
                 {
-                    result = (state.vars[condition.operands.get(0).asByte()] == condition.operands.get(1).asByte());
+                    result = (state.getVar(condition.operands.get(0).asByte()) == condition.operands.get(1).asByte());
                 }
                 break;
 
             case 2: // equalv
                 {
-                    result = (state.vars[condition.operands.get(0).asByte()] == state.vars[condition.operands.get(1).asByte()]);
+                    result = (state.getVar(condition.operands.get(0).asByte()) == state.getVar(condition.operands.get(1).asByte()));
                 }
                 break;
 
             case 3: // lessn
                 {
-                    result = (state.vars[condition.operands.get(0).asByte()] < condition.operands.get(1).asByte());
+                    result = (state.getVar(condition.operands.get(0).asByte()) < condition.operands.get(1).asByte());
                 }
                 break;
 
             case 4: // lessv
                 {
-                    result = (state.vars[condition.operands.get(0).asByte()] < state.vars[condition.operands.get(1).asByte()]);
+                    result = (state.getVar(condition.operands.get(0).asByte()) < state.getVar(condition.operands.get(1).asByte()));
                 }
                 break;
 
             case 5: // greatern
                 {
-                    result = (state.vars[condition.operands.get(0).asByte()] > condition.operands.get(1).asByte());
+                    result = (state.getVar(condition.operands.get(0).asByte()) > condition.operands.get(1).asByte());
                 }
                 break;
 
             case 6: // greaterv
                 {
-                    result = (state.vars[condition.operands.get(0).asByte()] > state.vars[condition.operands.get(1).asByte()]);
+                    result = (state.getVar(condition.operands.get(0).asByte()) > state.getVar(condition.operands.get(1).asByte()));
                 }
                 break;
 
@@ -441,7 +441,7 @@ public class Commands {
 
             case 8: // issetv
                 {
-                    result = state.flags[state.vars[condition.operands.get(0).asByte()]];
+                    result = state.flags[state.getVar(condition.operands.get(0).asByte())];
                 }
                 break;
 
@@ -453,7 +453,7 @@ public class Commands {
 
             case 10: // obj.in.room
                 {
-                    result = (state.objects.objects.get(condition.operands.get(0).asByte()).room == state.vars[condition.operands.get(1).asByte()]);
+                    result = (state.objects.objects.get(condition.operands.get(0).asByte()).room == state.getVar(condition.operands.get(1).asByte()));
                 }
                 break;
 
@@ -476,12 +476,12 @@ public class Commands {
 
             case 13: // have.key
                 {
-                    int key = state.vars[Defines.LAST_CHAR];
+                    int key = state.getVar(Defines.LAST_CHAR);
                     if (key == 0) {
                         key = userInput.getKey();
                     }
                     if (key > 0) {
-                        state.vars[Defines.LAST_CHAR] = (key & 0xFF);
+                        state.setVar(Defines.LAST_CHAR, (key & 0xFF));
                     }
                     result = (key != 0);
                 }
@@ -576,14 +576,14 @@ public class Commands {
             case 1: // increment
                 {
                     int varNum = action.operands.get(0).asByte();
-                    if (state.vars[varNum] < 255) state.vars[varNum]++;
+                    if (state.getVar(varNum) < 255) state.incrementVar(varNum);
                 }
                 break;
 
             case 2: // decrement
                 {
                     int varNum = action.operands.get(0).asByte();
-                    if (state.vars[varNum] > 0) state.vars[varNum]--;
+                    if (state.getVar(varNum) > 0) state.decrementVar(varNum);
                 }
                 break;
 
@@ -591,7 +591,7 @@ public class Commands {
                 {
                     int varNum = action.operands.get(0).asByte();
                     int value = action.operands.get(1).asByte();
-                    state.vars[varNum] = value;
+                    state.setVar(varNum, value);
                 }
                 break;
 
@@ -599,7 +599,7 @@ public class Commands {
                 {
                     int varNum1 = action.operands.get(0).asByte();
                     int varNum2 = action.operands.get(1).asByte();
-                    state.vars[varNum1] = state.vars[varNum2];
+                    state.setVar(varNum1, state.getVar(varNum2));
                 }
                 break;
 
@@ -607,7 +607,7 @@ public class Commands {
                 {
                     int varNum = action.operands.get(0).asByte();
                     int value = action.operands.get(1).asByte();
-                    state.vars[varNum] += value;
+                    state.setVar(varNum, state.getVar(varNum) + value);
                 }
                 break;
 
@@ -615,7 +615,7 @@ public class Commands {
                 {
                     int varNum1 = action.operands.get(0).asByte();
                     int varNum2 = action.operands.get(1).asByte();
-                    state.vars[varNum1] += state.vars[varNum2];
+                    state.setVar(varNum1, state.getVar(varNum1) + state.getVar(varNum2));
                 }
                 break;
 
@@ -623,7 +623,7 @@ public class Commands {
                 {
                     int varNum = action.operands.get(0).asByte();
                     int value = action.operands.get(1).asByte();
-                     state.vars[varNum] -= value;
+                    state.setVar(varNum, state.getVar(varNum) - value);
                 } 
                 break;
 
@@ -631,7 +631,7 @@ public class Commands {
                 {
                     int varNum1 = action.operands.get(0).asByte();
                     int varNum2 = action.operands.get(1).asByte();
-                    state.vars[varNum1] -= state.vars[varNum2];
+                    state.setVar(varNum1, state.getVar(varNum1) - state.getVar(varNum2));
                 }
                 break;
 
@@ -639,7 +639,7 @@ public class Commands {
                 {
                     int varNum1 = action.operands.get(0).asByte();
                     int varNum2 = action.operands.get(1).asByte();
-                    state.vars[state.vars[varNum1]] = state.vars[varNum2];
+                    state.setVar(state.getVar(varNum1), state.getVar(varNum2));
                 }
                 break;
 
@@ -647,7 +647,7 @@ public class Commands {
                 {
                     int varNum1 = action.operands.get(0).asByte();
                     int varNum2 = action.operands.get(1).asByte();
-                    state.vars[varNum1] = state.vars[state.vars[varNum2]];
+                    state.setVar(varNum1, state.getVar(state.getVar(varNum2)));
                 }
                 break;
 
@@ -655,7 +655,7 @@ public class Commands {
                 {
                     int varNum = action.operands.get(0).asByte();
                     int value = action.operands.get(1).asByte();
-                    state.vars[state.vars[varNum]] = value;
+                    state.setVar(state.getVar(varNum), value);
                 }
                 break;
 
@@ -680,19 +680,19 @@ public class Commands {
 
             case 15: // set.v
                 {
-                    state.flags[state.vars[action.operands.get(0).asByte()]] = true;
+                    state.flags[state.getVar(action.operands.get(0).asByte())] = true;
                 }
                 break;
 
             case 16: // reset.v
                 {
-                    state.flags[state.vars[action.operands.get(0).asByte()]] = false;
+                    state.flags[state.getVar(action.operands.get(0).asByte())] = false;
                 }
                 break;
 
             case 17: // toggle.v
                 {
-                    int flagNum = state.vars[action.operands.get(0).asByte()];
+                    int flagNum = state.getVar(action.operands.get(0).asByte());
                     state.flags[flagNum] = !state.flags[flagNum];
                 }
                 break;
@@ -702,7 +702,7 @@ public class Commands {
                 return 0;
 
             case 19: // new.room.v
-                newRoom(state.vars[action.operands.get(0).asByte()]);
+                newRoom(state.getVar(action.operands.get(0).asByte()));
                 return 0;
 
             case 20: // load.logics
@@ -721,7 +721,7 @@ public class Commands {
                 {
                     // All logics are already loaded in this interpreter, so nothing to do as such
                     // other than to remember it was "loaded".
-                    Logic logic = state.logics[state.vars[action.operands.get(0).asByte()]];
+                    Logic logic = state.logics[state.getVar(action.operands.get(0).asByte())];
                     if ((logic != null) && !logic.isLoaded) {
                         logic.isLoaded = true;
                         state.scriptBuffer.addScript(ScriptBuffer.ScriptBufferEventType.LOAD_LOGIC, logic.index);
@@ -740,7 +740,7 @@ public class Commands {
 
             case 23: // call.v
                 {
-                    if (executeLogic(state.vars[action.operands.get(0).asByte()])) {
+                    if (executeLogic(state.getVar(action.operands.get(0).asByte()))) {
                         // This means that a rescan from the top of Logic.0 should be done.
                         return 0;
                     }
@@ -751,7 +751,7 @@ public class Commands {
                 {
                     // All pictures are already loaded in this interpreter, so nothing to do as such
                     // other than to remember it was "loaded".
-                    Picture pic = state.pictures[state.vars[action.operands.get(0).asByte()]];
+                    Picture pic = state.pictures[state.getVar(action.operands.get(0).asByte())];
                     if ((pic != null) && !pic.isLoaded) {
                         pic.isLoaded = true;
                         state.scriptBuffer.addScript(ScriptBuffer.ScriptBufferEventType.LOAD_PIC, pic.index);
@@ -761,7 +761,7 @@ public class Commands {
 
             case 25: // draw.pic
                 {
-                    drawPicture(state.vars[action.operands.get(0).asByte()]);
+                    drawPicture(state.getVar(action.operands.get(0).asByte()));
                 }
                 break;
 
@@ -775,7 +775,7 @@ public class Commands {
                 {
                     // All pictures are kept loaded in this interpreter, so nothing to do as such
                     // other than to remember it was "unloaded".
-                    Picture pic = state.pictures[state.vars[action.operands.get(0).asByte()]];
+                    Picture pic = state.pictures[state.getVar(action.operands.get(0).asByte())];
                     if ((pic != null) && pic.isLoaded) {
                         pic.isLoaded = false;
                         state.scriptBuffer.addScript(ScriptBuffer.ScriptBufferEventType.DISCARD_PIC, pic.index);
@@ -785,7 +785,7 @@ public class Commands {
 
             case 28: // overlay.pic
                 {
-                    overlayPicture(state.vars[action.operands.get(0).asByte()]);
+                    overlayPicture(state.getVar(action.operands.get(0).asByte()));
                 }
                 break;
 
@@ -811,7 +811,7 @@ public class Commands {
                 {
                     // All views are already loaded in this interpreter, so nothing to do as such
                     // other than to remember it was "loaded".
-                    View view = state.views[state.vars[action.operands.get(0).asByte()]];
+                    View view = state.views[state.getVar(action.operands.get(0).asByte())];
                     if ((view != null) && !view.isLoaded) {
                         view.isLoaded = true;
                         state.scriptBuffer.addScript(ScriptBuffer.ScriptBufferEventType.LOAD_VIEW, view.index);
@@ -897,23 +897,23 @@ public class Commands {
             case 38: // position.v
                 {
                     AnimatedObject aniObj = state.animatedObjects[action.operands.get(0).asByte()];
-                    aniObj.x = aniObj.prevX = (short)state.vars[action.operands.get(1).asByte()];
-                    aniObj.y = aniObj.prevY = (short)state.vars[action.operands.get(2).asByte()];
+                    aniObj.x = aniObj.prevX = (short)state.getVar(action.operands.get(1).asByte());
+                    aniObj.y = aniObj.prevY = (short)state.getVar(action.operands.get(2).asByte());
                 }
                 break;
 
             case 39: // get.posn
                 {
                     AnimatedObject aniObj = state.animatedObjects[action.operands.get(0).asByte()];
-                    state.vars[action.operands.get(1).asByte()] = aniObj.x;
-                    state.vars[action.operands.get(2).asByte()] = aniObj.y;
+                    state.setVar(action.operands.get(1).asByte(), aniObj.x);
+                    state.setVar(action.operands.get(2).asByte(), aniObj.y);
                 }
                 break;
 
             case 40: // reposition
                 {
                     AnimatedObject aniObj = state.animatedObjects[action.operands.get(0).asByte()];
-                    aniObj.reposition((byte)state.vars[action.operands.get(1).asByte()], (byte)state.vars[action.operands.get(2).asByte()]);
+                    aniObj.reposition((byte)state.getVar(action.operands.get(1).asByte()), (byte)state.getVar(action.operands.get(2).asByte()));
                 }
                 break;
 
@@ -927,7 +927,7 @@ public class Commands {
             case 42: // set.view.v
                 {
                     AnimatedObject aniObj = state.animatedObjects[action.operands.get(0).asByte()];
-                    aniObj.setView(state.vars[action.operands.get(1).asByte()]);
+                    aniObj.setView(state.getVar(action.operands.get(1).asByte()));
                 }
                 break;
 
@@ -941,7 +941,7 @@ public class Commands {
             case 44: // set.loop.v
                 {
                     AnimatedObject aniObj = state.animatedObjects[action.operands.get(0).asByte()];
-                    aniObj.setLoop(state.vars[action.operands.get(1).asByte()]);
+                    aniObj.setLoop(state.getVar(action.operands.get(1).asByte()));
                 }
                 break;
 
@@ -970,7 +970,7 @@ public class Commands {
             case 48: // set.cel.v
                 {
                     AnimatedObject aniObj = state.animatedObjects[action.operands.get(0).asByte()];
-                    aniObj.setCel(state.vars[action.operands.get(1).asByte()]);
+                    aniObj.setCel(state.getVar(action.operands.get(1).asByte()));
                     aniObj.noAdvance = false;
                 }
                 break;
@@ -978,35 +978,35 @@ public class Commands {
             case 49: // last.cel
                 {
                     AnimatedObject aniObj = state.animatedObjects[action.operands.get(0).asByte()];
-                    state.vars[action.operands.get(1).asByte()] = (aniObj.numberOfCels() - 1);
+                    state.setVar(action.operands.get(1).asByte(), (aniObj.numberOfCels() - 1));
                 }
                 break;
 
             case 50: // current.cel
                 {
                     AnimatedObject aniObj = state.animatedObjects[action.operands.get(0).asByte()];
-                    state.vars[action.operands.get(1).asByte()] = aniObj.currentCel;
+                    state.setVar(action.operands.get(1).asByte(), aniObj.currentCel);
                 }
                 break;
 
             case 51: // current.loop
                 {
                     AnimatedObject aniObj = state.animatedObjects[action.operands.get(0).asByte()];
-                    state.vars[action.operands.get(1).asByte()] = aniObj.currentLoop;
+                    state.setVar(action.operands.get(1).asByte(), aniObj.currentLoop);
                 }
                 break;
 
             case 52: // current.view
                 {
                     AnimatedObject aniObj = state.animatedObjects[action.operands.get(0).asByte()];
-                    state.vars[action.operands.get(1).asByte()] = aniObj.currentView;
+                    state.setVar(action.operands.get(1).asByte(), aniObj.currentView);
                 }
                 break;
 
             case 53: // number.of.loops
                 {
                     AnimatedObject aniObj = state.animatedObjects[action.operands.get(0).asByte()];
-                    state.vars[action.operands.get(1).asByte()] = aniObj.numberOfLoops();
+                    state.setVar(action.operands.get(1).asByte(), aniObj.numberOfLoops());
                 }
                 break;
 
@@ -1022,7 +1022,7 @@ public class Commands {
                 {
                     AnimatedObject aniObj = state.animatedObjects[action.operands.get(0).asByte()];
                     aniObj.fixedPriority = true;
-                    aniObj.priority = (byte)state.vars[action.operands.get(1).asByte()];
+                    aniObj.priority = (byte)state.getVar(action.operands.get(1).asByte());
                 }
                 break;
 
@@ -1036,7 +1036,7 @@ public class Commands {
             case 57: // get.priority
                 {
                     AnimatedObject aniObj = state.animatedObjects[action.operands.get(0).asByte()];
-                    state.vars[action.operands.get(1).asByte()] = aniObj.priority;
+                    state.setVar(action.operands.get(1).asByte(), aniObj.priority);
                 }
                 break;
 
@@ -1134,7 +1134,7 @@ public class Commands {
                 {
                     AnimatedObject aniObj1 = state.animatedObjects[action.operands.get(0).asByte()];
                     AnimatedObject aniObj2 = state.animatedObjects[action.operands.get(1).asByte()];
-                    state.vars[action.operands.get(2).asByte()] = aniObj1.distance(aniObj2);
+                    state.setVar(action.operands.get(2).asByte(), aniObj1.distance(aniObj2));
                 }
                 break;
 
@@ -1197,7 +1197,7 @@ public class Commands {
             case 76: // cycle.time
                 {
                     AnimatedObject aniObj = state.animatedObjects[action.operands.get(0).asByte()];
-                    aniObj.cycleTimeCount = aniObj.cycleTime = state.vars[action.operands.get(1).asByte()];
+                    aniObj.cycleTimeCount = aniObj.cycleTime = state.getVar(action.operands.get(1).asByte());
                 }
                 break;
 
@@ -1208,7 +1208,7 @@ public class Commands {
                     aniObj.motionType = MotionType.NORMAL;
                     if (aniObj == state.ego)
                     {
-                        state.vars[Defines.EGODIR] = 0;
+                        state.setVar(Defines.EGODIR, 0);
                         state.userControl = false;
                     }
                 }
@@ -1220,7 +1220,7 @@ public class Commands {
                     aniObj.motionType = MotionType.NORMAL;
                     if (aniObj == state.ego)
                     {
-                        state.vars[Defines.EGODIR] = 0;
+                        state.setVar(Defines.EGODIR, 0);
                         state.userControl = true;
                     }
                 }
@@ -1229,14 +1229,14 @@ public class Commands {
             case 79: // step.size
                 {
                     AnimatedObject aniObj = state.animatedObjects[action.operands.get(0).asByte()];
-                    aniObj.stepSize = state.vars[action.operands.get(1).asByte()];
+                    aniObj.stepSize = state.getVar(action.operands.get(1).asByte());
                 }
                 break;
 
             case 80: // step.time
                 {
                     AnimatedObject aniObj = state.animatedObjects[action.operands.get(0).asByte()];
-                    aniObj.stepTimeCount = aniObj.stepTime = state.vars[action.operands.get(1).asByte()];
+                    aniObj.stepTimeCount = aniObj.stepTime = state.getVar(action.operands.get(1).asByte());
                 }
                 break;
 
@@ -1253,8 +1253,8 @@ public class Commands {
                 {
                     AnimatedObject aniObj = state.animatedObjects[action.operands.get(0).asByte()];
                     aniObj.startMoveObj(
-                        state.vars[action.operands.get(1).asByte()], state.vars[action.operands.get(2).asByte()],
-                        state.vars[action.operands.get(3).asByte()], action.operands.get(4).asByte());
+                        state.getVar(action.operands.get(1).asByte()), state.getVar(action.operands.get(2).asByte()),
+                        state.getVar(action.operands.get(3).asByte()), action.operands.get(4).asByte());
                 }
                 break;
 
@@ -1282,14 +1282,14 @@ public class Commands {
             case 86: // set.dir
                 {
                     AnimatedObject aniObj = state.animatedObjects[action.operands.get(0).asByte()];
-                    aniObj.direction = (byte)state.vars[action.operands.get(1).asByte()];
+                    aniObj.direction = (byte)state.getVar(action.operands.get(1).asByte());
                 }
                 break;
 
             case 87: // get.dir
                 {
                     AnimatedObject aniObj = state.animatedObjects[action.operands.get(0).asByte()];
-                    state.vars[action.operands.get(1).asByte()] = aniObj.direction;
+                    state.setVar(action.operands.get(1).asByte(), aniObj.direction);
                 }
                 break;
 
@@ -1331,7 +1331,7 @@ public class Commands {
 
             case 93: // get.v
                 {
-                    state.objects.objects.get(state.vars[action.operands.get(0).asByte()]).room = Defines.CARRYING;
+                    state.objects.objects.get(state.getVar(action.operands.get(0).asByte())).room = Defines.CARRYING;
                 }
                 break;
 
@@ -1343,19 +1343,19 @@ public class Commands {
 
             case 95: // put
                 {
-                    state.objects.objects.get(action.operands.get(0).asByte()).room = state.vars[action.operands.get(1).asByte()];
+                    state.objects.objects.get(action.operands.get(0).asByte()).room = state.getVar(action.operands.get(1).asByte());
                 }
                 break;
 
             case 96: // put.v
                 {
-                    state.objects.objects.get(state.vars[action.operands.get(0).asByte()]).room = state.vars[action.operands.get(1).asByte()];
+                    state.objects.objects.get(state.getVar(action.operands.get(0).asByte())).room = state.getVar(action.operands.get(1).asByte());
                 }
                 break;
 
             case 97: // get.room.v
                 {
-                    state.vars[action.operands.get(1).asByte()] = state.objects.objects.get(state.vars[action.operands.get(0).asByte()]).room;
+                    state.setVar(action.operands.get(1).asByte(), state.objects.objects.get(state.getVar(action.operands.get(0).asByte())).room);
                 }
                 break;
 
@@ -1401,7 +1401,7 @@ public class Commands {
 
             case 102: // print.v
                 {
-                    this.textGraphics.print(action.logic.messages.get(state.vars[action.operands.get(0).asByte()]));
+                    this.textGraphics.print(action.logic.messages.get(state.getVar(action.operands.get(0).asByte())));
                 }
                 break;
 
@@ -1416,9 +1416,9 @@ public class Commands {
 
             case 104: // display.v
                 {
-                    int row = state.vars[action.operands.get(0).asByte()];
-                    int col = state.vars[action.operands.get(1).asByte()];
-                    String message = action.logic.messages.get(state.vars[action.operands.get(2).asByte()]);
+                    int row = state.getVar(action.operands.get(0).asByte());
+                    int col = state.getVar(action.operands.get(1).asByte());
+                    String message = action.logic.messages.get(state.getVar(action.operands.get(2).asByte()));
                     this.textGraphics.display(message, row, col);
                 }
                 break;
@@ -1511,7 +1511,7 @@ public class Commands {
 
             case 118: // get.num
                 {
-                    state.vars[action.operands.get(1).asByte()] = textGraphics.getNum(action.logic.messages.get(action.operands.get(0).asByte()));
+                    state.setVar(action.operands.get(1).asByte(), textGraphics.getNum(action.logic.messages.get(action.operands.get(0).asByte())));
                 }
                 break;
 
@@ -1561,10 +1561,10 @@ public class Commands {
                 {
                     AnimatedObject picObj = new AnimatedObject(state, -1);
                     picObj.addToPicture(
-                        state.vars[action.operands.get(0).asByte()], state.vars[action.operands.get(1).asByte()], 
-                        state.vars[action.operands.get(2).asByte()], state.vars[action.operands.get(3).asByte()], 
-                        state.vars[action.operands.get(4).asByte()], state.vars[action.operands.get(5).asByte()],
-                        state.vars[action.operands.get(6).asByte()], pixelData);
+                        state.getVar(action.operands.get(0).asByte()), state.getVar(action.operands.get(1).asByte()), 
+                        state.getVar(action.operands.get(2).asByte()), state.getVar(action.operands.get(3).asByte()), 
+                        state.getVar(action.operands.get(4).asByte()), state.getVar(action.operands.get(5).asByte()),
+                        state.getVar(action.operands.get(6).asByte()), pixelData);
                     splitPriorityPixels();
                 }
                 break;
@@ -1625,7 +1625,7 @@ public class Commands {
                 {
                     int minVal = action.operands.get(0).asByte();
                     int maxVal = action.operands.get(1).asByte();
-                    state.vars[action.operands.get(2).asByte()] = (((state.random.nextInt(255) % (maxVal - minVal + 1)) + minVal) & 0xFF);
+                    state.setVar(action.operands.get(2).asByte(), (((state.random.nextInt(255) % (maxVal - minVal + 1)) + minVal) & 0xFF));
                 }
                 break;
 
@@ -1644,7 +1644,7 @@ public class Commands {
 
             case 133: // obj.status.v
                 {
-                    AnimatedObject aniObj = state.animatedObjects[state.vars[action.operands.get(0).asByte()]];
+                    AnimatedObject aniObj = state.animatedObjects[state.getVar(action.operands.get(0).asByte())];
                     textGraphics.windowPrint(aniObj.getStatusStr());
                 }
                 break;
@@ -1754,8 +1754,8 @@ public class Commands {
             case 148: // reposition.to.v
                 {
                     AnimatedObject aniObj = state.animatedObjects[action.operands.get(0).asByte()];
-                    aniObj.x = (short)state.vars[action.operands.get(1).asByte()];
-                    aniObj.y = (short)state.vars[action.operands.get(2).asByte()];
+                    aniObj.x = (short)state.getVar(action.operands.get(1).asByte());
+                    aniObj.y = (short)state.getVar(action.operands.get(2).asByte());
                     aniObj.repositioned = true;
                     aniObj.findPosition();         // Make sure that this position is OK.
                 }
@@ -1785,7 +1785,7 @@ public class Commands {
 
             case 152: // print.at.v
                 {
-                    String message = action.logic.messages.get(state.vars[action.operands.get(0).asByte()]);
+                    String message = action.logic.messages.get(state.getVar(action.operands.get(0).asByte()));
                     int row = action.operands.get(1).asByte();
                     int col = action.operands.get(2).asByte();
                     int width = action.operands.get(3).asByte();
@@ -1797,7 +1797,7 @@ public class Commands {
                 {
                     // All views are kept loaded in this interpreter, so nothing to do as such
                     // other than to remember it was "unloaded".
-                    View view = state.views[state.vars[action.operands.get(0).asByte()]];
+                    View view = state.views[state.getVar(action.operands.get(0).asByte())];
                     if ((view != null) && view.isLoaded)
                     {
                         view.isLoaded = false;
@@ -1871,7 +1871,7 @@ public class Commands {
 
             case 162: // show.obj.v
                 {
-                    inventory.showInventoryObject(state.vars[action.operands.get(0).asByte()]);
+                    inventory.showInventoryObject(state.getVar(action.operands.get(0).asByte()));
                 }
                 break;
 
@@ -1891,7 +1891,7 @@ public class Commands {
                 {
                     int varNum = action.operands.get(0).asByte();
                     int value = action.operands.get(1).asByte();
-                    state.vars[varNum] *= value;
+                    state.setVar(varNum, state.getVar(varNum) * value);
                 }
                 break;
 
@@ -1899,7 +1899,7 @@ public class Commands {
                 {
                     int varNum1 = action.operands.get(0).asByte();
                     int varNum2 = action.operands.get(1).asByte();
-                    state.vars[varNum1] *= state.vars[varNum2];
+                    state.setVar(varNum1, state.getVar(varNum1) * state.getVar(varNum2));
                 }
                 break;
 
@@ -1907,7 +1907,7 @@ public class Commands {
                 {
                     int varNum = action.operands.get(0).asByte();
                     int value = action.operands.get(1).asByte();
-                    state.vars[varNum] /= value;
+                    state.setVar(varNum, state.getVar(varNum) / value);
                 }
                 break;
 
@@ -1915,7 +1915,7 @@ public class Commands {
                 {
                     int varNum1 = action.operands.get(0).asByte();
                     int varNum2 = action.operands.get(1).asByte();
-                    state.vars[varNum1] /= state.vars[varNum2];
+                    state.setVar(varNum1, state.getVar(varNum1) / state.getVar(varNum2));
                 }
                 break;
 
@@ -2093,7 +2093,7 @@ public class Commands {
         // Carry over ego's view number.
         // TODO: For some reason in MH2, the ego View can be null at this point. Needs investigation to determine why.
         if (state.ego.view() != null) {
-            state.vars[Defines.CURRENT_EGO] = (state.ego.view().index & 0xFF);
+            state.setVar(Defines.CURRENT_EGO, (state.ego.view().index & 0xFF));
         }
 
         // Reset state for all animated objects.
@@ -2106,7 +2106,7 @@ public class Commands {
 
         // If ego collided with a border, set his position in the new room to
         // the appropriate edge of the screen.
-        switch (state.vars[Defines.EGOEDGE]) {
+        switch (state.getVar(Defines.EGOEDGE)) {
             case Defines.TOP:
                 state.ego.y = Defines.MAXY;
                 break;
@@ -2125,14 +2125,14 @@ public class Commands {
         }
 
         // Change the room number.
-        state.vars[Defines.PREVROOM] = state.vars[Defines.CURROOM];
-        state.vars[Defines.CURROOM] = roomNum;
+        state.setVar(Defines.PREVROOM, state.getVar(Defines.CURROOM));
+        state.setVar(Defines.CURROOM, roomNum);
 
         // Set flags and vars as appropriate for a new room.
-        state.vars[Defines.OBJHIT] = 0;
-        state.vars[Defines.OBJEDGE] = 0;
-        state.vars[Defines.UNKNOWN_WORD] = 0;
-        state.vars[Defines.EGOEDGE] = 0;
+        state.setVar(Defines.OBJHIT, 0);
+        state.setVar(Defines.OBJEDGE, 0);
+        state.setVar(Defines.UNKNOWN_WORD, 0);
+        state.setVar(Defines.EGOEDGE, 0);
         state.flags[Defines.INPUT] = false;
         state.flags[Defines.INITLOGS] = true;
         state.userControl = true;

@@ -87,7 +87,7 @@ public class Inventory {
                     invItem.col = 39 - invItem.name.length();
                 }
 
-                if (i == state.vars[Defines.SELECTED_OBJ]) selectedItemIndex = (byte)invItems.size();
+                if (i == state.getVar(Defines.SELECTED_OBJ)) selectedItemIndex = (byte)invItems.size();
 
                 invItems.add(invItem);
                 howMany++;
@@ -116,11 +116,11 @@ public class Inventory {
             while (true) {
                 int key = userInput.waitForKey();
                 if (key == (UserInput.ASCII | Character.ENTER)) {
-                    state.vars[Defines.SELECTED_OBJ] = invItems.get(selectedItemIndex).num;
+                    state.setVar(Defines.SELECTED_OBJ, invItems.get(selectedItemIndex).num);
                     break;
                 }
                 else if (key == (UserInput.ASCII | Character.ESC)) {
-                    state.vars[Defines.SELECTED_OBJ] = 0xFF;
+                    state.setVar(Defines.SELECTED_OBJ, 0xFF);
                     break;
                 }
                 else if ((key == Keys.UP) || (key == Keys.DOWN) || (key == Keys.RIGHT) || (key == Keys.LEFT)) {

@@ -24,6 +24,11 @@ public class GameState {
      * The Game whose data we are interpreting.
      */
     private Game game;
+    
+    /**
+     * The VariableData implementation to get and set the AGI variables through.
+     */
+    private VariableData variableData;
 
     public Logic[] logics;
     public Picture[] pictures;
@@ -42,7 +47,6 @@ public class GameState {
     public int[] scanStart;
 
     public boolean[] controllers;
-    public int[] vars;
     public boolean[] flags;
     public String[] strings;
     public AnimatedObject[] animatedObjects;
@@ -159,10 +163,11 @@ public class GameState {
      * Constructor for GameState.
      *
      * @param game The Game from which we'll get all of the game data.
+     * @param variableData The VariableData implementation to get and set AGI variables through.
      */
-    public GameState(Game game) {
+    public GameState(Game game, VariableData variableData) {
         this.game = game;
-        this.vars = new int[Defines.NUMVARS];
+        this.variableData = variableData;
         this.flags = new boolean[Defines.NUMFLAGS];
         this.strings = new String[Defines.NUMSTRINGS];
         this.controllers = new boolean[Defines.NUMCONTROL];
@@ -219,16 +224,16 @@ public class GameState {
     public void init() {
         clearStrings();
         clearVars();
-        vars[Defines.MACHINE_TYPE] = 0;  // IBM PC
-        vars[Defines.MONITOR_TYPE] = 3;  // EGA
-        vars[Defines.INPUTLEN] = Defines.MAXINPUT + 1;
-        vars[Defines.NUM_VOICES] = 3;
+        setVar(Defines.MACHINE_TYPE, 0);  // IBM PC
+        setVar(Defines.MONITOR_TYPE, 3);  // EGA
+        setVar(Defines.INPUTLEN, Defines.MAXINPUT + 1);
+        setVar(Defines.NUM_VOICES, 3);
 
         // The game would usually set this, but no harm doing it here (2 = NORMAL).
-        vars[Defines.ANIMATION_INT] = 2;
+        setVar(Defines.ANIMATION_INT, 2);
 
         // Set to the maximum memory amount as recognised by AGI.
-        vars[Defines.MEMLEFT] = 255;
+        setVar(Defines.MEMLEFT, 255);
 
         clearFlags();
         flags[Defines.HAS_NOISE] = true;
@@ -430,8 +435,56 @@ public class GameState {
      */
     public void clearVars() {
         for (int i = 0; i < Defines.NUMVARS; i++) {
-            vars[i] = 0;
+            variableData.setVar(i, 0);
         }
+    }
+    
+    /**
+     * Gets the value of the AGI variable identified by the variable number.
+     * 
+     * @param varNum The AGI variable to get the value of.
+     * 
+     * @return The value of the AGI variable.
+     */
+    public int getVar(int varNum) {
+        return variableData.getVar(varNum);
+    }
+    
+    /**
+     * Increments the value of the AGI variable identified by the variable number by 1.
+     * 
+     * @param varNum The AGI variable to increment the value of by 1.
+     * 
+     * @return The new value of the AGI variable.
+     */
+    public int incrementVar(int varNum) {
+        int value = ((getVar(varNum) + 1) & 0xFF);
+        setVar(varNum, value);
+        return value;
+    }
+    
+    /**
+     * Decrements the value of the AGI variable identified by the variable number by 1.
+     * 
+     * @param varNum The AGI variable to decrement the value of by 1.
+     * 
+     * @return The new value of the AGI variable.
+     */
+    public int decrementVar(int varNum) {
+        int value = ((getVar(varNum) - 1) & 0xFF);
+        setVar(varNum, value);
+        return value;
+    }
+    
+    /**
+     * Sets the value of the AGI variable, identified by the variable number, to the
+     * given value.
+     * 
+     * @param varNum The AGI variable to set the value of.
+     * @param value The value to set the AGI variable to.
+     */
+    public void setVar(int varNum, int value) {
+        variableData.setVar(varNum, value);
     }
 
     /**

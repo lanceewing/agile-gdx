@@ -9,12 +9,14 @@ import com.agifans.agile.AgileRunner;
 import com.agifans.agile.PixelData;
 import com.agifans.agile.SavedGameStore;
 import com.agifans.agile.UserInput;
+import com.agifans.agile.VariableData;
 import com.agifans.agile.WavePlayer;
 import com.agifans.agile.worker.MessageEvent;
 import com.agifans.agile.worker.MessageHandler;
 import com.agifans.agile.worker.Worker;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.webworker.client.ErrorEvent;
 import com.google.gwt.webworker.client.ErrorHandler;
 
@@ -23,8 +25,8 @@ public class GwtAgileRunner extends AgileRunner {
     private Worker worker;
     
     public GwtAgileRunner(UserInput userInput, WavePlayer wavePlayer, SavedGameStore savedGameStore, 
-            PixelData pixelData) {
-        super(userInput, wavePlayer, savedGameStore, pixelData);
+            PixelData pixelData, VariableData variableData) {
+        super(userInput, wavePlayer, savedGameStore, pixelData, variableData);
     }
     
     @Override
@@ -60,8 +62,15 @@ public class GwtAgileRunner extends AgileRunner {
 
         worker.setOnMessage(webWorkerMessageHandler);
         worker.setOnError(webWorkerErrorHandler);
-        worker.postMessage("Testing, testing, 1, 2, 3");
+        
+        worker.postObject("TestObj", createTestObj(123));
+        
+        //worker.postMessage("Testing, testing, 1, 2, 3");
     }
+    
+    private native JavaScriptObject createTestObj(int value)/*-{
+        return { value: value };
+    }-*/;
     
     @Override
     public void animationTick() {

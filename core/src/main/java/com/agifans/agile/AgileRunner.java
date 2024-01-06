@@ -31,16 +31,18 @@ public abstract class AgileRunner {
     protected SavedGameStore savedGameStore;
     protected UserInput userInput;
     protected PixelData pixelData;
+    protected VariableData variableData;
     
     private long lastTime;
     private long deltaTime;
     
     public AgileRunner(UserInput userInput, WavePlayer wavePlayer, SavedGameStore savedGameStore, 
-            PixelData pixelData) {
+            PixelData pixelData, VariableData variableData) {
         this.userInput = userInput;
         this.wavePlayer = wavePlayer;
         this.savedGameStore = savedGameStore;
         this.pixelData = pixelData;
+        this.variableData = variableData;
         // TODO: Move this to be closer to actual start?
         this.lastTime = TimeUtils.nanoTime();
     }
@@ -96,7 +98,7 @@ public abstract class AgileRunner {
         patchGame(game, gameDetection.gameId, gameDetection.gameName);
         
         // Create the Interpreter to run this Game.
-        this.interpreter = new Interpreter(game, userInput, wavePlayer, savedGameStore, pixelData);
+        this.interpreter = new Interpreter(game, userInput, wavePlayer, savedGameStore, pixelData, variableData);
     }
     
     /**

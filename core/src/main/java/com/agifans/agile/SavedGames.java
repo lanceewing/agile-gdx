@@ -425,7 +425,7 @@ public class SavedGames {
         }
         
         // [9] 40 - 295(256 bytes) Variables, 1 variable per byte
-        for (int i = 0; i < 256; i++) savedGameData[40 + i] = (byte)state.vars[i];
+        for (int i = 0; i < 256; i++) savedGameData[40 + i] = (byte)state.getVar(i);
 
         // [265] 296 - 327(32 bytes) Flags, 8 flags per byte
         pos = 296;
@@ -772,7 +772,7 @@ public class SavedGames {
         textGraphics.clearLines(0, 24, 0);
 
         // [9] 40 - 295(256 bytes) Variables, 1 variable per byte
-        for (int i=0; i<256; i++) state.vars[i] = (savedGameData[40 + i] & 0xFF);
+        for (int i=0; i<256; i++) state.setVar(i, (savedGameData[40 + i] & 0xFF));
 
         // [265] 296 - 327(32 bytes) Flags, 8 flags per byte
         for (int i=0; i<256; i++) state.flags[i] = ((savedGameData[(i >> 3) + 296] & 0xFF) & (0x80 >> (i & 0x07))) > 0;
