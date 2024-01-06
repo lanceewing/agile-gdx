@@ -13,6 +13,10 @@ import com.google.gwt.core.client.GWT.UncaughtExceptionHandler;
  */
 public class Worker extends com.google.gwt.webworker.client.Worker {
 
+    public static native Worker create(String url) /*-{
+        return new Worker(url);
+    }-*/;
+    
     protected Worker() {
         // constructors must be protected in JavaScriptObject overlays.
     }

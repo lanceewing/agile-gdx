@@ -10,14 +10,13 @@ import com.agifans.agile.PixelData;
 import com.agifans.agile.SavedGameStore;
 import com.agifans.agile.UserInput;
 import com.agifans.agile.WavePlayer;
+import com.agifans.agile.worker.MessageEvent;
+import com.agifans.agile.worker.MessageHandler;
+import com.agifans.agile.worker.Worker;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
-import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.webworker.client.ErrorEvent;
 import com.google.gwt.webworker.client.ErrorHandler;
-import com.google.gwt.webworker.client.MessageEvent;
-import com.google.gwt.webworker.client.MessageHandler;
-import com.google.gwt.webworker.client.Worker;
 
 public class GwtAgileRunner extends AgileRunner {
 
@@ -41,22 +40,14 @@ public class GwtAgileRunner extends AgileRunner {
         // TODO: Convert this into a URI format.
         return "games/kq1/";
     }
-    
-    // NOTE 1: importScripts won't work, because all URLs need to be absolute.
-    // NOTE 2: direct URL doesn't work because security headers are not present.
-    // NOTE 3: Will probably need to customise gwt-webworker to add SharedArrayBuffer support.
-    
+
     public void createWorker() {
-        //JavaScriptObject workerURL = this.getWorkerURL("http://localhost:8080/worker/worker.nocache.js");
-        //worker = GwtAgileRunner.create(workerURL);
-        //revokeObjectURL(workerURL);
-        
         worker = Worker.create("worker/worker.nocache.js");
         
         final MessageHandler webWorkerMessageHandler = new MessageHandler() {
             @Override
-            public final void onMessage(final MessageEvent pEvent) {
-                Gdx.app.log("client onMessage", "Received message: " + pEvent.getDataAsString());
+            public void onMessage(MessageEvent event) {
+                Gdx.app.log("client onMessage", "Received message: " + event.getDataAsString());
             }
         };
 
@@ -71,20 +62,6 @@ public class GwtAgileRunner extends AgileRunner {
         worker.setOnError(webWorkerErrorHandler);
         worker.postMessage("Testing, testing, 1, 2, 3");
     }
-    
-    // The gwt-webworker module does not support a Blob constructor, so we provide one.
-    public static native Worker create(JavaScriptObject workerURL)/*-{
-        return new Worker(workerURL);
-    }-*/;
-    
-    private native JavaScriptObject getWorkerURL(String url)/*-{
-        var content = 'importScripts("' + url + '");';
-        return URL.createObjectURL( new Blob( [ content ], { type: "text/javascript" } ) );
-    }-*/;
-    
-    private native void revokeObjectURL(JavaScriptObject workerURL)/*-{
-        URL.revokeObjectURL(workerURL);
-    }-*/;
     
     @Override
     public void animationTick() {
