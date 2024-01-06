@@ -457,9 +457,7 @@ public class GameState {
      * @return The new value of the AGI variable.
      */
     public int incrementVar(int varNum) {
-        int value = ((getVar(varNum) + 1) & 0xFF);
-        setVar(varNum, value);
-        return value;
+        return variableData.incrementVar(varNum);
     }
     
     /**

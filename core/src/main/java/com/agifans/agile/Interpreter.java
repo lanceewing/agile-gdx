@@ -86,43 +86,6 @@ public class Interpreter {
         this.ego = state.ego;
         this.state.init();
         this.textGraphics.updateInputLine();
-    }    
-    
-    /**
-     * Updates the internal AGI game clock. This method is invoked once a second.
-     */
-    private void updateGameClock() {
-        if (state.incrementVar(Defines.SECONDS) >= 60) {
-            // One minute has passed.
-            if (state.incrementVar(Defines.MINUTES) >= 60) {
-                // One hour has passed.
-                if (state.incrementVar(Defines.HOURS) >= 24) {
-                    // One day has passed.
-                    state.incrementVar(Defines.DAYS);
-                    state.setVar(Defines.HOURS, 0);
-                }
-
-                state.setVar(Defines.MINUTES, 0);
-            }
-
-            state.setVar(Defines.SECONDS, 0);
-        }
-    }
-
-    /**
-     * Updates the total tick count and AGI game clock. 
-     */
-    public void tick() {
-        // Regardless of whether we're already in a Tick, we keep counting the number of Ticks.
-        int newTotalTicks = state.incrementTotalTicks();
-
-        // Tick is called 60 times a second, so every 60th call, the second clock ticks. We 
-        // deliberately do this outside of the main Tick block because some scripts wait for 
-        // the clock to reach a certain clock value, which will never happen if the block isn't
-        // updated outside of the Tick block.
-        if ((newTotalTicks % 60) == 0) {
-            updateGameClock();
-        }
     }
     
     /**

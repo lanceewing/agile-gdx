@@ -202,14 +202,46 @@ public abstract class AgileRunner {
         while (deltaTime > NANOS_PER_FRAME) {
             deltaTime -= NANOS_PER_FRAME;
             
-            if (interpreter != null) {
-                interpreter.tick();
-                
-                // The animation tick is the platform specific bit, as it needs to be run 
-                // outside of the UI thread, which is done differently depending on the 
-                // platform.
-                animationTick();
+            // Regardless of whether we're already in an animation tick, we keep counting the number of Ticks.
+            int newTotalTicks = variableData.incrementTotalTicks();
+
+            // Tick is called 60 times a second, so every 60th call, the second clock ticks. We 
+            // deliberately do this outside of the main Tick block because some scripts wait for 
+            // the clock to reach a certain clock value, which will never happen if the block isn't
+            // updated outside of the Tick block.
+            if ((newTotalTicks % 60) == 0) {
+                updateGameClock();
             }
+
+            // The animation tick is the platform specific bit, as it needs to be run 
+            // outside of the UI thread, which is done differently depending on the 
+            // platform.
+            animationTick();
+        }
+    }
+    
+    /**
+     * Updates the internal AGI game clock. This method is invoked once a second. We 
+     * do this in the AgileRunner base class, running within the UI thread, because 
+     * these internal game clocks variables need to be updated at a constant rate 
+     * regardless of whether the interpreter thread/worker is busy doing something, such
+     * as waiting for a key press.
+     */
+    private void updateGameClock() {
+        if (variableData.incrementVar(Defines.SECONDS) >= 60) {
+            // One minute has passed.
+            if (variableData.incrementVar(Defines.MINUTES) >= 60) {
+                // One hour has passed.
+                if (variableData.incrementVar(Defines.HOURS) >= 24) {
+                    // One day has passed.
+                    variableData.incrementVar(Defines.DAYS);
+                    variableData.setVar(Defines.HOURS, 0);
+                }
+
+                variableData.setVar(Defines.MINUTES, 0);
+            }
+
+            variableData.setVar(Defines.SECONDS, 0);
         }
     }
     
