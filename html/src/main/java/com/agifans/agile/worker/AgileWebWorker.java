@@ -1,8 +1,11 @@
 package com.agifans.agile.worker;
 
+import com.agifans.agile.PixelData;
+import com.agifans.agile.SavedGameStore;
+import com.agifans.agile.UserInput;
+import com.agifans.agile.WavePlayer;
+import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.webworker.client.DedicatedWorkerEntryPoint;
-import com.google.gwt.webworker.client.MessageEvent;
-import com.google.gwt.webworker.client.MessageHandler;
 
 /**
  * A web worker that runs the background AGILE interpreter "thread", which is 
@@ -28,11 +31,23 @@ import com.google.gwt.webworker.client.MessageHandler;
  * to transfer it.
  * 
  * For the transfer of pixels back to the UI thread, this can be done via postMessage
- * and since ImageBitmap is transferrable, it can be transferred pretty much 
+ * and since ImageBitmap is transferable, it can be transferred pretty much 
  * instantly.
  */
 public class AgileWebWorker extends DedicatedWorkerEntryPoint implements MessageHandler {
 
+    private DedicatedWorkerGlobalScope scope;
+    
+    // The web worker has its own instance of each of these. It is not the same instance
+    // as in the AgileWorker. Instead part of the data is either shared, or transferred
+    // between the client and work.
+    private UserInput userInput;
+    private PixelData pixelData;
+    private SavedGameStore savedGameStore;
+    private WavePlayer waveplayer;
+    
+    // NOTE 1: GwtUserInput should use a LinkedList implementation based on SharedArrayBuffer.
+    
     /**
      * Incoming messages from the UI thread are mainly to set things up. Once both 
      * sides are up and running, the UI thread no longer sends messages but communicates
@@ -44,13 +59,32 @@ public class AgileWebWorker extends DedicatedWorkerEntryPoint implements Message
     public void onMessage(MessageEvent event) {
         
         // The gwt-webworker module works well for Strings, but doesn't support
-        // transferrable objects and the SharedArrayBuffer.
+        // transferable objects and the SharedArrayBuffer.
         this.postMessage("Worker received: " + event.getDataAsString());
         
     }
 
+    protected final void postObject(String name, JavaScriptObject object) {
+        getGlobalScope().postObject(name, object);
+    }
+    
+    protected final void postTransferableObject(String name, JavaScriptObject object) {
+        getGlobalScope().postTransferableObject(name, object);
+    }
+    
+    @Override
+    protected DedicatedWorkerGlobalScope getGlobalScope() {
+        return scope;
+    }
+    
+    protected final void setOnMessage(MessageHandler messageHandler) {
+        getGlobalScope().setOnMessage(messageHandler);
+    }
+    
     @Override
     public void onWorkerLoad() {
+        this.scope = DedicatedWorkerGlobalScope.get();
+        
         this.setOnMessage(this);
     }
 }
