@@ -46,8 +46,6 @@ public class AgileWebWorker extends DedicatedWorkerEntryPoint implements Message
     private SavedGameStore savedGameStore;
     private WavePlayer waveplayer;
     
-    // NOTE 1: GwtUserInput should use a LinkedList implementation based on SharedArrayBuffer.
-    
     /**
      * Incoming messages from the UI thread are mainly to set things up. Once both 
      * sides are up and running, the UI thread no longer sends messages but communicates

@@ -64,8 +64,6 @@ public class GwtAgileRunner extends AgileRunner {
         worker.setOnError(webWorkerErrorHandler);
         
         worker.postObject("TestObj", createTestObj(123));
-        
-        //worker.postMessage("Testing, testing, 1, 2, 3");
     }
     
     private native JavaScriptObject createTestObj(int value)/*-{
