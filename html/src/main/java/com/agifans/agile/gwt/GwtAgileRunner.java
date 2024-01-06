@@ -42,7 +42,7 @@ public class GwtAgileRunner extends AgileRunner {
         Game game = loadGame(gameUri);
         
         // TODO: This is temporary, until we get the web worker going.
-        Interpreter interpreter = new Interpreter(game, userInput, wavePlayer, 
+        interpreter = new Interpreter(game, userInput, wavePlayer, 
                 savedGameStore, pixelData, variableData);
     }
 
