@@ -119,7 +119,6 @@ public class GameState {
     public int foregroundColour;
     public int backgroundColour;
     public char cursorCharacter;
-    public long totalTicks;
     public long animationTicks;
     public boolean gamePaused;
     public int currentLogNum;
@@ -487,6 +486,34 @@ public class GameState {
         variableData.setVar(varNum, value);
     }
 
+    /**
+     * Gets the AGI game's total ticks value. This is incremented 60 times a second.
+     * 
+     * @return The AGI game's total ticks value.
+     */
+    public int getTotalTicks() {
+        return variableData.getTotalTicks();
+    }
+    
+    /**
+     * Increments the AGI game's total ticks value by 1 and returns the new value.
+     * 
+     * @return The new total ticks value after incrementing by 1.
+     */
+    public int incrementTotalTicks() {
+        return variableData.incrementTotalTicks();
+    }
+    
+    /**
+     * Sets the AGI game's total ticks value. The only time this would be needed is
+     * when restoring a saved game.
+     * 
+     * @param totalTicks The total ticks value to set
+     */
+    public void setTotalTicks(int totalTicks) {
+        variableData.setTotalTicks(totalTicks);
+    }
+    
     /**
      * Clears all of the AGI flags to be false.
      */

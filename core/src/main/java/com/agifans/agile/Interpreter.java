@@ -114,13 +114,13 @@ public class Interpreter {
      */
     public void tick() {
         // Regardless of whether we're already in a Tick, we keep counting the number of Ticks.
-        state.totalTicks++;
+        int newTotalTicks = state.incrementTotalTicks();
 
         // Tick is called 60 times a second, so every 60th call, the second clock ticks. We 
         // deliberately do this outside of the main Tick block because some scripts wait for 
         // the clock to reach a certain clock value, which will never happen if the block isn't
         // updated outside of the Tick block.
-        if ((state.totalTicks % 60) == 0) {
+        if ((newTotalTicks % 60) == 0) {
             updateGameClock();
         }
     }

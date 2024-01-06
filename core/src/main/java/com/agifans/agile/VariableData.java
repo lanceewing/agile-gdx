@@ -30,5 +30,30 @@ public interface VariableData {
      * @param value The value to set the AGI variable to.
      */
     void setVar(int varNum, int value);
+
+    /**
+     * Gets the AGI game's total ticks value. This is incremented 60 times a second.
+     * 
+     * @return The AGI game's total ticks value.
+     */
+    int getTotalTicks();
+
+    /**
+     * Sets the AGI game's total ticks value. The only time this would be needed is
+     * when restoring a saved game.
+     * 
+     * @param totalTicks The total ticks value to set
+     */
+    void setTotalTicks(int totalTicks);
     
+    /**
+     * Increments the AGI game's total ticks value by 1 and returns the new value.
+     * 
+     * @return The new total ticks value after incrementing by 1.
+     */
+    default int incrementTotalTicks() {
+        int totalTicks = getTotalTicks() + 1;
+        setTotalTicks(totalTicks);
+        return totalTicks;
+    }
 }

@@ -438,7 +438,7 @@ public class SavedGames {
         }
 
         // [297] 328 - 331(4 bytes) Clock ticks since game started. 1 clock tick == 50ms.
-        int saveGameTicks = (int)(state.totalTicks / 3);
+        int saveGameTicks = (int)(state.getTotalTicks() / 3);
         savedGameData[328] = (byte)(saveGameTicks & 0xFF);
         savedGameData[329] = (byte)((saveGameTicks >> 8) & 0xFF);
         savedGameData[330] = (byte)((saveGameTicks >> 16) & 0xFF);
@@ -778,7 +778,7 @@ public class SavedGames {
         for (int i=0; i<256; i++) state.flags[i] = ((savedGameData[(i >> 3) + 296] & 0xFF) & (0x80 >> (i & 0x07))) > 0;
 
         // [297] 328 - 331(4 bytes) Clock ticks since game started. 1 clock tick == 50ms.
-        state.totalTicks = ((savedGameData[328] & 0xFF) + ((savedGameData[329] & 0xFF) << 8) + ((savedGameData[330] & 0xFF) << 16) + ((savedGameData[331] & 0xFF) << 24)) * 3;
+        state.setTotalTicks(((savedGameData[328] & 0xFF) + ((savedGameData[329] & 0xFF) << 8) + ((savedGameData[330] & 0xFF) << 16) + ((savedGameData[331] & 0xFF) << 24)) * 3);
 
         // [301] 332 - 333(2 bytes) Horizon
         state.horizon = ((savedGameData[332] & 0xFF) + ((savedGameData[333] & 0xFF) << 8));

@@ -8,6 +8,8 @@ import com.agifans.agile.VariableData;
  */
 public class DesktopVariableData implements VariableData {
 
+    private int totalTicks;
+    
     private int[] vars;
     
     /**
@@ -25,5 +27,15 @@ public class DesktopVariableData implements VariableData {
     @Override
     public void setVar(int varNum, int value) {
         vars[varNum] = (value & 0xFF);
+    }
+
+    @Override
+    public int getTotalTicks() {
+        return totalTicks;
+    }
+
+    @Override
+    public void setTotalTicks(int totalTicks) {
+        this.totalTicks = totalTicks;
     }
 }

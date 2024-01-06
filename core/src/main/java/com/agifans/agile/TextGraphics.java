@@ -627,9 +627,9 @@ public class TextGraphics {
         }
         else {
             // The timeout value is given in half seconds and the TotalTicks in 1/60ths of a second.
-            timeOut = state.totalTicks + state.getVar(Defines.PRINT_TIMEOUT) * 30;
+            timeOut = state.getTotalTicks() + state.getVar(Defines.PRINT_TIMEOUT) * 30;
 
-            while ((state.totalTicks < timeOut) && (userInput.checkAcceptAbort() == -1))  {
+            while ((state.getTotalTicks() < timeOut) && (userInput.checkAcceptAbort() == -1))  {
                 try {
                     Thread.sleep(1);
                 } catch (InterruptedException e) {
