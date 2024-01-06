@@ -11,12 +11,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.agifans.agile.AgileRunner;
+import com.agifans.agile.Interpreter;
 import com.agifans.agile.PixelData;
 import com.agifans.agile.QuitAction;
 import com.agifans.agile.SavedGameStore;
 import com.agifans.agile.UserInput;
 import com.agifans.agile.VariableData;
 import com.agifans.agile.WavePlayer;
+import com.agifans.agile.agilib.Game;
 import com.badlogic.gdx.Gdx;
 
 public class DesktopAgileRunner extends AgileRunner {
@@ -65,7 +67,11 @@ public class DesktopAgileRunner extends AgileRunner {
     private void runGame(String gameUri) {
         // Start by loading game. We deliberately do this within the thread and
         // not in the main libgdx UI thread.
-        loadGame(gameUri);
+        Game game = loadGame(gameUri);
+        
+        // Create the Interpreter class that will run the AGI game.
+        Interpreter interpreter = new Interpreter(game, userInput, wavePlayer, 
+                savedGameStore, pixelData, variableData);
         
         while (true) {
             if (exit) {
@@ -78,7 +84,7 @@ public class DesktopAgileRunner extends AgileRunner {
                     wait();
                 }
                 
-                // Perform one tick of the interpreter.
+                // Perform one animation tick of the AGI interpreter.
                 interpreter.animationTick();
             }
             catch (QuitAction qa) {

@@ -25,8 +25,6 @@ public abstract class AgileRunner {
     
     private static final int NANOS_PER_FRAME = (1000000000 / 60);
     
-    protected Interpreter interpreter;
-    
     protected WavePlayer wavePlayer;
     protected SavedGameStore savedGameStore;
     protected UserInput userInput;
@@ -71,8 +69,10 @@ public abstract class AgileRunner {
     
     /**
      * Attempts to load an AGI game from the game folder.
+     * 
+     * @return The loaded AGI game.
      */
-    protected void loadGame(String gameUri) {
+    protected Game loadGame(String gameUri) {
         Game game = null;
                 
         // As is how the data is fetched.
@@ -97,8 +97,7 @@ public abstract class AgileRunner {
         // Patch game option.
         patchGame(game, gameDetection.gameId, gameDetection.gameName);
         
-        // Create the Interpreter to run this Game.
-        this.interpreter = new Interpreter(game, userInput, wavePlayer, savedGameStore, pixelData, variableData);
+        return game;
     }
     
     /**

@@ -6,11 +6,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.agifans.agile.AgileRunner;
+import com.agifans.agile.Interpreter;
 import com.agifans.agile.PixelData;
 import com.agifans.agile.SavedGameStore;
 import com.agifans.agile.UserInput;
 import com.agifans.agile.VariableData;
 import com.agifans.agile.WavePlayer;
+import com.agifans.agile.agilib.Game;
 import com.agifans.agile.worker.MessageEvent;
 import com.agifans.agile.worker.MessageHandler;
 import com.agifans.agile.worker.Worker;
@@ -24,6 +26,9 @@ public class GwtAgileRunner extends AgileRunner {
 
     private Worker worker;
     
+    // TODO: This is temporary, until we get the web worker going.
+    private Interpreter interpreter;
+    
     public GwtAgileRunner(UserInput userInput, WavePlayer wavePlayer, SavedGameStore savedGameStore, 
             PixelData pixelData, VariableData variableData) {
         super(userInput, wavePlayer, savedGameStore, pixelData, variableData);
@@ -34,7 +39,11 @@ public class GwtAgileRunner extends AgileRunner {
         createWorker();
         
         // TODO: This may need to be done by the web worker.
-        loadGame(gameUri);
+        Game game = loadGame(gameUri);
+        
+        // TODO: This is temporary, until we get the web worker going.
+        Interpreter interpreter = new Interpreter(game, userInput, wavePlayer, 
+                savedGameStore, pixelData, variableData);
     }
 
     @Override
