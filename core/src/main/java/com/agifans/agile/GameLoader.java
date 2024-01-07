@@ -29,16 +29,15 @@ public abstract class GameLoader {
     }
     
     /**
-     * Attempts to load an AGI game from the game folder.
+     * Attempts to load and decode an AGI game from given Map of game files.
+     * 
+     * @param gameFilesMap The Map containing the game file content (keyed by file name)
      * 
      * @return The loaded AGI game.
      */
-    public Game loadGame(String gameUri) {
+    public Game loadGame(Map<String, byte[]> gameFilesMap) {
         Game game = null;
                 
-        // As is how the data is fetched.
-        Map<String, byte[]> gameFilesMap = fetchGameFiles(gameUri);
-        
         // Use a dummy TextGraphics instance to render the "Loading" text in grand AGI fashion.
         TextGraphics textGraphics = new TextGraphics(pixelData, null, null);
         try {
@@ -53,7 +52,11 @@ public abstract class GameLoader {
         
         // Game detection logic and update windows title.
         Detection gameDetection = new Detection(game);
-        Gdx.graphics.setTitle("AGILE v0.0.0.0 | " + gameDetection.gameName);
+        if (Gdx.graphics != null) {
+            // We can't set the title in the web worker, so check first that the 
+            // graphics field is populated, which for the web worker it won't be.
+            Gdx.graphics.setTitle("AGILE v0.0.0.0 | " + gameDetection.gameName);
+        }
         
         // Patch game option.
         patchGame(game, gameDetection.gameId, gameDetection.gameName);

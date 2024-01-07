@@ -2,6 +2,7 @@ package com.agifans.agile.worker;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.typedarrays.shared.ArrayBuffer;
 import com.google.gwt.core.client.GWT.UncaughtExceptionHandler;
 
 /**
@@ -40,6 +41,16 @@ public class Worker extends com.google.gwt.webworker.client.Worker {
      */
     public final native void postTransferableObject(String name, JavaScriptObject object) /*-{
         this.postMessage({name: name, object: object}, [object]);
+    }-*/;
+    
+    /**
+     * This method can be used to transfer an ArrayBuffer.
+     * 
+     * @param name The name of the object. Used for identification of the object.
+     * @param buffer The JS ArrayByffer to send in the postMessage call.
+     */
+    public final native void postArrayBuffer(String name, ArrayBuffer buffer) /*-{
+        this.postMessage({name: name, buffer: buffer}, [buffer]);
     }-*/;
     
     private static void onMessageImpl(MessageHandler messageHandler, MessageEvent event) {

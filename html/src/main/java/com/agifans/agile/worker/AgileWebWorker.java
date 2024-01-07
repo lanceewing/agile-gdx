@@ -2,6 +2,7 @@ package com.agifans.agile.worker;
 
 import com.agifans.agile.Interpreter;
 import com.agifans.agile.agilib.Game;
+import com.agifans.agile.gwt.GameFileMapEncoder;
 import com.agifans.agile.gwt.GwtGameLoader;
 import com.agifans.agile.gwt.GwtPixelData;
 import com.agifans.agile.gwt.GwtSavedGameStore;
@@ -9,6 +10,7 @@ import com.agifans.agile.gwt.GwtUserInput;
 import com.agifans.agile.gwt.GwtVariableData;
 import com.agifans.agile.gwt.GwtWavePlayer;
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.typedarrays.shared.ArrayBuffer;
 import com.google.gwt.webworker.client.DedicatedWorkerEntryPoint;
 
 /**
@@ -85,8 +87,13 @@ public class AgileWebWorker extends DedicatedWorkerEntryPoint implements Message
                 pixelData.init(320, 200);
                 wavePlayer = new GwtWavePlayer();
                 savedGameStore = new GwtSavedGameStore();
+                break;
+                
+            case "Start":
+                ArrayBuffer gameDataBuffer = getArrayBuffer(eventObject);
+                GameFileMapEncoder gameFileMapDecoder = new GameFileMapEncoder();
                 gameLoader = new GwtGameLoader(pixelData);
-                Game game = gameLoader.loadGame(getNestedString(eventObject, "gameUri"));
+                Game game = gameLoader.loadGame(gameFileMapDecoder.decodeGameFileMap(gameDataBuffer));
                 interpreter = new Interpreter(
                         game, userInput, wavePlayer, savedGameStore, 
                         pixelData, variableData);
@@ -118,6 +125,10 @@ public class AgileWebWorker extends DedicatedWorkerEntryPoint implements Message
     
     private native String getNestedString(JavaScriptObject obj, String fieldName)/*-{
         return obj.object[fieldName];
+    }-*/;
+    
+    private native ArrayBuffer getArrayBuffer(JavaScriptObject obj)/*-{
+        return obj.buffer;
     }-*/;
     
     protected final void postObject(String name, JavaScriptObject object) {

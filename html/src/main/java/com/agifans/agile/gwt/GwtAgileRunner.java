@@ -1,5 +1,7 @@
 package com.agifans.agile.gwt;
 
+import java.util.Map;
+
 import com.agifans.agile.AgileRunner;
 import com.agifans.agile.PixelData;
 import com.agifans.agile.SavedGameStore;
@@ -12,6 +14,7 @@ import com.agifans.agile.worker.Worker;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.typedarrays.shared.ArrayBuffer;
 import com.google.gwt.webworker.client.ErrorEvent;
 import com.google.gwt.webworker.client.ErrorHandler;
 
@@ -63,7 +66,10 @@ public class GwtAgileRunner extends AgileRunner {
     
     @Override
     public void start(String gameUri) {
-        createWorker(gameUri);
+        // The libGDX Gdx.files.internal only seems to work in UI thread, so we
+        // load the files into a map within the UI thread and then pass to the worker
+        // to decode.
+        createWorker((new GwtGameLoader(pixelData)).fetchGameFiles(gameUri));
     }
 
     @Override
@@ -71,8 +77,11 @@ public class GwtAgileRunner extends AgileRunner {
         // TODO: Convert this into a URI format.
         return "games/kq1/";
     }
-
-    public void createWorker(String gameUri) {
+    
+    public void createWorker(Map<String, byte[]> gameFileMap) {
+        GameFileMapEncoder gameFileMapEncoder = new GameFileMapEncoder();
+        ArrayBuffer gameFileBuffer = gameFileMapEncoder.encodeGameFileMap(gameFileMap);
+        
         worker = Worker.create("worker/worker.nocache.js");
         
         final MessageHandler webWorkerMessageHandler = new MessageHandler() {
@@ -123,12 +132,15 @@ public class GwtAgileRunner extends AgileRunner {
         JavaScriptObject oldKeysSAB = gwtUserInput.getOldKeysSharedArrayBuffer();
         JavaScriptObject variableSAB = gwtVariableData.getVariableSharedArrayBuffer();
         
+        // We currently send one message to Initialise, using the SharedArrayBuffers,
+        // then another message to Start the interpreter with the given game data. The 
+        // game data is "transferred", whereas the others are not but rather shared.
         worker.postObject("Initialise", createInitialiseObject(
                 keyPressQueueSAB, 
                 keysSAB, 
                 oldKeysSAB, 
-                variableSAB,
-                gameUri));
+                variableSAB));
+        worker.postArrayBuffer("Start", gameFileBuffer);
     }
     
     /**
@@ -138,8 +150,7 @@ public class GwtAgileRunner extends AgileRunner {
      * @param keyPressQueueSAB 
      * @param keysSAB 
      * @param oldKeysSAB 
-     * @param variableSAB 
-     * @param gameUri
+     * @param variableSAB
      * 
      * @return The created object.
      */
@@ -147,14 +158,12 @@ public class GwtAgileRunner extends AgileRunner {
             JavaScriptObject keyPressQueueSAB, 
             JavaScriptObject keysSAB, 
             JavaScriptObject oldKeysSAB, 
-            JavaScriptObject variableSAB,
-            String gameUri)/*-{
+            JavaScriptObject variableSAB)/*-{
         return { 
             keyPressQueueSAB: keyPressQueueSAB,
             keysSAB: keysSAB,
             oldKeysSAB: oldKeysSAB,
-            variableSAB: variableSAB,
-            gameUri: gameUri
+            variableSAB: variableSAB
         };
     }-*/;
     

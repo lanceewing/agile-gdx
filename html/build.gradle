@@ -35,6 +35,7 @@ dependencies {
   implementation "com.github.tommyettinger:gdx-backend-gwt:1.1210.0:sources"
   implementation "com.google.jsinterop:jsinterop-annotations:2.0.2:sources"
   implementation "de.knightsoft-net:gwt-webworker:1.0.8"
+  implementation "org.ainslec:gwt-jszip:1.0.0"
   implementation project(':core')
 
 }

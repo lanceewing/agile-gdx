@@ -58,7 +58,7 @@ public class DesktopAgileRunner extends AgileRunner {
         // Start by loading game. We deliberately do this within the thread and
         // not in the main libgdx UI thread.
         DesktopGameLoader gameLoader = new DesktopGameLoader(pixelData);
-        Game game = gameLoader.loadGame(gameUri);
+        Game game = gameLoader.loadGame(gameLoader.fetchGameFiles(gameUri));
         
         // Create the Interpreter class that will run the AGI game.
         Interpreter interpreter = new Interpreter(game, userInput, wavePlayer, 

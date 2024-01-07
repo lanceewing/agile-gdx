@@ -7,6 +7,7 @@
   <inherits name="com.badlogic.gdx.backends.gdx_backends_gwt" />
   <inherits name="com.agifans.agile.Agile" />
   <inherits name='com.google.gwt.webworker.WebWorker' />
+  <inherits name='com.akjava.gwt.jszip.GWTJSZip'/>
   <entry-point class="com.agifans.agile.gwt.GwtLauncher" />
   <set-configuration-property name="gdx.assetpath" value="../assets" />
   <set-configuration-property name="xsiframe.failIfScriptTag" value="FALSE"/>

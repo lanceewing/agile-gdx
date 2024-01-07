@@ -83,8 +83,9 @@ public class StringUtils {
         byte[] textBytes = null;
         
         try {
-            // GWT backend doesn't support IBM437/CP437.
-            if (Gdx.app.getType() == ApplicationType.WebGL) {
+            // GWT backend doesn't support IBM437/CP437. We check for null because
+            // the Gdx fields are not populated in the web worker.
+            if ((Gdx.app == null) || (Gdx.app.getType() == ApplicationType.WebGL)) {
                 textBytes = text.getBytes(StandardCharsets.ISO_8859_1);
             }
             else {
@@ -102,8 +103,9 @@ public class StringUtils {
         String text = "";
         
         try {
-            // GWT backend doesn't support IBM437/CP437.
-            if (Gdx.app.getType() == ApplicationType.WebGL) {
+            // GWT backend doesn't support IBM437/CP437. We check for null because
+            // the Gdx fields are not populated in the web worker.
+            if ((Gdx.app == null) || (Gdx.app.getType() == ApplicationType.WebGL)) {
                 text = new String(textBytes, offset, length, StandardCharsets.ISO_8859_1);
             }
             else {
