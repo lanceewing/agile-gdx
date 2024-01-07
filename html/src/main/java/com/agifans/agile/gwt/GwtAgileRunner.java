@@ -154,7 +154,7 @@ public class GwtAgileRunner extends AgileRunner {
             keysSAB: keysSAB,
             oldKeysSAB: oldKeysSAB,
             variableSAB: variableSAB,
-            gameUri
+            gameUri: gameUri
         };
     }-*/;
     
