@@ -9,19 +9,13 @@ import com.badlogic.gdx.utils.BufferUtils;
  */
 public class DesktopPixelData implements PixelData {
 
-    private int width;
-    
-    private int height;
-    
     // This byte array is in exactly the format that we can copy into the Pixmap's buffer.
     private byte[] imageData;
     
     private byte[] backupImageData;
     
     @Override
-    public void init(Pixmap pixmap) {
-        width = pixmap.getWidth();
-        height = pixmap.getHeight();
+    public void init(int width, int height) {
         imageData = new byte[width * height * 4];
         backupImageData = new byte[width * height * 4];
     }

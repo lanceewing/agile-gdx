@@ -15,11 +15,12 @@ import com.badlogic.gdx.graphics.Pixmap;
 public interface PixelData {
 
     /**
-     * Initialises the PixelData implementation with the given Pixmap.
+     * Initialises the PixelData implementation with the given width and height.
      * 
-     * @param pixmap
+     * @param width The width of the pixel data.
+     * @param height The height of the pixel data.
      */
-    void init(Pixmap pixmap);
+    void init(int width, int height);
     
     /**
      * Puts a single pixel into the pixel data using an AGI screen position, i.e.

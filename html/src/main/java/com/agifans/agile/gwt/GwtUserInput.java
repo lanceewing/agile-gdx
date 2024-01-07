@@ -101,4 +101,33 @@ public class GwtUserInput extends UserInput {
     protected boolean keyPressQueueAdd(Integer key) {
         return keyPressQueue.add(key);
     }
+    
+    /**
+     * Gets the SharedArrayBuffer that the key press queue is using internally for
+     * storage.
+     * 
+     * @return The SharedArrayBuffer used internally by the key press queue.
+     */
+    JavaScriptObject getKeyPressQueueSharedArrayBuffer() {
+        return keyPressQueue.getSharedArrayBuffer();
+    }
+    
+    /**
+     * Gets the SharedArrayBuffer that the key state array is using internally for storage.
+     * 
+     * @return The SharedArrayBuffer used internally by the key state array.
+     */
+    JavaScriptObject getKeysSharedArrayBuffer() {
+        return keys.getSharedArrayBuffer();
+    }
+    
+    /**
+     * Gets the SharedArrayBuffer that the old key state array is using internally 
+     * for storage.
+     * 
+     * @return The SharedArrayBuffer used internally by the old key state array.
+     */
+    JavaScriptObject getOldKeysSharedArrayBuffer() {
+        return oldKeys.getSharedArrayBuffer();
+    }
 }

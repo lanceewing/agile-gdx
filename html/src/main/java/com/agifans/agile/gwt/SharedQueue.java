@@ -55,6 +55,15 @@ public class SharedQueue {
         this.read_ptr = new Uint32Array(this.buf, 4, 1);
         this.storage = new Uint32Array(this.buf, 8, this._capacity);
     }-*/;
+    
+    /**
+     * Returns the SharedArrayBuffer that this SharedQueue is using for storage.
+     * 
+     * @return The SharedArrayBuffer that this SharedQueue is using for storage.
+     */
+    public native JavaScriptObject getSharedArrayBuffer()/*-{
+        return this.buf;
+    }-*/;
 
     /**
      * Inserts the specified int value into this queue if it is possible to do so

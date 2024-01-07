@@ -1,15 +1,5 @@
 package com.agifans.agile;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-
-import com.agifans.agile.agilib.Game;
-import com.agifans.agile.agilib.Logic;
-import com.agifans.agile.agilib.Logic.Action;
-import com.agifans.agile.agilib.Logic.OperandType;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.utils.TimeUtils;
@@ -51,7 +41,7 @@ public abstract class AgileRunner {
      * @param pixmap
      */
     public void init(Pixmap pixmap) {
-        pixelData.init(pixmap);
+        pixelData.init(pixmap.getWidth(), pixmap.getHeight());
         
         // TODO: Unset this when the AgileRunner is stopped?
         Gdx.input.setInputProcessor(userInput);
@@ -67,121 +57,7 @@ public abstract class AgileRunner {
         pixelData.updatePixmap(pixmap);
     }
     
-    /**
-     * Attempts to load an AGI game from the game folder.
-     * 
-     * @return The loaded AGI game.
-     */
-    protected Game loadGame(String gameUri) {
-        Game game = null;
-                
-        // As is how the data is fetched.
-        Map<String, byte[]> gameFilesMap = fetchGameFiles(gameUri);
-        
-        // Use a dummy TextGraphics instance to render the "Loading" text in grand AGI fashion.
-        TextGraphics textGraphics = new TextGraphics(pixelData, null, null);
-        try {
-            if (gameFilesMap.containsKey("words.tok")) {
-                textGraphics.drawString(pixelData, "Loading... Please wait", 72, 88, 15, 0);
-            }
-            game = new Game(gameFilesMap);
-        }
-        finally {
-            textGraphics.clearLines(0, 24, 0);
-        }
-        
-        // Game detection logic and update windows title.
-        Detection gameDetection = new Detection(game);
-        Gdx.graphics.setTitle("AGILE v0.0.0.0 | " + gameDetection.gameName);
-        
-        // Patch game option.
-        patchGame(game, gameDetection.gameId, gameDetection.gameName);
-        
-        return game;
-    }
-    
-    /**
-     * Patches the given games's Logic scripts, so that the starting question is skipped.
-     * 
-     * @param game Game to patch the Logics for.
-     * @param gameId The detected game ID.
-     * @param gameName The detected game name.
-     * 
-     * @return The patched Game.
-     */
-    private Game patchGame(Game game, String gameId, String gameName) {
-        for (Logic logic : game.logics) {
-            if (logic != null) {
-                List<Action> actions = logic.actions;
-    
-                switch (gameId) {
-                
-                    case "goldrush":
-                        // Gold Rush version 3.0 doesn't have copy protection
-                        if (gameName.contains("3.0")) {
-                            break;      
-                        }
-                        if (logic.index == 129) {
-                            // Changes the new.room(125) to be new.room(73) instead, thus skipping the questions.
-                            Action action = actions.get(27);
-                            if ((action.operation.opcode == 18) && (action.operands.get(0).asInt() == 125)) {
-                                action.operands.set(0, logic.new Operand(OperandType.NUM, 73));
-                            }
-                        }
-                        break;
-    
-                    case "mh1":
-                        if (logic.index == 159) {
-                            // Modifies LOGIC.159 to jump to the code that is run when a successful answer is entered.
-                            if ((actions.get(134).operation.opcode == 18) && (actions.get(134).operands.get(0).asInt() == 153)) {
-                                actions.set(0, logic.new GotoAction(new ArrayList<>(Arrays.asList(logic.new Operand(OperandType.ADDRESS, actions.get(132).address)))));
-                                actions.get(0).logic = logic;
-                            }
-                        }
-                        break;
-    
-                    case "kq4":
-                        if (logic.index == 0) {
-                            // Changes the new.room(140) to be new.room(96) instead, thus skipping the questions.
-                            Action action = actions.get(55);
-                            if ((action.operation.opcode == 18) && (action.operands.get(0).asInt() == 140)) {
-                                action.operands.set(0, logic.new Operand(OperandType.NUM, 96));
-                            }
-                        }
-                        break;
-    
-                    case "lsl1":
-                        if (logic.index == 6) {
-                            // Modifies LOGIC.6 to jump to the code that is run when all of the trivia questions has been answered correctly.
-                            Action action = actions.get(0);                                
-                            // Verify that the action is the if-condition to check if the user can enter the game.
-                            if (action.operation.opcode == 255 && action.operands.size() == 2) {
-                                actions.set(0, logic.new GotoAction(new ArrayList<>(Arrays.asList(logic.new Operand(OperandType.ADDRESS, actions.get(1).address)))));
-                                actions.get(0).logic = logic;
-    
-                                // Skips the 'Thank you. And now, slip into your leisure suit and prepare to enter the
-                                // "Land of the Lounge Lizards" with "Leisure "Suit Larry!"' message
-                                int printIndex = 9;
-                                Action printAction = actions.get(printIndex);
-    
-                                // Verify it's the print function
-                                if (printAction.operation.opcode == 101) {
-                                    // Go to next command in the logic, which is the new.room command
-                                    actions.set(printIndex, logic.new GotoAction(new ArrayList<>(Arrays.asList(logic.new Operand(OperandType.ADDRESS, actions.get(printIndex + 1).address)))));
-                                    actions.get(printIndex).logic = logic;
-                                }
-                            }                               
-                        }
-                        break;
-    
-                    default:
-                        break;
-                }
-            }
-        }
 
-        return game;
-    }
     
     /**
      * Invoked by the main UI thread to trigger an AGI tick. The first part, i.e. updating the
@@ -254,19 +130,4 @@ public abstract class AgileRunner {
     
     public abstract boolean isRunning();
     
-    public abstract Map<String, byte[]> fetchGameFiles(String gameUri);
-    
-    public boolean isGameFile(String filename) {
-        String lowerCaseName = filename.toLowerCase();
-        if (lowerCaseName.matches("^[a-z0-9]*vol.[0-9]+$") || 
-                lowerCaseName.endsWith("dir") || 
-                lowerCaseName.equals("agidata.ovl") || 
-                lowerCaseName.equals("object") || 
-                lowerCaseName.equals("words.tok")) {
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
 }

@@ -1,9 +1,13 @@
 package com.agifans.agile.worker;
 
-import com.agifans.agile.PixelData;
-import com.agifans.agile.SavedGameStore;
-import com.agifans.agile.UserInput;
-import com.agifans.agile.WavePlayer;
+import com.agifans.agile.Interpreter;
+import com.agifans.agile.agilib.Game;
+import com.agifans.agile.gwt.GwtGameLoader;
+import com.agifans.agile.gwt.GwtPixelData;
+import com.agifans.agile.gwt.GwtSavedGameStore;
+import com.agifans.agile.gwt.GwtUserInput;
+import com.agifans.agile.gwt.GwtVariableData;
+import com.agifans.agile.gwt.GwtWavePlayer;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.webworker.client.DedicatedWorkerEntryPoint;
 
@@ -15,8 +19,9 @@ import com.google.gwt.webworker.client.DedicatedWorkerEntryPoint;
  * and doesn't return from the current "tick" until the menu is closed. The same 
  * happens for the Inventory screen, the Help screen, and for normal text windows
  * that appear. There are even LOGIC scripts in some games that will wait for key
- * presses before leaving the LOGIC script. Without using a web worker, the UI 
- * thread would be blocked in such cases, which would hang the whole web page.
+ * presses, or for the AGI game block to reach a certain value, before leaving the 
+ * LOGIC script. Without using a web worker, the UI thread would be blocked in such
+ * cases, which would hang the whole web page.
  * 
  * The web worker does not have direct access to the HTML5 canvas used by libgdx,
  * or to the key events. There therefore needs to be two-way communication between
@@ -32,7 +37,8 @@ import com.google.gwt.webworker.client.DedicatedWorkerEntryPoint;
  * 
  * For the transfer of pixels back to the UI thread, this can be done via postMessage
  * and since ImageBitmap is transferable, it can be transferred pretty much 
- * instantly.
+ * instantly. It is kind of a reference transfer (not a copy, since the ImageBitmap
+ * becomes unusable on the web worker side as soon as it is transferred). 
  */
 public class AgileWebWorker extends DedicatedWorkerEntryPoint implements MessageHandler {
 
@@ -41,34 +47,77 @@ public class AgileWebWorker extends DedicatedWorkerEntryPoint implements Message
     // The web worker has its own instance of each of these. It is not the same instance
     // as in the AgileWorker. Instead part of the data is either shared, or transferred
     // between the client and work.
-    private UserInput userInput;
-    private PixelData pixelData;
-    private SavedGameStore savedGameStore;
-    private WavePlayer waveplayer;
+    private GwtUserInput userInput;
+    private GwtPixelData pixelData;
+    private GwtSavedGameStore savedGameStore;
+    private GwtWavePlayer wavePlayer;
+    private GwtVariableData variableData;
+    private GwtGameLoader gameLoader;
+    
+    private Interpreter interpreter;
     
     /**
-     * Incoming messages from the UI thread are mainly to set things up. Once both 
-     * sides are up and running, the UI thread no longer sends messages but communicates
-     * solely via the SharedArrayBuffer. 
+     * Incoming messages from the UI thread are for two purposes: One is to set things 
+     * up, and then once both sides are up and running, the UI thread then starts sending
+     * "Tick" messages, which request the web worker to perform a tick. The UI thread 
+     * will only send a "Tick" message if it knows that the web worker finished the last 
+     * tick, otherwise it skips sending the message, due to the web worker already being 
+     * busy. This requires the web worker to send back "TickComplete" messages when a 
+     * tick has reached completion, which it needs to do anyway, in order to transfer the 
+     * pixel ImageBitmap to the UI thread for rendering.
      * 
      * @param event The incoming message from the UI thread.
      */
     @Override
-    public void onMessage(MessageEvent event) {
+    public void onMessage(MessageEvent event) {        
+        JavaScriptObject eventObject = event.getDataAsObject();
         
-        // The gwt-webworker module works well for Strings, but doesn't support
-        // transferable objects and the SharedArrayBuffer.
-        
-        
-        
-        // TODO: This works, which proves that the new methods are working.
-        JavaScriptObject testObj = event.getDataAsObject();
-        this.postMessage("Worker received: " + getTestObjValue(testObj));
-        
+        switch (getEventType(eventObject)) {
+            case "Initialise":
+                JavaScriptObject keyPressQueueSAB = getNestedObject(eventObject, "keyPressQueueSAB");
+                JavaScriptObject keysSAB =  getNestedObject(eventObject, "keysSAB");
+                JavaScriptObject oldKeysSAB =  getNestedObject(eventObject, "oldKeysSAB");
+                JavaScriptObject variableSAB =  getNestedObject(eventObject, "variableSAB");
+                userInput = new GwtUserInput(keyPressQueueSAB, keysSAB, oldKeysSAB);
+                variableData = new GwtVariableData(variableSAB);
+                // TODO: Should we pass dimensions from UI thread?
+                pixelData = new GwtPixelData();
+                pixelData.init(320, 200);
+                wavePlayer = new GwtWavePlayer();
+                savedGameStore = new GwtSavedGameStore();
+                gameLoader = new GwtGameLoader(pixelData);
+                Game game = gameLoader.loadGame(getNestedString(eventObject, "gameUri"));
+                interpreter = new Interpreter(
+                        game, userInput, wavePlayer, savedGameStore, 
+                        pixelData, variableData);
+                break;
+                
+            case "Tick":
+                interpreter.animationTick();
+                
+                // Gets the up to date pixels as an ImageBitmap, which is a transferable
+                // object, so can be passed to the UI thread instantly.
+                JavaScriptObject imageBitmap = pixelData.getImageBitmap();
+                postTransferableObject("TickComplete", imageBitmap);
+                
+                // TODO: Add support for sound data, as separate message. Big amount of sample data, so needs to be transferable.
+                break;
+                
+            default:
+                // Unknown message. Ignore.
+        }
     }
-
-    private native int getTestObjValue(JavaScriptObject obj)/*-{
-        return obj.object.value;
+    
+    private native String getEventType(JavaScriptObject obj)/*-{
+        return obj.name;
+    }-*/;
+    
+    private native JavaScriptObject getNestedObject(JavaScriptObject obj, String fieldName)/*-{
+        return obj.object[fieldName];
+    }-*/;
+    
+    private native String getNestedString(JavaScriptObject obj, String fieldName)/*-{
+        return obj.object[fieldName];
     }-*/;
     
     protected final void postObject(String name, JavaScriptObject object) {

@@ -43,6 +43,15 @@ public class SharedArray {
         this.storage = new Uint32Array(this.buf, 0, (sab.byteLength) / BYTES_PER_ELEMENT);
     }-*/;
     
+    /**
+     * Returns the SharedArrayBuffer that this SharedArray is using for storage.
+     * 
+     * @return The SharedArrayBuffer that this SharedArray is using for storage.
+     */
+    public native JavaScriptObject getSharedArrayBuffer()/*-{
+        return this.buf;
+    }-*/;
+    
     public native int get(int index)/*-{
         return Atomics.load(this.storage, index);
     }-*/;

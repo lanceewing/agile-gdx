@@ -1,49 +1,69 @@
 package com.agifans.agile.gwt;
 
-import java.io.File;
-import java.io.FilenameFilter;
-import java.util.HashMap;
-import java.util.Map;
-
 import com.agifans.agile.AgileRunner;
-import com.agifans.agile.Interpreter;
 import com.agifans.agile.PixelData;
 import com.agifans.agile.SavedGameStore;
 import com.agifans.agile.UserInput;
 import com.agifans.agile.VariableData;
 import com.agifans.agile.WavePlayer;
-import com.agifans.agile.agilib.Game;
 import com.agifans.agile.worker.MessageEvent;
 import com.agifans.agile.worker.MessageHandler;
 import com.agifans.agile.worker.Worker;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.webworker.client.ErrorEvent;
 import com.google.gwt.webworker.client.ErrorHandler;
 
+/**
+ * GWT implementation of the AgileRunner. It uses a web worker to perform the execution
+ * of the AGI interpreter animation ticks.
+ */
 public class GwtAgileRunner extends AgileRunner {
 
     private Worker worker;
     
-    // TODO: This is temporary, until we get the web worker going.
-    private Interpreter interpreter;
+    private Pixmap pixmap;
     
+    /**
+     * Indicates that the worker is currently executing the tick, i.e. a single interpretation 
+     * cycle. This flag exists because there are some AGI commands that wait for something to 
+     * happen before continuing. For example, a print window will stay up for a defined timeout
+     * period or until a key is pressed. In such cases, the thread can be performing a tick 
+     * for the duration of what would normally be many ticks. 
+     */
+    private boolean inTick;
+    
+    /**
+     * Constructor for GwtAgileRunner.
+     * 
+     * @param userInput
+     * @param wavePlayer
+     * @param savedGameStore
+     * @param pixelData
+     * @param variableData
+     */
     public GwtAgileRunner(UserInput userInput, WavePlayer wavePlayer, SavedGameStore savedGameStore, 
             PixelData pixelData, VariableData variableData) {
         super(userInput, wavePlayer, savedGameStore, pixelData, variableData);
     }
     
+    /**
+     * Initialises the AgileRunner with anything that needs setting up before it starts.
+     * 
+     * @param pixmap
+     */
+    @Override
+    public void init(Pixmap pixmap) {
+        super.init(pixmap);
+        
+        // GwtAgileRunner needs to store the Pixmap so it can apply an incoming ImageBitmap.
+        this.pixmap = pixmap;
+    }
+    
     @Override
     public void start(String gameUri) {
-        createWorker();
-        
-        // TODO: This may need to be done by the web worker.
-        Game game = loadGame(gameUri);
-        
-        // TODO: This is temporary, until we get the web worker going.
-        interpreter = new Interpreter(game, userInput, wavePlayer, 
-                savedGameStore, pixelData, variableData);
+        createWorker(gameUri);
     }
 
     @Override
@@ -52,37 +72,109 @@ public class GwtAgileRunner extends AgileRunner {
         return "games/kq1/";
     }
 
-    public void createWorker() {
+    public void createWorker(String gameUri) {
         worker = Worker.create("worker/worker.nocache.js");
         
         final MessageHandler webWorkerMessageHandler = new MessageHandler() {
             @Override
             public void onMessage(MessageEvent event) {
-                Gdx.app.log("client onMessage", "Received message: " + event.getDataAsString());
+                JavaScriptObject eventObject = event.getDataAsObject();
+                
+                switch (getEventType(eventObject)) {
+                    case "TickComplete":
+                        // Allows the next tick to be triggered. We only allow one tick at
+                        // a time, otherwise the web worker would get a flood of Tick messages
+                        // when it is busy waiting for a key or similar.
+                        inTick = false;
+                        // ImageBitmap will always be present, so fall through to UpdatePixels.
+                        
+                    case "UpdatePixels":
+                        JavaScriptObject imageBitmap = getEmbeddedObject(eventObject);
+                        ((GwtPixelData)pixelData).updatePixmapWithImageBitmap(pixmap, imageBitmap);
+                        break;
+                        
+                    case "PlaySound":
+                        break;
+                        
+                    // TODO: Could potentially pass back saved games as well.
+                        
+                    default:
+                        // Unknown. Ignore.
+                }
             }
         };
 
         final ErrorHandler webWorkerErrorHandler = new ErrorHandler() {
             @Override
             public void onError(final ErrorEvent pEvent) {
-                Gdx.app.log("client onError", "Received message: " + pEvent.getMessage());
+                Gdx.app.error("client onError", "Received message: " + pEvent.getMessage());
             }
         };
 
         worker.setOnMessage(webWorkerMessageHandler);
         worker.setOnError(webWorkerErrorHandler);
         
-        worker.postObject("TestObj", createTestObj(123));
+        // In order to facilitate the communication with the worker, we must send
+        // all SharedArrayBuffer objects to the webworker.
+        GwtUserInput gwtUserInput = (GwtUserInput)userInput;
+        GwtVariableData gwtVariableData = (GwtVariableData)variableData;
+        JavaScriptObject keyPressQueueSAB = gwtUserInput.getKeyPressQueueSharedArrayBuffer();
+        JavaScriptObject keysSAB = gwtUserInput.getKeysSharedArrayBuffer();
+        JavaScriptObject oldKeysSAB = gwtUserInput.getOldKeysSharedArrayBuffer();
+        JavaScriptObject variableSAB = gwtVariableData.getVariableSharedArrayBuffer();
+        
+        worker.postObject("Initialise", createInitialiseObject(
+                keyPressQueueSAB, 
+                keysSAB, 
+                oldKeysSAB, 
+                variableSAB,
+                gameUri));
     }
     
-    private native JavaScriptObject createTestObj(int value)/*-{
-        return { value: value };
+    /**
+     * Creates a JavaScript object, wrapping the objects to send to the web worker to
+     * initialise the Interpreter.
+     * 
+     * @param keyPressQueueSAB 
+     * @param keysSAB 
+     * @param oldKeysSAB 
+     * @param variableSAB 
+     * @param gameUri
+     * 
+     * @return The created object.
+     */
+    private native JavaScriptObject createInitialiseObject(
+            JavaScriptObject keyPressQueueSAB, 
+            JavaScriptObject keysSAB, 
+            JavaScriptObject oldKeysSAB, 
+            JavaScriptObject variableSAB,
+            String gameUri)/*-{
+        return { 
+            keyPressQueueSAB: keyPressQueueSAB,
+            keysSAB: keysSAB,
+            oldKeysSAB: oldKeysSAB,
+            variableSAB: variableSAB,
+            gameUri
+        };
+    }-*/;
+    
+    private native String getEventType(JavaScriptObject obj)/*-{
+        return obj.name;
+    }-*/;
+    
+    private native JavaScriptObject getEmbeddedObject(JavaScriptObject obj)/*-{
+        return obj.object;
     }-*/;
     
     @Override
     public void animationTick() {
-        // TODO: Implement proper web worker implementation.
-        interpreter.animationTick();
+        if (!inTick) {
+            inTick = true;  // NOTE: Set to false by "TickComplete" message.
+            
+            // Send a message to the web worker to tell it to perform an animation tick, 
+            // but only if it isn't already in an animation tick.
+            worker.postObject("Tick", JavaScriptObject.createObject());
+        }
     }
 
     @Override
@@ -94,33 +186,5 @@ public class GwtAgileRunner extends AgileRunner {
     public boolean isRunning() {
         // TODO Auto-generated method stub
         return false;
-    }
-
-    @Override
-    public Map<String, byte[]> fetchGameFiles(String gameUri) {
-        Map<String, byte[]> gameFileMap = new HashMap<>();
-        
-        Gdx.app.debug("fetchGameFiles", "Attempting to list game folder.");
-        
-        // TODO: Map gameUri to an internal path. Expected to be a directory.
-        FileHandle gameDirectory = Gdx.files.internal(gameUri);
-        if (gameDirectory != null) {
-            FileHandle[] gameFiles = gameDirectory.list(new FilenameFilter() {
-                @Override
-                public boolean accept(File dir, String name) {
-                    return isGameFile(name);
-                }
-            });
-                
-            for (FileHandle gameFile : gameFiles) {
-                Gdx.app.debug("fetchGameFiles", "Reading game file " + gameFile.name());
-                gameFileMap.put(gameFile.name().toLowerCase(), gameFile.readBytes());
-            }
-        }
-        else {
-            Gdx.app.error("fetchGameFiles", "Failed to list game directory!");
-        }
-
-        return gameFileMap;
     }
 }

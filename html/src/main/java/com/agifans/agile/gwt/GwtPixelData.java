@@ -35,12 +35,12 @@ public class GwtPixelData implements PixelData {
     private int[] backupPixelArray;
     
     @Override
-    public void init(Pixmap pixmap) {
+    public void init(int width, int height) {
         // As its very new, we need to use a native method to create the OffscreenCanvas.
-        createOffscreenCanvasAndContext(pixmap.getWidth(), pixmap.getHeight());
+        createOffscreenCanvasAndContext(width, height);
         
         // Create an empty ImageData for use with AGILE.
-        this.imageData = this.context.createImageData(pixmap.getWidth(), pixmap.getHeight());
+        this.imageData = this.context.createImageData(width, height);
         
         // Create a backup array for when we need to restore an earlier state.
         this.backupPixelArray = new int[this.imageData.getData().getLength()];
@@ -123,18 +123,27 @@ public class GwtPixelData implements PixelData {
 
     @Override
     public void updatePixmap(Pixmap pixmap) {
-        // Update the OffscreenCanvas with the latest changes.
-        context.putImageData(imageData, 0, 0);
-        
-        copyImageBitmapToRealCanvas(pixmap.getContext());
-        
-        // TODO: Get ImageBitmap and send message to UI thread. ImageBitmap is transferrable.
+        // Nothing to do for GWT platform. It is handled by the other variant.
     }
     
-    private native void copyImageBitmapToRealCanvas(Context2d realCanvasContext)/*-{
-        var offscreenCanvas = this.@com.agifans.agile.gwt.GwtPixelData::offscreenCanvas;
-        var imageBitmap = offscreenCanvas.transferToImageBitmap();
+    public void updatePixmapWithImageBitmap(Pixmap pixmap, JavaScriptObject imageBitmap) {
+        copyImageBitmapToRealCanvas(imageBitmap, pixmap.getContext());
+    }
+    
+    private native void copyImageBitmapToRealCanvas(JavaScriptObject imageBitmap, Context2d realCanvasContext)/*-{
         realCanvasContext.drawImage(imageBitmap, 0, 0);
         imageBitmap.close();
+    }-*/;
+    
+    public JavaScriptObject getImageBitmap() {
+        // Update the OffscreenCanvas with the latest changes.
+        context.putImageData(imageData, 0, 0);
+        // Then return ImageBitmap from the OffscreenCanvas. This will be transferable.
+        return getImageBitmapFromOffscreenCanvas();
+    }
+    
+    private native JavaScriptObject getImageBitmapFromOffscreenCanvas()/*-{
+        var offscreenCanvas = this.@com.agifans.agile.gwt.GwtPixelData::offscreenCanvas;
+        return offscreenCanvas.transferToImageBitmap();
     }-*/;
 }

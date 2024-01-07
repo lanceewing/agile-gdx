@@ -66,4 +66,13 @@ public class GwtVariableData implements VariableData {
     public void setVar(int varNum, int value) {
         variableArray.set(varNum & 0xFF, value & 0xFF);
     }
+    
+    /**
+     * Gets the SharedArrayBuffer used internally by the variable array.
+     * 
+     * @return The SharedArrayBuffer used internally by the variable array.
+     */
+    JavaScriptObject getVariableSharedArrayBuffer() {
+        return variableArray.getSharedArrayBuffer();
+    }
 }
