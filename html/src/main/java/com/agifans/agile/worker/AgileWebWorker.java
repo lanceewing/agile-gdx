@@ -37,10 +37,20 @@ import com.google.gwt.webworker.client.DedicatedWorkerEntryPoint;
  * buffer of memory that is visible to both sides automatically without the need
  * to transfer it.
  * 
- * For the transfer of pixels back to the UI thread, this can be done via postMessage
- * and since ImageBitmap is transferable, it can be transferred pretty much 
- * instantly. It is kind of a reference transfer (not a copy, since the ImageBitmap
- * becomes unusable on the web worker side as soon as it is transferred). 
+ * Likewise, the pixel data is also stored in a SharedArrayBuffer, so that the UI 
+ * thread can render the most up to date pixels for each frame. This is as per what 
+ * the original AGI interpreter does, so we need to match it. We can't do something
+ * like send back the pixels at the end of each "Tick", because there are scenarios
+ * where pixel changes occur mid "Tick" that need to be visible.
+ * 
+ * For the transfer of the game files to the web work, this can be done via postMessage
+ * and since ArrayBuffer is transferable, it can be transferred pretty much 
+ * instantly. It is kind of a reference transfer (not a copy, since the ArrayBuffer
+ * becomes unusable on the web worker side as soon as it is transferred).
+ * 
+ * Note that GWT supports ArrayBuffer by default but the SharedArrayBuffer requires
+ * us to implement native JS methods, since it is only very recently been supported
+ * by all browsers (March 2023).
  */
 public class AgileWebWorker extends DedicatedWorkerEntryPoint implements MessageHandler {
 
@@ -56,6 +66,9 @@ public class AgileWebWorker extends DedicatedWorkerEntryPoint implements Message
     private GwtVariableData variableData;
     private GwtGameLoader gameLoader;
     
+    /**
+     * The actual AGI interpreter implementation that runs the AGI game.
+     */
     private Interpreter interpreter;
     
     /**
@@ -65,8 +78,7 @@ public class AgileWebWorker extends DedicatedWorkerEntryPoint implements Message
      * will only send a "Tick" message if it knows that the web worker finished the last 
      * tick, otherwise it skips sending the message, due to the web worker already being 
      * busy. This requires the web worker to send back "TickComplete" messages when a 
-     * tick has reached completion, which it needs to do anyway, in order to transfer the 
-     * pixel ImageBitmap to the UI thread for rendering.
+     * tick has reached completion..
      * 
      * @param event The incoming message from the UI thread.
      */
@@ -77,14 +89,13 @@ public class AgileWebWorker extends DedicatedWorkerEntryPoint implements Message
         switch (getEventType(eventObject)) {
             case "Initialise":
                 JavaScriptObject keyPressQueueSAB = getNestedObject(eventObject, "keyPressQueueSAB");
-                JavaScriptObject keysSAB =  getNestedObject(eventObject, "keysSAB");
-                JavaScriptObject oldKeysSAB =  getNestedObject(eventObject, "oldKeysSAB");
-                JavaScriptObject variableSAB =  getNestedObject(eventObject, "variableSAB");
+                JavaScriptObject keysSAB = getNestedObject(eventObject, "keysSAB");
+                JavaScriptObject oldKeysSAB = getNestedObject(eventObject, "oldKeysSAB");
+                JavaScriptObject variableSAB = getNestedObject(eventObject, "variableSAB");
+                JavaScriptObject pixelDataSAB = getNestedObject(eventObject, "pixelDataSAB");
                 userInput = new GwtUserInput(keyPressQueueSAB, keysSAB, oldKeysSAB);
                 variableData = new GwtVariableData(variableSAB);
-                // TODO: Should we pass dimensions from UI thread?
-                pixelData = new GwtPixelData();
-                pixelData.init(320, 200);
+                pixelData = new GwtPixelData(pixelDataSAB);
                 wavePlayer = new GwtWavePlayer();
                 savedGameStore = new GwtSavedGameStore();
                 break;
@@ -100,13 +111,10 @@ public class AgileWebWorker extends DedicatedWorkerEntryPoint implements Message
                 break;
                 
             case "Tick":
+                // Perform one animation tick.
                 interpreter.animationTick();
-                
-                // Gets the up to date pixels as an ImageBitmap, which is a transferable
-                // object, so can be passed to the UI thread instantly.
-                JavaScriptObject imageBitmap = pixelData.getImageBitmap();
-                postTransferableObject("TickComplete", imageBitmap);
-                
+                // Then notify the UI thread that the tick is complete.
+                postObject("TickComplete", JavaScriptObject.createObject());
                 // TODO: Add support for sound data, as separate message. Big amount of sample data, so needs to be transferable.
                 break;
                 

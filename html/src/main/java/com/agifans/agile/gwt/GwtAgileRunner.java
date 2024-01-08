@@ -26,8 +26,6 @@ public class GwtAgileRunner extends AgileRunner {
 
     private Worker worker;
     
-    private Pixmap pixmap;
-    
     /**
      * Indicates that the worker is currently executing the tick, i.e. a single interpretation 
      * cycle. This flag exists because there are some AGI commands that wait for something to 
@@ -49,19 +47,6 @@ public class GwtAgileRunner extends AgileRunner {
     public GwtAgileRunner(UserInput userInput, WavePlayer wavePlayer, SavedGameStore savedGameStore, 
             PixelData pixelData, VariableData variableData) {
         super(userInput, wavePlayer, savedGameStore, pixelData, variableData);
-    }
-    
-    /**
-     * Initialises the AgileRunner with anything that needs setting up before it starts.
-     * 
-     * @param pixmap
-     */
-    @Override
-    public void init(Pixmap pixmap) {
-        super.init(pixmap);
-        
-        // GwtAgileRunner needs to store the Pixmap so it can apply an incoming ImageBitmap.
-        this.pixmap = pixmap;
     }
     
     @Override
@@ -95,11 +80,6 @@ public class GwtAgileRunner extends AgileRunner {
                         // a time, otherwise the web worker would get a flood of Tick messages
                         // when it is busy waiting for a key or similar.
                         inTick = false;
-                        // ImageBitmap will always be present, so fall through to UpdatePixels.
-                        
-                    case "UpdatePixels":
-                        JavaScriptObject imageBitmap = getEmbeddedObject(eventObject);
-                        ((GwtPixelData)pixelData).updatePixmapWithImageBitmap(pixmap, imageBitmap);
                         break;
                         
                     case "PlaySound":
@@ -127,10 +107,12 @@ public class GwtAgileRunner extends AgileRunner {
         // all SharedArrayBuffer objects to the webworker.
         GwtUserInput gwtUserInput = (GwtUserInput)userInput;
         GwtVariableData gwtVariableData = (GwtVariableData)variableData;
+        GwtPixelData gwtPixelData = (GwtPixelData)pixelData;
         JavaScriptObject keyPressQueueSAB = gwtUserInput.getKeyPressQueueSharedArrayBuffer();
         JavaScriptObject keysSAB = gwtUserInput.getKeysSharedArrayBuffer();
         JavaScriptObject oldKeysSAB = gwtUserInput.getOldKeysSharedArrayBuffer();
         JavaScriptObject variableSAB = gwtVariableData.getVariableSharedArrayBuffer();
+        JavaScriptObject pixelDataSAB = gwtPixelData.getSharedArrayBuffer();
         
         // We currently send one message to Initialise, using the SharedArrayBuffers,
         // then another message to Start the interpreter with the given game data. The 
@@ -139,7 +121,8 @@ public class GwtAgileRunner extends AgileRunner {
                 keyPressQueueSAB, 
                 keysSAB, 
                 oldKeysSAB, 
-                variableSAB));
+                variableSAB,
+                pixelDataSAB));
         worker.postArrayBuffer("Start", gameFileBuffer);
     }
     
@@ -158,12 +141,14 @@ public class GwtAgileRunner extends AgileRunner {
             JavaScriptObject keyPressQueueSAB, 
             JavaScriptObject keysSAB, 
             JavaScriptObject oldKeysSAB, 
-            JavaScriptObject variableSAB)/*-{
+            JavaScriptObject variableSAB,
+            JavaScriptObject pixelDataSAB)/*-{
         return { 
             keyPressQueueSAB: keyPressQueueSAB,
             keysSAB: keysSAB,
             oldKeysSAB: oldKeysSAB,
-            variableSAB: variableSAB
+            variableSAB: variableSAB,
+            pixelDataSAB: pixelDataSAB
         };
     }-*/;
     

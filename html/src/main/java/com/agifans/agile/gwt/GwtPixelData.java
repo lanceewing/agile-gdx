@@ -2,10 +2,11 @@ package com.agifans.agile.gwt;
 
 import com.agifans.agile.PixelData;
 import com.badlogic.gdx.graphics.Pixmap;
-import com.google.gwt.canvas.dom.client.CanvasPixelArray;
 import com.google.gwt.canvas.dom.client.Context2d;
-import com.google.gwt.canvas.dom.client.ImageData;
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.typedarrays.shared.ArrayBufferView;
+import com.google.gwt.typedarrays.shared.TypedArrays;
+import com.google.gwt.typedarrays.shared.Uint8ClampedArray;
 
 /**
  * GWT implementation of the PixelData interface.
@@ -15,52 +16,72 @@ import com.google.gwt.core.client.JavaScriptObject;
  * - It uses a canvas element, not a ByteBuffer, for the pixels.
  * - When the Pixmap is drawn to the Texture, it is directly from the canvas.
  * - Therefore, as long as the canvas is up to date, it will render to the Texture.
+ * - And so the updatePixel method simply copies the pixelArray to the canvas image data.
+ * 
+ * Since the GWT version of AGILE is using a web worker for the background thread,
+ * the only way to truly match what the original AGI interpreter does with regards
+ * to the pixels is to use a SharedArrayBuffer, so that the UI thread always has 
+ * access to the latest pixel data regardless of whether the web worker is busy 
+ * waiting for the user to do something, such as press a key. An earlier version of
+ * the class used an ImageBitmap instead, and since this is a Transferable object,
+ * it was sending this back to the UI thread at the end of processing in "Tick"
+ * message. Unfortunately this did not work in isolation and would have required
+ * other "mid-Tick" messages to be sent back to the UI thread, which would have
+ * been quite complicated to implement in a way that would have been truly the same
+ * as the original AGI interpreter. It would also have been a lot more overhead.
+ * Luckily the SharedArrayBuffer works well as an alternative and it can exactly
+ * match what the Desktop platform is doing, which in turn matches AGI. We don't really
+ * have to worry about synchronising the SharedArrayBuffer access with Atomics either,
+ * as one side is always ready and will not modify.
  */
 public class GwtPixelData implements PixelData {
 
-    /**
-     * OffscreenCanvas is very new (only 9 months at the time of writing this), which
-     * means that GWT doesn't yet have support for it. We therefore store it as a
-     * generic JavaScriptObject instance.
-     */
-    private JavaScriptObject offscreenCanvas;
+    private Uint8ClampedArray pixelArray;
+    
+    private Uint8ClampedArray backupPixelArray;
 
     /**
-     * The 2d Context for the OffscreenCanvas.
+     * Constructor for GwtPixelData (used by UI thread)
      */
-    private Context2d context;
-
-    private ImageData imageData;
-    
-    private int[] backupPixelArray;
-    
-    @Override
-    public void init(int width, int height) {
-        // As its very new, we need to use a native method to create the OffscreenCanvas.
-        createOffscreenCanvasAndContext(width, height);
-        
-        // Create an empty ImageData for use with AGILE.
-        this.imageData = this.context.createImageData(width, height);
-        
-        // Create a backup array for when we need to restore an earlier state.
-        this.backupPixelArray = new int[this.imageData.getData().getLength()];
+    public GwtPixelData() {
     }
+    
+    /**
+     * Constructor for GwtPixelData (used by web worker).
+     * 
+     * @param sharedArrayBuffer The same SharedArrayBuffer used by the UI thread.
+     */
+    public GwtPixelData(JavaScriptObject sharedArrayBuffer) {
+        pixelArray = createPixelArray(sharedArrayBuffer);
+    }
+    
+    private native Uint8ClampedArray createPixelArray(JavaScriptObject sharedArrayBuffer)/*-{
+        return new Uint8ClampedArray(sharedArrayBuffer);
+    }-*/;
 
-    private native void createOffscreenCanvasAndContext(int width, int height)/*-{
-        // We can't use transferControlToOffscreen method, since libgdx has already
-        // called getContext on the Pixmap canvas. So we instead create our own
-        // OffscreenCanvas of the same size and will then use ImageBitmap to transfer
-        // it back to the UI thread and main canvas.
-        
-        var offscreenCanvas = new OffscreenCanvas(width, height);
-        this.@com.agifans.agile.gwt.GwtPixelData::offscreenCanvas = offscreenCanvas;
-        this.@com.agifans.agile.gwt.GwtPixelData::context = offscreenCanvas.getContext('2d');
+    private native Uint8ClampedArray createPixelArray(int width, int height)/*-{
+        var sharedArrayBuffer = new SharedArrayBuffer(width * height * 4);
+        return new Uint8ClampedArray(sharedArrayBuffer);
+    }-*/;
+    
+    public native JavaScriptObject getSharedArrayBuffer()/*-{
+        var pixelArray = this.@com.agifans.agile.gwt.GwtPixelData::pixelArray;
+        return pixelArray.buffer;
     }-*/;
     
     @Override
+    public void init(int width, int height) {
+        // The actual pixel array is created using a SharedArrayBuffer, so we need
+        // to use a native method to do this.
+        pixelArray = createPixelArray(width, height);
+        backupPixelArray = TypedArrays.createUint8ClampedArray(width * height * 4);
+    }
+
+    @Override
     public void putPixel(int agiScreenIndex, int rgba8888Colour) {
         int index = agiScreenIndex * 4;
-        CanvasPixelArray pixelArray = imageData.getData();
+        
+        // Adds RGBA8888 colour to byte array in expected R, G, B, A order.
         pixelArray.set(index, (rgba8888Colour >> 24) & 0xFF);
         pixelArray.set(index + 1, (rgba8888Colour >> 16) & 0xFF);
         pixelArray.set(index + 2, (rgba8888Colour >> 8) & 0xFF);
@@ -70,7 +91,6 @@ public class GwtPixelData implements PixelData {
     @Override
     public void pixelCopy(int[] rgba888Src, int agiScreenIndex, int agiScreenLength) {
         int index = agiScreenIndex * 4;
-        CanvasPixelArray pixelArray = imageData.getData();
         for (int srcPos = 0; srcPos < agiScreenLength; srcPos++) {
             int rgba8888Colour = rgba888Src[srcPos];
             pixelArray.set(index++, (rgba8888Colour >> 24) & 0xFF);
@@ -82,27 +102,18 @@ public class GwtPixelData implements PixelData {
 
     @Override
     public void savePixels() {
-        CanvasPixelArray pixelArray = imageData.getData();
-        int length = pixelArray.getLength();
-        for (int pos=0; pos<length; pos++) {
-            backupPixelArray[pos] = pixelArray.get(pos);
-        }
+        backupPixelArray.set(pixelArray);
     }
 
     @Override
     public void restorePixels() {
-        CanvasPixelArray pixelArray = imageData.getData();
-        int length = pixelArray.getLength();
-        for (int pos=0; pos<length; pos++) {
-            pixelArray.set(pos, backupPixelArray[pos]);
-        }
+        pixelArray.set(backupPixelArray);
     }
 
     @Override
     public int getPixel(int agiScreenIndex) {
         int index = agiScreenIndex * 4;
         int rgba8888Colour = 0;
-        CanvasPixelArray pixelArray = imageData.getData();
         rgba8888Colour |= ((pixelArray.get(index + 0) << 24) & 0xFF000000);
         rgba8888Colour |= ((pixelArray.get(index + 1) << 16) & 0x00FF0000);
         rgba8888Colour |= ((pixelArray.get(index + 2) <<  8) & 0x0000FF00);
@@ -114,36 +125,25 @@ public class GwtPixelData implements PixelData {
     public int getBackupPixel(int agiScreenIndex) {
         int index = agiScreenIndex * 4;
         int rgba8888Colour = 0;
-        rgba8888Colour |= ((backupPixelArray[index + 0] << 24) & 0xFF000000);
-        rgba8888Colour |= ((backupPixelArray[index + 1] << 16) & 0x00FF0000);
-        rgba8888Colour |= ((backupPixelArray[index + 2] <<  8) & 0x0000FF00);
-        rgba8888Colour |= ((backupPixelArray[index + 3] <<  0) & 0x000000FF);
+        rgba8888Colour |= ((backupPixelArray.get(index + 0) << 24) & 0xFF000000);
+        rgba8888Colour |= ((backupPixelArray.get(index + 1) << 16) & 0x00FF0000);
+        rgba8888Colour |= ((backupPixelArray.get(index + 2) <<  8) & 0x0000FF00);
+        rgba8888Colour |= ((backupPixelArray.get(index + 3) <<  0) & 0x000000FF);
         return rgba8888Colour;
     }
 
     @Override
     public void updatePixmap(Pixmap pixmap) {
-        // Nothing to do for GWT platform. It is handled by the other variant.
+        setImageData(pixelArray, pixmap.getWidth(), pixmap.getHeight(), pixmap.getContext());
     }
     
-    public void updatePixmapWithImageBitmap(Pixmap pixmap, JavaScriptObject imageBitmap) {
-        copyImageBitmapToRealCanvas(imageBitmap, pixmap.getContext());
-    }
+    private native static void setImageData (ArrayBufferView pixels, int width, int height, Context2d ctx)/*-{
+        var imgData = ctx.createImageData(width, height);
+        var data = imgData.data;
     
-    private native void copyImageBitmapToRealCanvas(JavaScriptObject imageBitmap, Context2d realCanvasContext)/*-{
-        realCanvasContext.drawImage(imageBitmap, 0, 0);
-        imageBitmap.close();
-    }-*/;
-    
-    public JavaScriptObject getImageBitmap() {
-        // Update the OffscreenCanvas with the latest changes.
-        context.putImageData(imageData, 0, 0);
-        // Then return ImageBitmap from the OffscreenCanvas. This will be transferable.
-        return getImageBitmapFromOffscreenCanvas();
-    }
-    
-    private native JavaScriptObject getImageBitmapFromOffscreenCanvas()/*-{
-        var offscreenCanvas = this.@com.agifans.agile.gwt.GwtPixelData::offscreenCanvas;
-        return offscreenCanvas.transferToImageBitmap();
+        for (var i = 0, len = width * height * 4; i < len; i++) {
+            data[i] = pixels[i] & 0xff;
+        }
+        ctx.putImageData(imgData, 0, 0);
     }-*/;
 }
