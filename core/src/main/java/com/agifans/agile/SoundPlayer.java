@@ -172,6 +172,8 @@ public class SoundPlayer {
         System.arraycopy(header, 0, wave, 0, headerLen);
         System.arraycopy(sampleData, 0, wave, headerLen, sampleData.length);
 
+        // NOTE: byte array can be over 10 MB (e.g. BC rushing water is 11289736)
+        
         // Return the WAVE formatted typed array
         return wave;
     }
