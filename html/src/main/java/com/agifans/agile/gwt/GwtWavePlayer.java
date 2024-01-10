@@ -1,37 +1,38 @@
 package com.agifans.agile.gwt;
 
 import com.agifans.agile.WavePlayer;
+import com.agifans.agile.worker.DedicatedWorkerGlobalScope;
+import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.typedarrays.shared.ArrayBuffer;
+import com.google.gwt.typedarrays.shared.Int8Array;
+import com.google.gwt.typedarrays.shared.TypedArrays;
 
 public class GwtWavePlayer implements WavePlayer {
-
+    
 	@Override
 	public void playWaveData(byte[] waveData, Runnable endedCallback) {
-		// TODO Auto-generated method stub
-		
+		// We need to transfer the data over to the UI thread, but in such a 
+	    // way that we also keep it available in the web worker in case it is played
+	    // again. We therefore need to create a copy. Hopefully the set() method
+	    // is fast enough when the data is over 10 MB.
+	    ArrayBuffer buffer = TypedArrays.createArrayBuffer(waveData.length);
+	    Int8Array array = TypedArrays.createInt8Array(buffer);
+	    array.set(waveData);
+	    DedicatedWorkerGlobalScope.get().postArrayBuffer("PlaySound", buffer);
 	}
 
 	@Override
 	public void stopPlaying(boolean wait) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public boolean isPlaying() {
-		// TODO Auto-generated method stub
-		return false;
+	    DedicatedWorkerGlobalScope.get().postObject("StopSound", JavaScriptObject.createObject());
 	}
 
 	@Override
 	public void reset() {
-		// TODO Auto-generated method stub
-		
+	    DedicatedWorkerGlobalScope.get().postObject("StopSound", JavaScriptObject.createObject());
 	}
 
 	@Override
 	public void dispose() {
-		// TODO Auto-generated method stub
-		
+	    // Nothing to do.
 	}
-
 }

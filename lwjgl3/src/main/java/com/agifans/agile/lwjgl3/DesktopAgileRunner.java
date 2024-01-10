@@ -44,7 +44,7 @@ public class DesktopAgileRunner extends AgileRunner {
         // return "C:\\dev\\agi\\winagi\\kq4agi";
         // return "file:/C:/dev/agi/winagi/kq4agi/";
         // return "file://localhost/C:/dev/agi/winagi/kq4agi/";
-        return "file:///C:/dev/agi/winagi/kq1/";
+        return "file:///C:/dev/agi/winagi/mh2/";
     }
     
     @Override

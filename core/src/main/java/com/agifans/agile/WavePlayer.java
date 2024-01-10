@@ -27,13 +27,6 @@ public interface WavePlayer {
     void stopPlaying(boolean wait);
     
     /**
-     * Returns true if the sound is still playing.
-     * 
-     * @return true if the sound is still playing; otherwise false.
-     */
-    boolean isPlaying();
-    
-    /**
      * Resets the state of the WavePlayer, as if it is newly instantiated. This is 
      * intended to be calling in scenarios such as when the room has changed, or 
      * when a saved game has been restored. The platform specific implementations may

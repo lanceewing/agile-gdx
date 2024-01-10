@@ -12,8 +12,8 @@ import com.agifans.agile.worker.MessageEvent;
 import com.agifans.agile.worker.MessageHandler;
 import com.agifans.agile.worker.Worker;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Pixmap;
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.dom.client.AudioElement;
 import com.google.gwt.typedarrays.shared.ArrayBuffer;
 import com.google.gwt.webworker.client.ErrorEvent;
 import com.google.gwt.webworker.client.ErrorHandler;
@@ -24,6 +24,9 @@ import com.google.gwt.webworker.client.ErrorHandler;
  */
 public class GwtAgileRunner extends AgileRunner {
 
+    /**
+     * The web worker that will execute the AGI interpreter in the background.
+     */
     private Worker worker;
     
     /**
@@ -34,6 +37,13 @@ public class GwtAgileRunner extends AgileRunner {
      * for the duration of what would normally be many ticks. 
      */
     private boolean inTick;
+    
+    /**
+     * Holds a reference to the Audio HTML element that is playing the current sound, or null
+     * if there is no sound being played. It is not possible in AGI to play two sounds at 
+     * the same time, so we only need this one reference to track sounds.
+     */
+    private AudioElement currentlyPlayingSound;
     
     /**
      * Constructor for GwtAgileRunner.
@@ -83,6 +93,16 @@ public class GwtAgileRunner extends AgileRunner {
                         break;
                         
                     case "PlaySound":
+                        // Let's make sure there isn't already a sound playing, although there 
+                        // shouldn't be tbh.
+                        stopCurrentSound();
+                        // Get the ArrayBuffer that was instantly transferred from the web worker.
+                        ArrayBuffer soundBuffer = getArrayBuffer(eventObject);
+                        currentlyPlayingSound = playSound(soundBuffer);
+                        break;
+                        
+                    case "StopSound":
+                        stopCurrentSound();
                         break;
                         
                     // TODO: Could potentially pass back saved games as well.
@@ -159,6 +179,28 @@ public class GwtAgileRunner extends AgileRunner {
     private native JavaScriptObject getEmbeddedObject(JavaScriptObject obj)/*-{
         return obj.object;
     }-*/;
+    
+    private native ArrayBuffer getArrayBuffer(JavaScriptObject obj)/*-{
+        return obj.buffer;
+    }-*/;
+    
+    private native AudioElement playSound(ArrayBuffer soundBuffer)/*-{
+        var soundArray = new Int8Array(soundBuffer);
+        var audio = new Audio();
+        audio.src = URL.createObjectURL(new Blob([soundArray], {type: "audio/wav"}));
+        // TODO: Add on end event handler to audio.
+        audio.play();
+        return audio;
+    }-*/;
+    
+    private void stopCurrentSound() {
+        if (currentlyPlayingSound != null) {
+            // Using payse() is apparently as close to stop as they have.
+            currentlyPlayingSound.pause();
+            // Then we remove the reference to allow JS garbage collection.
+            currentlyPlayingSound = null;
+        }
+    }
     
     @Override
     public void animationTick() {
