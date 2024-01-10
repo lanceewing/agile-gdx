@@ -26,11 +26,6 @@ public class SoundPlayer {
     public Map<Integer, byte[]> soundCache;
 
     /**
-     * The number of the Sound resource currently playing, or -1 if none should be playing.
-     */
-    private int soundNumPlaying;
-
-    /**
      * The WavePlayer that will play the generated WAV file data.
      */
     private WavePlayer wavePlayer;
@@ -72,7 +67,6 @@ public class SoundPlayer {
         this.state = state;
         this.wavePlayer = wavePlayer;
         this.soundCache = new HashMap<Integer, byte[]>();
-        this.soundNumPlaying = -1;
         this.dissolveData = (state.isAGIV3()? dissolveDataV3 : dissolveDataV2);
     }
 
@@ -230,16 +224,13 @@ public class SoundPlayer {
         if (waveData != null) {
             // Now play the Wave file.
             if (this.state.flags[Defines.SOUNDON]) {
-                soundNumPlaying = sound.index;
                 wavePlayer.playWaveData(waveData, () -> {
                     // This is run when the WAV data finishes playing.
-                    soundNumPlaying = -1;
                     state.flags[endFlag] = true;
                 });
             }
             else {
                // If sound is not on, then it ends immediately.
-               soundNumPlaying = -1;
                state.flags[endFlag] = true;
             }
         }
@@ -276,14 +267,10 @@ public class SoundPlayer {
      * @param wait true to wait for the WAV player to finish playing; otherwise false to not wait.
      */
     public void stopSound(boolean wait) {
-        if (soundNumPlaying >= 0) {
-            // Store that we're now not playing a sound.
-            soundNumPlaying = -1;
-            
-            // Ask WAV player to stop playing. The wait parameter tells the WAV 
-            // player whether or not to wait until it has finished playing.
-            wavePlayer.stopPlaying(wait);
-        }
+        // Ask WAV player to stop playing. The wait parameter tells the WAV 
+        // player whether or not to wait until it has finished playing. The WavePlayer
+        // implementation will ignore the call if the sound has already stopped.
+        wavePlayer.stopPlaying(wait);
     }
     
     /**

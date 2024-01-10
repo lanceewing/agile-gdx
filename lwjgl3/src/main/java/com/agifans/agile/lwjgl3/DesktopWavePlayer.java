@@ -65,7 +65,7 @@ public class DesktopWavePlayer implements WavePlayer {
 
     @Override
     public void stopPlaying(boolean wait) {
-        if (audioClip != null) {
+        if ((audioClip != null) && (audioClip.isActive())) {
             // Not sure if it should be stop() or close(), but stop() seems to work okay.
             audioClip.stop();
             // TODO: close() causes the MH2 opening credits to hang many times, but does fix overlapping sound issue.
