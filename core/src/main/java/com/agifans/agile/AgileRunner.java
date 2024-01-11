@@ -1,6 +1,7 @@
 package com.agifans.agile;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.utils.TimeUtils;
 
@@ -50,6 +51,28 @@ public abstract class AgileRunner {
         
         // TODO: Unset this when the AgileRunner is stopped?
         Gdx.input.setInputProcessor(userInput);
+        
+        // These are keys that we want to catch and not let the web browser 
+        // respond to.
+        Gdx.input.setCatchKey(Input.Keys.TAB, true);
+        Gdx.input.setCatchKey(Input.Keys.ESCAPE, true);
+        Gdx.input.setCatchKey(Input.Keys.F1, true);
+        Gdx.input.setCatchKey(Input.Keys.F2, true);
+        Gdx.input.setCatchKey(Input.Keys.F3, true);
+        Gdx.input.setCatchKey(Input.Keys.F4, true);
+        Gdx.input.setCatchKey(Input.Keys.F5, true);
+        Gdx.input.setCatchKey(Input.Keys.F6, true);
+        Gdx.input.setCatchKey(Input.Keys.F7, true);
+        Gdx.input.setCatchKey(Input.Keys.F8, true);
+        Gdx.input.setCatchKey(Input.Keys.F9, true);
+        Gdx.input.setCatchKey(Input.Keys.F10, true);
+        // F11 in the browser is full screen, which is what AGILE does anyway, so its fine.
+        Gdx.input.setCatchKey(Input.Keys.F12, true);
+        Gdx.input.setCatchKey(Input.Keys.CONTROL_LEFT, true);
+        Gdx.input.setCatchKey(Input.Keys.CONTROL_RIGHT, true);
+        Gdx.input.setCatchKey(Input.Keys.ALT_LEFT, true);
+        Gdx.input.setCatchKey(Input.Keys.ALT_RIGHT, true);
+        // TODO: There may be others to add.
     }
     
     /**
