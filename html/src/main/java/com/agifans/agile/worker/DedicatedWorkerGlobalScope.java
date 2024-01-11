@@ -48,6 +48,18 @@ public class DedicatedWorkerGlobalScope extends com.google.gwt.webworker.client.
         this.postMessage({name: name, buffer: buffer}, [buffer]);
     }-*/;
     
+    /**
+     * This method can be used to transfer an ArrayBuffer along with a normal JavaScript
+     * object in the same message.
+     * 
+     * @param name The name of the object. Used for identification of the object.
+     * @param buffer The JS ArrayByffer to send in the postMessage call.
+     * @param object The normal JavaScript object to send with the ArrayBuffer.
+     */
+    public final native void postArrayBufferAndObject(String name, ArrayBuffer buffer, JavaScriptObject object) /*-{
+        this.postMessage({name: name, buffer: buffer, object: object}, [buffer]);
+    }-*/;
+    
     public final native void setOnMessage(MessageHandler messageHandler) /*-{
         this.onmessage = function(event) {
             messageHandler.@com.agifans.agile.worker.MessageHandler::onMessage(Lcom/agifans/agile/worker/MessageEvent;)(event);

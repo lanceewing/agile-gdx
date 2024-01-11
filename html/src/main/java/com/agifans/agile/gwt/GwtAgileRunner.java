@@ -98,7 +98,8 @@ public class GwtAgileRunner extends AgileRunner {
                         stopCurrentSound();
                         // Get the ArrayBuffer that was instantly transferred from the web worker.
                         ArrayBuffer soundBuffer = getArrayBuffer(eventObject);
-                        currentlyPlayingSound = playSound(soundBuffer);
+                        int endFlag = getNestedInt(eventObject, "endFlag");
+                        currentlyPlayingSound = playSound(soundBuffer, endFlag);
                         break;
                         
                     case "StopSound":
@@ -184,14 +185,34 @@ public class GwtAgileRunner extends AgileRunner {
         return obj.buffer;
     }-*/;
     
-    private native AudioElement playSound(ArrayBuffer soundBuffer)/*-{
+    private native int getNestedInt(JavaScriptObject obj, String fieldName)/*-{
+        return obj.object[fieldName];
+    }-*/;
+    
+    private native AudioElement playSound(ArrayBuffer soundBuffer, int endFlag)/*-{
         var soundArray = new Int8Array(soundBuffer);
         var audio = new Audio();
         audio.src = URL.createObjectURL(new Blob([soundArray], {type: "audio/wav"}));
-        // TODO: Add on end event handler to audio.
+        audio.onended = = function(event) {
+            this.@com.agifans.agile.gwt.GwtAgileRunner::soundEnded(I)(endFlag);
+        };
         audio.play();
         return audio;
     }-*/;
+    
+    /**
+     * Invoked by the Audio element's "ended" event when the sound has finished 
+     * playing. The endFlag parameter specifies the AGI flag number to set to true
+     * in response to this.
+     *  
+     * @param endFlag The AGI flag number to set to true.
+     */
+    private void soundEnded(int endFlag) {
+        // The GWT VariableData implementation uses shared memory, so this is seen
+        // by the web worker almost instantly, meaning that any LOGIC code that is 
+        // waiting for it can continue.
+        variableData.setFlag(endFlag, true);
+    }
     
     private void stopCurrentSound() {
         if (currentlyPlayingSound != null) {

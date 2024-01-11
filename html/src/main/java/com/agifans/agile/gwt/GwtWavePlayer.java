@@ -7,6 +7,9 @@ import com.google.gwt.typedarrays.shared.ArrayBuffer;
 import com.google.gwt.typedarrays.shared.Int8Array;
 import com.google.gwt.typedarrays.shared.TypedArrays;
 
+/**
+ * GWT/HTML5 implementation of the WavePlayer.
+ */
 public class GwtWavePlayer extends WavePlayer {
     
 	@Override
@@ -18,10 +21,17 @@ public class GwtWavePlayer extends WavePlayer {
 	    ArrayBuffer buffer = TypedArrays.createArrayBuffer(waveData.length);
 	    Int8Array array = TypedArrays.createInt8Array(buffer);
 	    array.set(waveData);
-	    // TODO: We need to send the endFlag in the message, so UI thread can set flag.
-	    DedicatedWorkerGlobalScope.get().postArrayBuffer("PlaySound", buffer);
+	    
+	    // We also need to send the endFlag in the message, so UI thread can set the
+	    // flag when the sound has finished playing.
+	    DedicatedWorkerGlobalScope.get().postArrayBufferAndObject(
+	            "PlaySound", buffer, createEndFlagObject(endFlag));
 	}
 
+	private native JavaScriptObject createEndFlagObject(int endFlag)/*-{
+        return { endFlag: endFlag };
+    }-*/;
+	
 	@Override
 	public void stopPlaying(boolean wait) {
 	    DedicatedWorkerGlobalScope.get().postObject("StopSound", JavaScriptObject.createObject());
