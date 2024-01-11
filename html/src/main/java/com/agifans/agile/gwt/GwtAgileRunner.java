@@ -190,11 +190,12 @@ public class GwtAgileRunner extends AgileRunner {
     }-*/;
     
     private native AudioElement playSound(ArrayBuffer soundBuffer, int endFlag)/*-{
+        var that = this;
         var soundArray = new Int8Array(soundBuffer);
         var audio = new Audio();
         audio.src = URL.createObjectURL(new Blob([soundArray], {type: "audio/wav"}));
         audio.onended = function(event) {
-            this.@com.agifans.agile.gwt.GwtAgileRunner::soundEnded(I)(endFlag);
+            that.@com.agifans.agile.gwt.GwtAgileRunner::soundEnded(I)(endFlag);
         };
         audio.play();
         return audio;
