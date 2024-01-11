@@ -18,7 +18,7 @@ import com.agifans.agile.WavePlayer;
  * An implementation of the WavePlayer interface that uses the standard Java
  * Sound API to play the sound.
  */
-public class DesktopWavePlayer implements WavePlayer {
+public class DesktopWavePlayer extends WavePlayer {
     
     private Clip audioClip;
     
@@ -42,7 +42,7 @@ public class DesktopWavePlayer implements WavePlayer {
                 @Override
                 public void update(LineEvent event) {
                     if (event.getType().equals(Type.STOP)) {
-                        // TODO: Set the endFlag
+                        variableData.setFlag(endFlag, true);
                     }
                 }
             });

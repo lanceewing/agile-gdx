@@ -31,6 +31,11 @@ public abstract class AgileRunner {
         this.savedGameStore = savedGameStore;
         this.pixelData = pixelData;
         this.variableData = variableData;
+        
+        // The WavePlayer needs the VariableData interface so that it can set the sound 
+        // end flag.
+        this.wavePlayer.setVariableData(variableData);
+        
         // TODO: Move this to be closer to actual start?
         this.lastTime = TimeUtils.nanoTime();
     }

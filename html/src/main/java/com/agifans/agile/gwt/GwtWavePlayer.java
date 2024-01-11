@@ -7,7 +7,7 @@ import com.google.gwt.typedarrays.shared.ArrayBuffer;
 import com.google.gwt.typedarrays.shared.Int8Array;
 import com.google.gwt.typedarrays.shared.TypedArrays;
 
-public class GwtWavePlayer implements WavePlayer {
+public class GwtWavePlayer extends WavePlayer {
     
 	@Override
 	public void playWaveData(byte[] waveData, int endFlag) {
