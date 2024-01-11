@@ -14,7 +14,17 @@ public class GwtVariableData implements VariableData {
      * total ticks variable, which is actually not an AGI variable. We're just doing this
      * for convenience, rather than creating a separate 1 slot SharedArray.
      */
-    private static final int TOTAL_TICKS = 256;
+    private static final int TOTAL_TICKS = 512;
+    
+    private static final int TRUE = 1;
+    private static final int FALSE = 0;
+    
+    /**
+     * We store the AGI flags in the same SharedArray, since there are situations where
+     * the UI thread needs to change an AGI flag such that the web worker can instantly
+     * see (e.g. when a SOUND finishes playing).
+     */
+    private static final int FLAGS_OFFSET = 256;
     
     /**
      * Stores the value for each of the AGI variables.
@@ -41,7 +51,8 @@ public class GwtVariableData implements VariableData {
         // the same bit of shared memory for the AGI variable data.
         if (variableArraySAB == null) {
             // Uses an extra slot at the end for the total ticks.
-            variableArraySAB = SharedArray.getStorageForCapacity(Defines.NUMVARS + 1);
+            variableArraySAB = SharedArray.getStorageForCapacity(
+                    Defines.NUMVARS + Defines.NUMFLAGS + 1);
         }
         
         this.variableArray = new SharedArray(variableArraySAB);
@@ -67,6 +78,16 @@ public class GwtVariableData implements VariableData {
         variableArray.set(varNum & 0xFF, value & 0xFF);
     }
     
+    @Override
+    public boolean getFlag(int flagNum) {
+        return (variableArray.get(FLAGS_OFFSET + (flagNum & 0xFF)) == TRUE);
+    }
+
+    @Override
+    public void setFlag(int flagNum, boolean value) {
+        variableArray.set(FLAGS_OFFSET + (flagNum & 0xFF), value? TRUE : FALSE);
+    }
+
     /**
      * Gets the SharedArrayBuffer used internally by the variable array.
      * 

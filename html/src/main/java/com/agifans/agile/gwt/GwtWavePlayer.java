@@ -10,7 +10,7 @@ import com.google.gwt.typedarrays.shared.TypedArrays;
 public class GwtWavePlayer implements WavePlayer {
     
 	@Override
-	public void playWaveData(byte[] waveData, Runnable endedCallback) {
+	public void playWaveData(byte[] waveData, int endFlag) {
 		// We need to transfer the data over to the UI thread, but in such a 
 	    // way that we also keep it available in the web worker in case it is played
 	    // again. We therefore need to create a copy. Hopefully the set() method
@@ -18,6 +18,7 @@ public class GwtWavePlayer implements WavePlayer {
 	    ArrayBuffer buffer = TypedArrays.createArrayBuffer(waveData.length);
 	    Int8Array array = TypedArrays.createInt8Array(buffer);
 	    array.set(waveData);
+	    // TODO: We need to send the endFlag in the message, so UI thread can set flag.
 	    DedicatedWorkerGlobalScope.get().postArrayBuffer("PlaySound", buffer);
 	}
 

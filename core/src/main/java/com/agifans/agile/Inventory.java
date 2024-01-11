@@ -108,7 +108,7 @@ public class Inventory {
         drawInventoryItems(invItems, invItems.get(selectedItemIndex));
 
         // If we are not allowing an item to be selected, we simply wait for a key press then return.
-        if (!state.flags[Defines.ENABLE_SELECT]) {
+        if (!state.getFlag(Defines.ENABLE_SELECT)) {
             userInput.waitForKey();
         }
         else {
@@ -167,7 +167,7 @@ public class Inventory {
         textGraphics.drawString(this.pixelData, "You are carrying:", 11 * 8, 0 * 8, 0, 15);
 
         for (InvItem invItem : invItems) {
-            if ((invItem == selectedItem) && state.flags[Defines.ENABLE_SELECT]) {
+            if ((invItem == selectedItem) && state.getFlag(Defines.ENABLE_SELECT)) {
                 textGraphics.drawString(this.pixelData, invItem.name, invItem.col * 8, invItem.row * 8, 15, 0);
             }
             else {
@@ -175,7 +175,7 @@ public class Inventory {
             }
         }
 
-        if (state.flags[Defines.ENABLE_SELECT]) {
+        if (state.getFlag(Defines.ENABLE_SELECT)) {
             textGraphics.drawString(this.pixelData, "Press ENTER to select, ESC to cancel", 2 * 8, 24 * 8, 0, 15);
         }
         else {

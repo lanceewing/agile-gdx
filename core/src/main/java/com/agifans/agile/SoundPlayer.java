@@ -217,21 +217,18 @@ public class SoundPlayer {
         stopSound();
 
         // Set the starting state of the sound end flag to false.
-        state.flags[endFlag] = false;
+        state.setFlag(endFlag, false);
         
         // Get WAV data from the cache.
         byte[] waveData = this.soundCache.get(sound.index);
         if (waveData != null) {
             // Now play the Wave file.
-            if (this.state.flags[Defines.SOUNDON]) {
-                wavePlayer.playWaveData(waveData, () -> {
-                    // This is run when the WAV data finishes playing.
-                    state.flags[endFlag] = true;
-                });
+            if (this.state.getFlag(Defines.SOUNDON)) {
+                wavePlayer.playWaveData(waveData, endFlag);
             }
             else {
-               // If sound is not on, then it ends immediately.
-               state.flags[endFlag] = true;
+                // If sound is not on, then it ends immediately.
+                state.setFlag(endFlag, true);
             }
         }
     }

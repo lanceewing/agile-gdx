@@ -431,10 +431,10 @@ public class SavedGames {
         pos = 296;
         for (int i = 0; i < 256; i+=8) {
             savedGameData[pos++] = (byte)(
-                (state.flags[i + 0] ? 0x80 : 0x00) | (state.flags[i + 1] ? 0x40 : 0x00) |
-                (state.flags[i + 2] ? 0x20 : 0x00) | (state.flags[i + 3] ? 0x10 : 0x00) | 
-                (state.flags[i + 4] ? 0x08 : 0x00) | (state.flags[i + 5] ? 0x04 : 0x00) | 
-                (state.flags[i + 6] ? 0x02 : 0x00) | (state.flags[i + 7] ? 0x01 : 0x00));
+                (state.getFlag(i + 0) ? 0x80 : 0x00) | (state.getFlag(i + 1) ? 0x40 : 0x00) |
+                (state.getFlag(i + 2) ? 0x20 : 0x00) | (state.getFlag(i + 3) ? 0x10 : 0x00) | 
+                (state.getFlag(i + 4) ? 0x08 : 0x00) | (state.getFlag(i + 5) ? 0x04 : 0x00) | 
+                (state.getFlag(i + 6) ? 0x02 : 0x00) | (state.getFlag(i + 7) ? 0x01 : 0x00));
         }
 
         // [297] 328 - 331(4 bytes) Clock ticks since game started. 1 clock tick == 50ms.
@@ -775,7 +775,7 @@ public class SavedGames {
         for (int i=0; i<256; i++) state.setVar(i, (savedGameData[40 + i] & 0xFF));
 
         // [265] 296 - 327(32 bytes) Flags, 8 flags per byte
-        for (int i=0; i<256; i++) state.flags[i] = ((savedGameData[(i >> 3) + 296] & 0xFF) & (0x80 >> (i & 0x07))) > 0;
+        for (int i=0; i<256; i++) state.setFlag(i, ((savedGameData[(i >> 3) + 296] & 0xFF) & (0x80 >> (i & 0x07))) > 0);
 
         // [297] 328 - 331(4 bytes) Clock ticks since game started. 1 clock tick == 50ms.
         state.setTotalTicks(((savedGameData[328] & 0xFF) + ((savedGameData[329] & 0xFF) << 8) + ((savedGameData[330] & 0xFF) << 16) + ((savedGameData[331] & 0xFF) << 24)) * 3);
@@ -1102,7 +1102,7 @@ public class SavedGames {
             }
         }
 
-        state.flags[Defines.RESTORE] = true;
+        state.setFlag(Defines.RESTORE, true);
 
         // Return true to say that we have successfully restored a saved game file.
         return true;

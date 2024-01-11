@@ -470,7 +470,7 @@ public class AnimatedObject implements Comparable<AnimatedObject> {
         if (dir == 0) {
             this.direction = 0;
             this.motionType = MotionType.NORMAL;
-            this.state.flags[this.motionParam2] = true;
+            this.state.setFlag(this.motionParam2, true);
             return;
         }
 
@@ -528,7 +528,7 @@ public class AnimatedObject implements Comparable<AnimatedObject> {
         this.motionParam1 = (short)(dist > this.stepSize ? dist : this.stepSize);
         this.motionParam2 = (short)completionFlag;
         this.motionParam3 = -1;                  // 'follow' routine expects this.
-        state.flags[completionFlag] = false;     // Flag to set at completion.
+        state.setFlag(completionFlag, false);     // Flag to set at completion.
         this.update = true;
     }
 
@@ -572,7 +572,7 @@ public class AnimatedObject implements Comparable<AnimatedObject> {
             this.stepSize = stepSize;
         }
         this.motionParam4 = (short)completionFlag;
-        state.flags[completionFlag] = false;
+        state.setFlag(completionFlag, false);
         this.update = true;
         if (this == state.ego) {
             state.userControl = false;
@@ -588,7 +588,7 @@ public class AnimatedObject implements Comparable<AnimatedObject> {
         this.stepSize = this.motionParam3;
 
         // Set flag indicating completion.
-        this.state.flags[this.motionParam4] = true;
+        this.state.setFlag(this.motionParam4, true);
 
         // Set it back to normal motion.
         this.motionType = MotionType.NORMAL;
@@ -1000,8 +1000,8 @@ public class AnimatedObject implements Comparable<AnimatedObject> {
 
         // If the object is ego then we need to determine the on.water and hit.special flag values.
         if (this.objectNumber == 0) {
-            state.flags[Defines.ONWATER] = entirelyOnWater;
-            state.flags[Defines.HITSPEC] = hitSpecial;
+            state.setFlag(Defines.ONWATER, entirelyOnWater);
+            state.setFlag(Defines.HITSPEC, hitSpecial);
         }
 
         return canBeHere;
@@ -1081,7 +1081,7 @@ public class AnimatedObject implements Comparable<AnimatedObject> {
             case END_LOOP:
                 // Advance to the end of the loop, set flag in parms[0] when done
                 if (theCel >= lastCel || ++theCel == lastCel) {
-                    state.flags[motionParam1] = true;
+                    state.setFlag(motionParam1, true);
                     cycle = false;
                     direction = 0;
                     cycleType = CycleType.NORMAL;
@@ -1091,7 +1091,7 @@ public class AnimatedObject implements Comparable<AnimatedObject> {
             case REVERSE_LOOP:
                 // Move backwards, celwise, until beginning of loop, then set flag.
                 if (theCel == 0 || --theCel == 0) {
-                    state.flags[motionParam1] = true;
+                    state.setFlag(motionParam1, true);
                     cycle = false;
                     direction = 0;
                     cycleType = CycleType.NORMAL;

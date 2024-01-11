@@ -120,7 +120,7 @@ public class ScriptBuffer {
      * @param data
      */
     public void addScript(ScriptBufferEventType action, int who, byte[] data) {
-        if (state.flags[Defines.NO_SCRIPT]) return;
+        if (state.getFlag(Defines.NO_SCRIPT)) return;
 
         if (doScript) {
             if (events.size() >= this.scriptSize) {

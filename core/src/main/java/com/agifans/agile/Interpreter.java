@@ -128,14 +128,14 @@ public class Interpreter {
 
             // Store score and sound state prior to scanning LOGIC 0, so we can determine if they change.
             int previousScore = state.getVar(Defines.SCORE);
-            boolean soundStatus = state.flags[Defines.SOUNDON];
+            boolean soundStatus = state.getFlag(Defines.SOUNDON);
 
             // Continue scanning LOGIC 0 while the return value is true (which is what indicates a rescan).
             while (commands.executeLogic(0)) {
                 state.setVar(Defines.OBJHIT, 0);
                 state.setVar(Defines.OBJEDGE, 0);
                 state.setVar(Defines.UNKNOWN_WORD, 0);
-                state.flags[Defines.INPUT] = false;
+                state.setFlag(Defines.INPUT, false);
                 previousScore = state.getVar(Defines.SCORE);
             }
 
@@ -143,9 +143,9 @@ public class Interpreter {
             ego.direction = (byte)state.getVar(Defines.EGODIR);
 
             // Update the status line, if the score or sound status have changed.
-            if ((state.getVar(Defines.SCORE) != previousScore) || (soundStatus != state.flags[Defines.SOUNDON])) {
+            if ((state.getVar(Defines.SCORE) != previousScore) || (soundStatus != state.getFlag(Defines.SOUNDON))) {
                 // If the SOUND ON flag is off, then immediately stop any currently playing sound.
-                if (!state.flags[Defines.SOUNDON]) soundPlayer.stopSound();
+                if (!state.getFlag(Defines.SOUNDON)) soundPlayer.stopSound();
 
                 textGraphics.updateStatusLine();
             }
@@ -154,9 +154,9 @@ public class Interpreter {
             state.setVar(Defines.OBJEDGE, 0);
 
             // Clear the restart, restore, & init logics flags.
-            state.flags[Defines.INITLOGS] = false;
-            state.flags[Defines.RESTART] = false;
-            state.flags[Defines.RESTORE] = false;
+            state.setFlag(Defines.INITLOGS, false);
+            state.setFlag(Defines.RESTART, false);
+            state.setFlag(Defines.RESTORE, false);
 
             // If in graphics mode, animate the AnimatedObjects.
             if (state.graphicsMode) {
@@ -227,8 +227,8 @@ public class Interpreter {
      */
     private void processUserInput() {
         state.clearControllers();
-        state.flags[Defines.INPUT] = false;
-        state.flags[Defines.HADMATCH] = false;
+        state.setFlag(Defines.INPUT, false);
+        state.setFlag(Defines.HADMATCH, false);
         state.setVar(Defines.UNKNOWN_WORD, 0);
         state.setVar(Defines.LAST_CHAR, 0);
 

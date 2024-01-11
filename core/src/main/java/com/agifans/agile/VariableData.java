@@ -12,6 +12,23 @@ package com.agifans.agile;
  * but for GWT, such sharing is only possible (at present) by using a SharedArrayBuffer.
  */
 public interface VariableData {
+    
+    /**
+     * Gets the current value of the AGI flag identified by the flag number.
+     * 
+     * @param flagNum The AGI flag to get the value of.
+     * 
+     * @return The value of the AGI flag.
+     */
+    boolean getFlag(int flagNum);
+    
+    /**
+     * Sets the value of the AGI flag, identified by the flag number, to the given value.
+     * 
+     * @param flagNum The AGI flag to set the value of.
+     * @param value The value to set the AGI flag to.
+     */
+    void setFlag(int flagNum, boolean value);
 
     /**
      * Gets the value of the AGI variable identified by the variable number.

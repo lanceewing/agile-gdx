@@ -15,9 +15,9 @@ public interface WavePlayer {
      * endCallback Runnable.
      * 
      * @param waveData A byte array containing the WAV data to play.
-     * @param endedCallback The callback Runnable to run when finished.
+     * @param endFlag The flag to set when the sound ends.
      */
-    void playWaveData(byte[] waveData, Runnable endedCallback);
+    void playWaveData(byte[] waveData, int endFlag);
     
     /**
      * Request the WavePlayer implementation to stop playing the WAV.

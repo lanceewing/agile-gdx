@@ -116,7 +116,7 @@ public class Parser {
         }
 
         if (state.recognisedWords.size() > 0) {
-            state.flags[Defines.INPUT] = true;
+            state.setFlag(Defines.INPUT, true);
         }
     }
 
@@ -132,8 +132,8 @@ public class Parser {
      */
     public void parseString(int strNum) {
         // Clear the state from the most recent parse.
-        state.flags[Defines.INPUT] = false;
-        state.flags[Defines.HADMATCH] = false;
+        state.setFlag(Defines.INPUT, false);
+        state.setFlag(Defines.HADMATCH, false);
 
         // If the given string number is less that the total number of strings.
         if (strNum < Defines.NUMSTRINGS) {
@@ -157,7 +157,7 @@ public class Parser {
         if (this.recognisedWordNumbers.size() == 0) return false;
 
         // We should only perform the check if we have input, and there hasn't been a match already.
-        if (!state.flags[Defines.INPUT] || state.flags[Defines.HADMATCH]) return false;
+        if (!state.getFlag(Defines.INPUT) || state.getFlag(Defines.HADMATCH)) return false;
 
         // Compare each word number in order.
         for (int i=0; i < wordNumbers.size(); i++) {
@@ -165,7 +165,7 @@ public class Parser {
 
             // If test word number matches the rest of the line, then it's a match.
             if (testWordNumber == REST_OF_LINE) {
-                state.flags[Defines.HADMATCH] = true;
+                state.setFlag(Defines.HADMATCH, true);
                 return true;
             }
 
@@ -182,7 +182,7 @@ public class Parser {
         if (state.recognisedWords.size() > wordNumbers.size()) return false;
 
         // Otherwise if we get this far without having exited already, it is a match.
-        state.flags[Defines.HADMATCH] = true;
+        state.setFlag(Defines.HADMATCH, true);
         return true;
     }
 }

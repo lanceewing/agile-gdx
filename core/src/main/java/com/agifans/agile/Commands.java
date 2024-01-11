@@ -247,7 +247,7 @@ public class Commands {
     private void showPicture(boolean closeWindow) {
         if (closeWindow) {
             // It is possible to leave the window up from the previous room, so we force a close.
-            state.flags[Defines.LEAVE_WIN] = false;
+            state.setFlag(Defines.LEAVE_WIN, false);
             textGraphics.closeWindow(false);
         }
 
@@ -435,13 +435,13 @@ public class Commands {
 
             case 7: // isset
                 {
-                    result = state.flags[condition.operands.get(0).asByte()];
+                    result = state.getFlag(condition.operands.get(0).asByte());
                 }
                 break;
 
             case 8: // issetv
                 {
-                    result = state.flags[state.getVar(condition.operands.get(0).asByte())];
+                    result = state.getFlag(state.getVar(condition.operands.get(0).asByte()));
                 }
                 break;
 
@@ -661,39 +661,39 @@ public class Commands {
 
             case 12: // set
                 {
-                    state.flags[action.operands.get(0).asByte()] = true;
+                    state.setFlag(action.operands.get(0).asByte(), true);
                 }
                 break;
 
             case 13: // reset
                 {
-                    state.flags[action.operands.get(0).asByte()] = false;
+                    state.setFlag(action.operands.get(0).asByte(), false);
                 }
                 break;
 
             case 14: // toggle
                 {
                     int flagNum = action.operands.get(0).asByte();
-                    state.flags[flagNum] = !state.flags[flagNum];
+                    state.setFlag(flagNum, !state.getFlag(flagNum));
                 }
                 break;
 
             case 15: // set.v
                 {
-                    state.flags[state.getVar(action.operands.get(0).asByte())] = true;
+                    state.setFlag(state.getVar(action.operands.get(0).asByte()), true);
                 }
                 break;
 
             case 16: // reset.v
                 {
-                    state.flags[state.getVar(action.operands.get(0).asByte())] = false;
+                    state.setFlag(state.getVar(action.operands.get(0).asByte()), false);
                 }
                 break;
 
             case 17: // toggle.v
                 {
                     int flagNum = state.getVar(action.operands.get(0).asByte());
-                    state.flags[flagNum] = !state.flags[flagNum];
+                    state.setFlag(flagNum, !state.getFlag(flagNum));
                 }
                 break;
 
@@ -1169,7 +1169,7 @@ public class Commands {
                     aniObj.cycle = true;
                     aniObj.noAdvance = true;
                     aniObj.motionParam1 = (short)flagNum;
-                    state.flags[flagNum] = false;
+                    state.setFlag(flagNum, false);
                 }
                 break;
 
@@ -1190,7 +1190,7 @@ public class Commands {
                     aniObj.cycle = true;
                     aniObj.noAdvance = true;
                     aniObj.motionParam1 = (short)flagNum;
-                    state.flags[flagNum] = false;
+                    state.setFlag(flagNum, false);
                 }
                 break;
 
@@ -1378,7 +1378,7 @@ public class Commands {
                 {
                     int soundNum = action.operands.get(0).asByte();
                     int endFlag = action.operands.get(1).asByte();
-                    state.flags[endFlag] = false;
+                    state.setFlag(endFlag, false);
                     Sound sound = state.sounds[soundNum];
                     if ((sound != null) && (sound.isLoaded))
                     {
@@ -1603,11 +1603,11 @@ public class Commands {
 
             case 128: // restart.game
                 {
-                    if (state.flags[Defines.NO_PRMPT_RSTRT] || textGraphics.windowPrint("Press ENTER to restart\nthe game.\n\nPress ESC to continue\nthis game."))
+                    if (state.getFlag(Defines.NO_PRMPT_RSTRT) || textGraphics.windowPrint("Press ENTER to restart\nthe game.\n\nPress ESC to continue\nthis game."))
                     {
                         soundPlayer.reset();
                         state.init();
-                        state.flags[Defines.RESTART] = true;
+                        state.setFlag(Defines.RESTART, true);
                         menu.enableAllMenus();
                         textGraphics.clearLines(0, 24, 0);
                         return 0;
@@ -2133,8 +2133,8 @@ public class Commands {
         state.setVar(Defines.OBJEDGE, 0);
         state.setVar(Defines.UNKNOWN_WORD, 0);
         state.setVar(Defines.EGOEDGE, 0);
-        state.flags[Defines.INPUT] = false;
-        state.flags[Defines.INITLOGS] = true;
+        state.setFlag(Defines.INPUT, false);
+        state.setFlag(Defines.INITLOGS, true);
         state.userControl = true;
         state.blocking = false;
         state.horizon = Defines.HORIZON;

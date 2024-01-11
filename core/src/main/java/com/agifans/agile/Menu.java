@@ -239,7 +239,7 @@ public class Menu {
      */
     public void menuInput() {
         // Not sure why there is an ENABLE_MENU flag and the allow.menu command, but there is.
-        if (state.flags[Defines.ENABLE_MENU] && state.menuEnabled) {
+        if (state.getFlag(Defines.ENABLE_MENU) && state.menuEnabled) {
             // Clear the menu bar to white.
             textGraphics.clearLines(0, 0, 15);
 

@@ -32,7 +32,7 @@ public class DesktopWavePlayer implements WavePlayer {
     }
 
     @Override
-    public void playWaveData(byte[] waveData, Runnable endedCallback) {
+    public void playWaveData(byte[] waveData, int endFlag) {
         try {
             // NOTE: AGI only supports playing one SOUND at a time, so we don't need
             // to worry about handling multiple Clips.
@@ -42,7 +42,7 @@ public class DesktopWavePlayer implements WavePlayer {
                 @Override
                 public void update(LineEvent event) {
                     if (event.getType().equals(Type.STOP)) {
-                        endedCallback.run();
+                        // TODO: Set the endFlag
                     }
                 }
             });
@@ -51,15 +51,15 @@ public class DesktopWavePlayer implements WavePlayer {
         }
         catch (UnsupportedAudioFileException e) {
             // Shouldn't happen, but if it does, we'll pretend the sound ended.
-            endedCallback.run();
+            // TODO: Set the endFlag
         }
         catch (IOException e) {
             // Shouldn't happen, but if it does, we'll pretend the sound ended.
-            endedCallback.run();
+            // TODO: Set the endFlag
         }
         catch (LineUnavailableException e) {
             // Shouldn't happen, but if it does, we'll pretend the sound ended.
-            endedCallback.run();
+            // TODO: Set the endFlag
         }
     }
 

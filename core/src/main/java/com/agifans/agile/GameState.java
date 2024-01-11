@@ -47,7 +47,6 @@ public class GameState {
     public int[] scanStart;
 
     public boolean[] controllers;
-    public boolean[] flags;
     public String[] strings;
     public AnimatedObject[] animatedObjects;
     public AnimatedObject ego;
@@ -167,7 +166,6 @@ public class GameState {
     public GameState(Game game, VariableData variableData) {
         this.game = game;
         this.variableData = variableData;
-        this.flags = new boolean[Defines.NUMFLAGS];
         this.strings = new String[Defines.NUMSTRINGS];
         this.controllers = new boolean[Defines.NUMCONTROL];
         this.scanStart = new int[256];
@@ -235,9 +233,9 @@ public class GameState {
         setVar(Defines.MEMLEFT, 255);
 
         clearFlags();
-        flags[Defines.HAS_NOISE] = true;
-        flags[Defines.INITLOGS] = true;
-        flags[Defines.SOUNDON] = true;
+        setFlag(Defines.HAS_NOISE, true);
+        setFlag(Defines.INITLOGS, true);
+        setFlag(Defines.SOUNDON, true);
 
         // Set the text attribute to default (black on white), and display the input line.
         foregroundColour = 15;
@@ -485,6 +483,27 @@ public class GameState {
     }
 
     /**
+     * Gets the current value of the AGI flag identified by the flag number.
+     * 
+     * @param flagNum The AGI flag to get the value of.
+     * 
+     * @return The value of the AGI flag.
+     */
+    public boolean getFlag(int flagNum) {
+        return variableData.getFlag(flagNum);
+    }
+    
+    /**
+     * Sets the value of the AGI flag, identified by the flag number, to the given value.
+     * 
+     * @param flagNum The AGI flag to set the value of.
+     * @param value The value to set the AGI flag to.
+     */
+    public void setFlag(int flagNum, boolean value) {
+        variableData.setFlag(flagNum, value);
+    }
+    
+    /**
      * Gets the AGI game's total ticks value. This is incremented 60 times a second.
      * 
      * @return The AGI game's total ticks value.
@@ -517,7 +536,7 @@ public class GameState {
      */
     public void clearFlags() {
         for (int i = 0; i < Defines.NUMFLAGS; i++) {
-            flags[i] = false;
+            variableData.setFlag(i, false);
         }
     }
 

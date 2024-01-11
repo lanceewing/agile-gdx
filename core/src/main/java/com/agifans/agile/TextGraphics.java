@@ -432,7 +432,7 @@ public class TextGraphics {
             drawString(this.pixelData, padRightSpaces(scoreStatus.toString(), 30), 0, state.statusLineRow * 8, 0, 15);
             StringBuilder soundStatus = new StringBuilder();
             soundStatus.append("Sound:");
-            soundStatus.append(state.flags[Defines.SOUNDON] ? "on" : "off");
+            soundStatus.append(state.getFlag(Defines.SOUNDON) ? "on" : "off");
             drawString(this.pixelData, padRightSpaces(soundStatus.toString(), 10), 30 * 8, state.statusLineRow * 8, 0, 15);
         }
     }
@@ -616,8 +616,8 @@ public class TextGraphics {
         windowNoWait(str, 0, 0, false, aniObj);
 
         // If we're to leave the window up, just return.
-        if (state.flags[Defines.LEAVE_WIN] == true) {
-            state.flags[Defines.LEAVE_WIN] = false;
+        if (state.getFlag(Defines.LEAVE_WIN) == true) {
+            state.setFlag(Defines.LEAVE_WIN, false);
             return true;
         }
 
