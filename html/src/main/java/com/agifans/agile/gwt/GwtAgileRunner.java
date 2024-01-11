@@ -193,7 +193,7 @@ public class GwtAgileRunner extends AgileRunner {
         var soundArray = new Int8Array(soundBuffer);
         var audio = new Audio();
         audio.src = URL.createObjectURL(new Blob([soundArray], {type: "audio/wav"}));
-        audio.onended = = function(event) {
+        audio.onended = function(event) {
             this.@com.agifans.agile.gwt.GwtAgileRunner::soundEnded(I)(endFlag);
         };
         audio.play();
