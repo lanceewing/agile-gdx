@@ -70,7 +70,7 @@ public class GwtAgileRunner extends AgileRunner {
     @Override
     public String selectGame() {
         // TODO: Convert this into a URI format.
-        return "games/kq1/";
+        return "games/kq4/";
     }
     
     public void createWorker(Map<String, byte[]> gameFileMap) {
