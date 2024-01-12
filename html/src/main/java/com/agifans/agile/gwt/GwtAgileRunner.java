@@ -69,8 +69,7 @@ public class GwtAgileRunner extends AgileRunner {
 
     @Override
     public String selectGame() {
-        // TODO: Convert this into a URI format.
-        return "games/kq4/";
+        return "games/kq1.zip";
     }
     
     public void createWorker(Map<String, byte[]> gameFileMap) {
