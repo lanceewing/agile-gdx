@@ -29,6 +29,17 @@ public class Logic extends Resource {
     public Map<Integer, Integer> addressToActionIndex;
 
     /**
+     * If this Logic includes a set.game.id action command, then this field will contain
+     * the value of the associated message number. The main purpose of this field is to 
+     * aid in obtaining the AGI game's identifier as quickly as possible. For AGI V3
+     * games, this is easy, but for AGI V2 games, it is set with the set.game.id command.
+     * So we either wait until that command is executed and get it then, or we grab it
+     * while the LOGIC resource is being decoded. The latter is obviously earlier in the
+     * process. 
+     */
+    private Integer gameIdMessageNum;
+    
+    /**
      * Whether the messages are crypted or not.
     */
     private boolean messagesCrypted;
@@ -61,6 +72,16 @@ public class Logic extends Resource {
 
         // Read the messages.
         readMessages(rawData);
+    }
+    
+    /**
+     * If this LOGIC contained the set.game.id command, then this method will return
+     * the game ID text; otherwise it returns null.
+     * 
+     * @return Either the game ID, or null if this LOGIC doesn't set the game id.
+     */
+    public String getGameId() {
+        return (gameIdMessageNum != null? messages.get(gameIdMessageNum) : null);
     }
     
     /**
@@ -124,6 +145,15 @@ public class Logic extends Resource {
                 }
 
                 action = new Action(operation, operands);
+                
+                // Capture the set.game.id message number, if this LOGIC includes it. This 
+                // is a quick way to identify an AGIV2 game before the game starts. We could
+                // also use the Detection class, but it is ultimately the set.game.id command
+                // that is the master. Maybe we could fall back on the Detection data if a 
+                // game doesn't set the game ID (e.g. an AGI fan game).
+                if (actionOpcode == 143) {
+                    gameIdMessageNum= operands.get(0).asByte();
+                }
             }
 
             // Keep track of each Instruction's address and Logic as we read them in.

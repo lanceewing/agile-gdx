@@ -182,7 +182,7 @@ public class GameState {
         this.currentInput = new StringBuilder();
         this.lastInput = "";
         this.simpleName = "";
-        this.gameId = (game.v3GameSig != null? game.v3GameSig : "UNKNOWN");
+        this.gameId = (game.gameId != null? game.gameId : (game.v3GameSig != null? game.v3GameSig : "UNKNOWN"));
         this.version = (game.version.equals("Unknown")? "2.917" : game.version);
         this.menuEnabled = true;
         this.holdKey = false;

@@ -18,6 +18,8 @@ public class Game {
     
     public Map<String, byte[]> gameFilesMap;
     
+    public String gameId;
+    
     public String v3GameSig;
 
     public String version;
@@ -69,6 +71,10 @@ public class Game {
                 Logic logic = ((AgileLogicWrapper)resourceCache.getLogic(i)).getAgileLogic();
                 logic.index = i;
                 logics[i] = logic;
+                // If this LOGIC sets the game id, then capture it.
+                if (logic.getGameId() != null) {
+                    gameId = logic.getGameId();
+                }
             } catch (Exception rnee) { 
                 // Ignore. The LOGIC doesn't exist.
             }
