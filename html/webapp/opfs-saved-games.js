@@ -22,7 +22,7 @@ var OPFSSavedGames = function() {
         opfsRoot = await navigator.storage.getDirectory();
         
         // Get and store a handle to the "Saved Games" sub directory.
-        savedGamesDir = await opfsRoot.getDirectoryHandle('Saved Games', {created: true});
+        savedGamesDir = await opfsRoot.getDirectoryHandle('Saved Games', {create: true});
         
         // Get and store a handle to this game's sub-directory.
         gameDirectory = await savedGamesDir.getDirectoryHandle(gameId, {create: true});
