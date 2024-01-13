@@ -41,7 +41,11 @@ public class DesktopSavedGameStore implements SavedGameStore {
         theGame.num = num;
 
         // Build full path to the saved game of this number for this game ID.
-        theGame.fileName = StringUtils.format("{0}\\{1}SG.{2}", getFolderNameForGame(gameId), gameId, num);
+        theGame.fileName = StringUtils.format(
+                "{0}{1}{2}SG.{3}",
+                getFolderNameForGame(gameId), 
+                System.getProperty("file.separator"),
+                gameId, num);
 
         File savedGameFile = new File(theGame.fileName);
         theGame.savedGameData = new byte[(int)savedGameFile.length()];
