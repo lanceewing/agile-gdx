@@ -96,7 +96,7 @@ var OPFSSavedGames = function() {
         savedGameTimestamps[gameNum] = Date.now();
     };
     
-    this.getSavedGameTimestamp(gameNum) {
+    this.getSavedGameTimestamp = function(gameNum) {
 		return savedGameTimestamps[gameNum];
 	};
 };
