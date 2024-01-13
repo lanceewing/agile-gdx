@@ -35,7 +35,7 @@ public class OPFSSavedGames extends JavaScriptObject {
         this.writeSavedGameData(gameNum, savedGameData);
     }-*/;
     
-    public final native long getSavedGameTimestamp(int gameNum)/*-{
-        return this.getSavedGameTimestamp(gameNum);
+    public final native int getSavedGameTimestamp(int gameNum)/*-{
+        return (this.getSavedGameTimestamp(gameNum) / 1000);
     }-*/; 
 }

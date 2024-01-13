@@ -95,7 +95,7 @@ public class GwtSavedGameStore implements SavedGameStore {
         theGame.savedGameData = savedGameData;
         
         if (savedGameData.length > 0) {
-            theGame.fileTime = (opfsSavedGames.getSavedGameTimestamp(num) / 1000);
+            theGame.fileTime = opfsSavedGames.getSavedGameTimestamp(num);
             
             // 0 - 30(31 bytes) SAVED GAME DESCRIPTION.
             int textEnd = 0;
