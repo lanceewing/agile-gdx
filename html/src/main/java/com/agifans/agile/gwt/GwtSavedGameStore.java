@@ -41,7 +41,6 @@ public class GwtSavedGameStore implements SavedGameStore {
      * Constructor for GwtSavedGameStore.
      */
     public GwtSavedGameStore() {
-        opfsSavedGames = OPFSSavedGames.newOPFSSavedGames();
     }
     
     /**
@@ -57,6 +56,7 @@ public class GwtSavedGameStore implements SavedGameStore {
         // be used for saving games. As this is called before the Interpreter is
         // instantiated, and within a web worker message prior to the first "Tick",
         // then it should be ample time for the OPFS setup to complete.
+        opfsSavedGames = OPFSSavedGames.newOPFSSavedGames();
         opfsSavedGames.init(gameId);
     }
     
