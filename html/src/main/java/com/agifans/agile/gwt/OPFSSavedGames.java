@@ -20,7 +20,7 @@ public class OPFSSavedGames extends JavaScriptObject {
     }
     
     public final static native OPFSSavedGames newOPFSSavedGames()/*-{
-        return new $self.OPFSSavedGames();
+        return new self.OPFSSavedGames();
     }-*/;
     
     public final native void init(String gameId)/*-{
