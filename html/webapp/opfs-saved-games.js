@@ -11,6 +11,7 @@ var OPFSSavedGames = function() {
     let savedGamesDir;
     let gameDirectory;
     let savedGameSyncAccessHandles = [];
+    let savedGameTimestamps = [];
 
     //--------------------------------------------------------------------------
     // Private methods
@@ -39,6 +40,10 @@ var OPFSSavedGames = function() {
         const fileHandle = await gameDirectory.getFileHandle(fileName, {create: true});
         const syncAccessHandle = await fileHandle.createSyncAccessHandle();
         savedGameSyncAccessHandles[gameNum] = syncAccessHandle;
+        
+        // This captures the last modified timestamp at the point of AGI interpreter start up.
+        const file = await fileHandle.getFile();
+        savedGameTimestamps[gameNum] = file.lastModified;
     };
 
     //--------------------------------------------------------------------------
@@ -86,5 +91,12 @@ var OPFSSavedGames = function() {
         // TODO: Test if we don't need the below, by saving then restoring, over and over.
         //fileHandle.close();
         //initSyncAccessFileHandle(this.gameId, gameNum);
+        
+        // Update the last modified timestamp for this saved game.
+        savedGameTimestamps[gameNum] = Date.now();
     };
+    
+    this.getSavedGameTimestamp(gameNum) {
+		return savedGameTimestamps[gameNum];
+	};
 };
