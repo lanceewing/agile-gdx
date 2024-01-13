@@ -161,6 +161,8 @@ public class AgileWebWorker extends DedicatedWorkerEntryPoint implements Message
     public void onWorkerLoad() {
         this.scope = DedicatedWorkerGlobalScope.get();
         
+        this.importScript("/opfs-saved-games.js");
+        
         this.setOnMessage(this);
     }
 }
