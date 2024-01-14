@@ -49,8 +49,8 @@ public abstract class AgileRunner {
     public void init(Pixmap pixmap) {
         pixelData.init(pixmap.getWidth(), pixmap.getHeight());
         
-        // TODO: Unset this when the AgileRunner is stopped?
-        Gdx.input.setInputProcessor(userInput);
+        // TODO: Moved to show() method in GameScreen. Remove below soon.
+        //Gdx.input.setInputProcessor(userInput);
         
         // These are keys that we want to catch and not let the web browser 
         // respond to.

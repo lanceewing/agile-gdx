@@ -93,7 +93,7 @@ public class DesktopAgileRunner extends AgileRunner {
     public void stop() {
         exit = true;
         
-        if (interpreterThread.isAlive()) {
+        if ((interpreterThread != null) && interpreterThread.isAlive()) {
             // If the thread is still running, and is either waiting on the wait() above,
             // or it is sleeping within the UserInput or TextGraphics classes, then this
             // interrupt call will wake it up, the QuitAction will be thrown, and then the

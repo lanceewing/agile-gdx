@@ -1,5 +1,6 @@
 package com.agifans.agile;
 
+import com.agifans.agile.config.AppConfigItem;
 import com.agifans.agile.ui.ViewportManager;
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
@@ -57,6 +58,11 @@ public class GameScreen implements Screen {
     private Stage landscapeStage;
     private Touchpad portraitTouchpad;
     private Touchpad landscapeTouchpad;
+    
+    /**
+     * Details about the AGI game that was selected to be run.
+     */
+    private AppConfigItem appConfigItem;
     
     /**
      * Constructor for GameScreen.
@@ -138,8 +144,18 @@ public class GameScreen implements Screen {
 
     @Override
     public void show() {
+        // TODO: Remove when portrait/landscape input processors added.
+        Gdx.input.setInputProcessor(agileRunner.userInput);
+        
+        //if (viewportManager.isPortrait()) {
+        //    Gdx.input.setInputProcessor(portraitInputProcessor);
+        //} else {
+        //    Gdx.input.setInputProcessor(landscapeInputProcessor);
+        //}
+
         // TODO: When we introduce the home screen, the game will already be selected.
-        agileRunner.start(agileRunner.selectGame());
+        //agileRunner.start(agileRunner.selectGame());
+        agileRunner.start(appConfigItem.getFilePath());
     }
 
     // TODO: Remove once satisfied with performance.
@@ -324,5 +340,15 @@ public class GameScreen implements Screen {
     public void hide() {
         // TODO Auto-generated method stub
         
+    }
+
+    /**
+     * Initialises the GameScreen with the given AppConfigItem. This will represent an AGI game 
+     * that was selected on the HomeScreen.
+     * 
+     * @param appConfigItem The configuration for the app that was selected on the HomeScreen.
+     */
+    public void initGame(AppConfigItem appConfigItem) {
+        this.appConfigItem = appConfigItem;
     }
 }

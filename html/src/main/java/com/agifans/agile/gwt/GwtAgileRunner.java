@@ -69,7 +69,7 @@ public class GwtAgileRunner extends AgileRunner {
 
     @Override
     public String selectGame() {
-        return "games/kq1.zip";
+        return "games/kq4.zip";
     }
     
     public void createWorker(Map<String, byte[]> gameFileMap) {
