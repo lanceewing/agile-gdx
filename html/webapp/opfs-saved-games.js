@@ -30,7 +30,7 @@ var OPFSSavedGames = function() {
         // Max number of saved games in AGI is 12. To make things easier, we 
         // create empty files up front if they don't already exist, and store all 12
         // sync access file handles for quick synchronous access when needed.
-        for (let gameNum=0; gameNum<12; gameNum++) {
+        for (let gameNum=1; gameNum<=12; gameNum++) {
             initSyncAccessHandle(gameId, gameNum);
         }
     };
