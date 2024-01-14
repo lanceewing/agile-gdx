@@ -111,9 +111,9 @@ public class HomeScreen extends InputAdapter implements Screen {
         skin.add("top", skin.newDrawable("default-round", new Color(0, 0, 0, 0)), Drawable.class);
         skin.add("empty", skin.newDrawable("default-round", new Color(1f, 1f, 1f, 0.1f)), Drawable.class);
 
-        backgroundLandscape = new Texture("jpg/atmos_red_back_3.jpg");
+        backgroundLandscape = new Texture("jpg/landscape_back.jpg");
         backgroundLandscape.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
-        backgroundPortrait = new Texture("jpg/atmos_red_back_3l.jpg");
+        backgroundPortrait = new Texture("jpg/portrait_back.jpg");
         backgroundPortrait.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
         viewportManager = ViewportManager.getInstance();
         portraitStage = createStage(viewportManager.getPortraitViewport(), appConfig, 4, 5);
@@ -141,7 +141,7 @@ public class HomeScreen extends InputAdapter implements Screen {
         container.setFillParent(true);
 
         Table currentPage = new Table().pad(0, 0, 0, 0);
-        Texture titleTexture = new Texture("png/joric_title_3.png");
+        Texture titleTexture = new Texture("png/agile_title.png");
         Image title = new Image(titleTexture);
 
         int totalHorizPadding = 0;
