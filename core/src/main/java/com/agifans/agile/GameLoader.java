@@ -100,6 +100,7 @@ public abstract class GameLoader {
                             if ((actions.get(134).operation.opcode == 18) && (actions.get(134).operands.get(0).asInt() == 153)) {
                                 actions.set(0, logic.new GotoAction(new ArrayList<>(Arrays.asList(logic.new Operand(OperandType.ADDRESS, actions.get(132).address)))));
                                 actions.get(0).logic = logic;
+                                logic.addressToActionIndex.put(actions.get(0).address, 0);
                             }
                         }
                         break;
@@ -122,6 +123,7 @@ public abstract class GameLoader {
                             if (action.operation.opcode == 255 && action.operands.size() == 2) {
                                 actions.set(0, logic.new GotoAction(new ArrayList<>(Arrays.asList(logic.new Operand(OperandType.ADDRESS, actions.get(1).address)))));
                                 actions.get(0).logic = logic;
+                                logic.addressToActionIndex.put(actions.get(0).address, 0);
     
                                 // Skips the 'Thank you. And now, slip into your leisure suit and prepare to enter the
                                 // "Land of the Lounge Lizards" with "Leisure "Suit Larry!"' message
@@ -133,6 +135,7 @@ public abstract class GameLoader {
                                     // Go to next command in the logic, which is the new.room command
                                     actions.set(printIndex, logic.new GotoAction(new ArrayList<>(Arrays.asList(logic.new Operand(OperandType.ADDRESS, actions.get(printIndex + 1).address)))));
                                     actions.get(printIndex).logic = logic;
+                                    logic.addressToActionIndex.put(actions.get(printIndex).address, printIndex);
                                 }
                             }                               
                         }
