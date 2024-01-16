@@ -1,5 +1,8 @@
 package com.agifans.agile;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
 import com.agifans.agile.config.AppConfigItem;
 import com.agifans.agile.ui.ViewportManager;
 import com.badlogic.gdx.Application.ApplicationType;
@@ -10,6 +13,8 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.PixmapIO;
+import com.badlogic.gdx.graphics.PixmapIO.PNG;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -17,6 +22,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad.TouchpadStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.utils.Base64Coder;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -30,6 +36,8 @@ public class GameScreen implements Screen {
     private static final int AGI_SCREEN_HEIGHT = 200;
     private static final int ADJUSTED_WIDTH = ((AGI_SCREEN_HEIGHT / 3) * 4);
     private static final int ADJUSTED_HEIGHT = AGI_SCREEN_HEIGHT;
+    
+    private Agile agile;
     
     /**
      * SpriteBatch shared by all rendered components.
@@ -69,7 +77,8 @@ public class GameScreen implements Screen {
      * 
      * @param agileRunner 
      */
-    public GameScreen(AgileRunner agileRunner) {
+    public GameScreen(Agile agile, AgileRunner agileRunner) {
+        this.agile = agile;
         this.agileRunner = agileRunner;
         
         batch = new SpriteBatch();
@@ -77,7 +86,7 @@ public class GameScreen implements Screen {
         // Uses an approach used successfully in my various libgdx emulators.
         screenPixmap = new Pixmap(AGI_SCREEN_WIDTH, AGI_SCREEN_HEIGHT, Pixmap.Format.RGBA8888);
         screenPixmap.setBlending(Pixmap.Blending.None);
-        agileRunner.init(screenPixmap);
+        agileRunner.init(this, screenPixmap);
         screens = new Texture[3];
         screens[0] = new Texture(screenPixmap, Pixmap.Format.RGBA8888, false);
         screens[0].setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
@@ -171,6 +180,14 @@ public class GameScreen implements Screen {
         long fps = Gdx.graphics.getFramesPerSecond();
         boolean draw = false;
 
+        if (agileRunner.hasStopped()) {
+            // If game has ended then go back to home screen. It has to be the UI thread
+            // that calls the setScreen method. The AgileRunner itself can't do this.
+            agileRunner.reset();
+            agile.setScreen(agile.getHomeScreen());;
+            return;
+        }
+        
         // TODO: Paused place holder.
         boolean paused = false;
         if (paused) {
@@ -350,5 +367,40 @@ public class GameScreen implements Screen {
      */
     public void initGame(AppConfigItem appConfigItem) {
         this.appConfigItem = appConfigItem;
+    }
+    
+    /**
+     * Saves a screenshot of the machine's current screen contents.
+     */
+    public void saveScreenshot() {
+      String friendlyAppName = appConfigItem != null? appConfigItem.getName().replaceAll("[ ,\n/\\:;*?\"<>|!]",  "_") : "shot";
+      if (Gdx.app.getType().equals(ApplicationType.Desktop)) {
+        try {
+          StringBuilder filePath = new StringBuilder("agile_screens/");
+          filePath.append(friendlyAppName);
+          filePath.append("_");
+          filePath.append(System.currentTimeMillis());
+          filePath.append(".png");
+          PixmapIO.writePNG(Gdx.files.external(filePath.toString()), screenPixmap);
+        } catch (Exception e) {
+          // Ignore.
+        }
+      }
+      if (appConfigItem != null) {
+        try {
+          ByteArrayOutputStream out = new ByteArrayOutputStream();
+          PNG writer = new PNG((int)(screenPixmap.getWidth() * screenPixmap.getHeight() * 1.5f));
+          try {
+            writer.setFlipY(false);
+            writer.write(out, screenPixmap);
+          } finally {
+            writer.dispose();
+          }
+          agile.getScreenshotStore().putString(friendlyAppName, new String(Base64Coder.encode(out.toByteArray())));
+          agile.getScreenshotStore().flush();
+        } catch (IOException ex) {
+          // Ignore.
+        }
+      }
     }
 }

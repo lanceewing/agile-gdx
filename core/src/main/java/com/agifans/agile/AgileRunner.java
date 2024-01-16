@@ -16,6 +16,8 @@ public abstract class AgileRunner {
     
     private static final int NANOS_PER_FRAME = (1000000000 / 60);
     
+    protected GameScreen gameScreen;
+    
     protected WavePlayer wavePlayer;
     protected SavedGameStore savedGameStore;
     protected UserInput userInput;
@@ -44,9 +46,15 @@ public abstract class AgileRunner {
     /**
      * Initialises the AgileRunner with anything that needs setting up before it starts.
      * 
+     * @param gameScreen 
      * @param pixmap
      */
-    public void init(Pixmap pixmap) {
+    public void init(GameScreen gameScreen, Pixmap pixmap) {
+        this.gameScreen = gameScreen;
+        
+        // TODO: This is for screenshots. Removed when done.
+        userInput.setGameScreen(gameScreen);
+        
         pixelData.init(pixmap.getWidth(), pixmap.getHeight());
         
         // TODO: Moved to show() method in GameScreen. Remove below soon.
@@ -157,5 +165,9 @@ public abstract class AgileRunner {
     public abstract void stop();
     
     public abstract boolean isRunning();
+
+    public abstract void reset();
+    
+    public abstract boolean hasStopped();
     
 }

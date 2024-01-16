@@ -61,7 +61,7 @@ public class Agile extends Game {
         preferences = Gdx.app.getPreferences("agile.preferences");
         screenshotStore = Gdx.app.getPreferences("agile_screens.store");
         homeScreen = new HomeScreen(this, dialogHandler);
-        gameScreen = new GameScreen(agileRunner);
+        gameScreen = new GameScreen(this, agileRunner);
         
         if ((args != null) && (args.length > 0)) {
             AppConfigItem appConfigItem = new AppConfigItem();

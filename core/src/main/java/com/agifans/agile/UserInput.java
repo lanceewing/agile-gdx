@@ -89,6 +89,12 @@ public abstract class UserInput extends InputAdapter {
         }
     }
     
+    private GameScreen gameScreen;
+    
+    public void setGameScreen(GameScreen gameScreen) {
+        this.gameScreen = gameScreen;
+    }
+    
     /**
      * Handles the key down event.
      * 
@@ -100,6 +106,8 @@ public abstract class UserInput extends InputAdapter {
         // AGILE interpreter ignores some keys completely, e.g. F11.
         if (keycode == Keys.F11) {
             return false;
+        } else if (keycode == Keys.F12) {
+            gameScreen.saveScreenshot();
         }
 
         setKey((keycode & 0xFF), true);

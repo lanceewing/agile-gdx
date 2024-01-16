@@ -242,6 +242,18 @@ public class GwtAgileRunner extends AgileRunner {
     @Override
     public boolean isRunning() {
         // TODO Auto-generated method stub
+        return true;
+    }
+
+    @Override
+    public void reset() {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public boolean hasStopped() {
+        // TODO Auto-generated method stub
         return false;
     }
 }

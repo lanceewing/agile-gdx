@@ -9,7 +9,6 @@ import com.agifans.agile.UserInput;
 import com.agifans.agile.VariableData;
 import com.agifans.agile.WavePlayer;
 import com.agifans.agile.agilib.Game;
-import com.badlogic.gdx.Gdx;
 
 public class DesktopAgileRunner extends AgileRunner {
     
@@ -66,8 +65,8 @@ public class DesktopAgileRunner extends AgileRunner {
         
         while (true) {
             if (exit) {
-                Gdx.app.exit();
-                return;
+                // Returning from the method will stop the thread cleanly.
+                break;
             }
             
             try {
@@ -101,7 +100,18 @@ public class DesktopAgileRunner extends AgileRunner {
             interpreterThread.interrupt();
         }
     }
-
+    
+    @Override
+    public void reset() {
+        exit = false;
+        interpreterThread = null;
+    }
+    
+    @Override
+    public boolean hasStopped() {
+        return ((interpreterThread != null) && !interpreterThread.isAlive());
+    }
+    
     @Override
     public boolean isRunning() {
         return ((interpreterThread != null) && (interpreterThread.isAlive()));

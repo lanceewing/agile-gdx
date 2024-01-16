@@ -116,8 +116,8 @@ public class HomeScreen extends InputAdapter implements Screen {
         backgroundPortrait = new Texture("jpg/portrait_back.jpg");
         backgroundPortrait.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
         viewportManager = ViewportManager.getInstance();
-        portraitStage = createStage(viewportManager.getPortraitViewport(), appConfig, 4, 5);
-        landscapeStage = createStage(viewportManager.getLandscapeViewport(), appConfig, 7, 3);
+        portraitStage = createStage(viewportManager.getPortraitViewport(), appConfig, 3, 5);
+        landscapeStage = createStage(viewportManager.getLandscapeViewport(), appConfig, 5, 3);
 
         // The stage handles most of the input, but we need to handle the BACK button
         // separately.
@@ -140,24 +140,7 @@ public class HomeScreen extends InputAdapter implements Screen {
         stage.addActor(container);
         container.setFillParent(true);
 
-        Table currentPage = new Table().pad(0, 0, 0, 0);
-        Texture titleTexture = new Texture("png/agile_title.png");
-        Image title = new Image(titleTexture);
-
-        int totalHorizPadding = 0;
         int horizPaddingUnit = 0;
-
-        if (columns > rows) {
-            container.setBackground(new Image(backgroundLandscape).getDrawable());
-            totalHorizPadding = 1920 - (ICON_IMAGE_WIDTH * 7);
-            horizPaddingUnit = totalHorizPadding / 14;
-            currentPage.add(title).width(980).height(360).pad(0, 470, 0, 470);
-        } else {
-            container.setBackground(new Image(backgroundPortrait).getDrawable());
-            totalHorizPadding = 1080 - (ICON_IMAGE_WIDTH * 4);
-            horizPaddingUnit = totalHorizPadding / 8;
-            currentPage.add(title).width(980).height(360).pad(0, 50, 0, 50);
-        }
 
         PagedScrollPane scroll = new PagedScrollPane();
         scroll.setFlingTime(0.01f);
@@ -166,10 +149,7 @@ public class HomeScreen extends InputAdapter implements Screen {
         int itemsPerPage = columns * rows;
         int pageItemCount = 0;
 
-        // Set up first page, which is mainly empty.
-        scroll.addPage(currentPage);
-
-        currentPage = new Table().pad(0, 0, 0, 0);
+        Table currentPage = new Table().pad(0, 0, 0, 0);
         currentPage.defaults().pad(0, horizPaddingUnit, 0, horizPaddingUnit);
 
         for (AppConfigItem appConfigItem : appConfig.getApps()) {
@@ -236,6 +216,7 @@ public class HomeScreen extends InputAdapter implements Screen {
 
     @Override
     public void resize(int width, int height) {
+        // TODO: This update call falls over on return from AGI quit. Commented out, it doesn't.
         viewportManager.update(width, height);
         if (viewportManager.isPortrait()) {
             Gdx.input.setInputProcessor(portraitInputProcessor);
@@ -366,8 +347,8 @@ public class HomeScreen extends InputAdapter implements Screen {
     }
 
     // TODO: Resize to match AGI screen.
-    private static final int ICON_IMAGE_WIDTH = 240;
-    private static final int ICON_IMAGE_HEIGHT = 224;
+    private static final int ICON_IMAGE_WIDTH = 320;//240;
+    private static final int ICON_IMAGE_HEIGHT = 240;//224;
 
     /**
      * Creates a button to represent the given AppConfigItem.
@@ -489,8 +470,8 @@ public class HomeScreen extends InputAdapter implements Screen {
         AppConfig appConfig = convertAppConfigItemMapToAppConfig(appConfigMap);
         portraitStage.clear();
         landscapeStage.clear();
-        addAppButtonsToStage(portraitStage, appConfig, 4, 5);
-        addAppButtonsToStage(landscapeStage, appConfig, 7, 3);
+        addAppButtonsToStage(portraitStage, appConfig, 3, 5);
+        addAppButtonsToStage(landscapeStage, appConfig, 5, 3);
         saveAppConfigMap();
         agile.getPreferences().flush();
     }
