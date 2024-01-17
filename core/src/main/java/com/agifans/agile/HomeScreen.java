@@ -195,8 +195,8 @@ public class HomeScreen extends InputAdapter implements Screen {
             }
             scroll.addPage(currentPage);
             if (pageItemCount == itemsPerPage) {
-                currentPage = new Table().pad(50, 10, 50, 10);
-                currentPage.defaults().pad(0, 50, 0, 50);
+                currentPage = new Table().pad(0, 0, 0, 0);
+                currentPage.defaults().pad(0, horizPaddingUnit, 0, horizPaddingUnit);
                 for (int i = 0; i < itemsPerPage; i++) {
                     if ((i % columns) == 0) {
                         currentPage.row();
@@ -386,8 +386,8 @@ public class HomeScreen extends InputAdapter implements Screen {
                     icon = new Image(iconTexture);
                     icon.setAlign(Align.center);
                 } catch (Exception e) {
-                    icon = new Image(generateIdenticon(appConfigItem.getName(), ICON_IMAGE_WIDTH, ICON_IMAGE_HEIGHT));// 143,
-                                                                                                                      // 110));
+                    icon = new Image(generateIdenticon(appConfigItem.getName(), ICON_IMAGE_WIDTH, ICON_IMAGE_HEIGHT));
+                    icon.setAlign(Align.center);
                 }
             } else {
                 icon = new Image(iconTexture);
