@@ -216,7 +216,6 @@ public class HomeScreen extends InputAdapter implements Screen {
 
     @Override
     public void resize(int width, int height) {
-        // TODO: This update call falls over on return from AGI quit. Commented out, it doesn't.
         viewportManager.update(width, height);
         if (viewportManager.isPortrait()) {
             Gdx.input.setInputProcessor(portraitInputProcessor);
