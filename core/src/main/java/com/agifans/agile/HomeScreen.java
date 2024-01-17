@@ -140,8 +140,21 @@ public class HomeScreen extends InputAdapter implements Screen {
         stage.addActor(container);
         container.setFillParent(true);
 
+        int totalHorizPadding = 0;
         int horizPaddingUnit = 0;
 
+        if (columns > rows) {
+            // Landscape.
+            container.setBackground(new Image(backgroundLandscape).getDrawable());
+            totalHorizPadding = 1920 - (ICON_IMAGE_WIDTH * columns);
+            horizPaddingUnit = totalHorizPadding / (columns * 2);
+        } else {
+            // Portrait.
+            container.setBackground(new Image(backgroundPortrait).getDrawable());
+            totalHorizPadding = 1080 - (ICON_IMAGE_WIDTH * columns);
+            horizPaddingUnit = totalHorizPadding / (columns * 2);
+        }
+        
         PagedScrollPane scroll = new PagedScrollPane();
         scroll.setFlingTime(0.01f);
         scroll.setPageSpacing(25);
