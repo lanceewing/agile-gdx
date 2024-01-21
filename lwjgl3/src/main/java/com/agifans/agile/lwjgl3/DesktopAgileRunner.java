@@ -1,5 +1,11 @@
 package com.agifans.agile.lwjgl3;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
+import com.agifans.agile.Agile;
 import com.agifans.agile.AgileRunner;
 import com.agifans.agile.Interpreter;
 import com.agifans.agile.PixelData;
@@ -9,6 +15,13 @@ import com.agifans.agile.UserInput;
 import com.agifans.agile.VariableData;
 import com.agifans.agile.WavePlayer;
 import com.agifans.agile.agilib.Game;
+import com.agifans.agile.config.AppConfigItem;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Application.ApplicationType;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.PixmapIO;
+import com.badlogic.gdx.graphics.PixmapIO.PNG;
+import com.badlogic.gdx.utils.Base64Coder;
 
 public class DesktopAgileRunner extends AgileRunner {
     
@@ -32,20 +45,6 @@ public class DesktopAgileRunner extends AgileRunner {
         interpreterThread.start();
     }
     
-    /**
-     * Selects am AGI game folder to run.
-     * 
-     * @return The folder containing the AGI game's resources.
-     */
-    @Override
-    public String selectGame() {
-        // TODO: Implement selection logic. This is a placeholder for now.
-        // return "C:\\dev\\agi\\winagi\\kq4agi";
-        // return "file:/C:/dev/agi/winagi/kq4agi/";
-        // return "file://localhost/C:/dev/agi/winagi/kq4agi/";
-        return "file:///C:/dev/agi/winagi/kq1/";
-    }
-    
     @Override
     public void animationTick() {
         synchronized (this) {
@@ -57,7 +56,12 @@ public class DesktopAgileRunner extends AgileRunner {
         // Start by loading game. We deliberately do this within the thread and
         // not in the main libgdx UI thread.
         DesktopGameLoader gameLoader = new DesktopGameLoader(pixelData);
-        Game game = gameLoader.loadGame(gameLoader.fetchGameFiles(gameUri));
+        
+        // We fetch the files via a generic callback mechanism, mainly to support GWT,
+        // but no reason we can't code it for Desktop as ell.
+        Map<String, byte[]> gameFilesMap = new HashMap<>();
+        gameLoader.fetchGameFiles(gameUri, map -> gameFilesMap.putAll(map));
+        Game game = gameLoader.loadGame(gameFilesMap);
         
         // Create the Interpreter class that will run the AGI game.
         Interpreter interpreter = new Interpreter(game, userInput, wavePlayer, 
@@ -111,9 +115,39 @@ public class DesktopAgileRunner extends AgileRunner {
     public boolean hasStopped() {
         return ((interpreterThread != null) && !interpreterThread.isAlive());
     }
-    
+
     @Override
-    public boolean isRunning() {
-        return ((interpreterThread != null) && (interpreterThread.isAlive()));
+    public void saveScreenshot(Agile agile, AppConfigItem appConfigItem, Pixmap screenPixmap) {
+        String friendlyAppName = appConfigItem != null ? appConfigItem.getName().replaceAll("[ ,\n/\\:;*?\"<>|!]", "_")
+                : "shot";
+        if (Gdx.app.getType().equals(ApplicationType.Desktop)) {
+            try {
+                StringBuilder filePath = new StringBuilder("agile_screens/");
+                filePath.append(friendlyAppName);
+                filePath.append("_");
+                filePath.append(System.currentTimeMillis());
+                filePath.append(".png");
+                PixmapIO.writePNG(Gdx.files.external(filePath.toString()), screenPixmap);
+            } catch (Exception e) {
+                // Ignore.
+            }
+        }
+        if (appConfigItem != null) {
+            try {
+                ByteArrayOutputStream out = new ByteArrayOutputStream();
+                PNG writer = new PNG((int) (screenPixmap.getWidth() * screenPixmap.getHeight() * 1.5f));
+                try {
+                    writer.setFlipY(false);
+                    writer.write(out, screenPixmap);
+                } finally {
+                    writer.dispose();
+                }
+                agile.getScreenshotStore().putString(friendlyAppName,
+                        new String(Base64Coder.encode(out.toByteArray())));
+                agile.getScreenshotStore().flush();
+            } catch (IOException ex) {
+                // Ignore.
+            }
+        }
     }
 }
