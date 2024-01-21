@@ -53,6 +53,11 @@ public interface PixelData {
     void restorePixels();
     
     /**
+     * Clears all pixels, i.e. sets to black.
+     */
+    void clearPixels();
+    
+    /**
      * Gets a single pixel from the pixel data, using an AGI screen position, i.e.
      * where agiScreenIndex = (y * 320) + x
      * 

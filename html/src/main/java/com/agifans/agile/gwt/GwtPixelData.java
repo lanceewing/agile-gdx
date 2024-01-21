@@ -109,6 +109,13 @@ public class GwtPixelData implements PixelData {
     public void restorePixels() {
         pixelArray.set(backupPixelArray);
     }
+    
+    @Override
+    public void clearPixels() {
+        for (int index = 0; index < pixelArray.length(); index++) {
+            pixelArray.set(index, 0);
+        }
+    }
 
     @Override
     public int getPixel(int agiScreenIndex) {

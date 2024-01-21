@@ -1,5 +1,7 @@
 package com.agifans.agile.lwjgl3;
 
+import java.util.Arrays;
+
 import com.agifans.agile.PixelData;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.utils.BufferUtils;
@@ -53,6 +55,11 @@ public class DesktopPixelData implements PixelData {
         System.arraycopy(backupImageData, 0, imageData, 0, backupImageData.length);
     }
 
+    @Override
+    public void clearPixels() {
+        Arrays.fill(imageData, (byte)0);
+    }
+    
     @Override
     public int getPixel(int agiScreenIndex) {
         int index = agiScreenIndex * 4;
