@@ -87,6 +87,14 @@ public class GwtVariableData implements VariableData {
     public void setFlag(int flagNum, boolean value) {
         variableArray.set(FLAGS_OFFSET + (flagNum & 0xFF), value? TRUE : FALSE);
     }
+    
+    @Override
+    public void clearState() {
+        int arrayLength = Defines.NUMVARS + Defines.NUMFLAGS + 1;
+        for (int index=0; index < arrayLength; index++) {
+            variableArray.set(index, 0);
+        }
+    }
 
     /**
      * Gets the SharedArrayBuffer used internally by the variable array.

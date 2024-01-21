@@ -1,5 +1,7 @@
 package com.agifans.agile.lwjgl3;
 
+import java.util.Arrays;
+
 import com.agifans.agile.Defines;
 import com.agifans.agile.VariableData;
 
@@ -50,5 +52,12 @@ public class DesktopVariableData implements VariableData {
     @Override
     public void setTotalTicks(int totalTicks) {
         this.totalTicks = totalTicks;
+    }
+
+    @Override
+    public void clearState() {
+        totalTicks = 0;
+        Arrays.fill(flags, false);
+        Arrays.fill(vars, 0);
     }
 }

@@ -86,4 +86,6 @@ public interface VariableData {
         setTotalTicks(totalTicks);
         return totalTicks;
     }
+    
+    void clearState();
 }
