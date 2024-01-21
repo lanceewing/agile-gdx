@@ -121,17 +121,21 @@ public class GwtDialogHandler implements DialogHandler {
                         ArrayBuffer fullGameBuffer = gameFileMapEncoder.encodeGameFileMap(gameFilesMap);
                         opfsGameFiles.writeGameFilesData(opfsDirectoryName, fullGameBuffer);
                         
-                        openFileResponseHandler.openFileResult(true, opfsDirectoryName, gameName);
+                        // The Game ID that we pass back is as per the game's LOGIC files, unless it
+                        // doesn't set one, in which case it falls back on the Detection game ID.
+                        String gameId = ((game.gameId != null) && !game.gameId.isEmpty())? game.gameId : detection.gameId;
+                        
+                        openFileResponseHandler.openFileResult(true, opfsDirectoryName, gameName, gameId);
                         
                     } catch (RuntimeException e) {
                         Gdx.app.error("onFileResultsReady", e.getMessage());
                         
                         // The game failed to decode, so AGILE will not be able to run it.
-                        openFileResponseHandler.openFileResult(false, null, null);
+                        openFileResponseHandler.openFileResult(false, null, null, null);
                     }
                 } else {
                     // The game file map does not contain the minimum set of files.
-                    openFileResponseHandler.openFileResult(false, null, null);
+                    openFileResponseHandler.openFileResult(false, null, null, null);
                 }
             }
         });

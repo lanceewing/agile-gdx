@@ -492,7 +492,7 @@ public class HomeScreen extends InputAdapter implements Screen {
                 dialogHandler.openFileDialog("", startPath, new OpenFileResponseHandler() {
                     
                     @Override
-                    public void openFileResult(boolean success, String filePath, String gameName) {
+                    public void openFileResult(boolean success, String filePath, String gameName, String gameId) {
                         if (success && (filePath != null) && (!filePath.isEmpty())) {
                             if (!Gdx.app.getType().equals(ApplicationType.WebGL)) {
                                 // GWT/HTML5/WEBGL doesn't support FileHandle and doesn't need it anyway.
@@ -508,6 +508,7 @@ public class HomeScreen extends InputAdapter implements Screen {
                                     public void inputTextResult(boolean success, String text) {
                                         if (success) {
                                             AppConfigItem appConfigItem = new AppConfigItem();
+                                            appConfigItem.setGameId(gameId);
                                             appConfigItem.setName(text);
                                             appConfigItem.setFilePath(appConfigFilePath);
                                             if (Gdx.app.getType().equals(ApplicationType.WebGL)) {

@@ -2,132 +2,142 @@ package com.agifans.agile.config;
 
 public class AppConfigItem {
 
-  private String name = "";
- 
-  private String displayName;
-  
-  private String filePath;
-  
-  private String fileType;
-  
-  private String iconPath;
-  
-  private FileLocation fileLocation = FileLocation.INTERNAL;
-  
-  private String status = "WORKING";
+    private String gameId;
 
-  public enum FileLocation {
-    INTERNAL, EXTERNAL, ABSOLUTE, CLASSPATH, LOCAL, OPFS
-  };
-  
-  /**
-   * Constructor for AppConfigItem.
-   */
-  public AppConfigItem() {
-  }
-  
-  /**
-   * @return the fileLocation
-   */
-  public FileLocation getFileLocation() {
-    return fileLocation;
-  }
+    private String name = "";
 
-  /**
-   * @param fileLocation the fileLocation to set
-   */
-  public void setFileLocation(FileLocation fileLocation) {
-    this.fileLocation = fileLocation;
-  }
+    private String displayName;
 
-  /**
-   * @return the name
-   */
-  public String getName() {
-    return name;
-  }
+    private String filePath;
 
-  /**
-   * @param name the name to set
-   */
-  public void setName(String name) {
-    this.name = name;
-  }
-  
-  /**
-   * @return the displayName
-   */
-  public String getDisplayName() {
-    if ((displayName == null) && (name != null)) {
-      int numOfSpaces = name.length() - name.replace(" ", "").length();
-      displayName = name.replace(" ", "\n");
-      if (numOfSpaces == 0) {
-        displayName = displayName + "\n";
-      }
+    private String fileType;
+
+    private String iconPath;
+
+    private FileLocation fileLocation = FileLocation.INTERNAL;
+
+    private String status = "WORKING";
+
+    public enum FileLocation {
+        INTERNAL, EXTERNAL, ABSOLUTE, CLASSPATH, LOCAL, OPFS
+    };
+
+    /**
+     * Constructor for AppConfigItem.
+     */
+    public AppConfigItem() {
     }
-    return displayName;
-  }
 
-  /**
-   * @param displayName the displayName to set
-   */
-  public void setDisplayName(String displayName) {
-    this.displayName = displayName;
-  }
+    public String getGameId() {
+        return gameId;
+    }
 
-  /**
-   * @return the filePath
-   */
-  public String getFilePath() {
-    return filePath;
-  }
+    public void setGameId(String gameId) {
+        this.gameId = gameId;
+    }
 
-  /**
-   * @param filePath the filePath to set
-   */
-  public void setFilePath(String filePath) {
-    this.filePath = filePath;
-  }
+    /**
+     * @return the fileLocation
+     */
+    public FileLocation getFileLocation() {
+        return fileLocation;
+    }
 
-  /**
-   * @return the fileType
-   */
-  public String getFileType() {
-    return fileType;
-  }
+    /**
+     * @param fileLocation the fileLocation to set
+     */
+    public void setFileLocation(FileLocation fileLocation) {
+        this.fileLocation = fileLocation;
+    }
 
-  /**
-   * @param fileType the fileType to set
-   */
-  public void setFileType(String fileType) {
-    this.fileType = fileType;
-  }
+    /**
+     * @return the name
+     */
+    public String getName() {
+        return name;
+    }
 
-  /**
-   * @return the iconPath
-   */
-  public String getIconPath() {
-    return iconPath;
-  }
+    /**
+     * @param name the name to set
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
 
-  /**
-   * @param iconPath the iconPath to set
-   */
-  public void setIconPath(String iconPath) {
-    this.iconPath = iconPath;
-  }
+    /**
+     * @return the displayName
+     */
+    public String getDisplayName() {
+        if ((displayName == null) && (name != null)) {
+            int numOfSpaces = name.length() - name.replace(" ", "").length();
+            displayName = name.replace(" ", "\n");
+            if (numOfSpaces == 0) {
+                displayName = displayName + "\n";
+            }
+        }
+        return displayName;
+    }
 
-  /**
-   * @return the status
-   */
-  public String getStatus() {
-    return status;
-  }
+    /**
+     * @param displayName the displayName to set
+     */
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
 
-  /**
-   * @param status the status to set
-   */
-  public void setStatus(String status) {
-    this.status = status;
-  }
+    /**
+     * @return the filePath
+     */
+    public String getFilePath() {
+        return filePath;
+    }
+
+    /**
+     * @param filePath the filePath to set
+     */
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
+    }
+
+    /**
+     * @return the fileType
+     */
+    public String getFileType() {
+        return fileType;
+    }
+
+    /**
+     * @param fileType the fileType to set
+     */
+    public void setFileType(String fileType) {
+        this.fileType = fileType;
+    }
+
+    /**
+     * @return the iconPath
+     */
+    public String getIconPath() {
+        return iconPath;
+    }
+
+    /**
+     * @param iconPath the iconPath to set
+     */
+    public void setIconPath(String iconPath) {
+        this.iconPath = iconPath;
+    }
+
+    /**
+     * @return the status
+     */
+    public String getStatus() {
+        return status;
+    }
+
+    /**
+     * @param status the status to set
+     */
+    public void setStatus(String status) {
+        this.status = status;
+    }
 }

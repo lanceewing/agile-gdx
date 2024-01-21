@@ -1,9 +1,15 @@
 package com.agifans.agile.lwjgl3;
 
+import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileSystemView;
 
+import com.agifans.agile.Detection;
+import com.agifans.agile.agilib.Game;
 import com.agifans.agile.ui.ConfirmResponseHandler;
 import com.agifans.agile.ui.DialogHandler;
 import com.agifans.agile.ui.OpenFileResponseHandler;
@@ -54,12 +60,71 @@ public class DesktopDialogHandler implements DialogHandler {
                     String filePath = jfc.getSelectedFile().getPath();
                     FileHandle fileHandle = new FileHandle(filePath);
                     String gameName = fileHandle.nameWithoutExtension();
-                    openFileResponseHandler.openFileResult(true, filePath, gameName);
+                    
+                    Game game = decodeGame(filePath);
+                    
+                    if (game != null) {
+                        // Game successfully decoded, so we can store this in app config.
+                        Detection detection = new Detection(game);
+                        
+                        // The Game ID that we pass back is as per the game's LOGIC files, unless it
+                        // doesn't set one, in which case it falls back on the Detection game ID.
+                        String gameId = ((game.gameId != null) && !game.gameId.isEmpty())? game.gameId : detection.gameId;
+                        
+                        // If game is recognised, use detected name but without version part.
+                        if (!detection.gameId.equals("unknown")) {
+                            gameName = detection.gameName;
+                            if (gameName.contains("(")) {
+                                int bracketIndex = gameName.indexOf('(');
+                                gameName = gameName.substring(0, bracketIndex).trim();
+                            }
+                        }
+                        
+                        openFileResponseHandler.openFileResult(true, filePath, gameName, gameId);
+                    } else {
+                        // Doesn't appear to be a valid AGI game folder.
+                        openFileResponseHandler.openFileResult(false, null, null, null);
+                    }
                 } else {
-                    openFileResponseHandler.openFileResult(false, null, null);
+                    openFileResponseHandler.openFileResult(false, null, null, null);
                 }
             }
         });
+    }
+    
+    /**
+     * Attempts to load and decode the game, as a way to both validate that it is a
+     * valid AGI game folder, and also, if valid, obtain the game's name and ID, so 
+     * that the AppConfigItem can be created.
+     * 
+     * @param filePath The path of the directory containing the AGI game files.
+     * 
+     * @return The decoded Game, if successfully decoded; otherwise null.
+     */
+    private Game decodeGame(String filePath) {
+        File directory = new File(filePath);
+        if (!directory.exists()) {
+            return null;
+        }
+        
+        DesktopGameLoader gameLoader = new DesktopGameLoader(null);
+        Map<String, byte[]> gameFilesMap = new HashMap<>();
+        gameLoader.fetchGameFiles(directory.toURI().toString(), map -> gameFilesMap.putAll(map));
+        
+        if (gameFilesMap.containsKey("words.tok") && 
+                gameFilesMap.containsKey("object") &&
+                gameFilesMap.containsKey("agidata.ovl")) {
+            // Seems to be an AGI game directory. Let's try to decode it.
+            try {
+                return new Game(gameFilesMap);
+            } catch (RuntimeException e) {
+                // Decode failed, so can't be run by AGILE.
+                return null;
+            }
+        } else {
+            // Missing core files.
+            return null;
+        }
     }
 
     @Override
