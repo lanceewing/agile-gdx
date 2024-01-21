@@ -2,7 +2,6 @@ package com.agifans.agile.lwjgl3;
 
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
-import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.filechooser.FileSystemView;
 
 import com.agifans.agile.ui.ConfirmResponseHandler;
@@ -10,6 +9,7 @@ import com.agifans.agile.ui.DialogHandler;
 import com.agifans.agile.ui.OpenFileResponseHandler;
 import com.agifans.agile.ui.TextInputResponseHandler;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 
 /**
  * Desktop implementation of the DialogHandler interface.
@@ -48,14 +48,15 @@ public class DesktopDialogHandler implements DialogHandler {
                 jfc.setDialogTitle("Select an AGI game folder");
                 jfc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
                 jfc.setAcceptAllFileFilterUsed(false);
-                //FileNameExtensionFilter filter = new FileNameExtensionFilter("TAP and DSK files", "tap", "dsk");
-                //jfc.addChoosableFileFilter(filter);
 
                 int returnValue = jfc.showOpenDialog(null);
                 if (returnValue == JFileChooser.APPROVE_OPTION) {
-                    openFileResponseHandler.openFileResult(true, jfc.getSelectedFile().getPath());
+                    String filePath = jfc.getSelectedFile().getPath();
+                    FileHandle fileHandle = new FileHandle(filePath);
+                    String gameName = fileHandle.nameWithoutExtension();
+                    openFileResponseHandler.openFileResult(true, filePath, gameName);
                 } else {
-                    openFileResponseHandler.openFileResult(false, null);
+                    openFileResponseHandler.openFileResult(false, null, null);
                 }
             }
         });
