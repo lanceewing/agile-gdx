@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import com.agifans.agile.GameLoader;
 import com.agifans.agile.PixelData;
@@ -28,7 +29,7 @@ public class DesktopGameLoader extends GameLoader {
     }
 
     @Override
-    public Map<String, byte[]> fetchGameFiles(String gameUri) {
+    public void fetchGameFiles(String gameUri, Consumer<Map<String, byte[]>> gameFilesConsumer) {
         Map<String, byte[]> gameFileMap = new HashMap<>();
         
         // TODO: Currently we only support file:/// URIs.
@@ -63,7 +64,7 @@ public class DesktopGameLoader extends GameLoader {
             }
         }
         
-        return gameFileMap;
+        gameFilesConsumer.accept(gameFileMap);
     }
     
     private byte[] readBytesFromFile(File file) throws FileNotFoundException, IOException {

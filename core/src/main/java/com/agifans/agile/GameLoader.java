@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import com.agifans.agile.agilib.Game;
 import com.agifans.agile.agilib.Logic;
@@ -150,7 +151,7 @@ public abstract class GameLoader {
         return game;
     }
     
-    protected abstract Map<String, byte[]> fetchGameFiles(String gameUri);
+    protected abstract void fetchGameFiles(String gameUri, Consumer<Map<String, byte[]>> gameFilesConsumer);
     
     protected boolean isGameFile(String filename) {
         String lowerCaseName = filename.toLowerCase();
