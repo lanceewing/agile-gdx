@@ -1,5 +1,6 @@
 package com.agifans.agile;
 
+import com.agifans.agile.config.AppConfigItem;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -158,16 +159,14 @@ public abstract class AgileRunner {
     
     public abstract void start(String gameUri);
     
-    public abstract String selectGame();
-    
     public abstract void animationTick();
     
     public abstract void stop();
-    
-    public abstract boolean isRunning();
 
     public abstract void reset();
     
     public abstract boolean hasStopped();
+    
+    public abstract void saveScreenshot(Agile agile, AppConfigItem appConfigItem, Pixmap pixmap);
     
 }

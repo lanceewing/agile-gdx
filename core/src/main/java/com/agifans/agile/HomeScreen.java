@@ -1,10 +1,8 @@
 package com.agifans.agile;
 
 import java.io.File;
-import java.security.MessageDigest;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 import java.util.TreeMap;
 
 import com.agifans.agile.config.AppConfig;
@@ -42,7 +40,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.Base64Coder;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
@@ -157,7 +154,6 @@ public class HomeScreen extends InputAdapter implements Screen {
         
         PagedScrollPane scroll = new PagedScrollPane();
         scroll.setFlingTime(0.01f);
-        scroll.setPageSpacing(25);
 
         int itemsPerPage = columns * rows;
         int pageItemCount = 0;
@@ -213,6 +209,7 @@ public class HomeScreen extends InputAdapter implements Screen {
     @Override
     public void show() {
         Gdx.input.setInputProcessor(portraitInputProcessor);
+        Gdx.graphics.setTitle("AGILE");
     }
 
     @Override
@@ -292,75 +289,25 @@ public class HomeScreen extends InputAdapter implements Screen {
     }
 
     /**
-     * Generates an identicon for the given text, of the given size. An identicon is
-     * an icon image that will always look the same for the same text but is highly
-     * likely to look different from the icons generates for all other text strings.
-     * Its therefore an
+     * Draws and returns the icon to be used for game slots when we don't have
+     * a proper screenshot icon for the identified game.
      * 
-     * @param text
      * @param iconWidth
      * @param iconHeight
      * 
-     * @return The generated icon image for the given text.
+     * @return The Texture for the drawn icon.
      */
-    public Texture generateIdenticon(String text, int iconWidth, int iconHeight) {
-        // Generate a message hash from the text string, then use it as a seed for a
-        // random sequence.
-        int[] hashRand = new int[20];
-        try {
-            byte[] textHash = MessageDigest.getInstance("SHA1").digest(text.getBytes("UTF-8"));
-            long seed = ((((int) textHash[0] & 0xFF) << 0) | (((int) textHash[1] & 0xFF) << 8)
-                    | (((int) textHash[2] & 0xFF) << 16) | (((int) textHash[3] & 0xFF) << 24)
-                    | (((int) textHash[4] & 0xFF) << 32) | (((int) textHash[5] & 0xFF) << 40)
-                    | (((int) textHash[6] & 0xFF) << 48) | (((int) textHash[7] & 0xFF) << 56));
-            Random random = new Random(seed);
-            for (int i = 0; i < hashRand.length; i++) {
-                hashRand[i] = random.nextInt();
-            }
-        } catch (Exception e) {
-            /* Ignore. We know it will never happen. */}
-
-        // Create Pixmap and Texture of required size, and define
+    public Texture drawEmptyIcon(int iconWidth, int iconHeight) {
         Pixmap pixmap = new Pixmap(iconWidth, iconHeight, Pixmap.Format.RGBA8888);
         Texture texture = new Texture(pixmap, Pixmap.Format.RGBA8888, false);
-        Color background = new Color(0, 0, 0, 0);
-        Color foreground = null;
-        if ((text == null) || (text.equals(""))) {
-            foreground = new Color(1f, 1f, 1f, 0.3f);
-        } else {
-            foreground = new Color(((int) hashRand[0] & 0xFF) / 255f, ((int) hashRand[1] & 0xFF) / 255f,
-                    ((int) hashRand[2] & 0xFF) / 255f, 0.9f);
-        }
-
-        int blockDensityX = 17; // 39 x 37 is pretty good. 17 x 17 is okay as well.
-        int blockDensityY = 17;
-        int blockWidth = iconWidth / blockDensityX;
-        int blockHeight = iconHeight / blockDensityY;
-        int blockMidX = ((blockDensityX + 1) / 2);
-        int blockMidY = ((blockDensityY + 1) / 2);
-
-        for (int x = 0; x < blockDensityX; x++) {
-            int i = x < blockMidX ? x : (blockDensityX - 1) - x;
-            for (int y = 0; y < blockDensityY; y++) {
-                Color pixelColor;
-                int j = y < blockMidY ? y : (blockDensityY - 1) - y;
-                if ((hashRand[i] >> j & 1) == 1) {
-                    pixelColor = foreground;
-                } else {
-                    pixelColor = background;
-                }
-                pixmap.setColor(pixelColor);
-                pixmap.fillRectangle(x * blockWidth, y * blockHeight, blockWidth, blockHeight);
-            }
-        }
-
+        pixmap.setColor(1.0f, 1.0f, 1.0f, 0.10f);
+        pixmap.fill();
         texture.draw(pixmap, 0, 0);
         return texture;
     }
-
-    // TODO: Resize to match AGI screen.
-    private static final int ICON_IMAGE_WIDTH = 320;//240;
-    private static final int ICON_IMAGE_HEIGHT = 240;//224;
+    
+    private static final int ICON_IMAGE_WIDTH = 320;
+    private static final int ICON_IMAGE_HEIGHT = 240;
 
     /**
      * Creates a button to represent the given AppConfigItem.
@@ -386,7 +333,7 @@ public class HomeScreen extends InputAdapter implements Screen {
                     icon = new Image(iconTexture);
                     icon.setAlign(Align.center);
                 } catch (Exception e) {
-                    icon = new Image(generateIdenticon(appConfigItem.getName(), ICON_IMAGE_WIDTH, ICON_IMAGE_HEIGHT));
+                    icon = new Image(drawEmptyIcon(ICON_IMAGE_WIDTH, ICON_IMAGE_HEIGHT));
                     icon.setAlign(Align.center);
                 }
             } else {
@@ -398,22 +345,18 @@ public class HomeScreen extends InputAdapter implements Screen {
             String friendlyAppName = appConfigItem.getName().replaceAll("[ ,\n/\\:;*?\"<>|!]", "_");
             String screenshotData = agile.getScreenshotStore().getString(friendlyAppName, "");
             if (screenshotData != "") {
-                try {
-                    byte[] decodedScreenshotData = Base64Coder.decode(screenshotData);
-                    Pixmap screenshotPixmap = new Pixmap(decodedScreenshotData, 0, decodedScreenshotData.length);
-                    Texture screenshotTexture = new Texture(screenshotPixmap);
-                    screenshotTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
-                    icon = new Image(screenshotTexture);
-                    icon.setAlign(Align.center);
-                } catch (Exception e) {
-                    icon = new Image(generateIdenticon(appConfigItem.getName(), ICON_IMAGE_WIDTH, ICON_IMAGE_HEIGHT));// ,
-                                                                                                                      // 143,
-                                                                                                                      // 110));
-                }
+                //try {
+                //    byte[] decodedScreenshotData = Base64Coder.decode(screenshotData);
+                //    Pixmap screenshotPixmap = new Pixmap(decodedScreenshotData, 0, decodedScreenshotData.length);
+                //    Texture screenshotTexture = new Texture(screenshotPixmap);
+                //    screenshotTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+                //    icon = new Image(screenshotTexture);
+                //    icon.setAlign(Align.center);
+                //} catch (Exception e) {
+                    icon = new Image(drawEmptyIcon(ICON_IMAGE_WIDTH, ICON_IMAGE_HEIGHT));// ,                                                                                           // 110));
+                //}
             } else {
-                icon = new Image(generateIdenticon(appConfigItem.getName(), ICON_IMAGE_WIDTH, ICON_IMAGE_HEIGHT));// ,
-                                                                                                                  // 143,
-                                                                                                                  // 110));
+                icon = new Image(drawEmptyIcon(ICON_IMAGE_WIDTH, ICON_IMAGE_HEIGHT));// ,                                                                                                // 110));
             }
         }
 
@@ -429,7 +372,7 @@ public class HomeScreen extends InputAdapter implements Screen {
         Label label = null;
         if ((appConfigItem.getDisplayName() == null) || appConfigItem.getDisplayName().trim().isEmpty()) {
             label = new Label("[empty]", skin);
-            label.setColor(new Color(1f, 1f, 1f, 0.4f));
+            label.setColor(new Color(1f, 1f, 1f, 0.6f));
         } else {
             label = new Label(appConfigItem.getDisplayName(), skin);
         }
@@ -547,31 +490,40 @@ public class HomeScreen extends InputAdapter implements Screen {
             } else {
                 String startPath = agile.getPreferences().getString("open_app_start_path", null);
                 dialogHandler.openFileDialog("", startPath, new OpenFileResponseHandler() {
+                    
                     @Override
-                    public void openFileResult(boolean success, final String filePath) {
+                    public void openFileResult(boolean success, String filePath, String gameName) {
                         if (success && (filePath != null) && (!filePath.isEmpty())) {
-                            FileHandle fileHandle = new FileHandle(filePath);
-                            String defaultText = fileHandle.nameWithoutExtension();
-                            agile.getPreferences().putString("open_app_start_path", fileHandle.parent().path());
-                            agile.getPreferences().flush();
-                            dialogHandler.promptForTextInput("Program name", defaultText,
+                            if (!Gdx.app.getType().equals(ApplicationType.WebGL)) {
+                                // GWT/HTML5/WEBGL doesn't support FileHandle and doesn't need it anyway.
+                                FileHandle fileHandle = new FileHandle(filePath);
+                                filePath = "file:" + slashify(filePath, fileHandle.isDirectory());
+                                agile.getPreferences().putString("open_app_start_path", fileHandle.parent().path());
+                                agile.getPreferences().flush();
+                            }
+                            final String appConfigFilePath = filePath;
+                            dialogHandler.promptForTextInput("Program name", gameName,
                                 new TextInputResponseHandler() {
                                     @Override
                                     public void inputTextResult(boolean success, String text) {
                                         if (success) {
                                             AppConfigItem appConfigItem = new AppConfigItem();
                                             appConfigItem.setName(text);
-                                            File file = new File(filePath);
-                                            appConfigItem.setFilePath(file.toURI().toString());
-                                            appConfigItem.setFileLocation(FileLocation.ABSOLUTE);
-                                            if (filePath.toLowerCase().endsWith(".zip")) {
-                                                appConfigItem.setFileType("ZIP");
-                                            }
-                                            else if (filePath.toLowerCase().endsWith(".dsk")) {
-                                                appConfigItem.setFileType("DISK");
-                                            }
-                                            else {
-                                                appConfigItem.setFileType("DIR");
+                                            appConfigItem.setFilePath(appConfigFilePath);
+                                            if (Gdx.app.getType().equals(ApplicationType.WebGL)) {
+                                                appConfigItem.setFileLocation(FileLocation.OPFS);
+                                                appConfigItem.setFileType("GAMEFILES.DAT");
+                                            } else {
+                                                appConfigItem.setFileLocation(FileLocation.ABSOLUTE);
+                                                if (appConfigFilePath.toLowerCase().endsWith(".zip")) {
+                                                    appConfigItem.setFileType("ZIP");
+                                                }
+                                                else if (appConfigFilePath.toLowerCase().endsWith(".dsk")) {
+                                                    appConfigItem.setFileType("DISK");
+                                                }
+                                                else {
+                                                    appConfigItem.setFileType("DIR");
+                                                }
                                             }
                                             appConfigMap.put(appConfigItem.getName(), appConfigItem);
                                             updateHomeScreenButtonStages();
@@ -584,4 +536,16 @@ public class HomeScreen extends InputAdapter implements Screen {
             }
         }
     };
+    
+    // Copied for java.io.File. GWT version doesn't have this in the emulated File class.
+    private static String slashify(String path, boolean isDirectory) {
+        String p = path;
+        if (File.separatorChar != '/')
+            p = p.replace(File.separatorChar, '/');
+        if (!p.startsWith("/"))
+            p = "/" + p;
+        if (!p.endsWith("/") && isDirectory)
+            p = p + "/";
+        return p;
+    }
 }

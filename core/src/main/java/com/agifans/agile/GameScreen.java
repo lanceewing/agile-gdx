@@ -1,8 +1,5 @@
 package com.agifans.agile;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-
 import com.agifans.agile.config.AppConfigItem;
 import com.agifans.agile.ui.ViewportManager;
 import com.badlogic.gdx.Application.ApplicationType;
@@ -13,8 +10,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.PixmapIO;
-import com.badlogic.gdx.graphics.PixmapIO.PNG;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -22,7 +17,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad.TouchpadStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.badlogic.gdx.utils.Base64Coder;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -161,9 +155,7 @@ public class GameScreen implements Screen {
         //} else {
         //    Gdx.input.setInputProcessor(landscapeInputProcessor);
         //}
-
-        // TODO: When we introduce the home screen, the game will already be selected.
-        //agileRunner.start(agileRunner.selectGame());
+        
         agileRunner.start(appConfigItem.getFilePath());
     }
 
@@ -184,6 +176,9 @@ public class GameScreen implements Screen {
             // If game has ended then go back to home screen. It has to be the UI thread
             // that calls the setScreen method. The AgileRunner itself can't do this.
             agileRunner.reset();
+            // This makes sure we update the Pixmap one last time before leaving, as that
+            // will mean that the AGI game screen starts out black for the next game.
+            copyPixels();
             agile.setScreen(agile.getHomeScreen());;
             return;
         }
@@ -373,34 +368,6 @@ public class GameScreen implements Screen {
      * Saves a screenshot of the machine's current screen contents.
      */
     public void saveScreenshot() {
-      String friendlyAppName = appConfigItem != null? appConfigItem.getName().replaceAll("[ ,\n/\\:;*?\"<>|!]",  "_") : "shot";
-      if (Gdx.app.getType().equals(ApplicationType.Desktop)) {
-        try {
-          StringBuilder filePath = new StringBuilder("agile_screens/");
-          filePath.append(friendlyAppName);
-          filePath.append("_");
-          filePath.append(System.currentTimeMillis());
-          filePath.append(".png");
-          PixmapIO.writePNG(Gdx.files.external(filePath.toString()), screenPixmap);
-        } catch (Exception e) {
-          // Ignore.
-        }
-      }
-      if (appConfigItem != null) {
-        try {
-          ByteArrayOutputStream out = new ByteArrayOutputStream();
-          PNG writer = new PNG((int)(screenPixmap.getWidth() * screenPixmap.getHeight() * 1.5f));
-          try {
-            writer.setFlipY(false);
-            writer.write(out, screenPixmap);
-          } finally {
-            writer.dispose();
-          }
-          agile.getScreenshotStore().putString(friendlyAppName, new String(Base64Coder.encode(out.toByteArray())));
-          agile.getScreenshotStore().flush();
-        } catch (IOException ex) {
-          // Ignore.
-        }
-      }
+        agileRunner.saveScreenshot(agile, appConfigItem, screenPixmap);
     }
 }

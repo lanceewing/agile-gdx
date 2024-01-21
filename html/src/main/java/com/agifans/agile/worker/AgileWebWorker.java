@@ -1,6 +1,7 @@
 package com.agifans.agile.worker;
 
 import com.agifans.agile.Interpreter;
+import com.agifans.agile.QuitAction;
 import com.agifans.agile.agilib.Game;
 import com.agifans.agile.gwt.GameFileMapEncoder;
 import com.agifans.agile.gwt.GwtGameLoader;
@@ -112,11 +113,15 @@ public class AgileWebWorker extends DedicatedWorkerEntryPoint implements Message
                 break;
                 
             case "Tick":
-                // Perform one animation tick.
-                interpreter.animationTick();
-                // Then notify the UI thread that the tick is complete.
-                postObject("TickComplete", JavaScriptObject.createObject());
-                // TODO: Add support for sound data, as separate message. Big amount of sample data, so needs to be transferable.
+                try {
+                    // Perform one animation tick.
+                    interpreter.animationTick();
+                    // Then notify the UI thread that the tick is complete.
+                    postObject("TickComplete", JavaScriptObject.createObject());
+                } catch (QuitAction qa) {
+                    // The user has quit the game, so notify the UI thread of this.
+                    postObject("QuitGame", JavaScriptObject.createObject());
+                }
                 break;
                 
             default:

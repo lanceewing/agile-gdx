@@ -21,9 +21,10 @@ public class GwtLauncher extends GwtApplication {
 
         @Override
         public ApplicationListener createApplicationListener () {
+            GwtDialogHandler gwtDialogHandler = new GwtDialogHandler();
         	GwtAgileRunner gwtAgileRunner = new GwtAgileRunner(
         	        new GwtUserInput(), new GwtWavePlayer(), new GwtSavedGameStore(),
         	        new GwtPixelData(), new GwtVariableData());
-            return new Agile(gwtAgileRunner, null);
+            return new Agile(gwtAgileRunner, gwtDialogHandler);
         }
 }

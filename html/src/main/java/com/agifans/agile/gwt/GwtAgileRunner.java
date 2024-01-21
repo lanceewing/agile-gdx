@@ -2,16 +2,19 @@ package com.agifans.agile.gwt;
 
 import java.util.Map;
 
+import com.agifans.agile.Agile;
 import com.agifans.agile.AgileRunner;
 import com.agifans.agile.PixelData;
 import com.agifans.agile.SavedGameStore;
 import com.agifans.agile.UserInput;
 import com.agifans.agile.VariableData;
 import com.agifans.agile.WavePlayer;
+import com.agifans.agile.config.AppConfigItem;
 import com.agifans.agile.worker.MessageEvent;
 import com.agifans.agile.worker.MessageHandler;
 import com.agifans.agile.worker.Worker;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.dom.client.AudioElement;
 import com.google.gwt.typedarrays.shared.ArrayBuffer;
@@ -46,6 +49,12 @@ public class GwtAgileRunner extends AgileRunner {
     private AudioElement currentlyPlayingSound;
     
     /**
+     * Indicates that the GWT AgileRunner is in the stopped state, i.e. it was previously
+     * running a game but the game has now stopped, e.g. due to the user quitting the game.
+     */
+    private boolean stopped;
+    
+    /**
      * Constructor for GwtAgileRunner.
      * 
      * @param userInput
@@ -61,17 +70,18 @@ public class GwtAgileRunner extends AgileRunner {
     
     @Override
     public void start(String gameUri) {
-        // The libGDX Gdx.files.internal only seems to work in UI thread, so we
-        // load the files into a map within the UI thread and then pass to the worker
+        // The game data files have been stored/cached in the OPFS. We load it from
+        // there, using the gameUri as the identifier, and then pass it to the worker 
         // to decode.
-        createWorker((new GwtGameLoader(pixelData)).fetchGameFiles(gameUri));
-    }
-
-    @Override
-    public String selectGame() {
-        return "games/kq4.zip";
+        GwtGameLoader gameLoader = new GwtGameLoader(pixelData);
+        gameLoader.fetchGameFiles(gameUri, gameFilesMap -> createWorker(gameFilesMap));
     }
     
+    /**
+     * Creates a new web worker to run the AGI game whose data files are in the given Map.
+     * 
+     * @param gameFileMap A Map containing the AGI game's data file (e.g. DIR and VOL files).
+     */
     public void createWorker(Map<String, byte[]> gameFileMap) {
         GameFileMapEncoder gameFileMapEncoder = new GameFileMapEncoder();
         ArrayBuffer gameFileBuffer = gameFileMapEncoder.encodeGameFileMap(gameFileMap);
@@ -91,6 +101,12 @@ public class GwtAgileRunner extends AgileRunner {
                         inTick = false;
                         break;
                         
+                    case "QuitGame":
+                        // This message is sent from the worker when the game has ended, usually
+                        // due to the user quitting the game.
+                        stop();
+                        break;
+                        
                     case "PlaySound":
                         // Let's make sure there isn't already a sound playing, although there 
                         // shouldn't be tbh.
@@ -104,8 +120,6 @@ public class GwtAgileRunner extends AgileRunner {
                     case "StopSound":
                         stopCurrentSound();
                         break;
-                        
-                    // TODO: Could potentially pass back saved games as well.
                         
                     default:
                         // Unknown. Ignore.
@@ -216,7 +230,7 @@ public class GwtAgileRunner extends AgileRunner {
     
     private void stopCurrentSound() {
         if (currentlyPlayingSound != null) {
-            // Using payse() is apparently as close to stop as they have.
+            // Using pause() is apparently as close to stop as they have.
             currentlyPlayingSound.pause();
             // Then we remove the reference to allow JS garbage collection.
             currentlyPlayingSound = null;
@@ -225,7 +239,7 @@ public class GwtAgileRunner extends AgileRunner {
     
     @Override
     public void animationTick() {
-        if (!inTick) {
+        if (!inTick && (worker != null)) {
             inTick = true;  // NOTE: Set to false by "TickComplete" message.
             
             // Send a message to the web worker to tell it to perform an animation tick, 
@@ -236,24 +250,31 @@ public class GwtAgileRunner extends AgileRunner {
 
     @Override
     public void stop() {
-        // TODO: Implement proper web worker implementation.
-    }
-
-    @Override
-    public boolean isRunning() {
-        // TODO Auto-generated method stub
-        return true;
+        // Ensure that any playing sound is stopped, and then kill off the web 
+        // worker immediately.
+        worker.terminate();
+        stopCurrentSound();
+        pixelData.clearPixels();
+        variableData.clearState();
+        inTick = false;
+        stopped = true;
     }
 
     @Override
     public void reset() {
-        // TODO Auto-generated method stub
-        
+        // Resets to the original state, as if a game has not been previously run.
+        stopped = false;
+        worker = null;
     }
 
     @Override
     public boolean hasStopped() {
+        return ((worker != null) && stopped);
+    }
+
+    @Override
+    public void saveScreenshot(Agile agile, AppConfigItem appConfigItem, Pixmap pixmap) {
         // TODO Auto-generated method stub
-        return false;
+        
     }
 }
