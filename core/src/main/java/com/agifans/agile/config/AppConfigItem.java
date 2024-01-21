@@ -17,7 +17,7 @@ public class AppConfigItem {
   private String status = "WORKING";
 
   public enum FileLocation {
-    INTERNAL, EXTERNAL, ABSOLUTE, CLASSPATH, LOCAL
+    INTERNAL, EXTERNAL, ABSOLUTE, CLASSPATH, LOCAL, OPFS
   };
   
   /**
