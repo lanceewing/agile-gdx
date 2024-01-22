@@ -1,5 +1,7 @@
 package com.agifans.agile.config;
 
+import com.badlogic.gdx.Gdx;
+
 public class AppConfigItem {
 
     private String gameId;
@@ -79,6 +81,7 @@ public class AppConfigItem {
                     displayNameBuilder.append(currentLine.toString());
                     displayNameBuilder.append("\n");
                     currentLine.setLength(0);
+                    currentLine.append(word);
                 }
             }
             if (currentLine.length() > 0) {
