@@ -65,11 +65,26 @@ public class AppConfigItem {
      */
     public String getDisplayName() {
         if ((displayName == null) && (name != null)) {
-            int numOfSpaces = name.length() - name.replace(" ", "").length();
-            displayName = name.replace(" ", "\n");
-            if (numOfSpaces == 0) {
-                displayName = displayName + "\n";
+            // Word wrap default to 20 chars.
+            StringBuilder displayNameBuilder = new StringBuilder();
+            StringBuilder currentLine = new StringBuilder();
+            String[] words = name.split(" ");
+            for (String word : words) {
+                if ((currentLine.length() + word.length() + 1) < 20) {
+                    if (currentLine.length() > 0) {
+                        currentLine.append(" ");
+                    }
+                    currentLine.append(word);
+                } else {
+                    displayNameBuilder.append(currentLine.toString());
+                    displayNameBuilder.append("\n");
+                    currentLine.setLength(0);
+                }
             }
+            if (currentLine.length() > 0) {
+                displayNameBuilder.append(currentLine.toString());
+            }
+            displayName = displayNameBuilder.toString();
         }
         return displayName;
     }
