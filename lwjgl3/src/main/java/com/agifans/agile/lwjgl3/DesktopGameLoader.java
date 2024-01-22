@@ -32,9 +32,7 @@ public class DesktopGameLoader extends GameLoader {
     public void fetchGameFiles(String gameUri, Consumer<Map<String, byte[]>> gameFilesConsumer) {
         Map<String, byte[]> gameFileMap = new HashMap<>();
         
-        // TODO: Currently we only support file:/// URIs.
-        URI uri = URI.create(gameUri);
-        File file = new File(uri.getPath());
+        File file = new File(gameUri.startsWith("file")? URI.create(gameUri).getPath() : gameUri);
         
         if (!file.exists()) {
             throw new IllegalArgumentException("File not found: " + file.getPath());
