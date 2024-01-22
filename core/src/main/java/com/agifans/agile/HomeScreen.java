@@ -1,6 +1,5 @@
 package com.agifans.agile;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
@@ -480,7 +479,6 @@ public class HomeScreen extends InputAdapter implements Screen {
                             if (!Gdx.app.getType().equals(ApplicationType.WebGL)) {
                                 // GWT/HTML5/WEBGL doesn't support FileHandle and doesn't need it anyway.
                                 FileHandle fileHandle = new FileHandle(filePath);
-                                filePath = "file:" + slashify(filePath, fileHandle.isDirectory());
                                 agile.getPreferences().putString("open_app_start_path", fileHandle.parent().path());
                                 agile.getPreferences().flush();
                             }
@@ -520,16 +518,4 @@ public class HomeScreen extends InputAdapter implements Screen {
             }
         }
     };
-    
-    // Copied for java.io.File. GWT version doesn't have this in the emulated File class.
-    private static String slashify(String path, boolean isDirectory) {
-        String p = path;
-        if (File.separatorChar != '/')
-            p = p.replace(File.separatorChar, '/');
-        if (!p.startsWith("/"))
-            p = "/" + p;
-        if (!p.endsWith("/") && isDirectory)
-            p = p + "/";
-        return p;
-    }
 }
