@@ -12,11 +12,7 @@ public class AppConfigItem {
 
     private String fileType;
 
-    private String iconPath;
-
     private FileLocation fileLocation = FileLocation.INTERNAL;
-
-    private String status = "WORKING";
 
     public enum FileLocation {
         INTERNAL, EXTERNAL, ABSOLUTE, CLASSPATH, LOCAL, OPFS
@@ -111,33 +107,5 @@ public class AppConfigItem {
      */
     public void setFileType(String fileType) {
         this.fileType = fileType;
-    }
-
-    /**
-     * @return the iconPath
-     */
-    public String getIconPath() {
-        return iconPath;
-    }
-
-    /**
-     * @param iconPath the iconPath to set
-     */
-    public void setIconPath(String iconPath) {
-        this.iconPath = iconPath;
-    }
-
-    /**
-     * @return the status
-     */
-    public String getStatus() {
-        return status;
-    }
-
-    /**
-     * @param status the status to set
-     */
-    public void setStatus(String status) {
-        this.status = status;
     }
 }
