@@ -28,7 +28,7 @@ public class DesktopDialogHandler implements DialogHandler {
 
             @Override
             public void run() {
-                int output = JOptionPane.showConfirmDialog(null, "Please confirm", message, JOptionPane.YES_NO_OPTION);
+                int output = JOptionPane.showConfirmDialog(null, message, "Please confirm", JOptionPane.YES_NO_OPTION);
                 if (output != 0) {
                     responseHandler.no();
                 } else {

@@ -415,27 +415,26 @@ public class HomeScreen extends InputAdapter implements Screen {
 
     public ActorGestureListener appGestureListener = new ActorGestureListener() {
         public boolean longPress(final Actor actor, float x, float y) {
-            actor.debug();
+            //actor.debug();
             String appName = actor.getName();
             if ((appName != null) && (!appName.equals(""))) {
                 final AppConfigItem appConfigItem = appConfigMap.get(appName);
                 if (appConfigItem != null) {
                     longPressActor = actor;
-                    String displayName = appConfigItem.getDisplayName().replace("\n", "\\n");
-                    dialogHandler.promptForTextInput("Program display name", displayName,
-                            new TextInputResponseHandler() {
-                                @Override
-                                public void inputTextResult(boolean success, String text) {
-                                    if (success && (text != null) & !text.isEmpty()) {
-                                        String displayName = text.replace("\\n", "\n");
-                                        String name = text.replace("\\n", " ").replaceAll(" +", " ");
-                                        appConfigItem.setName(name);
-                                        appConfigItem.setDisplayName(displayName);
-                                        updateHomeScreenButtonStages();
-                                    }
-                                    actor.setDebug(false);
-                                }
-                            });
+                    dialogHandler.confirm(
+                            "Do you want to remove '" + appConfigItem.getName() + "'?", 
+                            new ConfirmResponseHandler() {
+                        @Override
+                        public void yes() {
+                            appConfigMap.remove(appName);
+                            updateHomeScreenButtonStages();
+                            // TODO: GWT needs to remove data from OPFS.
+                        }
+                        
+                        @Override
+                        public void no() {
+                        }
+                    });
                 }
             }
             return true;
@@ -483,7 +482,7 @@ public class HomeScreen extends InputAdapter implements Screen {
                                 agile.getPreferences().flush();
                             }
                             final String appConfigFilePath = filePath;
-                            dialogHandler.promptForTextInput("Program name", gameName,
+                            dialogHandler.promptForTextInput("Confirm name of AGI game", gameName,
                                 new TextInputResponseHandler() {
                                     @Override
                                     public void inputTextResult(boolean success, String text) {
