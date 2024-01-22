@@ -81,7 +81,7 @@ public abstract class GameLoader {
     
                 switch (gameId) {
                 
-                    case "goldrush":
+                    case "GR":
                         // Gold Rush version 3.0 doesn't have copy protection
                         if (gameName.contains("3.0")) {
                             break;      
@@ -95,7 +95,7 @@ public abstract class GameLoader {
                         }
                         break;
     
-                    case "mh1":
+                    case "MH1":
                         if (logic.index == 159) {
                             // Modifies LOGIC.159 to jump to the code that is run when a successful answer is entered.
                             if ((actions.get(134).operation.opcode == 18) && (actions.get(134).operands.get(0).asInt() == 153)) {
@@ -106,7 +106,7 @@ public abstract class GameLoader {
                         }
                         break;
     
-                    case "kq4":
+                    case "KQ4":
                         if (logic.index == 0) {
                             // Changes the new.room(140) to be new.room(96) instead, thus skipping the questions.
                             Action action = actions.get(55);
@@ -116,7 +116,7 @@ public abstract class GameLoader {
                         }
                         break;
     
-                    case "lsl1":
+                    case "LLLLL":
                         if (logic.index == 6) {
                             // Modifies LOGIC.6 to jump to the code that is run when all of the trivia questions has been answered correctly.
                             Action action = actions.get(0);                                
