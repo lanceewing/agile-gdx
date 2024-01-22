@@ -33,7 +33,12 @@ public class GwtDialogHandler implements DialogHandler {
 
     @Override
     public void confirm(String message, ConfirmResponseHandler confirmResponseHandler) {
-        showHtmlConfirmBox(message, confirmResponseHandler);
+        Gdx.app.postRunnable(new Runnable() {
+            @Override
+            public void run() {
+                showHtmlConfirmBox(message, confirmResponseHandler);
+            }
+        });
     }
 
     private final native void showHtmlConfirmBox(String message, ConfirmResponseHandler confirmResponseHandler)/*-{
@@ -223,7 +228,12 @@ public class GwtDialogHandler implements DialogHandler {
 
     @Override
     public void promptForTextInput(String message, String initialValue, TextInputResponseHandler textInputResponseHandler) {
-        showHtmlPromptBox(message, initialValue, textInputResponseHandler);
+        Gdx.app.postRunnable(new Runnable() {
+            @Override
+            public void run() {
+                showHtmlPromptBox(message, initialValue, textInputResponseHandler);
+            }
+        });
     }
     
     private final native void showHtmlPromptBox(String message, String initialValue, TextInputResponseHandler textInputResponseHandler)/*-{
