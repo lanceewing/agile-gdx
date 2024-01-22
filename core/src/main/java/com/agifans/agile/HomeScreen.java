@@ -14,6 +14,7 @@ import com.agifans.agile.ui.OpenFileResponseHandler;
 import com.agifans.agile.ui.PagedScrollPane;
 import com.agifans.agile.ui.TextInputResponseHandler;
 import com.agifans.agile.ui.ViewportManager;
+import com.agifans.agile.util.StringUtils;
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -323,43 +324,25 @@ public class HomeScreen extends InputAdapter implements Screen {
 
         // An app button can contain an optional icon.
         Image icon = null;
-        if ((appConfigItem.getIconPath() != null) && (!appConfigItem.getIconPath().equals(""))) {
-            Texture iconTexture = buttonTextureMap.get(appConfigItem.getIconPath());
-            if (iconTexture == null) {
-                try {
-                    iconTexture = new Texture(appConfigItem.getIconPath());
-                    iconTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
-                    buttonTextureMap.put(appConfigItem.getIconPath(), iconTexture);
-                    icon = new Image(iconTexture);
-                    icon.setAlign(Align.center);
-                } catch (Exception e) {
-                    icon = new Image(drawEmptyIcon(ICON_IMAGE_WIDTH, ICON_IMAGE_HEIGHT));
-                    icon.setAlign(Align.center);
-                }
-            } else {
+        String iconPath = StringUtils.format("screenshots/{0}.png", appConfigItem.getGameId());
+        
+        Texture iconTexture = buttonTextureMap.get(iconPath);
+        if (iconTexture == null) {
+            try {
+                // See if there is screenshot icon in the assets folder.
+                iconTexture = new Texture(iconPath);
+                iconTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+                buttonTextureMap.put(iconPath, iconTexture);
                 icon = new Image(iconTexture);
                 icon.setAlign(Align.center);
+            } catch (Exception e) {
+                icon = new Image(drawEmptyIcon(ICON_IMAGE_WIDTH, ICON_IMAGE_HEIGHT));                                                                                           // 110));
             }
         } else {
-            // See if there is screenshot in the screenshot store.
-            String friendlyAppName = appConfigItem.getName().replaceAll("[ ,\n/\\:;*?\"<>|!]", "_");
-            String screenshotData = agile.getScreenshotStore().getString(friendlyAppName, "");
-            if (screenshotData != "") {
-                //try {
-                //    byte[] decodedScreenshotData = Base64Coder.decode(screenshotData);
-                //    Pixmap screenshotPixmap = new Pixmap(decodedScreenshotData, 0, decodedScreenshotData.length);
-                //    Texture screenshotTexture = new Texture(screenshotPixmap);
-                //    screenshotTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
-                //    icon = new Image(screenshotTexture);
-                //    icon.setAlign(Align.center);
-                //} catch (Exception e) {
-                    icon = new Image(drawEmptyIcon(ICON_IMAGE_WIDTH, ICON_IMAGE_HEIGHT));// ,                                                                                           // 110));
-                //}
-            } else {
-                icon = new Image(drawEmptyIcon(ICON_IMAGE_WIDTH, ICON_IMAGE_HEIGHT));// ,                                                                                                // 110));
-            }
+            icon = new Image(iconTexture);
+            icon.setAlign(Align.center);
         }
-
+            
         if (icon != null) {
             Container<Image> iconContainer = new Container<Image>();
             iconContainer.setActor(icon);
