@@ -10,8 +10,6 @@ import com.agifans.agile.ui.DialogHandler;
 import com.agifans.agile.ui.OpenFileResponseHandler;
 import com.agifans.agile.ui.TextInputResponseHandler;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.backends.gwt.widgets.TextInputDialogBox;
-import com.badlogic.gdx.backends.gwt.widgets.TextInputDialogBox.TextInputDialogListener;
 import com.google.gwt.typedarrays.shared.ArrayBuffer;
 import com.google.gwt.typedarrays.shared.Int8Array;
 import com.google.gwt.typedarrays.shared.TypedArrays;
@@ -35,10 +33,17 @@ public class GwtDialogHandler implements DialogHandler {
 
     @Override
     public void confirm(String message, ConfirmResponseHandler confirmResponseHandler) {
-        
-        
+        showHtmlConfirmBox(message, confirmResponseHandler);
     }
 
+    private final native void showHtmlConfirmBox(String message, ConfirmResponseHandler confirmResponseHandler)/*-{
+        if (confirm(message)) {
+            confirmResponseHandler.@com.agifans.agile.ui.ConfirmResponseHandler::yes()();
+        } else {
+            confirmResponseHandler.@com.agifans.agile.ui.ConfirmResponseHandler::no()();
+        }
+    }-*/;
+    
     @Override
     public void openFileDialog(String title, String startPath, OpenFileResponseHandler openFileResponseHandler) {
         // NOTES:
@@ -218,18 +223,15 @@ public class GwtDialogHandler implements DialogHandler {
 
     @Override
     public void promptForTextInput(String message, String initialValue, TextInputResponseHandler textInputResponseHandler) {
-        TextInputDialogBox textInputDialogBox = new TextInputDialogBox(message, initialValue, "Please enter value");
-        textInputDialogBox.setListener(new TextInputDialogListener() {
-            @Override
-            public void onPositive(String text) {
-                textInputResponseHandler.inputTextResult(true, text);
-            }
-
-            @Override
-            public void onNegative() {
-                textInputResponseHandler.inputTextResult(false, null);
-            }
-        });
-        textInputDialogBox.show();
+        showHtmlPromptBox(message, initialValue, textInputResponseHandler);
     }
+    
+    private final native void showHtmlPromptBox(String message, String initialValue, TextInputResponseHandler textInputResponseHandler)/*-{
+        var text = prompt(message, initialValue);
+        if (text != null) {
+            textInputResponseHandler.@com.agifans.agile.ui.TextInputResponseHandler::inputTextResult(ZLjava/lang/String;)(true, text);
+        } else {
+            textInputResponseHandler.@com.agifans.agile.ui.TextInputResponseHandler::inputTextResult(ZLjava/lang/String;)(false, null);
+        }
+    }-*/;
 }
