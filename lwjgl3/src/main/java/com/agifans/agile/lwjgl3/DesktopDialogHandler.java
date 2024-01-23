@@ -111,9 +111,9 @@ public class DesktopDialogHandler implements DialogHandler {
         Map<String, byte[]> gameFilesMap = new HashMap<>();
         gameLoader.fetchGameFiles(directory.toURI().toString(), map -> gameFilesMap.putAll(map));
         
+        // TODO: Check for VOL and DIR files.
         if (gameFilesMap.containsKey("words.tok") && 
-                gameFilesMap.containsKey("object") &&
-                gameFilesMap.containsKey("agidata.ovl")) {
+            gameFilesMap.containsKey("object")) {
             // Seems to be an AGI game directory. Let's try to decode it.
             try {
                 return new Game(gameFilesMap);

@@ -99,7 +99,6 @@ public class GwtDialogHandler implements DialogHandler {
                 // Check for the minimum set of files required.
                 if (gameFilesMap.containsKey("words.tok") && 
                     gameFilesMap.containsKey("object") &&
-                    gameFilesMap.containsKey("agidata.ovl") && 
                     hasDirFile && hasVolFile) {
                     try {
                         // Now check that the files are able to be decoded.
