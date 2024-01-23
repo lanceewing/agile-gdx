@@ -1491,7 +1491,12 @@ public class Commands {
 
             case 114: // set.string
                 {
-                    state.strings[action.operands.get(0).asByte()] = action.logic.messages.get(action.operands.get(1).asByte());
+                    int stringNum = action.operands.get(0).asByte();
+                    // AGI doesn't check this, in fact the Power Pack makes use of that. We
+                    // do check the bounds in AGILE though.
+                    if (stringNum < Defines.NUMSTRINGS) {
+                        state.strings[stringNum] = action.logic.messages.get(action.operands.get(1).asByte());
+                    }
                 }
                 break;
 
