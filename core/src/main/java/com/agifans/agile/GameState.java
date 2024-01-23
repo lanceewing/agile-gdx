@@ -183,7 +183,7 @@ public class GameState {
         this.lastInput = "";
         this.simpleName = "";
         this.gameId = (game.gameId != null? game.gameId : (game.v3GameSig != null? game.v3GameSig : "UNKNOWN"));
-        this.version = (game.version.equals("Unknown")? "2.917" : game.version);
+        this.version = (game.version.equalsIgnoreCase("Unknown")? "2.917" : game.version);
         this.menuEnabled = true;
         this.holdKey = false;
         this.keyToControllerMap = new HashMap<>();
