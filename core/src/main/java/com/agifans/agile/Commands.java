@@ -1426,7 +1426,12 @@ public class Commands {
             case 105: // clear.lines
                 {
                     int colour = textGraphics.makeBackgroundColour(action.operands.get(2).asByte());
-                    textGraphics.clearLines(action.operands.get(0).asByte(), action.operands.get(1).asByte(), colour);
+                    int top = action.operands.get(0).asByte();
+                    int bottom = action.operands.get(1).asByte();
+                    // AGI doesn't validate these, but AGILE does.
+                    if (top > 24) top = 24;
+                    if (bottom > 24) bottom = 24;
+                    textGraphics.clearLines(top, bottom, colour);
                 }
                 break;
 
