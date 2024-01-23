@@ -1,9 +1,12 @@
 package com.agifans.agile;
 
 import com.agifans.agile.config.AppConfigItem;
+import com.agifans.agile.ui.DialogHandler;
+import com.agifans.agile.ui.GameScreenInputProcessor;
 import com.agifans.agile.ui.ViewportManager;
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
@@ -32,6 +35,16 @@ public class GameScreen implements Screen {
     private static final int ADJUSTED_HEIGHT = AGI_SCREEN_HEIGHT;
     
     private Agile agile;
+    
+    private GameScreenInputProcessor gameScreenInputProcessor;
+    
+    /**
+     * This is an InputMultiplexor, which includes input processors for the Stage, 
+     * the GameScreen components (other than AGI interpreter), and the AGI interpreter's
+     * UserInput class.
+     */
+    private InputMultiplexer portraitInputProcessor;
+    private InputMultiplexer landscapeInputProcessor;
     
     /**
      * SpriteBatch shared by all rendered components.
@@ -71,7 +84,7 @@ public class GameScreen implements Screen {
      * 
      * @param agileRunner 
      */
-    public GameScreen(Agile agile, AgileRunner agileRunner) {
+    public GameScreen(Agile agile, AgileRunner agileRunner, DialogHandler dialogHandler) {
         this.agile = agile;
         this.agileRunner = agileRunner;
         
@@ -102,11 +115,22 @@ public class GameScreen implements Screen {
         
         viewportManager = ViewportManager.getInstance();
         
-        //Create a Stage and add TouchPad
+        // Create a Stage and add TouchPad
         portraitStage = new Stage(viewportManager.getPortraitViewport(), batch);
         portraitStage.addActor(portraitTouchpad);
         landscapeStage = new Stage(viewportManager.getLandscapeViewport(), batch);
         landscapeStage.addActor(landscapeTouchpad);
+        
+        // Create and register an input processor for keys, etc.
+        gameScreenInputProcessor = new GameScreenInputProcessor(this, dialogHandler);
+        portraitInputProcessor = new InputMultiplexer();
+        portraitInputProcessor.addProcessor(agileRunner.userInput);
+        portraitInputProcessor.addProcessor(portraitStage);
+        portraitInputProcessor.addProcessor(gameScreenInputProcessor);
+        landscapeInputProcessor = new InputMultiplexer();
+        landscapeInputProcessor.addProcessor(agileRunner.userInput);
+        landscapeInputProcessor.addProcessor(landscapeStage);
+        landscapeInputProcessor.addProcessor(gameScreenInputProcessor);
     }
     
     protected Touchpad createTouchpad(int size) {
@@ -147,14 +171,11 @@ public class GameScreen implements Screen {
 
     @Override
     public void show() {
-        // TODO: Remove when portrait/landscape input processors added.
-        Gdx.input.setInputProcessor(agileRunner.userInput);
-        
-        //if (viewportManager.isPortrait()) {
-        //    Gdx.input.setInputProcessor(portraitInputProcessor);
-        //} else {
-        //    Gdx.input.setInputProcessor(landscapeInputProcessor);
-        //}
+        if (viewportManager.isPortrait()) {
+            Gdx.input.setInputProcessor(portraitInputProcessor);
+        } else {
+            Gdx.input.setInputProcessor(landscapeInputProcessor);
+        }
         
         agileRunner.start(appConfigItem.getFilePath());
     }
@@ -323,17 +344,15 @@ public class GameScreen implements Screen {
         camera.position.y = ADJUSTED_HEIGHT - viewport.getWorldHeight() / 2;
         camera.update();
         
-        // TODO: Add in when input processor is introduced.
-        //machineInputProcessor.resize(width, height);
+        gameScreenInputProcessor.resize(width, height);
         
         viewportManager.update(width, height);
         
-        // TODO: Add in when input processor is introduced.
-        //if (viewportManager.isPortrait()) {
-        //  Gdx.input.setInputProcessor(portraitInputProcessor);
-        //} else {
-        //  Gdx.input.setInputProcessor(landscapeInputProcessor);
-        //}
+        if (viewportManager.isPortrait()) {
+            Gdx.input.setInputProcessor(portraitInputProcessor);
+        } else {
+            Gdx.input.setInputProcessor(landscapeInputProcessor);
+        }
     }
 
     @Override
@@ -369,5 +388,14 @@ public class GameScreen implements Screen {
      */
     public void saveScreenshot() {
         agileRunner.saveScreenshot(agile, appConfigItem, screenPixmap);
+    }
+    
+    /**
+     * Gets the AgileRunner implementation instance that is running the AGI game.
+     * 
+     * @return The AgileRunner implementation instance that is running the AGI game.
+     */
+    public AgileRunner getAgileRunner() {
+        return agileRunner;
     }
 }

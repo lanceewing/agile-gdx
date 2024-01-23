@@ -1,7 +1,5 @@
 package com.agifans.agile.config;
 
-import com.badlogic.gdx.Gdx;
-
 public class AppConfigItem {
 
     private String gameId;

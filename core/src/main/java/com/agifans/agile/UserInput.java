@@ -103,6 +103,12 @@ public abstract class UserInput extends InputAdapter {
      * @return whether the input was processed 
      */
     public boolean keyDown (int keycode) {
+        // For now, we're interpreting back as request to Quit.
+        if (keycode == Keys.BACK) {
+            keyPressQueueAdd(ALT_MODIFIER | Keys.Z);
+            return true;
+        }
+        
         // AGILE interpreter ignores some keys completely, e.g. F11.
         if (keycode == Keys.F11) {
             return false;

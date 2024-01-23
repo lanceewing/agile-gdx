@@ -70,6 +70,9 @@ public class DesktopAgileRunner extends AgileRunner {
         while (true) {
             if (exit) {
                 // Returning from the method will stop the thread cleanly.
+                pixelData.clearPixels();
+                variableData.clearState();
+                wavePlayer.reset();
                 break;
             }
             

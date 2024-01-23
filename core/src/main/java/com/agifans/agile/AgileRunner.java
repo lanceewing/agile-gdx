@@ -58,9 +58,6 @@ public abstract class AgileRunner {
         
         pixelData.init(pixmap.getWidth(), pixmap.getHeight());
         
-        // TODO: Moved to show() method in GameScreen. Remove below soon.
-        //Gdx.input.setInputProcessor(userInput);
-        
         // These are keys that we want to catch and not let the web browser 
         // respond to.
         Gdx.input.setCatchKey(Input.Keys.TAB, true);
@@ -85,6 +82,15 @@ public abstract class AgileRunner {
     }
     
     /**
+     * Returns the UserInput implementation class instance in use by AGILE. 
+     * 
+     * @return
+     */
+    public UserInput getUserInput() {
+        return userInput;
+    }
+    
+    /**
      * Updates Pixmap with the latest local changes within our implementation specific
      * PixelData.
      * 
@@ -93,8 +99,6 @@ public abstract class AgileRunner {
     public void updatePixmap(Pixmap pixmap) {
         pixelData.updatePixmap(pixmap);
     }
-    
-
     
     /**
      * Invoked by the main UI thread to trigger an AGI tick. The first part, i.e. updating the
