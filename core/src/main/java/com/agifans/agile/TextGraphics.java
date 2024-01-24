@@ -375,14 +375,17 @@ public class TextGraphics {
      * @param col
      */
     public void display(String str, int row, int col) {
-        // Expand references and split on new lines.
-        String[] lines = buildMessageLines(str, Defines.TEXTCOLS + 1, col);
-
-        for (int i = 0; i < lines.length; i++) {
-            drawString(this.pixelData, lines[i], col * 8, (row + i) * 8);
-
-            // For subsequent lines, we start at column 0 and ignore what was passed in.
-            col = 0;
+        // Some AGI fanmade games use row values higher than 24, so we protect against that.
+        if (row < Defines.TEXTLINES) {
+            // Expand references and split on new lines.
+            String[] lines = buildMessageLines(str, Defines.TEXTCOLS + 1, col);
+    
+            for (int i = 0; i < lines.length; i++) {
+                drawString(this.pixelData, lines[i], col * 8, (row + i) * 8);
+    
+                // For subsequent lines, we start at column 0 and ignore what was passed in.
+                col = 0;
+            }
         }
     }
 
