@@ -4,6 +4,7 @@ import java.math.BigInteger;
 import java.security.MessageDigest;
 
 import com.agifans.agile.agilib.Game;
+import com.agifans.agile.util.StringUtils;
 
 /**
  * The Detection class handles detection of AGI games, demos and fan made games.
@@ -32,7 +33,7 @@ public class Detection {
             // Calculate MD5 hash of the game.
             byte[] data = game.gameFilesMap.get(dirPrefix + "dir");
             byte[] hash = MessageDigest.getInstance("MD5").digest(data);
-            String md5HashString = new BigInteger(1, hash).toString(16);
+            String md5HashString = StringUtils.padLeftZeros(new BigInteger(1, hash).toString(16), 32);
             String detectedGameId = null;
             
             // Compare with known MD5 hash values for AGI games and demos.
@@ -60,6 +61,12 @@ public class Detection {
                 // value for the game ID.
                 gameId = md5HashString.substring(0, 6).toUpperCase();
             }
+            
+            System.out.print("MD5 Hash: " + md5HashString);
+            System.out.print(", Game Name: " + gameName);
+            System.out.print(", Game ID (detected): " + gameId);
+            System.out.print(", Game ID (in game): " + game.gameId);
+            System.out.println(", V3 Sig: " + game.v3GameSig);
         }
         catch (Exception e) {
             // Failure in game detection code. Continue with the default unrecognised game values.
@@ -149,8 +156,12 @@ public class Detection {
         {"ALPND1","Al Pond 1 - Al Lives Forever (v1.0)", "e8921c3043b749b056ff51f56d1b451b"},
         {"ALPND1","Al Pond 1 - Al Lives Forever (v1.3)", "fb4699474054962e0dbfb4cf12ca52f6"},
         {"APOCAQ","Apocalyptic Quest (v0.03 Teaser)", "42ced528b67965d3bc3b52c635f94a57"},
-        {"APOCAQ","Apocalyptic Quest Demo 2003-06-24", "c68c49a37eaac73e5aa80ce7f05bbd72"},
-        {"APOCAQ","Apocalyptic Quest 4.00 Alpha 2", "30c74d194840abc3fb1341b567743ac3"},
+        {"APOCAQ","Apocalyptic Quest Demo (2003-06-24)", "c68c49a37eaac73e5aa80ce7f05bbd72"},
+        {"APOCAQ","Apocalyptic Quest (4.00 Alpha 1)", "e15581628d84949b8d352d224ec3184b"},
+        {"APOCAQ","Apocalyptic Quest (4.00 Alpha 2)", "30c74d194840abc3fb1341b567743ac3"},
+        {"APOCAQ","Apocalyptic Quest (4.00 Alpha 2)", "eee850005860e46345b38fea093d194"},
+        {"BANDQ","Band Quest Demo", "7326abefd793571cc17ed0db647bdf34"},
+        {"BANDQ","Band Quest Early Demo", "de4758dd34676b248c8301b32d93bc6f"},
         {"BTITAN","Beyond the Titanic 2", "9b8de38dc64ffb3f52b7877ea3ebcef9"},
         {"BIRIQ1","Biri Quest 1", "1b08f34f2c43e626c775c9d6649e2f17"},
         {"BOBFBY","Bob The Farmboy", "e4b7df9d0830addee5af946d380e66d7"},
@@ -159,8 +170,8 @@ public class Detection {
         {"CPU21","CPU-21 (v1.0)", "35b7cdb4d17e890e4c52018d96e9cbf4"},
         {"CARDRV","Car Driver (v1.1)", "2311611d2d36d20ccc9da806e6cba157"},
         {"CLOAK","Cloak of Darkness (v1.0)", "5ba6e18bf0b53be10db8f2f3831ee3e5"},
-        {"COCOEN","Coco Coq (English) - Coco Coq In Grostesteing's Base (v.1.0.3)", "97631f8e710544a58bd6da9e780f9320"},
-        {"COCOFR","Coco Coq (French) - Coco Coq Dans la Base de Grostesteing (v1.0.2)", "ef579ebccfe5e356f9a557eb3b2d8649"},
+        {"COCOEN","Coco Coq In Grostesteing's Base (v.1.0.3)", "97631f8e710544a58bd6da9e780f9320"},
+        {"COCOFR","Coco Coq Dans la Base de Grostesteing (v1.0.2)", "ef579ebccfe5e356f9a557eb3b2d8649"},
         {"CORBMM","Corby's Murder Mystery (v1.0)", "4ebe62ac24c5a8c7b7898c8eb070efe5"},
         {"DGADGM","DG: The Adventure Game (v1.1)", "0d6376d493fa7a21ec4da1a063e12b25"},
         {"DGADGM","DG: The Adventure Game (v1.1)", "258bdb3bb8e61c92b71f2f456cc69e23"},
@@ -232,9 +243,9 @@ public class Detection {
         {"POTHDQ","Pothead Quest (v0.1)", "d181101385d3a45082f418cd4b3c5b01"},
         {"PRESQ","President's Quest", "4937d0e8ecadb7888faeb347799b0388"},
         {"PRINCE","Prince Quest", "266248d75c3130c8ccc9c9bf2ad30a0d"},
-        {"PROFEN","Professor (English) - The Professor is Missing (Mar 17)", "6232de31cc204affdf2e92dfe3dc0e4d"},
-        {"PROFEN","Professor (English) - The Professor is Missing (Mar 22)", "b5fcf0ca2f0d1c073be82f01e2170961"},
-        {"PROFFR","Professor (French) - Le Professeur a Disparu", "7d9f8a4d4610bb9b0b97caa17590c2d3"},
+        {"PROFEN","The Professor is Missing (Mar 17)", "6232de31cc204affdf2e92dfe3dc0e4d"},
+        {"PROFEN","The Professor is Missing (Mar 22)", "b5fcf0ca2f0d1c073be82f01e2170961"},
+        {"PROFFR","Le Professeur a Disparu", "7d9f8a4d4610bb9b0b97caa17590c2d3"},
         {"QFG6","Quest for Glory VI - Hero's Adventure", "d26765c3075064c80d284c5e06e33a7e"},
         {"QFHOME","Quest for Home", "d2895dc1cd3930f2489af0f843b144b3"},
         {"QLADY","Quest for Ladies (demo v1.1 Apr 1)", "3f6e02f16e1154a0daf296c8895edd97"},

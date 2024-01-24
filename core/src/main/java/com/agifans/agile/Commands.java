@@ -1941,7 +1941,7 @@ public class Commands {
                 }
                 break;
 
-            case 171: // push.script
+            case 171: // push.script (AGI Mouse overrides this command)
                 {
                     state.scriptBuffer.pushScript();
                 }
