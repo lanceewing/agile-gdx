@@ -323,7 +323,9 @@ public class HomeScreen extends InputAdapter implements Screen {
 
         // An app button can contain an optional icon.
         Image icon = null;
-        String iconPath = StringUtils.format("screenshots/{0}.png", appConfigItem.getGameId());
+        String iconPath = StringUtils.format("screenshots/{0}.png", 
+                appConfigItem.getGameId() != null? 
+                        appConfigItem.getGameId().toUpperCase() : null);
         
         Texture iconTexture = buttonTextureMap.get(iconPath);
         if (iconTexture == null) {

@@ -11,15 +11,15 @@ import com.agifans.agile.agilib.Game;
 public class Detection {
 
     /**
-     * The short ID of the game, as known by the AGILE interpreter. For fan made games, it is always "fanmade".
+     * The short ID of the game, as known by the AGILE interpreter.
      */
-    public String gameId = "unknown";
+    public String gameId;
 
     /**
      * The displayable name of the game.
      */
     public String gameName = "Unrecognised game";
-
+    
     /**
      * Constructor for Detection.
      * 
@@ -33,14 +33,32 @@ public class Detection {
             byte[] data = game.gameFilesMap.get(dirPrefix + "dir");
             byte[] hash = MessageDigest.getInstance("MD5").digest(data);
             String md5HashString = new BigInteger(1, hash).toString(16);
-
+            String detectedGameId = null;
+            
             // Compare with known MD5 hash values for AGI games and demos.
             for (int i = 0; i < gameDefinitions.length; i++) {
                 if (gameDefinitions[i][2].equals(md5HashString)) {
-                    gameId = gameDefinitions[i][0];
+                    detectedGameId = gameDefinitions[i][0];
                     gameName = gameDefinitions[i][1];
                     break;
                 }
+            }
+            
+            // Work out the best value to use for the game ID.
+            if (detectedGameId != null) {
+                gameId = detectedGameId;
+            }
+            else if (game.gameId != null) {
+                gameId = game.gameId;
+            }
+            else if (game.v3GameSig != null) {
+                gameId = game.v3GameSig;
+            }
+            else {
+                // Use first 6 characters of the MD5 hash. Normally we'd hope that this
+                // fallback isn't used, as it is much better that we have a well known
+                // value for the game ID.
+                gameId = md5HashString.substring(0, 6).toUpperCase();
             }
         }
         catch (Exception e) {

@@ -107,14 +107,15 @@ public class GwtDialogHandler implements DialogHandler {
                         String opfsDirectoryName = null;
                         String gameName = null;
                         
-                        if (detection.gameId.equals("unknown")) {
+                        if (detection.gameName.equals("Unrecognised game")) {
                             if ((directoryName != null) && (!directoryName.isEmpty())) {
                                 opfsDirectoryName = directoryName;
                                 gameName = directoryName;
                             } else {
-                                // Fallback on the game ID with timestamp appended.
-                                opfsDirectoryName = game.gameId + "_" + System.currentTimeMillis();
-                                gameName = game.gameId;
+                                // Fallback on the game ID, which, for unknown games, is derived from the
+                                // MD5 hash string.
+                                opfsDirectoryName = detection.gameId;
+                                gameName = detection.gameId;
                             }
                         } else {
                             // Use the game's name, if we've identified it.
@@ -130,11 +131,7 @@ public class GwtDialogHandler implements DialogHandler {
                         ArrayBuffer fullGameBuffer = gameFileMapEncoder.encodeGameFileMap(gameFilesMap);
                         opfsGameFiles.writeGameFilesData(opfsDirectoryName, fullGameBuffer);
                         
-                        // The Game ID that we pass back is as per the game's LOGIC files, unless it
-                        // doesn't set one, in which case it falls back on the Detection game ID.
-                        String gameId = ((game.gameId != null) && !game.gameId.isEmpty())? game.gameId : detection.gameId;
-                        
-                        openFileResponseHandler.openFileResult(true, opfsDirectoryName, gameName, gameId);
+                        openFileResponseHandler.openFileResult(true, opfsDirectoryName, gameName, detection.gameId);
                         
                     } catch (RuntimeException e) {
                         Gdx.app.error("onFileResultsReady", e.getMessage());

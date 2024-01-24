@@ -106,6 +106,7 @@ public class AgileWebWorker extends DedicatedWorkerEntryPoint implements Message
                 GameFileMapEncoder gameFileMapDecoder = new GameFileMapEncoder();
                 gameLoader = new GwtGameLoader(pixelData);
                 Game game = gameLoader.loadGame(gameFileMapDecoder.decodeGameFileMap(gameDataBuffer));
+                // TODO: This won't work for fan games that haven't set the game ID.
                 savedGameStore.initialise(game.gameId);
                 interpreter = new Interpreter(
                         game, userInput, wavePlayer, savedGameStore, 

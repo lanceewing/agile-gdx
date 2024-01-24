@@ -67,12 +67,8 @@ public class DesktopDialogHandler implements DialogHandler {
                         // Game successfully decoded, so we can store this in app config.
                         Detection detection = new Detection(game);
                         
-                        // The Game ID that we pass back is as per the game's LOGIC files, unless it
-                        // doesn't set one, in which case it falls back on the Detection game ID.
-                        String gameId = ((game.gameId != null) && !game.gameId.isEmpty())? game.gameId : detection.gameId;
-                        
                         // If game is recognised, use detected name but without version part.
-                        if (!detection.gameId.equals("unknown")) {
+                        if (!detection.gameName.equals("Unrecognised game")) {
                             gameName = detection.gameName;
                             if (gameName.contains("(")) {
                                 int bracketIndex = gameName.indexOf('(');
@@ -80,7 +76,7 @@ public class DesktopDialogHandler implements DialogHandler {
                             }
                         }
                         
-                        openFileResponseHandler.openFileResult(true, filePath, gameName, gameId);
+                        openFileResponseHandler.openFileResult(true, filePath, gameName, detection.gameId);
                     } else {
                         // Doesn't appear to be a valid AGI game folder.
                         openFileResponseHandler.openFileResult(false, null, null, null);
