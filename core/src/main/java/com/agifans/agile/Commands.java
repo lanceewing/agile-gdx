@@ -470,7 +470,13 @@ public class Commands {
 
             case 12: // controller
                 {
-                    result = state.controllers[condition.operands.get(0).asByte()];
+                    int controllerNum = condition.operands.get(0).asByte();
+                    if (controllerNum < 50) {
+                        result = state.controllers[controllerNum];
+                    } else {
+                        // TODO: Should this be random??
+                        result = false;
+                    }
                 }
                 break;
 
