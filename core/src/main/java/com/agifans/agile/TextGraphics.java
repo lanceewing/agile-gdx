@@ -521,7 +521,7 @@ public class TextGraphics {
         String line = getLine(length, row, col);
 
         // If it is not null, i.e. the user didn't hit ESC, then store in user string.
-        if (line != null) state.strings[strNum] = line;
+        if ((line != null) && (strNum < Defines.NUMSTRINGS)) state.strings[strNum] = line;
     }
 
     /**
