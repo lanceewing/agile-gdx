@@ -23,7 +23,7 @@ public class GameState {
     /**
      * The Game whose data we are interpreting.
      */
-    private Game game;
+    public Game game;
     
     /**
      * The VariableData implementation to get and set the AGI variables through.

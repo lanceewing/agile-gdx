@@ -23,6 +23,12 @@ public class Game {
     public String v3GameSig;
 
     public String version;
+    
+    public boolean hasAGIMouse;
+    
+    public boolean hasAGIPal;
+    
+    public boolean hasAGI256;
 
     public Words words;
 

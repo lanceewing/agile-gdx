@@ -62,6 +62,10 @@ public abstract class GameLoader {
         // Patch game option.
         patchGame(game, gameDetection.gameId, gameDetection.gameName);
         
+        game.hasAGIMouse = gameDetection.hasAGIMouse;
+        game.hasAGIPal = gameDetection.hasAGIMouse;
+        game.hasAGI256 = gameDetection.hasAGI256;
+        
         return game;
     }
     

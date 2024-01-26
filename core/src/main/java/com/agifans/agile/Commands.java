@@ -1949,7 +1949,12 @@ public class Commands {
 
             case 171: // push.script (AGI Mouse overrides this command)
                 {
-                    state.scriptBuffer.pushScript();
+                    if (state.game.hasAGIMouse) {
+                        // TODO: Implement.
+                    }
+                    else {
+                        state.scriptBuffer.pushScript();
+                    }
                 }
                 break;
 
