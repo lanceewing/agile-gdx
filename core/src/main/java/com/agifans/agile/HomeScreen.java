@@ -297,6 +297,14 @@ public class HomeScreen extends InputAdapter implements Screen {
             pagedScrollPane.setScrollX(newScrollX);
             pagedScrollPane.setLastScrollX(newScrollX);
         }
+        else if (keycode == Keys.UP) {
+            pagedScrollPane.setScrollX(0.0f);
+            pagedScrollPane.setLastScrollX(0.0f);
+        }
+        else if (keycode == Keys.DOWN) {
+            pagedScrollPane.setScrollX(pagedScrollPane.getMaxX());
+            pagedScrollPane.setLastScrollX(pagedScrollPane.getMaxX());
+        }
         return false;
     }
 
