@@ -26,6 +26,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -56,6 +57,7 @@ public class HomeScreen extends InputAdapter implements Screen {
     private Skin skin;
     private Stage portraitStage;
     private Stage landscapeStage;
+    private PagedScrollPane pagedScrollPane;
     private ViewportManager viewportManager;
     private Map<String, AppConfigItem> appConfigMap;
     private Map<String, Texture> buttonTextureMap;
@@ -152,8 +154,8 @@ public class HomeScreen extends InputAdapter implements Screen {
             horizPaddingUnit = totalHorizPadding / (columns * 2);
         }
         
-        PagedScrollPane scroll = new PagedScrollPane();
-        scroll.setFlingTime(0.01f);
+        pagedScrollPane = new PagedScrollPane();
+        pagedScrollPane.setFlingTime(0.01f);
 
         int itemsPerPage = columns * rows;
         int pageItemCount = 0;
@@ -164,7 +166,7 @@ public class HomeScreen extends InputAdapter implements Screen {
         for (AppConfigItem appConfigItem : appConfig.getApps()) {
             // Every itemsPerPage apps, add a new page.
             if (pageItemCount == itemsPerPage) {
-                scroll.addPage(currentPage);
+                pagedScrollPane.addPage(currentPage);
                 pageItemCount = 0;
                 currentPage = new Table().pad(0, 0, 0, 0);
                 currentPage.defaults().pad(0, horizPaddingUnit, 0, horizPaddingUnit);
@@ -189,7 +191,7 @@ public class HomeScreen extends InputAdapter implements Screen {
                 }
                 currentPage.add(buildAppButton(appConfigItem)).expand().fill();
             }
-            scroll.addPage(currentPage);
+            pagedScrollPane.addPage(currentPage);
             if (pageItemCount == itemsPerPage) {
                 currentPage = new Table().pad(0, 0, 0, 0);
                 currentPage.defaults().pad(0, horizPaddingUnit, 0, horizPaddingUnit);
@@ -199,11 +201,11 @@ public class HomeScreen extends InputAdapter implements Screen {
                     }
                     currentPage.add(buildAppButton(appConfigItem)).expand().fill();
                 }
-                scroll.addPage(currentPage);
+                pagedScrollPane.addPage(currentPage);
             }
         }
 
-        container.add(scroll).expand().fill();
+        container.add(pagedScrollPane).expand().fill();
     }
     
     @Override
@@ -284,6 +286,16 @@ public class HomeScreen extends InputAdapter implements Screen {
                 });
                 return true;
             }
+        }
+        else if (keycode == Keys.LEFT) {
+            float newScrollX = MathUtils.clamp(pagedScrollPane.getScrollX() - 1970.0f, 0, pagedScrollPane.getMaxX());
+            pagedScrollPane.setScrollX(newScrollX);
+            pagedScrollPane.setLastScrollX(newScrollX);
+        }
+        else if (keycode == Keys.RIGHT) {
+            float newScrollX = MathUtils.clamp(pagedScrollPane.getScrollX() + 1970.0f, 0, pagedScrollPane.getMaxX());
+            pagedScrollPane.setScrollX(newScrollX);
+            pagedScrollPane.setLastScrollX(newScrollX);
         }
         return false;
     }
@@ -451,8 +463,8 @@ public class HomeScreen extends InputAdapter implements Screen {
     private Actor longPressActor;
 
     /**
-     * Handle clicking an app button. This will start the Machine and run the
-     * selected app.
+     * Handle clicking an app button. This will start the AGI interpreter and run the
+     * selected AGI game.
      */
     public ClickListener appClickListener = new ClickListener() {
         @Override
