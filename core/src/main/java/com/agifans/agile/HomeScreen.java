@@ -132,17 +132,6 @@ public class HomeScreen extends InputAdapter implements Screen {
         addAppButtonsToStage(stage, appConfig, columns, rows);
         return stage;
     }
-    
-    private PagedScrollPane getPagedScrollPane() {
-        if (viewportManager.isPortrait()) {
-            Table table = (Table)portraitStage.getActors().get(0);
-            return (PagedScrollPane)table.getChild(0);
-        }
-        else {
-            Table table = (Table)landscapeStage.getActors().get(0);
-            return (PagedScrollPane)table.getChild(0);
-        }
-    }
 
     private void addAppButtonsToStage(Stage stage, AppConfig appConfig, int columns, int rows) {
         Table container = new Table();
@@ -471,9 +460,11 @@ public class HomeScreen extends InputAdapter implements Screen {
                             new ConfirmResponseHandler() {
                         @Override
                         public void yes() {
+                            int gameIndexBeforeRemoval = getGameIndex(appConfigItem);
                             appConfigMap.remove(appName);
                             updateHomeScreenButtonStages();
                             // TODO: GWT needs to remove data from OPFS.
+                            showGamePage(gameIndexBeforeRemoval);
                         }
                         
                         @Override
@@ -553,21 +544,7 @@ public class HomeScreen extends InputAdapter implements Screen {
                                             }
                                             appConfigMap.put(appConfigItem.getName(), appConfigItem);
                                             updateHomeScreenButtonStages();
-                                            
-                                            // Scroll to the page with the newly added game on it.
-                                            int gameIndex = 0;
-                                            for (String gameName : appConfigMap.keySet()) {
-                                                gameIndex++;
-                                                if (gameName.equals(appConfigItem.getName())) {
-                                                    break;
-                                                }
-                                            }
-                                            System.out.println("gameIndex: " + gameIndex);
-                                            float newScrollX = 1970.0f * (gameIndex / 15);
-                                            System.out.println("newScrollX: " + newScrollX);
-                                            // TODO: Fix.
-                                            //pagedScrollPane.setScrollX(newScrollX);
-                                            //pagedScrollPane.setLastScrollX(newScrollX);
+                                            showGamePage(appConfigItem);
                                         }
                                     }
                                 });
@@ -577,4 +554,34 @@ public class HomeScreen extends InputAdapter implements Screen {
             }
         }
     };
+    
+    private int getGameIndex(AppConfigItem appConfigItem) {
+        int gameIndex = 0;
+        for (String gameName : appConfigMap.keySet()) {
+            gameIndex++;
+            if (gameName.equals(appConfigItem.getName())) {
+                return gameIndex;
+            }
+        }
+        return 0;
+    }
+    
+    private void showGamePage(AppConfigItem appConfigItem) {
+        showGamePage(getGameIndex(appConfigItem));
+    }
+    
+    private void showGamePage(int gameIndex) {
+        // Work out how far to move from far left to get to game's page.
+        float pageWidth = viewportManager.isPortrait()? 1130.0f : 1970.0f;
+        float newScrollX = pageWidth * (gameIndex / 15);
+        
+        // Apply scroll X without animating, i.e. move immediately to the page.
+        Stage currentStage = viewportManager.isPortrait()? portraitStage : landscapeStage;
+        PagedScrollPane pagedScrollPane = (PagedScrollPane)
+                ((Table)currentStage.getActors().get(0)).getChild(0);
+        currentStage.act(0f);
+        pagedScrollPane.setScrollX(newScrollX);
+        pagedScrollPane.setLastScrollX(newScrollX);
+        pagedScrollPane.updateVisualScroll();
+    }
 }
