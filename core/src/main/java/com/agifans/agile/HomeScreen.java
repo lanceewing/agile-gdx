@@ -57,7 +57,6 @@ public class HomeScreen extends InputAdapter implements Screen {
     private Skin skin;
     private Stage portraitStage;
     private Stage landscapeStage;
-    private PagedScrollPane pagedScrollPane;
     private ViewportManager viewportManager;
     private Map<String, AppConfigItem> appConfigMap;
     private Map<String, Texture> buttonTextureMap;
@@ -133,6 +132,17 @@ public class HomeScreen extends InputAdapter implements Screen {
         addAppButtonsToStage(stage, appConfig, columns, rows);
         return stage;
     }
+    
+    private PagedScrollPane getPagedScrollPane() {
+        if (viewportManager.isPortrait()) {
+            Table table = (Table)portraitStage.getActors().get(0);
+            return (PagedScrollPane)table.getChild(0);
+        }
+        else {
+            Table table = (Table)landscapeStage.getActors().get(0);
+            return (PagedScrollPane)table.getChild(0);
+        }
+    }
 
     private void addAppButtonsToStage(Stage stage, AppConfig appConfig, int columns, int rows) {
         Table container = new Table();
@@ -154,7 +164,7 @@ public class HomeScreen extends InputAdapter implements Screen {
             horizPaddingUnit = totalHorizPadding / (columns * 2);
         }
         
-        pagedScrollPane = new PagedScrollPane();
+        PagedScrollPane pagedScrollPane = new PagedScrollPane();
         pagedScrollPane.setFlingTime(0.01f);
 
         int itemsPerPage = columns * rows;
@@ -272,6 +282,19 @@ public class HomeScreen extends InputAdapter implements Screen {
      * @return whether the input was processed
      */
     public boolean keyUp(int keycode) {
+        float pageWidth = 0.0f;
+        PagedScrollPane pagedScrollPane = null;
+        if (viewportManager.isPortrait()) {
+            Table table = (Table)portraitStage.getActors().get(0);
+            pagedScrollPane = (PagedScrollPane)table.getChild(0);
+            pageWidth = 1130.0f;
+        }
+        else {
+            Table table = (Table)landscapeStage.getActors().get(0);
+            pagedScrollPane = (PagedScrollPane)table.getChild(0);
+            pageWidth = 1970.0f;
+        }
+        
         if (keycode == Keys.BACK) {
             if (Gdx.app.getType().equals(ApplicationType.Android)) {
                 dialogHandler.confirm("Do you really want to Exit?", new ConfirmResponseHandler() {
@@ -288,12 +311,12 @@ public class HomeScreen extends InputAdapter implements Screen {
             }
         }
         else if (keycode == Keys.LEFT) {
-            float newScrollX = MathUtils.clamp(pagedScrollPane.getScrollX() - 1970.0f, 0, pagedScrollPane.getMaxX());
+            float newScrollX = MathUtils.clamp(pagedScrollPane.getScrollX() - pageWidth, 0, pagedScrollPane.getMaxX());
             pagedScrollPane.setScrollX(newScrollX);
             pagedScrollPane.setLastScrollX(newScrollX);
         }
         else if (keycode == Keys.RIGHT) {
-            float newScrollX = MathUtils.clamp(pagedScrollPane.getScrollX() + 1970.0f, 0, pagedScrollPane.getMaxX());
+            float newScrollX = MathUtils.clamp(pagedScrollPane.getScrollX() + pageWidth, 0, pagedScrollPane.getMaxX());
             pagedScrollPane.setScrollX(newScrollX);
             pagedScrollPane.setLastScrollX(newScrollX);
         }
@@ -530,6 +553,21 @@ public class HomeScreen extends InputAdapter implements Screen {
                                             }
                                             appConfigMap.put(appConfigItem.getName(), appConfigItem);
                                             updateHomeScreenButtonStages();
+                                            
+                                            // Scroll to the page with the newly added game on it.
+                                            int gameIndex = 0;
+                                            for (String gameName : appConfigMap.keySet()) {
+                                                gameIndex++;
+                                                if (gameName.equals(appConfigItem.getName())) {
+                                                    break;
+                                                }
+                                            }
+                                            System.out.println("gameIndex: " + gameIndex);
+                                            float newScrollX = 1970.0f * (gameIndex / 15);
+                                            System.out.println("newScrollX: " + newScrollX);
+                                            // TODO: Fix.
+                                            //pagedScrollPane.setScrollX(newScrollX);
+                                            //pagedScrollPane.setLastScrollX(newScrollX);
                                         }
                                     }
                                 });
