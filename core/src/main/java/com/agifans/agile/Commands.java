@@ -1468,7 +1468,14 @@ public class Commands {
 
             case 110: // shake.screen
                 {
-                    shakeScreen(action.operands.get(0).asByte());
+                    int shakeNum = action.operands.get(0).asByte();
+                    if (shakeNum < 100) {
+                        shakeScreen(action.operands.get(0).asByte());
+                    }
+                    else {
+                        // AGI PAL hack.
+                        
+                    }
                 }
                 break;
 
@@ -1950,7 +1957,9 @@ public class Commands {
             case 171: // push.script (AGI Mouse overrides this command)
                 {
                     if (state.game.hasAGIMouse) {
-                        // TODO: Implement.
+                        state.setVar(27, state.getMouseButton());
+                        state.setVar(28, state.getMouseX());
+                        state.setVar(29, state.getMouseY());
                     }
                     else {
                         state.scriptBuffer.pushScript();

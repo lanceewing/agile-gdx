@@ -14,7 +14,13 @@ public class DesktopVariableData implements VariableData {
     
     private int[] vars;
     
-    public boolean[] flags;
+    private boolean[] flags;
+    
+    private int mouseX;
+    
+    private int mouseY;
+    
+    private int mouseButton;
     
     /**
      * Constructor for DesktopVariableData.
@@ -57,7 +63,40 @@ public class DesktopVariableData implements VariableData {
     @Override
     public void clearState() {
         totalTicks = 0;
+        mouseX = 0;
+        mouseY = 0;
+        mouseButton = 0;
         Arrays.fill(flags, false);
         Arrays.fill(vars, 0);
+    }
+
+    @Override
+    public int getMouseX() {
+        return mouseX;
+    }
+
+    @Override
+    public int getMouseY() {
+        return mouseY;
+    }
+
+    @Override
+    public int getMouseButton() {
+        return mouseButton;
+    }
+
+    @Override
+    public void setMouseX(int mouseX) {
+        this.mouseX = mouseX;
+    }
+
+    @Override
+    public void setMouseY(int mouseY) {
+        this.mouseY = mouseY;
+    }
+
+    @Override
+    public void setMouseButton(int mouseButton) {
+        this.mouseButton = mouseButton;
     }
 }

@@ -91,6 +91,15 @@ public abstract class AgileRunner {
     }
     
     /**
+     * Returns the VariableData implementation class instance in use by AGILE.
+     * 
+     * @return
+     */
+    public VariableData getVariableData() {
+        return variableData;
+    }
+    
+    /**
      * Updates Pixmap with the latest local changes within our implementation specific
      * PixelData.
      * 

@@ -532,6 +532,33 @@ public class GameState {
     }
     
     /**
+     * Gets the current AGI Mouse X position, if a button is currently down.
+     * 
+     * @return the current AGI Mouse X position, if a button is currently down.
+     */
+    public int getMouseX() {
+        return variableData.getMouseX();
+    }
+    
+    /**
+     * Gets the current AGI Mouse Y position, if a button is currently down.
+     * 
+     * @return the current AGI Mouse Y position, if a button is currently down.
+     */
+    public int getMouseY() {
+        return variableData.getMouseY();
+    }
+    
+    /**
+     * Gets the current AGI Mouse button status.
+     * 
+     * @return the current AGI Mouse button status.
+     */
+    public int getMouseButton() {
+        return variableData.getMouseButton();
+    }
+    
+    /**
      * Clears all of the AGI flags to be false.
      */
     public void clearFlags() {

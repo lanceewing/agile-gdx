@@ -62,6 +62,12 @@ public class GameScreenInputProcessor extends InputAdapter {
     }
 
     /**
+     * Keeps track of whether the mouse button is currently down or not, for the use of
+     * the AGI Mouse hack. 0 = not down, whereas 1 and 2 are left and right buttons.
+     */
+    private int agiMouseButton;
+    
+    /**
      * Constructor for GameScreenInputProcessor.
      * 
      * @param machineScreen
@@ -97,6 +103,9 @@ public class GameScreenInputProcessor extends InputAdapter {
         // Convert the screen coordinates to world coordinates.
         Vector2 touchXY = viewportManager.unproject(screenX, screenY);
 
+        // Update AGI mouse variables.
+        updateAGIMouse(touchXY, button, true);
+                
         // Update the touch info for this pointer.
         TouchInfo touchInfo = null;
         if (pointer < MAX_SIMULTANEOUS_TOUCH_EVENTS) {
@@ -121,6 +130,48 @@ public class GameScreenInputProcessor extends InputAdapter {
     }
 
     /**
+     * Updates the AGI Mouse state. AGI Mouse is a fan made hack to the original AGI
+     * interpreter that overrides AGI command 171, so that when it is invoked, certain
+     * AGI variables are assigned the mouse X/Y position and button status.
+     * 
+     * @param touchXY
+     * @param button
+     * @param buttonDown
+     */
+    private void updateAGIMouse(Vector2 touchXY, int button, boolean buttonDown) {
+        int agiX = 0;
+        int agiY = 0;
+        if (viewportManager.isPortrait()) {
+            // Portrait
+            agiX = Math.round((touchXY.x / viewportManager.getWidth()) * 160);
+            float agiHeight = (1080.0f / 1.32f);
+            float agiRatio = (agiHeight / 200);
+            float agiStart = (viewportManager.getHeight() - agiHeight);
+            agiY = 200 - Math.round((touchXY.y - agiStart) / agiRatio);
+        }
+        else {
+            // Landscape
+            agiY = 200 - Math.round((touchXY.y / viewportManager.getHeight()) * 200);
+            float agiWidth = (viewportManager.getHeight() * 1.32f);
+            float agiRatio = (agiWidth / 160); 
+            float agiStart = (1920 / 2) - (agiWidth / 2);
+            agiX = Math.round((touchXY.x - agiStart) / agiRatio);
+        }
+        if ((agiX >= 0) && (agiX <= 159) && (agiY >= 0) && (agiY < 199)) {
+            // Only if it is within the AGI Screen do we set the mouse vars.
+            if (buttonDown) {
+                gameScreen.getAgileRunner().getVariableData().setMouseButton(button + 1);
+            } else {
+                gameScreen.getAgileRunner().getVariableData().setMouseButton(0);
+            }
+            gameScreen.getAgileRunner().getVariableData().setMouseX(agiX);
+            gameScreen.getAgileRunner().getVariableData().setMouseY(agiY);
+        }
+        
+        agiMouseButton = (buttonDown? button + 1 : 0);
+    }
+    
+    /**
      * Called when a finger was lifted or a mouse button was released. The button
      * parameter will be {@link Buttons#LEFT} on iOS.
      * 
@@ -133,6 +184,9 @@ public class GameScreenInputProcessor extends InputAdapter {
         // Convert the screen coordinates to world coordinates.
         Vector2 touchXY = viewportManager.unproject(screenX, screenY);
 
+        // Update AGI mouse variables (click/touch released, so clear all to 0)
+        updateAGIMouse(touchXY, button, false);
+        
         // Update the touch info for this pointer.
         TouchInfo touchInfo = null;
         if (pointer < MAX_SIMULTANEOUS_TOUCH_EVENTS) {
@@ -234,6 +288,22 @@ public class GameScreenInputProcessor extends InputAdapter {
     }
 
     /**
+     * Called whenever the mouse moves.
+     * 
+     * @param screenX 
+     * @param screenY 
+     */
+    public boolean mouseMoved (int screenX, int screenY) {
+        // Convert the screen coordinates to world coordinates.
+        Vector2 touchXY = viewportManager.unproject(screenX, screenY);
+
+        // Update AGI mouse variables.
+        updateAGIMouse(touchXY, agiMouseButton - 1, (agiMouseButton > 0));
+        
+        return true;
+    }
+    
+    /**
      * Called when a finger or the mouse was dragged.
      * 
      * @param pointer the pointer for the event.
@@ -243,7 +313,10 @@ public class GameScreenInputProcessor extends InputAdapter {
     public boolean touchDragged(int screenX, int screenY, int pointer) {
         // Convert the screen coordinates to world coordinates.
         Vector2 touchXY = viewportManager.unproject(screenX, screenY);
-
+        
+        // Update AGI mouse variables.
+        updateAGIMouse(touchXY, agiMouseButton - 1, true);
+        
         // Update the touch info for this pointer.
         TouchInfo touchInfo = null;
         if (pointer < MAX_SIMULTANEOUS_TOUCH_EVENTS) {

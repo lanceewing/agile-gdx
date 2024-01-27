@@ -88,4 +88,19 @@ public interface VariableData {
     }
     
     void clearState();
+    
+    
+    /*** The following are to support the AGI Mouse interpreter hack ***/
+    
+    int getMouseX();
+    
+    int getMouseY();
+    
+    int getMouseButton();
+    
+    void setMouseX(int mouseX);
+    
+    void setMouseY(int mouseY);
+    
+    void setMouseButton(int mouseButton);
 }

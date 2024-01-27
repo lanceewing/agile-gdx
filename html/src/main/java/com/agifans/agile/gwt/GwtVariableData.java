@@ -10,11 +10,15 @@ import com.google.gwt.core.client.JavaScriptObject;
 public class GwtVariableData implements VariableData {
 
     /**
-     * This is a slight hack for GWT, to use an extra slot in the SharedArray for the
-     * total ticks variable, which is actually not an AGI variable. We're just doing this
-     * for convenience, rather than creating a separate 1 slot SharedArray.
+     * This is a slight hack for GWT, to use extra slots in the SharedArray for the
+     * total ticks variable and mouse vars, which actually are not AGI variables. We're 
+     * just doing this for convenience, rather than creating separate 1 slot SharedArrays.
      */
     private static final int TOTAL_TICKS = 512;
+    
+    private static final int MOUSE_BUTTON = 513;
+    private static final int MOUSE_X = 514;
+    private static final int MOUSE_Y = 515;
     
     private static final int TRUE = 1;
     private static final int FALSE = 0;
@@ -50,9 +54,9 @@ public class GwtVariableData implements VariableData {
         // use that instead. In this way, both sides (UI thread and web worker) and using
         // the same bit of shared memory for the AGI variable data.
         if (variableArraySAB == null) {
-            // Uses an extra slot at the end for the total ticks.
+            // Uses extra slots at the end for the total ticks and mouse vars.
             variableArraySAB = SharedArray.getStorageForCapacity(
-                    Defines.NUMVARS + Defines.NUMFLAGS + 1);
+                    Defines.NUMVARS + Defines.NUMFLAGS + 4);
         }
         
         this.variableArray = new SharedArray(variableArraySAB);
@@ -90,10 +94,40 @@ public class GwtVariableData implements VariableData {
     
     @Override
     public void clearState() {
-        int arrayLength = Defines.NUMVARS + Defines.NUMFLAGS + 1;
+        int arrayLength = Defines.NUMVARS + Defines.NUMFLAGS + 4;
         for (int index=0; index < arrayLength; index++) {
             variableArray.set(index, 0);
         }
+    }
+
+    @Override
+    public int getMouseX() {
+        return variableArray.get(MOUSE_X);
+    }
+
+    @Override
+    public int getMouseY() {
+        return variableArray.get(MOUSE_Y);
+    }
+
+    @Override
+    public int getMouseButton() {
+        return variableArray.get(MOUSE_BUTTON);
+    }
+
+    @Override
+    public void setMouseX(int mouseX) {
+        variableArray.set(MOUSE_X, mouseX);
+    }
+
+    @Override
+    public void setMouseY(int mouseY) {
+        variableArray.set(MOUSE_Y, mouseY);
+    }
+
+    @Override
+    public void setMouseButton(int mouseButton) {
+        variableArray.set(MOUSE_BUTTON, mouseButton);
     }
 
     /**
