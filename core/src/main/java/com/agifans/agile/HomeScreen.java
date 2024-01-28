@@ -355,21 +355,35 @@ public class HomeScreen extends InputAdapter implements Screen {
 
         // An app button can contain an optional icon.
         Image icon = null;
-        String iconPath = StringUtils.format("screenshots/{0}.png", 
-                appConfigItem.getGameId() != null? 
-                        appConfigItem.getGameId().toUpperCase() : null);
+        String iconPath = appConfigItem.getGameId() != null?
+                StringUtils.format("screenshots/{0}.png", appConfigItem.getGameId().toUpperCase()) : "";
         
         Texture iconTexture = buttonTextureMap.get(iconPath);
         if (iconTexture == null) {
-            try {
-                // See if there is screenshot icon in the assets folder.
-                iconTexture = new Texture(iconPath);
-                iconTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
-                buttonTextureMap.put(iconPath, iconTexture);
-                icon = new Image(iconTexture);
-                icon.setAlign(Align.center);
-            } catch (Exception e) {
-                icon = new Image(drawEmptyIcon(ICON_IMAGE_WIDTH, ICON_IMAGE_HEIGHT));                                                                                           // 110));
+            if (!iconPath.isEmpty()) {
+                try {
+                    // See if there is screenshot icon in the assets folder.
+                    Pixmap iconPixmap = new Pixmap(Gdx.files.internal(iconPath));
+                    
+                    // If there is, then it's expected to be 320x200, so we scale it to right aspect ratio.
+                    Pixmap iconStretchedPixmap = new Pixmap(ICON_IMAGE_WIDTH, ICON_IMAGE_HEIGHT, iconPixmap.getFormat());
+                    iconStretchedPixmap.drawPixmap(iconPixmap,
+                            0, 0, iconPixmap.getWidth(), iconPixmap.getHeight(),
+                            0, 0, iconStretchedPixmap.getWidth(), iconStretchedPixmap.getHeight()
+                    );
+                    iconTexture = new Texture(iconStretchedPixmap);
+                    iconPixmap.dispose();
+                    iconStretchedPixmap.dispose();
+                    
+                    iconTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+                    buttonTextureMap.put(iconPath, iconTexture);
+                    icon = new Image(iconTexture);
+                    icon.setAlign(Align.center);
+                } catch (Exception e) {
+                    icon = new Image(drawEmptyIcon(ICON_IMAGE_WIDTH, ICON_IMAGE_HEIGHT));
+                }
+            } else {
+                icon = new Image(drawEmptyIcon(ICON_IMAGE_WIDTH, ICON_IMAGE_HEIGHT));
             }
         } else {
             icon = new Image(iconTexture);
@@ -415,7 +429,6 @@ public class HomeScreen extends InputAdapter implements Screen {
         for (String appName : appConfigMap.keySet()) {
             AppConfigItem item = appConfigMap.get(appName);
             if ((item.getFileType() != null) && (!item.getFileType().trim().isEmpty())) {
-                // Tape or Disk file.
                 appConfig.getApps().add(item);
             }
         }
