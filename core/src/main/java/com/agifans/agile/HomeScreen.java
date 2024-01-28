@@ -162,6 +162,12 @@ public class HomeScreen extends InputAdapter implements Screen {
         Table currentPage = new Table().pad(0, 0, 0, 0);
         currentPage.defaults().pad(0, horizPaddingUnit, 0, horizPaddingUnit);
 
+        // Add empty slot at the start that will always be present for adding a new game.
+        AppConfigItem addGameIcon = new AppConfigItem();
+        addGameIcon.setGameId("_ADD_GAME_");
+        currentPage.add(buildAppButton(addGameIcon)).expand().fill();
+        pageItemCount++;
+        
         for (AppConfigItem appConfigItem : appConfig.getApps()) {
             // Every itemsPerPage apps, add a new page.
             if (pageItemCount == itemsPerPage) {
@@ -401,7 +407,11 @@ public class HomeScreen extends InputAdapter implements Screen {
 
         Label label = null;
         if ((appConfigItem.getDisplayName() == null) || appConfigItem.getDisplayName().trim().isEmpty()) {
-            label = new Label("[empty]", skin);
+            if ("_ADD_GAME_".equals(appConfigItem.getGameId())) {
+                label = new Label("Add Game", skin);
+            } else {
+                label = new Label("[empty]", skin);
+            }
             label.setColor(new Color(1f, 1f, 1f, 0.6f));
         } else {
             label = new Label(appConfigItem.getDisplayName(), skin);
