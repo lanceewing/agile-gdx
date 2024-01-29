@@ -416,7 +416,7 @@ public class HomeScreen extends InputAdapter implements Screen {
 
         Label label = null;
         if ((appConfigItem.getDisplayName() == null) || appConfigItem.getDisplayName().trim().isEmpty()) {
-            if ("_ADD_GAME_".equals(appConfigItem.getGameId())) {
+            if ("ADD_GAME".equals(appConfigItem.getGameId())) {
                 label = new Label("Add Game", skin);
             } else {
                 label = new Label("[empty]", skin);
