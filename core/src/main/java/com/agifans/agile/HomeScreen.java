@@ -323,6 +323,15 @@ public class HomeScreen extends InputAdapter implements Screen {
             pagedScrollPane.setScrollX(pagedScrollPane.getMaxX());
             pagedScrollPane.setLastScrollX(pagedScrollPane.getMaxX());
         }
+        else if ((keycode >= Keys.A) && (keycode <= Keys.Z)) {
+            // Shortcut keys for accessing games that start with each letter.
+            // Keys.A is 29, Keys.Z is 54. ASCII is A=65, Z=90. So we add 36.
+            int gameIndex = getIndexOfFirstGameStartingWithChar((char)(keycode + 36));
+            if (gameIndex > -1) {
+                // Add one to allow for the "Add Game" icon in the first slot.
+                showGamePage(gameIndex + 1);
+            }
+        }
         return false;
     }
 
@@ -578,6 +587,17 @@ public class HomeScreen extends InputAdapter implements Screen {
         }
     };
     
+    private int getIndexOfFirstGameStartingWithChar(char letter) {
+        int gameIndex = -1;
+        for (String gameName : appConfigMap.keySet()) {
+            gameIndex++;
+            if (gameName.toUpperCase().startsWith("" + letter)) {
+                return gameIndex;
+            }
+        }
+        return -1;
+    }
+    
     private int getGameIndex(AppConfigItem appConfigItem) {
         int gameIndex = 0;
         for (String gameName : appConfigMap.keySet()) {
@@ -605,6 +625,5 @@ public class HomeScreen extends InputAdapter implements Screen {
         currentStage.act(0f);
         pagedScrollPane.setScrollX(newScrollX);
         pagedScrollPane.setLastScrollX(newScrollX);
-        pagedScrollPane.updateVisualScroll();
     }
 }
