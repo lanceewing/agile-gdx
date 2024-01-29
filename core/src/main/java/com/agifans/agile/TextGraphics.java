@@ -272,7 +272,7 @@ public class TextGraphics {
      */
     public void drawChar(PixelData pixelData, byte charNum, int x, int y, int foregroundColour, int backgroundColour, boolean halfTone) {
         for (int byteNum = 0; byteNum < 8; byteNum++) {
-            int fontByte = (IBM_BIOS_FONT[(charNum << 3) + byteNum] & 0xFF);
+            int fontByte = (IBM_BIOS_FONT[(((int)charNum & 0xFF) << 3) + byteNum] & 0xFF);
             boolean halfToneState = ((byteNum % 2) == 0);
 
             for (int bytePos = 7; bytePos >= 0; bytePos--) {
