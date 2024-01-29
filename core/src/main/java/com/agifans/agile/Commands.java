@@ -502,9 +502,18 @@ public class Commands {
             case 15: // compare.strings
                 {
                     // Compare two strings. Ignore case, whitespace, and punctuation.
-                    String str1 = state.strings[condition.operands.get(0).asByte()].toLowerCase().replaceAll("[ \t.,;:\'!-]", "");
-                    String str2 = state.strings[condition.operands.get(1).asByte()].toLowerCase().replaceAll("[ \t.,;:\'!-]", "");
-                    result = str1.equals(str2);
+                    int str1Num = condition.operands.get(0).asByte();
+                    int str2Num = condition.operands.get(1).asByte();
+                    if ((str1Num < 24) && (str2Num < 24)) {
+                        String str1 = state.strings[str1Num].toLowerCase().replaceAll("[ \t.,;:\'!-]", "");
+                        String str2 = state.strings[str2Num].toLowerCase().replaceAll("[ \t.,;:\'!-]", "");
+                        result = str1.equals(str2);
+                    }
+                    else {
+                        // Some fan made games use string numbers outside the normal range, which
+                        // has unpredictable behaviour. We return false for any such usage.
+                        result = false;
+                    }
                 }
                 break;
 
