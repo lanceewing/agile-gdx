@@ -26,11 +26,16 @@ public class DesktopPixelData implements PixelData {
     public void putPixel(int agiScreenIndex, int rgba8888Colour) {
         int index = agiScreenIndex * 4;
         
-        // Adds RGBA8888 colour to byte array in expected R, G, B, A order.
-        imageData[index + 0] = (byte)((rgba8888Colour >> 24) & 0xFF);
-        imageData[index + 1] = (byte)((rgba8888Colour >> 16) & 0xFF);
-        imageData[index + 2] = (byte)((rgba8888Colour >>  8) & 0xFF);
-        imageData[index + 3] = (byte)((rgba8888Colour >>  0) & 0xFF);
+        try {
+            // Adds RGBA8888 colour to byte array in expected R, G, B, A order.
+            imageData[index + 0] = (byte)((rgba8888Colour >> 24) & 0xFF);
+            imageData[index + 1] = (byte)((rgba8888Colour >> 16) & 0xFF);
+            imageData[index + 2] = (byte)((rgba8888Colour >>  8) & 0xFF);
+            imageData[index + 3] = (byte)((rgba8888Colour >>  0) & 0xFF);
+        } catch (ArrayIndexOutOfBoundsException e) {
+            // Ignore. Some AGI fanmade games write things outside the screen, for
+            // example, the "Sarien" demo. We ignore any such attempts.
+        }
     }
 
     @Override
