@@ -164,7 +164,7 @@ public class HomeScreen extends InputAdapter implements Screen {
 
         // Add empty slot at the start that will always be present for adding a new game.
         AppConfigItem addGameIcon = new AppConfigItem();
-        addGameIcon.setGameId("_ADD_GAME_");
+        addGameIcon.setGameId("ADD_GAME");
         currentPage.add(buildAppButton(addGameIcon)).expand().fill();
         pageItemCount++;
         
