@@ -510,8 +510,18 @@ public class Commands {
                         result = str1.equals(str2);
                     }
                     else {
-                        // Some fan made games use string numbers outside the normal range and
-                        // may rely on being able to read outside that range (e.g. Flag Quest).
+                        // To support "Flag Quest", which reads outside the 24 string limit, we return
+                        // responses that it would expect for a genuine AGI interpreter.
+                        if (str2Num == 56) {
+                            String str1 = state.strings[str1Num].toLowerCase().replaceAll("[ \t.,;:\'!-]", "");
+                            if (str1.equals("917")) {
+                                // Flag Quest doesn't include an interpreter, so AGILE will be running as
+                                // the 2.917 version, which is what this will identify itself as.
+                                return true;
+                            }
+                        }
+                        
+                        // Otherwise return false.
                         result = false;
                     }
                 }
