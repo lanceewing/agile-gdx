@@ -70,6 +70,11 @@ public class ResourceProviderV2 implements ResourceProvider {
      */
     protected Map<String, byte[]> gameFilesMap;
     
+    /**
+     * AGIPAL palettes. Max of 10.
+     */
+    protected byte[][] palettes;
+    
     protected String version = "unknown";
 
     /**
@@ -84,6 +89,7 @@ public class ResourceProviderV2 implements ResourceProvider {
         readVolumes();
         readDirectories();
         readVersion();
+        readPalettes();
     }
 
     public static String getKey(boolean agds) {
@@ -373,6 +379,22 @@ public class ResourceProviderV2 implements ResourceProvider {
             throw new NoDirectoryAvailableException();
         }
     }
+    
+    private void readPalettes() {
+        this.palettes = new byte[10][];
+        
+        for (String fileName : gameFilesMap.keySet()) {
+            if (fileName.matches("^pal[.]10[0-9]$")) {
+                try {
+                    String extension = fileName.substring(fileName.lastIndexOf(".") + 1);
+                    int palNumber = Integer.parseInt(extension) - 100;
+                    this.palettes[palNumber] = gameFilesMap.get(fileName);
+                } catch(Exception e) {
+                    // Ignore. Must not be a proper PAL file.
+                }
+            }
+        }
+    }
 
     private void readVersion() throws IOException {
         byte[] fileContent = getGameFile("agidata.ovl");
@@ -393,6 +415,10 @@ public class ResourceProviderV2 implements ResourceProvider {
         }
     }
 
+    public byte[][] getPalettes() {
+        return this.palettes;
+    }
+    
     public String getVersion() {
         return this.version;
     }

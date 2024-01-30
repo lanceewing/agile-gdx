@@ -159,11 +159,12 @@ public abstract class GameLoader {
     
     protected boolean isGameFile(String filename) {
         String lowerCaseName = filename.toLowerCase();
-        if (lowerCaseName.matches("^[a-z0-9]*vol.[0-9]+$") || 
+        if (lowerCaseName.matches("^[a-z0-9]*vol[.][0-9]+$") || 
                 lowerCaseName.endsWith("dir") || 
                 lowerCaseName.equals("agidata.ovl") || 
                 lowerCaseName.equals("object") || 
-                lowerCaseName.equals("words.tok")) {
+                lowerCaseName.equals("words.tok") || 
+                lowerCaseName.matches("^pal[.]10[0-9]$")) {
             return true;
         }
         else {

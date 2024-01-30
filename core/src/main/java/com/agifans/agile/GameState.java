@@ -559,6 +559,17 @@ public class GameState {
     }
     
     /**
+     * Gets the RGBA8888 palette data (AGIPAL) for the given palette number.
+     * 
+     * @param paletteNum The number of the palette to get.
+     * 
+     * @return An int array containing the 16 RGBA8888 colours for the palette.
+     */
+    public int[] getPalette(int paletteNum) {
+        return this.game.palettes[paletteNum];
+    }
+    
+    /**
      * Clears all of the AGI flags to be false.
      */
     public void clearFlags() {

@@ -42,6 +42,8 @@ public class Game {
 
     public Sound[] sounds;
     
+    public int[][] palettes;
+    
     /**
      * Constructor for Game.
      * 
@@ -64,6 +66,7 @@ public class Game {
             sounds = loadSounds();
             objects = new Objects(resourceCache.getObjects());
             words = new Words(resourceCache.getWords());
+            palettes = resourceCache.getPalettes();
             
         } catch (ResourceException | IOException e) {
             throw new RuntimeException("Decode of game failed.", e);

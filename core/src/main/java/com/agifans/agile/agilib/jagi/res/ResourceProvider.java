@@ -76,6 +76,8 @@ public interface ResourceProvider {
      */
     InputStream open(byte resType, short resNumber) throws ResourceException, IOException;
 
+    byte[][] getPalettes();
+    
     String getVersion();
     
     String getV3GameSig();

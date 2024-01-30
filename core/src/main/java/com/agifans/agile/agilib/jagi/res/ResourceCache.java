@@ -43,6 +43,8 @@ public class ResourceCache {
     protected View[] views;
     protected Words words;
     protected InventoryObjects objects;
+    
+    protected int[][] palettes;
 
     public ResourceCache(Map<String, byte[]> gameFilesMap) throws IOException, ResourceException {
         try {
@@ -193,6 +195,56 @@ public class ResourceCache {
             objects = getInventoryProvider().loadInventory(resourceProvider.open(ResourceProvider.TYPE_OBJECT, (short) 0));
         }
         return objects;
+    }
+    
+    public int[][] getPalettes() {
+        if (palettes == null) {
+            palettes = new int[10][];
+            
+            for (int palNum=0; palNum < 10; palNum++) {
+                byte[] palBytes = resourceProvider.getPalettes()[palNum];
+                if ((palBytes != null) && (palBytes.length == 192)) {
+                    // We have a valid AGIPAL file, so decode it into RGBA8888 values, the
+                    // same as is used in AGILE.
+                    int[] colours = new int[16];
+                    // First chunk.
+                    colours[0]  = getRGBAColour(palBytes[0],  palBytes[1],  palBytes[2]);
+                    colours[1]  = getRGBAColour(palBytes[3],  palBytes[4],  palBytes[5]);
+                    colours[2]  = getRGBAColour(palBytes[6],  palBytes[7],  palBytes[8]);
+                    colours[3]  = getRGBAColour(palBytes[9],  palBytes[10], palBytes[11]);
+                    colours[4]  = getRGBAColour(palBytes[12], palBytes[13], palBytes[14]);
+                    colours[5]  = getRGBAColour(palBytes[15], palBytes[16], palBytes[17]);
+                    colours[6]  = getRGBAColour(palBytes[18], palBytes[19], palBytes[20]);
+                    colours[7]  = getRGBAColour(palBytes[21], palBytes[22], palBytes[23]);
+                    // Second chunk.
+                    colours[8]  = getRGBAColour(palBytes[48], palBytes[49], palBytes[50]);
+                    colours[9]  = getRGBAColour(palBytes[51], palBytes[52], palBytes[53]);
+                    colours[10] = getRGBAColour(palBytes[54], palBytes[55], palBytes[56]);
+                    colours[11] = getRGBAColour(palBytes[57], palBytes[58], palBytes[59]);
+                    colours[12] = getRGBAColour(palBytes[60], palBytes[61], palBytes[62]);
+                    colours[13] = getRGBAColour(palBytes[63], palBytes[64], palBytes[65]);
+                    colours[14] = getRGBAColour(palBytes[66], palBytes[67], palBytes[68]);
+                    colours[15] = getRGBAColour(palBytes[69], palBytes[70], palBytes[71]);
+                    palettes[palNum] = colours;
+                }
+            }
+        }
+        
+        return palettes;
+    }
+    
+    private int getRGBAColour(byte r, byte g, byte b) {
+        // 18-bit VGA palette, so top 2 bits of each byte are discarded.
+        int red = (((int)r) << 2) & 0xFF;
+        int green = (((int)g) << 2) & 0xFF;
+        int blue = (((int)b) << 2) & 0xFF;
+        
+        int rgba8888Colour = 0;
+        rgba8888Colour |= ((red << 24) & 0xFF000000);
+        rgba8888Colour |= ((green << 16) & 0x00FF0000);
+        rgba8888Colour |= ((blue <<  8) & 0x0000FF00);
+        rgba8888Colour |= 0x000000FF;
+        return rgba8888Colour;
     }
 
     public String getVersion() {

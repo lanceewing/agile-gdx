@@ -1492,8 +1492,14 @@ public class Commands {
                         shakeScreen(action.operands.get(0).asByte());
                     }
                     else {
-                        // AGI PAL hack.
-                        
+                        // AGI PAL hack (values 100-109).
+                        int paletteNum = shakeNum - 100;
+                        if (paletteNum < 10) {
+                            int[] palette = state.getPalette(paletteNum);
+                            if (palette != null) {
+                                // TODO: Implement palette change.
+                            }
+                        }
                     }
                 }
                 break;
