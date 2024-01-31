@@ -26,6 +26,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -43,6 +44,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.payne.games.piemenu.AnimatedPieWidget;
+import com.payne.games.piemenu.PieWidget;
 
 /**
  * (Placeholder for the AGilE title screen and game selection pages)
@@ -62,6 +65,9 @@ public class HomeScreen extends InputAdapter implements Screen {
     private Map<String, Texture> buttonTextureMap;
     private Texture backgroundLandscape;
     private Texture backgroundPortrait;
+    private AnimatedPieWidget portraitMenuWidget;
+    private AnimatedPieWidget landscapeMenuWidget;
+    private Texture whitePixelTexture;
     
     /**
      * Invoked by AGILE whenever it would like to show a dialog, such as when it needs
@@ -116,7 +122,11 @@ public class HomeScreen extends InputAdapter implements Screen {
         viewportManager = ViewportManager.getInstance();
         portraitStage = createStage(viewportManager.getPortraitViewport(), appConfig, 3, 5);
         landscapeStage = createStage(viewportManager.getLandscapeViewport(), appConfig, 5, 3);
-
+        
+        whitePixelTexture = createWhitePixelTexture();
+        portraitMenuWidget = createMenuWidget(portraitStage);
+        landscapeMenuWidget = createMenuWidget(landscapeStage);
+        
         // The stage handles most of the input, but we need to handle the BACK button
         // separately.
         portraitInputProcessor = new InputMultiplexer();
@@ -127,10 +137,64 @@ public class HomeScreen extends InputAdapter implements Screen {
         landscapeInputProcessor.addProcessor(this);
     }
     
+    private Texture createWhitePixelTexture() {
+        Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
+        pixmap.setColor(1,1,1,1);
+        pixmap.fill();
+        Texture texture = new Texture(pixmap);
+        pixmap.dispose();
+        return texture;
+    }
+    
+    private AnimatedPieWidget createMenuWidget(Stage stage) {
+        AnimatedPieWidget widget = null;
+        
+        TextureRegion whitePixel = new TextureRegion(whitePixelTexture);
+
+        // Setting up and creating the widget.
+        PieWidget.PieWidgetStyle style = new PieWidget.PieWidgetStyle();
+        style.sliceColor = new Color(0.9f, 0.9f, 0.9f, 0.9f);
+        style.separatorWidth = 2;
+        style.circumferenceWidth = 2;
+        style.separatorColor = style.circumferenceColor;
+        widget = new AnimatedPieWidget(whitePixel, style, 160, 40f/160, 315, 270);
+
+        // Populating the widget
+        Label playLabel = new Label("X", skin);
+        playLabel.setFontScale(2f);
+        playLabel.setAlignment(Align.center);
+        widget.addActor(playLabel);
+        
+        Label deleteLabel = new Label("Delete", skin);
+        deleteLabel.setFontScale(2f);
+        deleteLabel.setAlignment(Align.center);
+        widget.addActor(deleteLabel);
+        
+        Label editLabel = new Label("Edit", skin);
+        editLabel.setFontScale(2f);
+        editLabel.setAlignment(Align.center);
+        widget.addActor(editLabel);
+        
+        // Including the Widget in the Stage
+        stage.addActor(widget);
+        widget.setVisible(false);
+        
+        return widget;
+    }
+    
     private Stage createStage(Viewport viewport, AppConfig appConfig, int columns, int rows) {
         Stage stage = new Stage(viewport);
         addAppButtonsToStage(stage, appConfig, columns, rows);
         return stage;
+    }
+    
+    private AnimatedPieWidget getCurrentMenuWidget() {
+        if (viewportManager.isPortrait()) {
+            return portraitMenuWidget;
+        }
+        else {
+            return landscapeMenuWidget;
+        }
     }
 
     private void addAppButtonsToStage(Stage stage, AppConfig appConfig, int columns, int rows) {
@@ -266,6 +330,8 @@ public class HomeScreen extends InputAdapter implements Screen {
             texture.dispose();
         }
 
+        whitePixelTexture.dispose();
+        
         saveAppConfigMap();
     }
     
@@ -487,6 +553,16 @@ public class HomeScreen extends InputAdapter implements Screen {
                 final AppConfigItem appConfigItem = appConfigMap.get(appName);
                 if (appConfigItem != null) {
                     longPressActor = actor;
+                    
+                    AnimatedPieWidget widget = getCurrentMenuWidget();
+                    widget.toggleVisibility(0.7f);
+                    widget.setPosition(
+                            actor.getX(Align.center), 
+                            actor.getY(Align.center) + 15,
+                            Align.center);                    
+                    
+                    
+                    /*
                     dialogHandler.confirm(
                             "Do you want to remove '" + appConfigItem.getName() + "'?", 
                             new ConfirmResponseHandler() {
@@ -503,6 +579,8 @@ public class HomeScreen extends InputAdapter implements Screen {
                         public void no() {
                         }
                     });
+                    */
+                    
                 }
             }
             return true;

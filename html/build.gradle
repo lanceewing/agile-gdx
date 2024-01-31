@@ -36,6 +36,8 @@ dependencies {
   implementation "com.google.jsinterop:jsinterop-annotations:2.0.2:sources"
   implementation "de.knightsoft-net:gwt-webworker:1.0.8"
   implementation "org.ainslec:gwt-jszip:1.0.0"
+  implementation "space.earlygrey:shapedrawer:$shapedrawerVersion:sources"
+  api "com.github.payne911:PieMenu:$pieMenuVersion:sources"
   implementation project(':core')
 
 }
