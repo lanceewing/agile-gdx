@@ -737,7 +737,7 @@ public class HomeScreen extends InputAdapter implements Screen {
                 public void yes() {
                     int gameIndexBeforeRemoval = getGameIndex(appConfigItem);
                     appConfigMap.remove(appConfigItem.getName());
-                    close();
+                    closeImmediately();
                     updateHomeScreenButtonStages();
                     // TODO: GWT needs to remove data from OPFS.
                     showGamePage(gameIndexBeforeRemoval);
@@ -751,7 +751,21 @@ public class HomeScreen extends InputAdapter implements Screen {
         }
         
         private void editGame() {
-            System.out.println("EDIT");
+            String displayName = appConfigItem.getDisplayName().replace("\n", "\\n");
+            dialogHandler.promptForTextInput("Program display name", displayName,
+                    new TextInputResponseHandler() {
+                        @Override
+                        public void inputTextResult(boolean success, String text) {
+                            if (success && (text != null) & !text.isEmpty()) {
+                                String displayName = text.replace("\\n", "\n");
+                                String name = text.replace("\\n", " ").replaceAll(" +", " ");
+                                appConfigItem.setName(name);
+                                appConfigItem.setDisplayName(displayName);
+                                closeImmediately();
+                                updateHomeScreenButtonStages();
+                            }
+                        }
+                    });
         }
         
         public String getGameName() {
