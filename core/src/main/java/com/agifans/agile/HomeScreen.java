@@ -721,7 +721,12 @@ public class HomeScreen extends InputAdapter implements Screen {
         }
         
         private void runGame() {
-            System.out.println("RUN");
+            AppConfigItem gameToRun = appConfigItem;
+            closeImmediately();
+            
+            GameScreen gameScreen = agile.getGameScreen();
+            gameScreen.initGame(gameToRun);
+            agile.setScreen(gameScreen);
         }
         
         private void deleteGame() {
@@ -766,9 +771,17 @@ public class HomeScreen extends InputAdapter implements Screen {
         }
         
         public void close() {
+            close(0.7f);
+        }
+        
+        public void closeImmediately() {
+            close(0.0f);
+        }
+        
+        public void close(float durationSeconds) {
             if (isOpen()) {
                 this.appConfigItem = null;
-                this.transitionToClosing(0.7f);
+                this.transitionToClosing(durationSeconds);
             }
         }
     }
