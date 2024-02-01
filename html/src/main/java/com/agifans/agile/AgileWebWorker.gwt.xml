@@ -7,6 +7,7 @@
   <inherits name="com.agifans.agile.Agile" />
   <inherits name='com.google.gwt.webworker.WebWorker' />
   <inherits name='com.akjava.gwt.jszip.GWTJSZip'/>
+  <inherits name="PieMenu"/>
 
   <set-property name="user.agent" value="safari" />
   <set-configuration-property name="user.agent.runtimeWarning" value="false" />
