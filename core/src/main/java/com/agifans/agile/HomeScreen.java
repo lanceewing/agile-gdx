@@ -39,13 +39,14 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.payne.games.piemenu.AnimatedPieWidget;
-import com.payne.games.piemenu.PieWidget;
+import com.payne.games.piemenu.AnimatedPieMenu;
+import com.payne.games.piemenu.PieMenu;
 
 /**
  * (Placeholder for the AGilE title screen and game selection pages)
@@ -65,8 +66,8 @@ public class HomeScreen extends InputAdapter implements Screen {
     private Map<String, Texture> buttonTextureMap;
     private Texture backgroundLandscape;
     private Texture backgroundPortrait;
-    private AnimatedPieWidget portraitMenuWidget;
-    private AnimatedPieWidget landscapeMenuWidget;
+    private MenuWidget portraitMenuWidget;
+    private MenuWidget landscapeMenuWidget;
     private Texture whitePixelTexture;
     
     /**
@@ -146,39 +147,17 @@ public class HomeScreen extends InputAdapter implements Screen {
         return texture;
     }
     
-    private AnimatedPieWidget createMenuWidget(Stage stage) {
-        AnimatedPieWidget widget = null;
-        
-        TextureRegion whitePixel = new TextureRegion(whitePixelTexture);
-
-        // Setting up and creating the widget.
-        PieWidget.PieWidgetStyle style = new PieWidget.PieWidgetStyle();
+    private MenuWidget createMenuWidget(Stage stage) {
+        PieMenu.PieMenuStyle style = new PieMenu.PieMenuStyle();
         style.sliceColor = new Color(0.6f, 0.6f, 0.6f, 0.9f);
         style.separatorWidth = 5;
         style.circumferenceWidth = 5;
         style.circumferenceColor = new Color(1f, 1f, 1f, 0.9f);
         style.separatorColor = style.circumferenceColor;
-        widget = new AnimatedPieWidget(whitePixel, style, 160, 40f/160, 315, 270);
-
-        // Populating the widget
-        Label playLabel = new Label("Run", skin);
-        playLabel.setFontScale(2f);
-        playLabel.setAlignment(Align.center);
-        widget.addActor(playLabel);
         
-        Label deleteLabel = new Label("Delete", skin);
-        deleteLabel.setFontScale(2f);
-        deleteLabel.setAlignment(Align.center);
-        widget.addActor(deleteLabel);
-        
-        Label editLabel = new Label("Edit", skin);
-        editLabel.setFontScale(2f);
-        editLabel.setAlignment(Align.center);
-        widget.addActor(editLabel);
-        
-        // Including the Widget in the Stage
+        MenuWidget widget = new MenuWidget(new TextureRegion(whitePixelTexture), style, skin);
         stage.addActor(widget);
-        widget.setVisible(false);
+        widget.setVisible(false);        
         
         return widget;
     }
@@ -189,7 +168,7 @@ public class HomeScreen extends InputAdapter implements Screen {
         return stage;
     }
     
-    private AnimatedPieWidget getCurrentMenuWidget() {
+    private MenuWidget getCurrentMenuWidget() {
         if (viewportManager.isPortrait()) {
             return portraitMenuWidget;
         }
@@ -544,44 +523,20 @@ public class HomeScreen extends InputAdapter implements Screen {
         addAppButtonsToStage(landscapeStage, appConfig, 5, 3);
         saveAppConfigMap();
         agile.getPreferences().flush();
+        portraitStage.addActor(portraitMenuWidget);
+        landscapeStage.addActor(landscapeMenuWidget);
     }
 
     public ActorGestureListener appGestureListener = new ActorGestureListener() {
         public boolean longPress(final Actor actor, float x, float y) {
-            //actor.debug();
             String appName = actor.getName();
             if ((appName != null) && (!appName.equals(""))) {
                 final AppConfigItem appConfigItem = appConfigMap.get(appName);
                 if (appConfigItem != null) {
-                    longPressActor = actor;
-                    
-                    AnimatedPieWidget widget = getCurrentMenuWidget();
-                    widget.toggleVisibility(0.7f);
-                    widget.setPosition(
-                            actor.getX(Align.center), 
-                            actor.getY(Align.center) + 35,
-                            Align.center);                    
-                    
-                    
-                    /*
-                    dialogHandler.confirm(
-                            "Do you want to remove '" + appConfigItem.getName() + "'?", 
-                            new ConfirmResponseHandler() {
-                        @Override
-                        public void yes() {
-                            int gameIndexBeforeRemoval = getGameIndex(appConfigItem);
-                            appConfigMap.remove(appName);
-                            updateHomeScreenButtonStages();
-                            // TODO: GWT needs to remove data from OPFS.
-                            showGamePage(gameIndexBeforeRemoval);
-                        }
-                        
-                        @Override
-                        public void no() {
-                        }
-                    });
-                    */
-                    
+                    MenuWidget menu = getCurrentMenuWidget();
+                    if (!menu.isOpen()) {
+                        menu.open(appConfigItem, actor.getX(Align.center), actor.getY(Align.center) + 35);
+                    }
                 }
             }
             return true;
@@ -592,8 +547,6 @@ public class HomeScreen extends InputAdapter implements Screen {
             updateHomeScreenButtonStages();
         }
     };
-
-    private Actor longPressActor;
 
     /**
      * Handle clicking an app button. This will start the AGI interpreter and run the
@@ -606,8 +559,11 @@ public class HomeScreen extends InputAdapter implements Screen {
             if ((appName != null) && (!appName.equals(""))) {
                 final AppConfigItem appConfigItem = appConfigMap.get(appName);
                 if (appConfigItem != null) {
-                    if (longPressActor != null) {
-                        longPressActor = null;
+                    MenuWidget menu = getCurrentMenuWidget();
+                    if (menu.isOpen()) {
+                        if (!appName.equals(menu.getGameName())) {
+                            menu.close();
+                        }
                     }
                     else {
                         GameScreen gameScreen = agile.getGameScreen();
@@ -704,5 +660,116 @@ public class HomeScreen extends InputAdapter implements Screen {
         currentStage.act(0f);
         pagedScrollPane.setScrollX(newScrollX);
         pagedScrollPane.setLastScrollX(newScrollX);
+    }
+    
+    /**
+     * An AnimatedPieMenu (i.e. radial menu) for interacting with games on the home screen.
+     */
+    private class MenuWidget extends AnimatedPieMenu {
+        
+        private AppConfigItem appConfigItem;
+        
+        /**
+         * Constructor for MenuWidget.
+         * 
+         * @param whitePixel
+         * @param style
+         * @param labelSkin 
+         */
+        public MenuWidget(TextureRegion whitePixel, PieMenu.PieMenuStyle style, Skin labelSkin) {
+            super(whitePixel, style, 160, 40f/160, 315, 270);
+            
+            Label playLabel = new Label("Run", labelSkin);
+            playLabel.setFontScale(2f);
+            playLabel.setAlignment(Align.center);
+            addActor(playLabel);
+            
+            Label deleteLabel = new Label("Delete", labelSkin);
+            deleteLabel.setFontScale(2f);
+            deleteLabel.setAlignment(Align.center);
+            addActor(deleteLabel);
+            
+            Label editLabel = new Label("Edit", labelSkin);
+            editLabel.setFontScale(2f);
+            editLabel.setAlignment(Align.center);
+            addActor(editLabel);
+            
+            addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    // Note: Sometimes this gets called when the selectedIndex is -1
+                    if (getSelectedIndex() >= 0) {
+                        switch (getSelectedIndex()) {
+                            case 0:
+                                runGame();
+                                break;
+                                
+                            case 1:
+                                deleteGame();
+                                break;
+                                
+                            case 2:
+                                editGame();
+                                break;
+                                
+                            default:
+                                break;
+                        }
+                    }
+                }
+            });
+        }
+        
+        private void runGame() {
+            System.out.println("RUN");
+        }
+        
+        private void deleteGame() {
+            dialogHandler.confirm(
+                    "Do you want to remove '" + appConfigItem.getName() + "'?", 
+                    new ConfirmResponseHandler() {
+                @Override
+                public void yes() {
+                    int gameIndexBeforeRemoval = getGameIndex(appConfigItem);
+                    appConfigMap.remove(appConfigItem.getName());
+                    close();
+                    updateHomeScreenButtonStages();
+                    // TODO: GWT needs to remove data from OPFS.
+                    showGamePage(gameIndexBeforeRemoval);
+                }
+                
+                @Override
+                public void no() {
+                    close();
+                }
+            });
+        }
+        
+        private void editGame() {
+            System.out.println("EDIT");
+        }
+        
+        public String getGameName() {
+            return (appConfigItem != null? appConfigItem.getName() : "");
+        }
+        
+        public boolean isOpen() {
+            return (appConfigItem != null);
+        }
+        
+        public void open(AppConfigItem appConfigItem, float x, float y) {
+            if (!isOpen()) {
+                this.appConfigItem = appConfigItem;
+                this.setPosition(x, y, Align.center);
+                this.transitionToOpening(0.7f);
+            }
+        }
+        
+        public void close() {
+            if (isOpen()) {
+                this.appConfigItem = null;
+                this.transitionToClosing(0.7f);
+            }
+        }
     }
 }
