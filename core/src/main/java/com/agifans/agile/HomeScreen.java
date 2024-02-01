@@ -153,14 +153,15 @@ public class HomeScreen extends InputAdapter implements Screen {
 
         // Setting up and creating the widget.
         PieWidget.PieWidgetStyle style = new PieWidget.PieWidgetStyle();
-        style.sliceColor = new Color(0.9f, 0.9f, 0.9f, 0.9f);
-        style.separatorWidth = 2;
-        style.circumferenceWidth = 2;
+        style.sliceColor = new Color(0.6f, 0.6f, 0.6f, 0.9f);
+        style.separatorWidth = 5;
+        style.circumferenceWidth = 5;
+        style.circumferenceColor = new Color(1f, 1f, 1f, 0.9f);
         style.separatorColor = style.circumferenceColor;
         widget = new AnimatedPieWidget(whitePixel, style, 160, 40f/160, 315, 270);
 
         // Populating the widget
-        Label playLabel = new Label("X", skin);
+        Label playLabel = new Label("Run", skin);
         playLabel.setFontScale(2f);
         playLabel.setAlignment(Align.center);
         widget.addActor(playLabel);
@@ -558,7 +559,7 @@ public class HomeScreen extends InputAdapter implements Screen {
                     widget.toggleVisibility(0.7f);
                     widget.setPosition(
                             actor.getX(Align.center), 
-                            actor.getY(Align.center) + 15,
+                            actor.getY(Align.center) + 35,
                             Align.center);                    
                     
                     
