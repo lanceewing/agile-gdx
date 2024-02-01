@@ -767,6 +767,9 @@ public class HomeScreen extends InputAdapter implements Screen {
                                 closeImmediately();
                                 updateHomeScreenButtonStages();
                             }
+                            else {
+                                closeImmediately();
+                            }
                         }
                     });
         }
