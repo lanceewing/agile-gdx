@@ -323,6 +323,9 @@ public class HomeScreen extends InputAdapter implements Screen {
      * @return whether the input was processed
      */
     public boolean keyUp(int keycode) {
+        // Close the radial menu, if it is open.
+        getCurrentMenuWidget().closeImmediately();
+        
         float pageWidth = 0.0f;
         PagedScrollPane pagedScrollPane = null;
         if (viewportManager.isPortrait()) {
