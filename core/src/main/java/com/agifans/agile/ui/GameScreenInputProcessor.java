@@ -280,7 +280,18 @@ public class GameScreenInputProcessor extends InputAdapter {
             }
 
             if (backArrowClicked) {
-                gameScreen.getAgileRunner().getUserInput().keyDown(Keys.BACK);
+                dialogHandler.confirm("Are you sure you want to quit the game?", 
+                        new ConfirmResponseHandler() {
+                    @Override
+                    public void yes() {
+                        gameScreen.getAgileRunner().stop();
+                    }
+                    
+                    @Override
+                    public void no() {
+                        // Nothing to do.
+                    }
+                });
             }
         }
 
