@@ -378,7 +378,7 @@ public class HomeScreen extends InputAdapter implements Screen {
             int gameIndex = getIndexOfFirstGameStartingWithChar((char)(keycode + 36));
             if (gameIndex > -1) {
                 // Add one to allow for the "Add Game" icon in the first slot.
-                showGamePage(gameIndex + 1);
+                showGamePage(gameIndex + 1, false);
             }
         }
         return false;
@@ -648,10 +648,10 @@ public class HomeScreen extends InputAdapter implements Screen {
     }
     
     private void showGamePage(AppConfigItem appConfigItem) {
-        showGamePage(getGameIndex(appConfigItem));
+        showGamePage(getGameIndex(appConfigItem), false);
     }
     
-    private void showGamePage(int gameIndex) {
+    private void showGamePage(int gameIndex, boolean skipScroll) {
         // Work out how far to move from far left to get to game's page.
         float pageWidth = viewportManager.isPortrait()? 1130.0f : 1970.0f;
         float newScrollX = pageWidth * (gameIndex / 15);
@@ -663,6 +663,9 @@ public class HomeScreen extends InputAdapter implements Screen {
         currentStage.act(0f);
         pagedScrollPane.setScrollX(newScrollX);
         pagedScrollPane.setLastScrollX(newScrollX);
+        if (skipScroll) {
+            pagedScrollPane.updateVisualScroll();
+        }
     }
     
     /**
@@ -738,12 +741,17 @@ public class HomeScreen extends InputAdapter implements Screen {
                     new ConfirmResponseHandler() {
                 @Override
                 public void yes() {
-                    int gameIndexBeforeRemoval = getGameIndex(appConfigItem);
+                    int gameIndexBeforeClose = getGameIndex(appConfigItem);
                     appConfigMap.remove(appConfigItem.getName());
                     closeImmediately();
-                    updateHomeScreenButtonStages();
                     // TODO: GWT needs to remove data from OPFS.
-                    showGamePage(gameIndexBeforeRemoval);
+                    Gdx.app.postRunnable(new Runnable(){
+                        @Override
+                        public void run() {
+                            updateHomeScreenButtonStages();
+                            showGamePage(gameIndexBeforeClose, true);
+                        }
+                    });
                 }
                 
                 @Override
@@ -768,8 +776,15 @@ public class HomeScreen extends InputAdapter implements Screen {
                                 // If the name has changed, we need to change the key in the Map.
                                 appConfigMap.remove(oldName);
                                 appConfigMap.put(appConfigItem.getName(), appConfigItem);
+                                int gameIndexBeforeClose = getGameIndex(appConfigItem);
                                 closeImmediately();
-                                updateHomeScreenButtonStages();
+                                Gdx.app.postRunnable(new Runnable(){
+                                    @Override
+                                    public void run() {
+                                        updateHomeScreenButtonStages();
+                                        showGamePage(gameIndexBeforeClose, true);
+                                    }
+                                });
                             }
                             else {
                                 closeImmediately();
