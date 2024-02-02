@@ -760,10 +760,14 @@ public class HomeScreen extends InputAdapter implements Screen {
                         @Override
                         public void inputTextResult(boolean success, String text) {
                             if (success && (text != null) & !text.isEmpty()) {
+                                String oldName = appConfigItem.getName();
                                 String displayName = text.replace("\\n", "\n");
                                 String name = text.replace("\\n", " ").replaceAll(" +", " ");
                                 appConfigItem.setName(name);
                                 appConfigItem.setDisplayName(displayName);
+                                // If the name has changed, we need to change the key in the Map.
+                                appConfigMap.remove(oldName);
+                                appConfigMap.put(appConfigItem.getName(), appConfigItem);
                                 closeImmediately();
                                 updateHomeScreenButtonStages();
                             }
