@@ -21,23 +21,16 @@ public abstract class PixelData {
      * Map between the normal EGA palette and the currently set custom palette.
      */
     protected Map<Integer, Integer> egaToPaletteMap;
-    
-    /**
-     * Map between the custom palette and the normal EGA palette.
-     */
-    protected Map<Integer, Integer> paletteToEgaMap;
-    
+        
     /**
      * Constructor for PixelData.
      */
     public PixelData() {
         egaToPaletteMap = new HashMap<>();
-        paletteToEgaMap = new HashMap<>();
         
-        // By default, the palette maps are simply between the standard EGA palette and itself.
+        // By default, the palette map is simply between the standard EGA palette and itself.
         for (int colourNum=0; colourNum < 16; colourNum++) {
             egaToPaletteMap.put(EgaPalette.colours[colourNum], EgaPalette.colours[colourNum]);
-            paletteToEgaMap.put(EgaPalette.colours[colourNum], EgaPalette.colours[colourNum]);
         }
     }
     
@@ -45,10 +38,9 @@ public abstract class PixelData {
      * Clears the state of the PixelData back to its initial state.
      */
     public void clearState() {
-        // By default, the palette maps are simply between the standard EGA palette and itself.
+        // By default, the palette map is simply between the standard EGA palette and itself.
         for (int colourNum=0; colourNum < 16; colourNum++) {
             egaToPaletteMap.put(EgaPalette.colours[colourNum], EgaPalette.colours[colourNum]);
-            paletteToEgaMap.put(EgaPalette.colours[colourNum], EgaPalette.colours[colourNum]);
         }
         
         clearPixels();
@@ -61,31 +53,17 @@ public abstract class PixelData {
      * @param newPalette
      */
     public void setPalette(int[] newPalette) {
-        // Whenever the palette changes, we need to convert the existing pixel array
-        // from the previous palette to the new one.
-        Map<Integer, Integer> paletteConversionMap = new HashMap<>();
-        
         for (int colourNum=0; colourNum < 16; colourNum++) {
-            // Update the old to new palette conversion Map first
-            int oldPaletteColour = egaToPaletteMap.get(EgaPalette.colours[colourNum]);
-            paletteConversionMap.put(oldPaletteColour, newPalette[colourNum]);
-            
-            // And then update the EGA to palette and palette to EGA Maps for new palette.
             egaToPaletteMap.put(EgaPalette.colours[colourNum], newPalette[colourNum]);
-            paletteToEgaMap.put(newPalette[colourNum], EgaPalette.colours[colourNum]);
         }
         
-        // Use the populated paletteConversionMap to update the pixels array to new palette.
-        updatePixelsForNewPalette(paletteConversionMap);
+        updatePixelsForNewPalette();
     }
     
     /**
-     * Applies the newly set palette to the pixels array, by using the provided Map, which
-     * contains mappings from the old palette colours to the new palette equivalent colours.
-     * 
-     * @param paletteConversionMap 
+     * Applies the newly set palette to the pixels array.
      */
-    protected abstract void updatePixelsForNewPalette(Map<Integer, Integer> paletteConversionMap);
+    protected abstract void updatePixelsForNewPalette();
     
     /**
      * Initialises the PixelData implementation with the given width and height.
