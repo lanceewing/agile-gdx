@@ -1497,7 +1497,7 @@ public class Commands {
                         if (paletteNum < 10) {
                             int[] palette = state.getPalette(paletteNum);
                             if (palette != null) {
-                                // TODO: Implement palette change.
+                                pixelData.setPalette(palette);
                             }
                         }
                     }

@@ -1,5 +1,7 @@
 package com.agifans.agile.gwt;
 
+import java.util.Map;
+
 import com.agifans.agile.PixelData;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.google.gwt.canvas.dom.client.Context2d;
@@ -34,7 +36,7 @@ import com.google.gwt.typedarrays.shared.Uint8ClampedArray;
  * have to worry about synchronising the SharedArrayBuffer access with Atomics either,
  * as one side is always ready and will not modify.
  */
-public class GwtPixelData implements PixelData {
+public class GwtPixelData extends PixelData {
 
     private Uint8ClampedArray pixelArray;
     
@@ -53,6 +55,7 @@ public class GwtPixelData implements PixelData {
      */
     public GwtPixelData(JavaScriptObject sharedArrayBuffer) {
         pixelArray = createPixelArray(sharedArrayBuffer);
+        backupPixelArray = TypedArrays.createUint8ClampedArray(pixelArray.byteLength());
     }
     
     private native Uint8ClampedArray createPixelArray(JavaScriptObject sharedArrayBuffer)/*-{
@@ -81,22 +84,30 @@ public class GwtPixelData implements PixelData {
     public void putPixel(int agiScreenIndex, int rgba8888Colour) {
         int index = agiScreenIndex * 4;
         
+        // All incoming RGBA8888 colours are from EGA palette, so convert to custom.
+        int paletteColour = egaToPaletteMap.getOrDefault(rgba8888Colour, rgba8888Colour);
+        
         // Adds RGBA8888 colour to byte array in expected R, G, B, A order.
-        pixelArray.set(index, (rgba8888Colour >> 24) & 0xFF);
-        pixelArray.set(index + 1, (rgba8888Colour >> 16) & 0xFF);
-        pixelArray.set(index + 2, (rgba8888Colour >> 8) & 0xFF);
-        pixelArray.set(index + 3, rgba8888Colour & 0xFF);
+        pixelArray.set(index, (paletteColour >> 24) & 0xFF);
+        pixelArray.set(index + 1, (paletteColour >> 16) & 0xFF);
+        pixelArray.set(index + 2, (paletteColour >> 8) & 0xFF);
+        pixelArray.set(index + 3, paletteColour & 0xFF);
     }
 
     @Override
     public void pixelCopy(int[] rgba888Src, int agiScreenIndex, int agiScreenLength) {
         int index = agiScreenIndex * 4;
         for (int srcPos = 0; srcPos < agiScreenLength; srcPos++) {
+            // The src with be in the EGA palette. All incoming external colours are.
             int rgba8888Colour = rgba888Src[srcPos];
-            pixelArray.set(index++, (rgba8888Colour >> 24) & 0xFF);
-            pixelArray.set(index++, (rgba8888Colour >> 16) & 0xFF);
-            pixelArray.set(index++, (rgba8888Colour >>  8) & 0xFF);
-            pixelArray.set(index++, (rgba8888Colour >>  0) & 0xFF);
+            
+            // Convert to palette colour.
+            int paletteColour = egaToPaletteMap.getOrDefault(rgba8888Colour, rgba8888Colour);
+            
+            pixelArray.set(index++, (paletteColour >> 24) & 0xFF);
+            pixelArray.set(index++, (paletteColour >> 16) & 0xFF);
+            pixelArray.set(index++, (paletteColour >>  8) & 0xFF);
+            pixelArray.set(index++, (paletteColour >>  0) & 0xFF);
         }
     }
 
@@ -115,6 +126,9 @@ public class GwtPixelData implements PixelData {
         for (int index = 0; index < pixelArray.length(); index++) {
             pixelArray.set(index, 0);
         }
+        for (int index = 0; index < backupPixelArray.length(); index++) {
+            backupPixelArray.set(index, 0);
+        }
     }
 
     @Override
@@ -125,7 +139,8 @@ public class GwtPixelData implements PixelData {
         rgba8888Colour |= ((pixelArray.get(index + 1) << 16) & 0x00FF0000);
         rgba8888Colour |= ((pixelArray.get(index + 2) <<  8) & 0x0000FF00);
         rgba8888Colour |= ((pixelArray.get(index + 3) <<  0) & 0x000000FF);
-        return rgba8888Colour;
+        // We always return EGA palette to external callers.
+        return paletteToEgaMap.getOrDefault(rgba8888Colour, rgba8888Colour);
     }
 
     @Override
@@ -136,7 +151,8 @@ public class GwtPixelData implements PixelData {
         rgba8888Colour |= ((backupPixelArray.get(index + 1) << 16) & 0x00FF0000);
         rgba8888Colour |= ((backupPixelArray.get(index + 2) <<  8) & 0x0000FF00);
         rgba8888Colour |= ((backupPixelArray.get(index + 3) <<  0) & 0x000000FF);
-        return rgba8888Colour;
+        // We always return EGA palette to external callers.
+        return paletteToEgaMap.getOrDefault(rgba8888Colour, rgba8888Colour);
     }
 
     @Override
@@ -153,4 +169,29 @@ public class GwtPixelData implements PixelData {
         }
         ctx.putImageData(imgData, 0, 0);
     }-*/;
+
+    @Override
+    protected void updatePixelsForNewPalette(Map<Integer, Integer> paletteConversionMap) {
+        for (Uint8ClampedArray pixelArray : new Uint8ClampedArray[] { this.pixelArray, this.backupPixelArray }) {
+            for (int index=0; index < pixelArray.byteLength(); index += 4) {
+                // Get the colour from the pixels array (which will be in the old palette)
+                int oldPaletteRGBA8888Colour = 0;
+                oldPaletteRGBA8888Colour |= ((pixelArray.get(index + 0) << 24) & 0xFF000000);
+                oldPaletteRGBA8888Colour |= ((pixelArray.get(index + 1) << 16) & 0x00FF0000);
+                oldPaletteRGBA8888Colour |= ((pixelArray.get(index + 2) <<  8) & 0x0000FF00);
+                oldPaletteRGBA8888Colour |= ((pixelArray.get(index + 3) <<  0) & 0x000000FF);
+                
+                // Look up the new palette equivalent.
+                int newPaletteRGBA8888Colour = paletteConversionMap.getOrDefault(oldPaletteRGBA8888Colour, oldPaletteRGBA8888Colour);
+            
+                // Update the pixel to be the equivalent colour from the new palette.
+                if (newPaletteRGBA8888Colour != oldPaletteRGBA8888Colour) {
+                    pixelArray.set(index, (newPaletteRGBA8888Colour >> 24) & 0xFF);
+                    pixelArray.set(index + 1, (newPaletteRGBA8888Colour >> 16) & 0xFF);
+                    pixelArray.set(index + 2, (newPaletteRGBA8888Colour >> 8) & 0xFF);
+                    pixelArray.set(index + 3, newPaletteRGBA8888Colour & 0xFF);
+                }
+            }
+        }
+    }
 }

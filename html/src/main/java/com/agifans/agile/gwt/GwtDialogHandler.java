@@ -164,7 +164,8 @@ public class GwtDialogHandler implements DialogHandler {
                 lowerCaseName.endsWith("dir") || 
                 lowerCaseName.equals("agidata.ovl") || 
                 lowerCaseName.equals("object") || 
-                lowerCaseName.equals("words.tok")) {
+                lowerCaseName.equals("words.tok") ||
+                lowerCaseName.matches("^pal[.]10[0-9]$")) {
             return true;
         }
         else {

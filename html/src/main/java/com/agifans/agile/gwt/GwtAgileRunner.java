@@ -254,7 +254,7 @@ public class GwtAgileRunner extends AgileRunner {
         // worker immediately.
         worker.terminate();
         stopCurrentSound();
-        pixelData.clearPixels();
+        pixelData.clearState();
         variableData.clearState();
         inTick = false;
         stopped = true;

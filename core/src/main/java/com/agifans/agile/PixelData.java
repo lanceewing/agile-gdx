@@ -1,5 +1,8 @@
 package com.agifans.agile;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.badlogic.gdx.graphics.Pixmap;
 
 /**
@@ -12,15 +15,85 @@ import com.badlogic.gdx.graphics.Pixmap;
  * and Android, the colours are updated via a byte array where the RGBA components
  * are stored in the order R, G, B, A.
  */
-public interface PixelData {
-
+public abstract class PixelData {
+    
+    /**
+     * Map between the normal EGA palette and the currently set custom palette.
+     */
+    protected Map<Integer, Integer> egaToPaletteMap;
+    
+    /**
+     * Map between the custom palette and the normal EGA palette.
+     */
+    protected Map<Integer, Integer> paletteToEgaMap;
+    
+    /**
+     * Constructor for PixelData.
+     */
+    public PixelData() {
+        egaToPaletteMap = new HashMap<>();
+        paletteToEgaMap = new HashMap<>();
+        
+        // By default, the palette maps are simply between the standard EGA palette and itself.
+        for (int colourNum=0; colourNum < 16; colourNum++) {
+            egaToPaletteMap.put(EgaPalette.colours[colourNum], EgaPalette.colours[colourNum]);
+            paletteToEgaMap.put(EgaPalette.colours[colourNum], EgaPalette.colours[colourNum]);
+        }
+    }
+    
+    /**
+     * Clears the state of the PixelData back to its initial state.
+     */
+    public void clearState() {
+        // By default, the palette maps are simply between the standard EGA palette and itself.
+        for (int colourNum=0; colourNum < 16; colourNum++) {
+            egaToPaletteMap.put(EgaPalette.colours[colourNum], EgaPalette.colours[colourNum]);
+            paletteToEgaMap.put(EgaPalette.colours[colourNum], EgaPalette.colours[colourNum]);
+        }
+        
+        clearPixels();
+    }
+    
+    /**
+     * Sets a new palette to use when plotting pixels. Intended for use with
+     * the AGIPAL interpreter hack.
+     * 
+     * @param newPalette
+     */
+    public void setPalette(int[] newPalette) {
+        // Whenever the palette changes, we need to convert the existing pixel array
+        // from the previous palette to the new one.
+        Map<Integer, Integer> paletteConversionMap = new HashMap<>();
+        
+        for (int colourNum=0; colourNum < 16; colourNum++) {
+            // Update the old to new palette conversion Map first
+            int oldPaletteColour = egaToPaletteMap.get(EgaPalette.colours[colourNum]);
+            paletteConversionMap.put(oldPaletteColour, newPalette[colourNum]);
+            
+            // And then update the EGA to palette and palette to EGA Maps for new palette.
+            egaToPaletteMap.put(EgaPalette.colours[colourNum], newPalette[colourNum]);
+            paletteToEgaMap.put(newPalette[colourNum], EgaPalette.colours[colourNum]);
+        }
+        
+        // Use the populated paletteConversionMap to update the pixels array to new palette.
+        updatePixelsForNewPalette(paletteConversionMap);
+    }
+    
+    /**
+     * Applies the newly set palette to the pixels array, by using the provided Map, which
+     * contains mappings from the old palette colours to the new palette equivalent colours.
+     * 
+     * @param paletteConversionMap 
+     */
+    protected abstract void updatePixelsForNewPalette(Map<Integer, Integer> paletteConversionMap);
+    
     /**
      * Initialises the PixelData implementation with the given width and height.
      * 
      * @param width The width of the pixel data.
      * @param height The height of the pixel data.
      */
-    void init(int width, int height);
+    public abstract void init(int width, int height);
     
     /**
      * Puts a single pixel into the pixel data using an AGI screen position, i.e.
@@ -29,7 +102,7 @@ public interface PixelData {
      * @param agiScreenIndex AGI screen position (i.e. (y * 320) + x
      * @param rgba8888Colour
      */
-    void putPixel(int agiScreenIndex, int rgba8888Colour);
+    public abstract void putPixel(int agiScreenIndex, int rgba8888Colour);
     
     /**
      * Copies AGI screen pixels into the pixel data, using an AGI starting screen
@@ -40,22 +113,22 @@ public interface PixelData {
      * @param agiScreenIndex
      * @param agiScreenLength
      */
-    void pixelCopy(int[] rgba888Src, int agiScreenIndex, int agiScreenLength);
+    public abstract void pixelCopy(int[] rgba888Src, int agiScreenIndex, int agiScreenLength);
     
     /**
      * Saves all pixels to a backup copy of the pixel data. 
      */
-    void savePixels();
+    public abstract void savePixels();
     
     /**
      * Restores all pixels from the backup copy of the pixel data.
      */
-    void restorePixels();
+    public abstract void restorePixels();
     
     /**
      * Clears all pixels, i.e. sets to black.
      */
-    void clearPixels();
+    public abstract void clearPixels();
     
     /**
      * Gets a single pixel from the pixel data, using an AGI screen position, i.e.
@@ -65,7 +138,7 @@ public interface PixelData {
      * 
      * @return The RGBA8888 pixel value.
      */
-    int getPixel(int agiScreenIndex);
+    public abstract int getPixel(int agiScreenIndex);
     
     /**
      * Gets a single pixel from the backup pixel data, using an AGI screen position,
@@ -75,13 +148,13 @@ public interface PixelData {
      * 
      * @return The RGBA8888 pixel value from the backup pixel array.
      */
-    int getBackupPixel(int agiScreenIndex);
+    public abstract int getBackupPixel(int agiScreenIndex);
     
     /**
      * Updates Pixmap with the latest local changes. 
      * 
      * @param pixmap 
      */
-    void updatePixmap(Pixmap pixmap);
+    public abstract void updatePixmap(Pixmap pixmap);
     
 }
