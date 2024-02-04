@@ -59,7 +59,7 @@ public class Detection {
                     gameName = gameDefinitions[i][2];
                     flags = gameDefinitions[i][0];
                     hasAGIMouse = flags.contains("M");
-                    hasAGIPal = flags.contains("P");
+                    hasAGIPal = flags.contains("P") || hasAGIPalFiles(game);
                     hasAGI256 = flags.contains("V");
                     break;
                 }
@@ -92,6 +92,25 @@ public class Detection {
             // Failure in game detection code. Continue with the default unrecognised game values.
             e.printStackTrace();
         }
+    }
+    
+    /**
+     * Checks the Game's gameFilesMap to determine if there are AGI PAL files. Returns
+     * true if there are; otherwise false.
+     * 
+     * @param game The Game to look for PAL files within.
+     * 
+     * @return true if the Game has AGI PAL files; otherwise false.
+     */
+    private boolean hasAGIPalFiles(Game game) {
+        if ((game != null) && (game.gameFilesMap != null)) {
+            for (String fileName : game.gameFilesMap.keySet()) {
+                if (fileName.toLowerCase().matches("^pal[.]10[0-9]$")) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     /**
@@ -262,6 +281,8 @@ public class Detection {
         {"----", "NATU1E","Naturette 1 (English v1.2)", "0a75884e7f010974a230bdf269651117"},
         {"----", "NATU1E","Naturette 1 (English v1.3)", "f15bbf999ac55ebd404aa1eb84f7c1d9"},
         {"----", "NATU1F","Naturette 1 (French v1.2)", "d3665622cc41aeb9c7ecf4fa43f20e53"},
+        {"-P--", "NATU2E","Naturette 2 - Daughter of the Moon (v1.0)", "bdf76a45621c7f56d1c9d40292c6137a"},
+        {"----", "NATU3E","Naturette 3 - Adventure in Treeworld (v1.0a)", "6dbb0e7fc75fec442e6d9e5a06f1530e"},
         {"M---", "NATU4", "Naturette 4", "8253706b6ef5423a79413b216760297c"},
         {"----", "HANGMN","New AGI Hangman Test", "d69c0e9050ccc29fd662b74d9fc73a15"},
         {"----", "NAPALM","Napalm Quest (v0.5)", "b659afb491d967bb34810d1c6ce22093"},
