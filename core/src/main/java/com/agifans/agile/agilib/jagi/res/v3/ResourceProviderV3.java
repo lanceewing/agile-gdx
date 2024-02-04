@@ -258,8 +258,10 @@ public class ResourceProviderV3 extends com.agifans.agile.agilib.jagi.res.v2.Res
                     uncompressed = ByteCaster.lohiUnsignedShort(b, 3);
                     compressed = ByteCaster.lohiUnsignedShort(b, 5);
                     in = new SegmentedInputStream(file, offset + 7, compressed);
-
-                    if (resType == TYPE_PICTURE) {
+                    
+                    if ((resType == TYPE_PICTURE) && ((b[2] & 0x80) == 0x80)) {
+                        // AGI V3 PICTURE compression is used only if the third byte
+                        // of the header, i.e. vol number, has the top bit set.
                         in = new PictureInputStream(in);
                     } else {
                         if (compressed != uncompressed) {
