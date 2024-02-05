@@ -222,6 +222,7 @@ public class Detection {
         {"----", "DGADGM","DG: The Adventure Game (v1.1)", "258bdb3bb8e61c92b71f2f456cc69e23"},
         {"M---", "DGAGMS","DG - The AGIMouse Adventure (English v1", "efe453b92bc1487ea69fbebede4d5f26"},
         {"----", "DASHIK","Dashiki (16 Colors)", "9b2c7b9b0283ab9f12bedc0cb6770a07"},
+        {"--V-", "DSH256","Dashiki - 256 Colors", "c68052bb209e23b39b55ff3d759958e6"},
         {"----", "DATEQ1","Date Quest 1 (v1.0)", "ba3dcb2600645be53a13170aa1a12e69"},
         {"----", "DATEQ2","Date Quest 2 (v1.0 Demo)", "1602d6a2874856e928d9a8c8d2d166e9"},
         {"----", "DATEQ2","Date Quest 2 (v1.0)", "f13f6fc85aa3e6e02b0c20408fb63b47"},
