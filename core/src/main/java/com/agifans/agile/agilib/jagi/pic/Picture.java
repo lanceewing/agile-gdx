@@ -17,7 +17,7 @@ import java.util.Vector;
  */
 public class Picture {
     protected Vector entries;
-
+    
     /**
      * Creates new Picture
      */

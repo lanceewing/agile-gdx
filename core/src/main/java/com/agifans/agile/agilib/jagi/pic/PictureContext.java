@@ -265,6 +265,11 @@ public class PictureContext {
         return picData;
     }
 
+    // Used by AGI256 hack, to override picture's visual screen with 256 colour data.
+    public void setPictureData(int[] pictureData) {
+        this.picData = pictureData;
+    }
+    
     public int[] getPriorityData() {
         return priData;
     }

@@ -99,7 +99,7 @@ public class Commands {
         state.scriptBuffer.addScript(ScriptBuffer.ScriptBufferEventType.DRAW_PIC, pictureNum);
         state.restoreBackgrounds();
 
-        // We create a clone of the Picture so that is drawing state isn't persisted
+        // We create a clone of the Picture so that it's drawing state isn't persisted
         // back to the master list of pictures in the GameState.
         Picture picture = state.pictures[pictureNum].clone();
         picture.drawPicture();
@@ -110,6 +110,36 @@ public class Commands {
 
         state.drawObjects();
 
+        state.pictureVisible = false;
+    }
+    
+    /**
+     * Loads an AGI256 picture from the given AGI PICTURE resource's VOL location. The 
+     * data at that resource location is very much NOT a standard AGI PICTURE and should
+     * not be processed as such. Instead, after the 5 byte header, it is a raw 160x168
+     * byte 256 colour VGA image, using the default VGA palette. This is loaded directly
+     * into the currently loaded AGI picture's visual screen, i.e. not into it's own
+     * visual screen. AGI256 pictures are always loaded in conjunction with a normal AGI
+     * picture that has an empty visual screen, but probably has a complex priority screen.
+     * The AGI256 picture itself does not have a priority screen. This is why we always
+     * have two AGI PICTURE resources involved, one normal AGI picture, and one 256 colour
+     * bitmap image, which uses up two different AGI PICTURE numbers.
+     * 
+     * @param pictureNum The PICTURE resource number to load AGI256 data from.
+     */
+    private void loadAGI256Picture(int pictureNum) {
+        Picture agi256Picture = state.pictures[pictureNum];
+        int[] visualPixels = agi256Picture.getVisualPixels();
+
+        // Copy the pixels to our VisualPixels array, doubling each one as we go.
+        for (int i = 0, ii = 0; i < (160 * 168); i++, ii += 2) {
+            int rgba8888Color = visualPixels[i];
+            state.visualPixels[ii + 0] = rgba8888Color;
+            state.visualPixels[ii + 1] = rgba8888Color;
+        }
+
+        state.drawObjects();
+        
         state.pictureVisible = false;
     }
 
@@ -1975,7 +2005,17 @@ public class Commands {
 
             case 170: // set.simple (i.e. simpleName variable for saved games)
                 {
-                    state.simpleName = action.logic.messages.get(action.operands.get(0).asByte());
+                    if (state.game.hasAGI256) {
+                        // AGI256 overrides this command. The argument specifies the variable
+                        // that holds the number of the picture to load as an AGI256 picture.
+                        // The priority screen will have been loaded from a normal AGI PIC, the
+                        // visual screen being blank, and so this loads the 256 colour VGA image
+                        // into the already loaded normal PICTURE's visual screen.
+                        loadAGI256Picture(state.getVar(action.operands.get(0).asByte()));
+                    }
+                    else {
+                        state.simpleName = action.logic.messages.get(action.operands.get(0).asByte());
+                    }
                 }
                 break;
 

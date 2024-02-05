@@ -6,8 +6,10 @@ import java.util.Map;
 import com.agifans.agile.agilib.AgileLogicProvider.AgileLogicWrapper;
 import com.agifans.agile.agilib.AgileSoundProvider.AgileSoundWrapper;
 import com.agifans.agile.agilib.AgileViewProvider.AgileViewWrapper;
+import com.agifans.agile.agilib.jagi.pic.CorruptedPictureException;
 import com.agifans.agile.agilib.jagi.res.ResourceCache;
 import com.agifans.agile.agilib.jagi.res.ResourceException;
+import com.agifans.agile.agilib.jagi.res.ResourceProvider;
 
 /**
  * An adapter between the interface that AGILE expects and the JAGI library.
@@ -98,6 +100,17 @@ public class Game {
                 Picture picture = new Picture(resourceCache.getPicture(i));
                 picture.index = i;
                 pictures[i] = picture;
+            } catch (CorruptedPictureException cpe) {
+                // This probably means that it is an AGI256 picture, so let's load
+                // the raw data instead, so that the AGILE interpreter can use it
+                // directly.
+                try {
+                    Picture picture = new Picture(resourceCache.getResourceProvider().open(ResourceProvider.TYPE_PICTURE, i));
+                    picture.index = i;
+                    pictures[i] = picture;
+                } catch (Exception e) {
+                    // Ignore. Perhaps it really is a PICTURE we can't deal with.
+                }
             } catch (Exception e) {
                 // Ignore. The PICTURE doesn't exist.
             }
