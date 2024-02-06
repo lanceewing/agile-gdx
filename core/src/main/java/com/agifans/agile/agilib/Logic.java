@@ -97,6 +97,15 @@ public class Logic extends Resource {
             actions.add(action);
             addressToActionIndex.put(action.address, actionNumber++);
         }
+        
+        // Some AGI LOGICs, e.g. 99 in XMAS card, do not have a return statement.
+        if (actions.get(actions.size() - 1).operation.opcode != 0) {
+            action = new Action(ACTION_OPERATIONS[0], new ArrayList<Operand>());
+            action.address = stream.position() - 1;
+            action.logic = this;
+            actions.add(action);
+            addressToActionIndex.put(action.address, actionNumber++);
+        }
     }
 
     /**
