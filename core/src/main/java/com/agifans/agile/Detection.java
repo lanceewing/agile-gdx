@@ -124,7 +124,7 @@ public class Detection {
      * due to the saved game file needing to add "SG" as a suffix.
      */
     private static String[][] gameDefinitions = {
-        {"----", "DEMO", "AGI Demo 1 (1987-05-20)", "9c4a5b09cc3564bc48b4766e679ea332"},
+        {"----", "DEMO1", "AGI Demo 1 (1987-05-20)", "9c4a5b09cc3564bc48b4766e679ea332"},
         {"----", "DEMO2", "AGI Demo 2 (1987-11-24 3.5\")", "e8ebeb0bbe978172fe166f91f51598c7"},
         {"----", "DEMO2", "AGI Demo 2 (1987-11-24 [version 1] 5.25\")", "852ac303a374df62571642ca1e2d1f0a"},
         {"----", "DEMO2", "AGI Demo 2 (1987-11-25 [version 2] 5.25\")", "1503f02086ea9f388e7e041c039eaa69"},
@@ -157,7 +157,7 @@ public class Detection {
         {"----", "SQ2", "Space Quest II (2.0C/A 5.25\"/ST)", "bd71fe54869e86945041700f1804a651"},
         {"----", "SQ2", "Space Quest II (2.0F 1989-01-05 3.5\")", "28add5125484302d213911df60d2aded"},
         {"----", "XMAS", "Christmas Card (1986-11-13 [version 1])", "3067b8d5957e2861e069c3c0011bd43d"},
-        {"----", "DEMO3", "Demo 3 1988-09-13", "289c7a2c881f1d973661e961ced77d74"},
+        {"----", "DEMO3", "AGI Demo 3 (1988-09-13)", "289c7a2c881f1d973661e961ced77d74"},
         {"----", "BC", "The Black Cauldron (2.10 1988-11-10 5.25\")", "0c5a9acbcc7e51127c34818e75806df6"},
         {"----", "BC", "The Black Cauldron (2.10 1988-11-10 3.5\")", "0de3953c9225009dc91e5b0d1692967b"},
         {"----", "GR", "Gold Rush! (2.01 1988-12-22 5.25\")", "db733d199238d4009a9e95f11ece34e9"},
