@@ -4,11 +4,13 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 import com.agifans.agile.EgaPalette;
+import com.agifans.agile.VgaPalette;
 
 public class View extends Resource {
 
     public ArrayList<Loop> loops;
     public String description;
+    public boolean usesAGI256Hack;
     
     public View(byte[] rawData) {
         loops = new ArrayList<>();
@@ -17,6 +19,11 @@ public class View extends Resource {
     }
     
     public void decode(byte[] rawData) {
+        // NOTE: stepSize and cycleTime are only used by AGI versions below V2.
+        int stepSize = (rawData[0] & 0xFF);
+        int cycleTime = (rawData[1] & 0xFF);
+        usesAGI256Hack = ((stepSize == 0x0F) && (cycleTime == 0xF0));
+        
         int numLoops = (rawData[2] & 0xFF);
         
         // Read the description
@@ -77,17 +84,43 @@ public class View extends Resource {
             width = (short)(rawData[offset] & 0xFF);
             height = (short)(rawData[offset + 1] & 0xFF);
             
-            short transMirror = (short)(rawData[offset + 2] & 0xFF);
-            short mirrorInfo = (short)((transMirror & 0xF0) >> 4);
-
-            transparent = EgaPalette.colours[(transMirror & 0x0F)];
-            
-            loadData(rawData, offset + 3);
-
-            if ((mirrorInfo & 0x8) != 0) {
-                if ((mirrorInfo & 0x7) != loopNumber) {
-                    mirror();
+            if (usesAGI256Hack) {
+                // AGI256-2 HACK uses whole byte for transparency and doesn't support mirror.
+                transparent = VgaPalette.colours[rawData[offset + 2] & 0xFF];
+                
+                loadAGI2562Data(rawData, offset + 3);
+                
+            } else {
+                short transMirror = (short)(rawData[offset + 2] & 0xFF);
+                short mirrorInfo = (short)((transMirror & 0xF0) >> 4);
+    
+                transparent = EgaPalette.colours[(transMirror & 0x0F)];
+                
+                loadData(rawData, offset + 3);
+    
+                if ((mirrorInfo & 0x8) != 0) {
+                    if ((mirrorInfo & 0x7) != loopNumber) {
+                        mirror();
+                    }
                 }
+            }
+        }
+        
+        private void loadAGI2562Data(byte[] rawData, int offset) {
+            int x;
+            
+            data = new int[width * height];
+
+            for (int j = 0, y = 0; y < height; y++) {
+                for (x = 0; rawData[offset] != 0; x++, offset++) {
+                    data[j++] = VgaPalette.colours[(rawData[offset] & 0xFF)];
+                }
+
+                for (; x < width; x++) {
+                    data[j++] = transparent;
+                }
+
+                offset++;
             }
         }
         

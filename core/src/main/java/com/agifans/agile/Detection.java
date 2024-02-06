@@ -185,6 +185,7 @@ public class Detection {
         {"----", "CNTST2","AGI Contest 2 Template", "5a2fb2894207eff36c72f5c1b08bcc07"},
         {"MP--", "MOUSED", "AGI Mouse Demo (1.10)", "f4ad396b496d6167635ad0b410312ab8"},
         {"--V-", "AGI256", "AGI256 Demo", "79261ac143b2e2773b2753674733b0d5"},
+        {"--V-", "AG2562", "AGI256-2 Demo", "3cad9b3aff1467cebf0c5c5b110985c5"},
         {"----", "PIANO","AGI Piano (v1.0)", "8778b3d89eb93c1d50a70ef06ef10310"},
         {"----", "AQUEST","AGI Quest (v1.46-TJ0)", "1cf1a5307c1a0a405f5039354f679814"},
         {"----", "PKTETR","PK AGI Tetris (1998)", "1afcbc25bfafded2d5fb82de9da0bd9a"},
