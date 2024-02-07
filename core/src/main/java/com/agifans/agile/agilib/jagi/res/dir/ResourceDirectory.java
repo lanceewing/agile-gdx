@@ -61,7 +61,7 @@ public class ResourceDirectory {
         int c = 0, n = 0;
 
         try {
-            while (true) {
+            while (i < MAX_ENTRIES) {
                 IOUtils.fill(in, b, 0, 3);
 
                 for (j = 0; j < 3; j++) {
