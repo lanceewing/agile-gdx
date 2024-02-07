@@ -170,7 +170,7 @@ public class Detection {
         {"----", "KQ4", "King's Quest IV (2.2 1988-09-27 3.5\")", "7470b3aeb49d867541fc66cc8454fb7d"},
         {"----", "KQ4", "King's Quest IV (2.3 1988-09-27)", "6d7714b8b61466a5f5981242b993498f"},
         {"----", "KQ4", "King's Quest IV (2.3 1988-09-27 3.5\")", "82a0d39af891042e99ac1bd6e0b29046"},
-        {"----", "KQ4", "King's Quest IV Demo (1988-12-20)", "a3332d70170a878469d870b14863d0bf"},
+        {"----", "KQ4DEM", "King's Quest IV Demo (1988-12-20)", "a3332d70170a878469d870b14863d0bf"},
         {"----", "MH1", "Manhunter: New York (1.22 1988-08-31)", "0c7b86f05fe02c2e26cff1b07450b82a"},
         {"----", "MH1", "Manhunter: New York (1.22 1988-08-31)", "5b625329021ad49fd0c1d6f2d6f54bba"},
         {"----", "MH2", "Manhunter: San Francisco (3.02 1989-07-26 5.25\")", "bbb2c2f88d5740f7437fb7aa6f080b7b"},
