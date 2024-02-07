@@ -256,6 +256,7 @@ public class Detection {
         {"----", "HERBAO","Herbao (v0.2)", "6a5186fc8383a9060517403e85214fc2"},
         {"M---", "HITLER","Hitler's Legacy (v.0004q)", "a412881269ba34584bd0a3268e5a9863"},
         {"----", "GOURDB","Gourd of the Beans", "4a1c1ef3a7901baf0ab45fde0cfadd89"},
+        {"----", "GROZA","Groza", "421da3a18004122a966d64ab6bd86d2e"},
         {"----", "JJVAMP","Jack & Julia - VAMPYR", "8aa0b9a26f8d5a4421067ab8cc3706f6"},
         {"----", "JEFFSQ","Jeff's Quest (v.5 alpha Jun 1)", "10f1720eed40c12b02a0f32df3e72ded"},
         {"----", "JEFFSQ","Jeff's Quest (v.5 alpha May 31)", "51ff71c0ed90db4e987a488ed3bf0551"},

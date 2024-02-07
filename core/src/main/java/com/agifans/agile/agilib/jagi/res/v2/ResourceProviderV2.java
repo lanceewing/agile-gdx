@@ -58,7 +58,17 @@ public class ResourceProviderV2 implements ResourceProvider {
      * Sierra's Decryption Key. This key used to decrypt
      * original sierra games.
      */
-    public static final String SIERRA_KEY = "Avis Durgan";
+    private static final String SIERRA_KEY = "Avis Durgan";
+    
+    /**
+     * AGDS's Decryption Key. This key is used to decrypt AGDS games.
+     */
+    private static final String GROZA_KEY = "Alex Simkin";
+    
+    /**
+     * Whether the game is GROZA or not. It uses a different decrytion key.
+     */
+    protected boolean isGroza;
     
     /**
      * Resource's Entries Tables.
@@ -92,8 +102,19 @@ public class ResourceProviderV2 implements ResourceProvider {
         readPalettes();
     }
 
-    public static String getKey(boolean agds) {
-        return SIERRA_KEY;
+    protected String getKey() {
+        return (isGroza? GROZA_KEY : SIERRA_KEY);
+    }
+    
+    public boolean isGroza(byte[] fileData) {
+        // Groza stores 6 bytes, i.e. 2A 2A 2A 2A 2A 1A, in both OBJECT and WORDS.TOK
+        isGroza = ((fileData[0] == 0x2A) && 
+                   (fileData[1] == 0x2A) && 
+                   (fileData[2] == 0x2A) && 
+                   (fileData[3] == 0x2A) && 
+                   (fileData[4] == 0x2A) && 
+                   (fileData[5] == 0x1A));
+        return isGroza;
     }
 
     public static boolean isCrypted(byte[] fileData) {
@@ -183,15 +204,36 @@ public class ResourceProviderV2 implements ResourceProvider {
         switch (resType) {
             case ResourceProvider.TYPE_OBJECT:
                 volf = getDirectoryFile(resType);
+                
+                if (isGroza(volf)) {
+                    // Replace with a minimal encrypted OBJECT file (8 bytes)
+                    volf = new byte[] { 0x42, 0x76, 0x69, 0x70, 0x20, 0x44, 0x4A, 0x72 };
+                }
 
                 if (isCrypted(volf)) {
-                    return new CryptedInputStream(new ByteArrayInputStream(volf), getKey(false));
+                    return new CryptedInputStream(new ByteArrayInputStream(volf), SIERRA_KEY);
                 } else {
                     return new ByteArrayInputStream(volf);
                 }
 
             case ResourceProvider.TYPE_WORD:
-                return new ByteArrayInputStream(getDirectoryFile(resType));
+                volf = getDirectoryFile(resType);
+                
+                if (isGroza(volf)) {
+                    // Replace with a minimal WORDS.TOK file (63 bytes)
+                    volf = new byte[] {
+                        0x00, 0x34, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
+                        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
+                        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
+                        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
+                        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
+                        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
+                        0x00, 0x00, 0x00, 0x00, 0x00, 0x1E, 0x11, 0x06, 
+                        0x08, 0x10, 0x0D, (byte)0x9B, 0x00, 0x01, 0x00
+                    };
+                }
+                
+                return new ByteArrayInputStream(volf);
         }
 
         try {
@@ -230,7 +272,7 @@ public class ResourceProviderV2 implements ResourceProvider {
                         offsetCrypted = startPos + 3 + (numMessages * 2);
                         file.seek(offset + 5);
 
-                        in = new CryptedInputStream(in, getKey(false), offsetCrypted);
+                        in = new CryptedInputStream(in, getKey(), offsetCrypted);
                     }
 
                     return in;

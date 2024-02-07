@@ -221,7 +221,7 @@ public class ResourceProviderV3 extends com.agifans.agile.agilib.jagi.res.v2.Res
         switch (resType) {
             case ResourceProvider.TYPE_OBJECT:
                 if (isCrypted(dirs[1])) {
-                    return new CryptedInputStream(new ByteArrayInputStream(dirs[1]), getKey(false));
+                    return new CryptedInputStream(new ByteArrayInputStream(dirs[1]), getKey());
                 }
 
                 return new ByteArrayInputStream(dirs[1]);

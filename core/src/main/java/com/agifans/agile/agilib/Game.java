@@ -62,12 +62,12 @@ public class Game {
             resourceCache.setViewProvider(new AgileViewProvider());
             version = resourceCache.getVersion();
             v3GameSig = resourceCache.getV3GameSig();
+            objects = new Objects(resourceCache.getObjects());
+            words = new Words(resourceCache.getWords());
             logics = loadLogics();
             pictures = loadPictures();
             views = loadViews();
             sounds = loadSounds();
-            objects = new Objects(resourceCache.getObjects());
-            words = new Words(resourceCache.getWords());
             palettes = resourceCache.getPalettes();
             
         } catch (ResourceException | IOException e) {
