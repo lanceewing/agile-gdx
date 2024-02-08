@@ -66,6 +66,13 @@ public abstract class GameLoader {
         game.hasAGIPal = gameDetection.hasAGIPal;
         game.hasAGI256 = gameDetection.hasAGI256;
         
+        // We prefer the game detection game ID over what is set in the game. Normally
+        // this will be the same for original Sierra AGI games. For fan made games, 
+        // many of which do not set a game ID, it is the detection game ID that allows
+        // the saved games to be stored in their own "folder" and therefore not clash
+        // with other games.
+        game.gameId = gameDetection.gameId;
+        
         return game;
     }
     
