@@ -993,7 +993,7 @@ public class SavedGames {
         // Almost an exact copy of the OBJECT file, but with the 3 byte header removed, and room
         // numbers reflecting the current location of each object.
         int objectsOffset = aniObjsOffset + 2 + aniObjectsLength;
-        int objectsLength = (savedGameData[objectsOffset + 0] + (savedGameData[objectsOffset + 1] << 8));
+        int objectsLength = ((savedGameData[objectsOffset + 0] & 0xFF) + ((savedGameData[objectsOffset + 1] & 0xFF) << 8));
         // The NumOfAnimatedObjects, as stored in OBJECT, should be 1 less than the number of animated object slots
         // (due to add.to.pic slot), otherwise this number increments by 1 on every save followed by restore.
         state.objects.numOfAnimatedObjects = (numOfAniObjs - 1);
