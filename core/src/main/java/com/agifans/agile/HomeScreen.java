@@ -559,68 +559,67 @@ public class HomeScreen extends InputAdapter implements Screen {
         @Override
         public void clicked(InputEvent event, float x, float y) {
             String appName = event.getListenerActor().getName();
-            if ((appName != null) && (!appName.equals(""))) {
-                final AppConfigItem appConfigItem = appConfigMap.get(appName);
-                if (appConfigItem != null) {
-                    MenuWidget menu = getCurrentMenuWidget();
-                    if (menu.isOpen()) {
-                        if (!appName.equals(menu.getGameName())) {
-                            menu.close();
-                        }
-                    }
-                    else {
+            MenuWidget menu = getCurrentMenuWidget();
+            if (menu.isOpen()) {
+                if ((appName == null) || !appName.equals(menu.getGameName())) {
+                    menu.close();
+                }
+            } else {
+                if ((appName != null) && (!appName.equals(""))) {
+                    final AppConfigItem appConfigItem = appConfigMap.get(appName);
+                    if (appConfigItem != null) {
                         GameScreen gameScreen = agile.getGameScreen();
                         gameScreen.initGame(appConfigItem);
                         agile.setScreen(gameScreen);
                     }
-                }
-            } else {
-                String startPath = agile.getPreferences().getString("open_app_start_path", null);
-                dialogHandler.openFileDialog("", startPath, new OpenFileResponseHandler() {
-                    
-                    @Override
-                    public void openFileResult(boolean success, String filePath, String gameName, String gameId) {
-                        if (success && (filePath != null) && (!filePath.isEmpty())) {
-                            if (!Gdx.app.getType().equals(ApplicationType.WebGL)) {
-                                // GWT/HTML5/WEBGL doesn't support FileHandle and doesn't need it anyway.
-                                FileHandle fileHandle = new FileHandle(filePath);
-                                agile.getPreferences().putString("open_app_start_path", fileHandle.parent().path());
-                                agile.getPreferences().flush();
-                            }
-                            final String appConfigFilePath = filePath;
-                            dialogHandler.promptForTextInput("Confirm name of AGI game", gameName,
-                                new TextInputResponseHandler() {
-                                    @Override
-                                    public void inputTextResult(boolean success, String text) {
-                                        if (success) {
-                                            AppConfigItem appConfigItem = new AppConfigItem();
-                                            appConfigItem.setGameId(gameId);
-                                            appConfigItem.setName(text);
-                                            appConfigItem.setFilePath(appConfigFilePath);
-                                            if (Gdx.app.getType().equals(ApplicationType.WebGL)) {
-                                                appConfigItem.setFileLocation(FileLocation.OPFS);
-                                                appConfigItem.setFileType("GAMEFILES.DAT");
-                                            } else {
-                                                appConfigItem.setFileLocation(FileLocation.ABSOLUTE);
-                                                if (appConfigFilePath.toLowerCase().endsWith(".zip")) {
-                                                    appConfigItem.setFileType("ZIP");
+                } else {
+                    String startPath = agile.getPreferences().getString("open_app_start_path", null);
+                    dialogHandler.openFileDialog("", startPath, new OpenFileResponseHandler() {
+                        
+                        @Override
+                        public void openFileResult(boolean success, String filePath, String gameName, String gameId) {
+                            if (success && (filePath != null) && (!filePath.isEmpty())) {
+                                if (!Gdx.app.getType().equals(ApplicationType.WebGL)) {
+                                    // GWT/HTML5/WEBGL doesn't support FileHandle and doesn't need it anyway.
+                                    FileHandle fileHandle = new FileHandle(filePath);
+                                    agile.getPreferences().putString("open_app_start_path", fileHandle.parent().path());
+                                    agile.getPreferences().flush();
+                                }
+                                final String appConfigFilePath = filePath;
+                                dialogHandler.promptForTextInput("Confirm name of AGI game", gameName,
+                                    new TextInputResponseHandler() {
+                                        @Override
+                                        public void inputTextResult(boolean success, String text) {
+                                            if (success) {
+                                                AppConfigItem appConfigItem = new AppConfigItem();
+                                                appConfigItem.setGameId(gameId);
+                                                appConfigItem.setName(text);
+                                                appConfigItem.setFilePath(appConfigFilePath);
+                                                if (Gdx.app.getType().equals(ApplicationType.WebGL)) {
+                                                    appConfigItem.setFileLocation(FileLocation.OPFS);
+                                                    appConfigItem.setFileType("GAMEFILES.DAT");
+                                                } else {
+                                                    appConfigItem.setFileLocation(FileLocation.ABSOLUTE);
+                                                    if (appConfigFilePath.toLowerCase().endsWith(".zip")) {
+                                                        appConfigItem.setFileType("ZIP");
+                                                    }
+                                                    else if (appConfigFilePath.toLowerCase().endsWith(".dsk")) {
+                                                        appConfigItem.setFileType("DISK");
+                                                    }
+                                                    else {
+                                                        appConfigItem.setFileType("DIR");
+                                                    }
                                                 }
-                                                else if (appConfigFilePath.toLowerCase().endsWith(".dsk")) {
-                                                    appConfigItem.setFileType("DISK");
-                                                }
-                                                else {
-                                                    appConfigItem.setFileType("DIR");
-                                                }
+                                                appConfigMap.put(appConfigItem.getName(), appConfigItem);
+                                                updateHomeScreenButtonStages();
+                                                showGamePage(appConfigItem);
                                             }
-                                            appConfigMap.put(appConfigItem.getName(), appConfigItem);
-                                            updateHomeScreenButtonStages();
-                                            showGamePage(appConfigItem);
                                         }
-                                    }
-                                });
+                                    });
+                            }
                         }
-                    }
-                });
+                    });
+                }
             }
         }
     };
