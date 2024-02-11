@@ -115,10 +115,12 @@ public class DesktopDialogHandler implements DialogHandler {
                 return new Game(gameFilesMap);
             } catch (RuntimeException e) {
                 // Decode failed, so can't be run by AGILE.
+                showMessageDialog("AGILE is unable to run the selected game. Please try another one.");
                 return null;
             }
         } else {
             // Missing core files.
+            showMessageDialog("The selected folder or file does not appear to contain an AGI game.");
             return null;
         }
     }
@@ -139,5 +141,10 @@ public class DesktopDialogHandler implements DialogHandler {
                 }
             }
         });
+    }
+
+    @Override
+    public void showMessageDialog(String message) {
+        JOptionPane.showMessageDialog(null, message);
     }
 }

@@ -137,12 +137,13 @@ public class GwtDialogHandler implements DialogHandler {
                         openFileResponseHandler.openFileResult(true, opfsDirectoryName, gameName, detection.gameId);
                         
                     } catch (RuntimeException e) {
-                        Gdx.app.error("onFileResultsReady", e.getMessage());
-                        
                         // The game failed to decode, so AGILE will not be able to run it.
+                        showMessageDialog("AGILE is unable to run the selected game. Please try another one.");
                         openFileResponseHandler.openFileResult(false, null, null, null);
                     }
                 } else {
+                    showMessageDialog("The selected folder or file does not appear to contain an AGI game.");
+                    
                     // The game file map does not contain the minimum set of files.
                     openFileResponseHandler.openFileResult(false, null, null, null);
                 }
@@ -245,5 +246,20 @@ public class GwtDialogHandler implements DialogHandler {
                 textInputResponseHandler.@com.agifans.agile.ui.TextInputResponseHandler::inputTextResult(ZLjava/lang/String;)(false, null);
             }
         });
+    }-*/;
+
+    @Override
+    public void showMessageDialog(String message) {
+        Gdx.app.postRunnable(new Runnable() {
+            @Override
+            public void run() {
+                showHtmlMessageBox(message);
+            }
+        });
+    }
+    
+    private final native void showHtmlMessageBox(String message)/*-{
+        var dialog = new $wnd.Dialog();
+        dialog.alert(message);
     }-*/;
 }

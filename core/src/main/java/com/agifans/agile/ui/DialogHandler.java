@@ -24,7 +24,19 @@ public interface DialogHandler {
    */
   public void openFileDialog(String title, String startPath, OpenFileResponseHandler openFileResponseHandler);
 
-  
+  /**
+   * Invoked when AGILE want to ask the user to input some text.
+   * 
+   * @param message The message to display that asks/says what text to enter.
+   * @param initialValue The initial value to put in the input field.
+   * @param textInputResponseHandler The handler to be invoked with the user's response.
+   */
   public void promptForTextInput(String message, String initialValue, TextInputResponseHandler textInputResponseHandler);
   
+  /**
+   * Invoked when AGILE wants to display a mesage to the user.
+   * 
+   * @param message The message to display to the user.
+   */
+  public void showMessageDialog(String message);
 }
