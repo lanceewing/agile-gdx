@@ -260,7 +260,9 @@ public class HomeScreen extends InputAdapter implements Screen {
     @Override
     public void show() {
         Gdx.input.setInputProcessor(portraitInputProcessor);
-        Gdx.graphics.setTitle("AGILE");
+        if (!Gdx.app.getType().equals(ApplicationType.WebGL)) {
+            Gdx.graphics.setTitle("AGILE");
+        }
     }
 
     @Override
@@ -735,14 +737,15 @@ public class HomeScreen extends InputAdapter implements Screen {
         }
         
         private void deleteGame() {
+            AppConfigItem gameToDelete = appConfigItem;
+            closeImmediately();
             dialogHandler.confirm(
-                    "Do you want to remove '" + appConfigItem.getName() + "'?", 
+                    "Do you want to remove '" + gameToDelete.getName() + "'?", 
                     new ConfirmResponseHandler() {
                 @Override
                 public void yes() {
-                    int gameIndexBeforeClose = getGameIndex(appConfigItem);
-                    appConfigMap.remove(appConfigItem.getName());
-                    closeImmediately();
+                    int gameIndexBeforeClose = getGameIndex(gameToDelete);
+                    appConfigMap.remove(gameToDelete.getName());
                     // TODO: GWT needs to remove data from OPFS.
                     Gdx.app.postRunnable(new Runnable(){
                         @Override
@@ -755,28 +758,28 @@ public class HomeScreen extends InputAdapter implements Screen {
                 
                 @Override
                 public void no() {
-                    close();
                 }
             });
         }
         
         private void editGame() {
-            String displayName = appConfigItem.getDisplayName().replace("\n", "\\n");
+            AppConfigItem gameToEdit = appConfigItem;
+            closeImmediately();
+            String displayName = gameToEdit.getDisplayName().replace("\n", "\\n");
             dialogHandler.promptForTextInput("Program display name", displayName,
                     new TextInputResponseHandler() {
                         @Override
                         public void inputTextResult(boolean success, String text) {
                             if (success && (text != null) & !text.isEmpty()) {
-                                String oldName = appConfigItem.getName();
+                                String oldName = gameToEdit.getName();
                                 String displayName = text.replace("\\n", "\n");
                                 String name = text.replace("\\n", " ").replaceAll(" +", " ");
-                                appConfigItem.setName(name);
-                                appConfigItem.setDisplayName(displayName);
+                                gameToEdit.setName(name);
+                                gameToEdit.setDisplayName(displayName);
                                 // If the name has changed, we need to change the key in the Map.
                                 appConfigMap.remove(oldName);
-                                appConfigMap.put(appConfigItem.getName(), appConfigItem);
-                                int gameIndexBeforeClose = getGameIndex(appConfigItem);
-                                closeImmediately();
+                                appConfigMap.put(gameToEdit.getName(), gameToEdit);
+                                int gameIndexBeforeClose = getGameIndex(gameToEdit);
                                 Gdx.app.postRunnable(new Runnable(){
                                     @Override
                                     public void run() {
@@ -784,9 +787,6 @@ public class HomeScreen extends InputAdapter implements Screen {
                                         showGamePage(gameIndexBeforeClose, true);
                                     }
                                 });
-                            }
-                            else {
-                                closeImmediately();
                             }
                         }
                     });

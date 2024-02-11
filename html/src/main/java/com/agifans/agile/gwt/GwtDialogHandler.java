@@ -42,11 +42,14 @@ public class GwtDialogHandler implements DialogHandler {
     }
 
     private final native void showHtmlConfirmBox(String message, ConfirmResponseHandler confirmResponseHandler)/*-{
-        if (confirm(message)) {
-            confirmResponseHandler.@com.agifans.agile.ui.ConfirmResponseHandler::yes()();
-        } else {
-            confirmResponseHandler.@com.agifans.agile.ui.ConfirmResponseHandler::no()();
-        }
+        var dialog = new $wnd.Dialog();
+        dialog.confirm(message).then(function (res) {
+            if (res) {
+                confirmResponseHandler.@com.agifans.agile.ui.ConfirmResponseHandler::yes()();
+            } else {
+                confirmResponseHandler.@com.agifans.agile.ui.ConfirmResponseHandler::no()();
+            }
+        });
     }-*/;
     
     @Override
@@ -234,11 +237,13 @@ public class GwtDialogHandler implements DialogHandler {
     }
     
     private final native void showHtmlPromptBox(String message, String initialValue, TextInputResponseHandler textInputResponseHandler)/*-{
-        var text = prompt(message, initialValue);
-        if (text != null) {
-            textInputResponseHandler.@com.agifans.agile.ui.TextInputResponseHandler::inputTextResult(ZLjava/lang/String;)(true, text);
-        } else {
-            textInputResponseHandler.@com.agifans.agile.ui.TextInputResponseHandler::inputTextResult(ZLjava/lang/String;)(false, null);
-        }
+        var dialog = new $wnd.Dialog();
+        dialog.prompt(message, initialValue).then(function (res) {
+            if (res) {
+                textInputResponseHandler.@com.agifans.agile.ui.TextInputResponseHandler::inputTextResult(ZLjava/lang/String;)(true, res.prompt);
+            } else {
+                textInputResponseHandler.@com.agifans.agile.ui.TextInputResponseHandler::inputTextResult(ZLjava/lang/String;)(false, null);
+            }
+        });
     }-*/;
 }

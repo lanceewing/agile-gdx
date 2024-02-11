@@ -51,3 +51,85 @@ a {
 .superdev:hover {
     background-color: rgb(100,100,100);
 }
+
+[data-component*="dialog"] * {
+	box-sizing: border-box;
+	outline-color: var(--dlg-outline-c, hsl(218, 79.19%, 35%))
+}
+
+:where([data-component*="dialog"]) {
+	--dlg-gap: 1em;
+	background: var(--dlg-bg, #fff);
+	border: var(--dlg-b, 0);
+	border-radius: var(--dlg-bdrs, 0.25em);
+	box-shadow: var(--dlg-bxsh, 0px 25px 50px -12px rgba(0, 0, 0, 0.25));
+	font-family: var(--dlg-ff, ui-sansserif, system-ui, sans-serif);
+	min-inline-size: var(--dlg-mis, auto);
+	padding: var(--dlg-p, var(--dlg-gap));
+	width: var(--dlg-w, fit-content);
+}
+
+:where([data-component="no-dialog"]:not([hidden])) {
+	display: block;
+	inset-block-start: var(--dlg-gap);
+	inset-inline-start: 50%;
+	position: fixed;
+	transform: translateX(-50%);
+}
+
+:where([data-component*="dialog"] menu) {
+	display: flex;
+	gap: calc(var(--dlg-gap)/2);
+	justify-content: var(--dlg-menu-jc, flex-end);
+	margin: 0;
+	padding: 0;
+}
+
+:where([data-component*="dialog"] menu button) {
+	background-color: var(--dlg-button-bgc);
+	border: 0;
+	border-radius: var(--dlg-bdrs, 0.25em);
+	color: var(--dlg-button-c);
+	font-size: var(--dlg-button-fz, 0.8em);
+	padding: var(--dlg-button-p, 0.65em 1.5em);
+}
+
+:where([data-component*="dialog"] [data-ref="accept"]) {
+	--dlg-button-bgc: var(--dlg-accept-bgc, hsl(218, 79.19%, 46.08%));
+	--dlg-button-c: var(--dlg-accept-c, #fff);
+}
+
+:where([data-component*="dialog"] [data-ref="cancel"]) {
+	--dlg-button-bgc: var(--dlg-cancel-bgc, transparent);
+	--dlg-button-c: var(--dlg-cancel-c, inherit);
+}
+
+:where([data-component*="dialog"] [data-ref="fieldset"]) {
+	border: 0;
+	margin: unset;
+	padding: unset;
+}
+
+:where([data-component*="dialog"] [data-ref="message"]) {
+	font-size: var(--dlg-message-fz, 1.25em);
+	margin-block-end: var(--dlg-gap);
+}
+
+:where([data-component*="dialog"] [data-ref="template"]:not(:empty)) {
+	margin-block-end: var(--dlg-gap);
+	width: 100%;
+}
+
+/* hack for Firefox */
+@-moz-document url-prefix() { 
+    [data-component="no-dialog"]:not([hidden]) {
+        inset-inline-start: 0;
+         transform: none;
+    }
+}
+
+/* added to `body` when browser do not support `<dialog>` */
+.dialog-open {
+	background-color: rgba(0, 0, 0, .1);
+	overflow: hidden;
+}
