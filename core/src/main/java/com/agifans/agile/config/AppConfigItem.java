@@ -10,6 +10,7 @@ public class AppConfigItem {
 
     private String filePath;
 
+    // Possible values: DIR, ZIP, URL, GAMEFILES.DAT, UNK (i.e. Unknown)
     private String fileType;
 
     /**

@@ -215,6 +215,7 @@ public class HomeScreen extends InputAdapter implements Screen {
         // Add empty slot at the start that will always be present for adding a new game.
         AppConfigItem addGameIcon = new AppConfigItem();
         addGameIcon.setGameId("ADD_GAME");
+        addGameIcon.setFileType("ADD");
         currentPage.add(buildAppButton(addGameIcon)).expand().fill();
         pageItemCount++;
         
@@ -436,6 +437,10 @@ public class HomeScreen extends InputAdapter implements Screen {
                 try {
                     // See if there is screenshot icon in the assets folder.
                     Pixmap iconPixmap = new Pixmap(Gdx.files.internal(iconPath));
+                    if ("UNK".equals(appConfigItem.getFileType())) {
+                        iconPixmap.setColor(0.0f, 0.0f, 0.0f, 0.5f);
+                        iconPixmap.fillRectangle(0, 0, iconPixmap.getWidth(), iconPixmap.getHeight());
+                    }
                     
                     // If there is, then it's expected to be 320x200, so we scale it to right aspect ratio.
                     Pixmap iconStretchedPixmap = new Pixmap(ICON_IMAGE_WIDTH, ICON_IMAGE_HEIGHT, iconPixmap.getFormat());
@@ -481,6 +486,9 @@ public class HomeScreen extends InputAdapter implements Screen {
             label.setColor(new Color(1f, 1f, 1f, 0.6f));
         } else {
             label = new Label(appConfigItem.getDisplayName(), skin);
+            if ("UNK".equals(appConfigItem.getFileType())) {
+                label.setColor(new Color(1f, 1f, 1f, 0.6f));
+            }
         }
         label.setFontScale(2f);
         label.setAlignment(Align.top);
