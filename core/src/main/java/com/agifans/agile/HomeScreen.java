@@ -45,6 +45,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.JsonWriter.OutputType;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.payne.games.piemenu.AnimatedPieMenu;
 import com.payne.games.piemenu.PieMenu;
@@ -85,6 +86,11 @@ public class HomeScreen extends InputAdapter implements Screen {
     private InputMultiplexer landscapeInputProcessor;
     
     /**
+     * The name of the user preference that contains the home screen app list.
+     */
+    private static final String HOME_SCREEN_APP_LIST_PREF_NAME = "home_screen_app_list";
+    
+    /**
      * The default JSON to use when creating the home_screen_app_list preference for the
      * first time. This is the basis for starting to add apps to the home screen.
      */
@@ -101,11 +107,11 @@ public class HomeScreen extends InputAdapter implements Screen {
         this.dialogHandler = dialogHandler;
 
         // Load the app meta data.
-        Json json = new Json();
-        //String appConfigJson = Gdx.files.internal("data/programs.json").readString();
+        Json json = getJson();
+        //String appConfigJson = Gdx.files.internal("data/games.json").readString();
         String appConfigJson =
-            agile.getPreferences().getString("home_screen_app_list", DEFAULT_APP_CONFIG_JSON);
-        agile.getPreferences().putString("home_screen_app_list", appConfigJson);
+            json.prettyPrint(agile.getPreferences().getString(HOME_SCREEN_APP_LIST_PREF_NAME, DEFAULT_APP_CONFIG_JSON));
+        agile.getPreferences().putString(HOME_SCREEN_APP_LIST_PREF_NAME, appConfigJson);
         AppConfig appConfig = json.fromJson(AppConfig.class, appConfigJson);
         appConfigMap = new TreeMap<String, AppConfigItem>();
         for (AppConfigItem appConfigItem : appConfig.getApps()) {
@@ -512,11 +518,22 @@ public class HomeScreen extends InputAdapter implements Screen {
      */
     private void saveAppConfigMap() {
         AppConfig appConfig = convertAppConfigItemMapToAppConfig(appConfigMap);
-        Json json = new Json();
-        String appConfigJson = json.toJson(appConfig);
-        agile.getPreferences().putString("home_screen_app_list", appConfigJson);
+        String appConfigJson = getJson().prettyPrint(appConfig);
+        agile.getPreferences().putString(HOME_SCREEN_APP_LIST_PREF_NAME, appConfigJson);
     }
 
+    /**
+     * Gets an instance of the libgdx Json class to use to serialise and deserialise the
+     * list of games.
+     * 
+     * @return
+     */
+    private Json getJson() {
+        Json json = new Json();
+        json.setOutputType(OutputType.json);
+        return json;
+    }
+    
     /**
      * Updates the application buttons on the home screen Stages to reflect the
      * current AppConfigItem Map.
