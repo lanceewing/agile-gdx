@@ -6,7 +6,6 @@ import java.util.TreeMap;
 
 import com.agifans.agile.config.AppConfig;
 import com.agifans.agile.config.AppConfigItem;
-import com.agifans.agile.config.AppConfigItem.FileLocation;
 import com.agifans.agile.ui.ConfirmResponseHandler;
 import com.agifans.agile.ui.DialogHandler;
 import com.agifans.agile.ui.OpenFileResponseHandler;
@@ -629,15 +628,10 @@ public class HomeScreen extends InputAdapter implements Screen {
                                                     appConfigItem.setName(text);
                                                     appConfigItem.setFilePath(appConfigFilePath);
                                                     if (Gdx.app.getType().equals(ApplicationType.WebGL)) {
-                                                        appConfigItem.setFileLocation(FileLocation.OPFS);
                                                         appConfigItem.setFileType("GAMEFILES.DAT");
                                                     } else {
-                                                        appConfigItem.setFileLocation(FileLocation.ABSOLUTE);
                                                         if (appConfigFilePath.toLowerCase().endsWith(".zip")) {
                                                             appConfigItem.setFileType("ZIP");
-                                                        }
-                                                        else if (appConfigFilePath.toLowerCase().endsWith(".dsk")) {
-                                                            appConfigItem.setFileType("DISK");
                                                         }
                                                         else {
                                                             appConfigItem.setFileType("DIR");

@@ -12,12 +12,6 @@ public class AppConfigItem {
 
     private String fileType;
 
-    private FileLocation fileLocation = FileLocation.INTERNAL;
-
-    public enum FileLocation {
-        INTERNAL, EXTERNAL, ABSOLUTE, CLASSPATH, LOCAL, OPFS
-    };
-
     /**
      * Constructor for AppConfigItem.
      */
@@ -30,20 +24,6 @@ public class AppConfigItem {
 
     public void setGameId(String gameId) {
         this.gameId = gameId;
-    }
-
-    /**
-     * @return the fileLocation
-     */
-    public FileLocation getFileLocation() {
-        return fileLocation;
-    }
-
-    /**
-     * @param fileLocation the fileLocation to set
-     */
-    public void setFileLocation(FileLocation fileLocation) {
-        this.fileLocation = fileLocation;
     }
 
     /**

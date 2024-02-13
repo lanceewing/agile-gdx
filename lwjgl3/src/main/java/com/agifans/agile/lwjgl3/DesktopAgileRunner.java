@@ -1,7 +1,5 @@
 package com.agifans.agile.lwjgl3;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,8 +18,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.PixmapIO;
-import com.badlogic.gdx.graphics.PixmapIO.PNG;
-import com.badlogic.gdx.utils.Base64Coder;
 
 public class DesktopAgileRunner extends AgileRunner {
     
@@ -132,23 +128,6 @@ public class DesktopAgileRunner extends AgileRunner {
                 filePath.append(".png");
                 PixmapIO.writePNG(Gdx.files.external(filePath.toString()), screenPixmap);
             } catch (Exception e) {
-                // Ignore.
-            }
-        }
-        if (appConfigItem != null) {
-            try {
-                ByteArrayOutputStream out = new ByteArrayOutputStream();
-                PNG writer = new PNG((int) (screenPixmap.getWidth() * screenPixmap.getHeight() * 1.5f));
-                try {
-                    writer.setFlipY(false);
-                    writer.write(out, screenPixmap);
-                } finally {
-                    writer.dispose();
-                }
-                agile.getScreenshotStore().putString(friendlyAppName,
-                        new String(Base64Coder.encode(out.toByteArray())));
-                agile.getScreenshotStore().flush();
-            } catch (IOException ex) {
                 // Ignore.
             }
         }

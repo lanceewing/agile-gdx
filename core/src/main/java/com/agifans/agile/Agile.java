@@ -1,7 +1,6 @@
 package com.agifans.agile;
 
 import com.agifans.agile.config.AppConfigItem;
-import com.agifans.agile.config.AppConfigItem.FileLocation;
 import com.agifans.agile.ui.DialogHandler;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
@@ -39,11 +38,6 @@ public class Agile extends Game {
     private Preferences preferences;
     
     /**
-     * AGILES's application screenshot storage.
-     */
-    private Preferences screenshotStore;
-    
-    /**
      * Constructor for Agile.
      * 
      * @param agileRunner 
@@ -59,7 +53,6 @@ public class Agile extends Game {
     @Override
     public void create() {
         preferences = Gdx.app.getPreferences("agile.preferences");
-        screenshotStore = Gdx.app.getPreferences("agile_screens.store");
         homeScreen = new HomeScreen(this, dialogHandler);
         gameScreen = new GameScreen(this, agileRunner, dialogHandler);
         
@@ -69,7 +62,6 @@ public class Agile extends Game {
             if ((args[0].toLowerCase().endsWith(".zip"))) {
                 appConfigItem.setFileType("ZIP");
             }
-            appConfigItem.setFileLocation(FileLocation.ABSOLUTE);
             GameScreen machineScreen = getGameScreen();
             machineScreen.initGame(appConfigItem);
             setScreen(machineScreen);
@@ -108,19 +100,11 @@ public class Agile extends Game {
         return preferences;
     }
     
-    /**
-     * Gets the screenshot store for AGILE. 
-     * 
-     * @return The screenshot store for AGILE.
-     */
-    public Preferences getScreenshotStore() {
-        return screenshotStore;
-    }
-    
     @Override
     public void dispose() {
         super.dispose();
         gameScreen.dispose();
         homeScreen.dispose();
+        preferences.flush();
     }
 }
