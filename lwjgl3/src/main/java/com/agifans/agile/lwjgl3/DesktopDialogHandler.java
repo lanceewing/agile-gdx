@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.filechooser.FileSystemView;
 
 import com.agifans.agile.Detection;
@@ -49,7 +50,7 @@ public class DesktopDialogHandler implements DialogHandler {
         Object selectedOption = JOptionPane.showInputDialog(
                 null, 
                 (appConfigItem != null? 
-                        "For legal reasons, AGILE does not come with " + gameName + ".\nYou must import your own copy.\n\n" : "") + 
+                        "For legal reasons, AGILE does not include " + gameName + " by default.\nYou must import your own copy.\n\n" : "") + 
                 "Please select the type of import:", 
                 "Import " + gameName, 
                 JOptionPane.DEFAULT_OPTION, 
@@ -85,19 +86,8 @@ public class DesktopDialogHandler implements DialogHandler {
                 } else {
                     // All other types are normal files.
                     jfc.setDialogTitle("Select the " + fileType + " file containing " + gameNameIn);
-                    jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
                     jfc.setAcceptAllFileFilterUsed(false);
-                    jfc.setFileFilter(new FileFilter() {
-                        @Override
-                        public boolean accept(File file) {
-                            return file.getName().toLowerCase().endsWith(".zip");
-                        }
-
-                        @Override
-                        public String getDescription() {
-                            return fileType + " files";
-                        }
-                    });
+                    jfc.setFileFilter(new FileNameExtensionFilter("ZIP files", "zip"));
                 }
 
                 int returnValue = jfc.showOpenDialog(null);
