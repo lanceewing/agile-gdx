@@ -8,6 +8,8 @@ import com.agifans.agile.config.AppConfig;
 import com.agifans.agile.config.AppConfigItem;
 import com.agifans.agile.ui.ConfirmResponseHandler;
 import com.agifans.agile.ui.DialogHandler;
+import com.agifans.agile.ui.ImportTypeResponseHandler;
+import com.agifans.agile.ui.ImportType;
 import com.agifans.agile.ui.OpenFileResponseHandler;
 import com.agifans.agile.ui.PagedScrollPane;
 import com.agifans.agile.ui.TextInputResponseHandler;
@@ -608,57 +610,84 @@ public class HomeScreen extends InputAdapter implements Screen {
                     if ((appName != null) && (!appName.equals(""))) {
                         final AppConfigItem appConfigItem = appConfigMap.get(appName);
                         if (appConfigItem != null) {
-                            GameScreen gameScreen = agile.getGameScreen();
-                            gameScreen.initGame(appConfigItem);
-                            agile.setScreen(gameScreen);
+                            if ("UNK".equals(appConfigItem.getFileType())) {
+                                // Known game but hasn't yet been imported.
+                                importGame(appConfigItem);
+                            } else {
+                                GameScreen gameScreen = agile.getGameScreen();
+                                gameScreen.initGame(appConfigItem);
+                                agile.setScreen(gameScreen);
+                            }
                         }
                     } else {
-                        String startPath = agile.getPreferences().getString("open_app_start_path", null);
-                        dialogHandler.openFileDialog("", startPath, new OpenFileResponseHandler() {
-                            
-                            @Override
-                            public void openFileResult(boolean success, String filePath, String gameName, String gameId) {
-                                if (success && (filePath != null) && (!filePath.isEmpty())) {
-                                    if (!Gdx.app.getType().equals(ApplicationType.WebGL)) {
-                                        // GWT/HTML5/WEBGL doesn't support FileHandle and doesn't need it anyway.
-                                        FileHandle fileHandle = new FileHandle(filePath);
-                                        agile.getPreferences().putString("open_app_start_path", fileHandle.parent().path());
-                                        agile.getPreferences().flush();
-                                    }
-                                    final String appConfigFilePath = filePath;
-                                    dialogHandler.promptForTextInput("Confirm name of AGI game", gameName,
-                                        new TextInputResponseHandler() {
-                                            @Override
-                                            public void inputTextResult(boolean success, String text) {
-                                                if (success) {
-                                                    AppConfigItem appConfigItem = new AppConfigItem();
-                                                    appConfigItem.setGameId(gameId);
-                                                    appConfigItem.setName(text);
-                                                    appConfigItem.setFilePath(appConfigFilePath);
-                                                    if (Gdx.app.getType().equals(ApplicationType.WebGL)) {
-                                                        appConfigItem.setFileType("GAMEFILES.DAT");
-                                                    } else {
-                                                        if (appConfigFilePath.toLowerCase().endsWith(".zip")) {
-                                                            appConfigItem.setFileType("ZIP");
-                                                        }
-                                                        else {
-                                                            appConfigItem.setFileType("DIR");
-                                                        }
-                                                    }
-                                                    appConfigMap.put(appConfigItem.getName(), appConfigItem);
-                                                    updateHomeScreenButtonStages();
-                                                    showGamePage(appConfigItem);
-                                                }
-                                            }
-                                        });
-                                }
-                            }
-                        });
+                        // Add miscellaneous game option (i.e. the plus icon).
+                        importGame(null);
                     }
                 }
             }
         }
     };
+    
+    private void importGame(AppConfigItem appConfigItem) {
+        Gdx.app.postRunnable(new Runnable() {
+            @Override
+            public void run() {
+                // Start by determining the type of import.
+                dialogHandler.promptForImportType(appConfigItem, new ImportTypeResponseHandler() {
+                    @Override
+                    public void importTypeResult(boolean success, ImportType importType) {
+                        if (success) {
+                            // TODO: Add support for URL fetch?
+                            importGameUsingOpenFileDialog(appConfigItem, importType);
+                        }
+                    }
+                });
+            }
+        });
+    }
+    
+    private void importGameUsingOpenFileDialog(AppConfigItem appConfigItem, ImportType importType) {
+        String startPath = agile.getPreferences().getString("open_app_start_path", null);
+        dialogHandler.openFileDialog(appConfigItem, importType.name(), "", startPath, new OpenFileResponseHandler() {
+            @Override
+            public void openFileResult(boolean success, String filePath, String gameName, String gameId) {
+                if (success && (filePath != null) && (!filePath.isEmpty())) {
+                    if (!Gdx.app.getType().equals(ApplicationType.WebGL)) {
+                        // GWT/HTML5/WEBGL doesn't support FileHandle and doesn't need it anyway.
+                        FileHandle fileHandle = new FileHandle(filePath);
+                        agile.getPreferences().putString("open_app_start_path", fileHandle.parent().path());
+                        agile.getPreferences().flush();
+                    }
+                    final String appConfigFilePath = filePath;
+                    dialogHandler.promptForTextInput("Confirm name of AGI game", gameName,
+                        new TextInputResponseHandler() {
+                            @Override
+                            public void inputTextResult(boolean success, String text) {
+                                if (success) {
+                                    AppConfigItem appConfigItem = new AppConfigItem();
+                                    appConfigItem.setGameId(gameId);
+                                    appConfigItem.setName(text);
+                                    appConfigItem.setFilePath(appConfigFilePath);
+                                    if (Gdx.app.getType().equals(ApplicationType.WebGL)) {
+                                        appConfigItem.setFileType("GAMEFILES.DAT");
+                                    } else {
+                                        if (appConfigFilePath.toLowerCase().endsWith(".zip")) {
+                                            appConfigItem.setFileType("ZIP");
+                                        }
+                                        else {
+                                            appConfigItem.setFileType("DIR");
+                                        }
+                                    }
+                                    appConfigMap.put(appConfigItem.getName(), appConfigItem);
+                                    updateHomeScreenButtonStages();
+                                    showGamePage(appConfigItem);
+                                }
+                            }
+                        });
+                }
+            }
+        });
+    }
     
     private int getIndexOfFirstGameStartingWithChar(char letter) {
         int gameIndex = -1;

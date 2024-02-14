@@ -5,8 +5,10 @@ import java.util.Map;
 
 import com.agifans.agile.Detection;
 import com.agifans.agile.agilib.Game;
+import com.agifans.agile.config.AppConfigItem;
 import com.agifans.agile.ui.ConfirmResponseHandler;
 import com.agifans.agile.ui.DialogHandler;
+import com.agifans.agile.ui.ImportTypeResponseHandler;
 import com.agifans.agile.ui.OpenFileResponseHandler;
 import com.agifans.agile.ui.TextInputResponseHandler;
 import com.badlogic.gdx.Gdx;
@@ -53,12 +55,17 @@ public class GwtDialogHandler implements DialogHandler {
     }-*/;
     
     @Override
-    public void openFileDialog(String title, String startPath, OpenFileResponseHandler openFileResponseHandler) {
+    public void promptForImportType(AppConfigItem appConfigItem, ImportTypeResponseHandler importTypeResponseHandler) {
+        // TODO: Implement.
+    }
+    
+    @Override
+    public void openFileDialog(AppConfigItem appConfigItem, String fileType, String title, String startPath, OpenFileResponseHandler openFileResponseHandler) {
         // NOTES:
         // - The startPath parameter can't be used with GWT.
         // - The title cannot be used with GWT.
         // - The path cannot be passed back to the core module without changing interface to accept the file content.
-        showHtmlOpenFileDialog("DIR", new GwtOpenFileResultsHandler() {
+        showHtmlOpenFileDialog(fileType, new GwtOpenFileResultsHandler() {
             @Override
             public void onFileResultsReady(GwtOpenFileResult[] openFileResultArray) {
                 
@@ -186,9 +193,10 @@ public class GwtDialogHandler implements DialogHandler {
             // When the webkitdirectory property is true, it means that all files in 
             // the selected directory are automatically included.
             fileInputElem.webkitdirectory = true;
+        } else if (type == 'ZIP') {
+            fileInputElem.accept = '.zip';
         } else {
-            // Otherwise the user must select the individual files themselves, either
-            // one file (such as a ZIP), or multiple AGI game files.
+            // Otherwise the user must select the individual files themselves
             fileInputElem.multiple = true;
         }
         
