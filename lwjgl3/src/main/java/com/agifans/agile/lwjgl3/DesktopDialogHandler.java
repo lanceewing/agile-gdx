@@ -6,12 +6,16 @@ import java.util.Map;
 
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileSystemView;
 
 import com.agifans.agile.Detection;
 import com.agifans.agile.agilib.Game;
+import com.agifans.agile.config.AppConfigItem;
 import com.agifans.agile.ui.ConfirmResponseHandler;
 import com.agifans.agile.ui.DialogHandler;
+import com.agifans.agile.ui.ImportTypeResponseHandler;
+import com.agifans.agile.ui.ImportType;
 import com.agifans.agile.ui.OpenFileResponseHandler;
 import com.agifans.agile.ui.TextInputResponseHandler;
 import com.badlogic.gdx.Gdx;
@@ -39,21 +43,62 @@ public class DesktopDialogHandler implements DialogHandler {
     }
 
     @Override
-    public void openFileDialog(String title, final String startPath,
+    public void promptForImportType(AppConfigItem appConfigItem, ImportTypeResponseHandler importTypeResponseHandler) {
+        String gameName = (appConfigItem != null? "'" + appConfigItem.getName() + "'" : "an AGI game");
+        String[] values = ImportType.getDescriptions();
+        Object selectedOption = JOptionPane.showInputDialog(
+                null, 
+                (appConfigItem != null? 
+                        "For legal reasons, AGILE does not come with " + gameName + ".\nYou must import your own copy.\n\n" : "") + 
+                "Please select the type of import:", 
+                "Import " + gameName, 
+                JOptionPane.DEFAULT_OPTION, 
+                null, 
+                values, 
+                values[0]);
+        if (selectedOption != null) {
+            ImportType importType = ImportType.getImportTypeByDescription(selectedOption.toString());
+            importTypeResponseHandler.importTypeResult(true, importType);
+        } else {
+            importTypeResponseHandler.importTypeResult(false, null);
+        }
+    }
+
+    @Override
+    public void openFileDialog(AppConfigItem appConfigItem, String fileType, String title, final String startPath,
             final OpenFileResponseHandler openFileResponseHandler) {
         Gdx.app.postRunnable(new Runnable() {
 
             @Override
             public void run() {
+                String gameNameIn = (appConfigItem != null? "'" + appConfigItem.getName() + "'" : "the AGI game");
                 JFileChooser jfc = null;
                 if (startPath != null) {
                     jfc = new JFileChooser(startPath);
                 } else {
                     jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
                 }
-                jfc.setDialogTitle("Select an AGI game folder");
-                jfc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-                jfc.setAcceptAllFileFilterUsed(false);
+                if ("DIR".equals(fileType)) {
+                    jfc.setDialogTitle("Select the folder containg " + gameNameIn);
+                    jfc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+                    jfc.setAcceptAllFileFilterUsed(false);
+                } else {
+                    // All other types are normal files.
+                    jfc.setDialogTitle("Select the " + fileType + " file containing " + gameNameIn);
+                    jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+                    jfc.setAcceptAllFileFilterUsed(false);
+                    jfc.setFileFilter(new FileFilter() {
+                        @Override
+                        public boolean accept(File file) {
+                            return file.getName().toLowerCase().endsWith(".zip");
+                        }
+
+                        @Override
+                        public String getDescription() {
+                            return fileType + " files";
+                        }
+                    });
+                }
 
                 int returnValue = jfc.showOpenDialog(null);
                 if (returnValue == JFileChooser.APPROVE_OPTION) {
@@ -73,6 +118,7 @@ public class DesktopDialogHandler implements DialogHandler {
                             if (gameName.contains("(")) {
                                 int bracketIndex = gameName.indexOf('(');
                                 gameName = gameName.substring(0, bracketIndex).trim();
+                                // TODO: Add check of name against appConfigItem, if provided.
                             }
                         }
                         
