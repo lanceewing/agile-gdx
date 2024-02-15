@@ -8,10 +8,14 @@ import com.agifans.agile.agilib.Game;
 import com.agifans.agile.config.AppConfigItem;
 import com.agifans.agile.ui.ConfirmResponseHandler;
 import com.agifans.agile.ui.DialogHandler;
+import com.agifans.agile.ui.ImportType;
 import com.agifans.agile.ui.ImportTypeResponseHandler;
 import com.agifans.agile.ui.OpenFileResponseHandler;
 import com.agifans.agile.ui.TextInputResponseHandler;
+import com.akjava.gwt.jszip.JSFile;
+import com.akjava.gwt.jszip.JSZip;
 import com.badlogic.gdx.Gdx;
+import com.google.gwt.core.client.JsArrayString;
 import com.google.gwt.typedarrays.shared.ArrayBuffer;
 import com.google.gwt.typedarrays.shared.Int8Array;
 import com.google.gwt.typedarrays.shared.TypedArrays;
@@ -56,7 +60,42 @@ public class GwtDialogHandler implements DialogHandler {
     
     @Override
     public void promptForImportType(AppConfigItem appConfigItem, ImportTypeResponseHandler importTypeResponseHandler) {
-        // TODO: Implement.
+        String gameName = (appConfigItem != null? "\"" + appConfigItem.getName() + "\"" : "an AGI game");
+        String[] values = ImportType.getDescriptions();
+        String message = (appConfigItem != null? 
+                "For legal reasons, you must import your own copy of \n" + gameName + "\n\n" : "") + 
+                "Please select the type of import:";
+        Gdx.app.postRunnable(new Runnable() {
+            @Override
+            public void run() {
+                showHtmlPromptForImportType(message, values, new PromptForOptionsResponseHandler() {
+                    @Override
+                    public void selectedOptionResult(boolean success, String optionText) {
+                        if (success) {
+                            ImportType importType = ImportType.getImportTypeByDescription(optionText);
+                            importTypeResponseHandler.importTypeResult(true, importType);
+                        } else {
+                            importTypeResponseHandler.importTypeResult(false, null);
+                        }
+                    }
+                });
+            }
+        });
+    }
+    
+    private final native void showHtmlPromptForImportType(String message, String[] options, PromptForOptionsResponseHandler promptForOptionsResponseHandler)/*-{
+        var dialog = new $wnd.Dialog();
+        dialog.promptForOption(message, options).then(function (res) {
+            if (res) {
+                promptForOptionsResponseHandler.@com.agifans.agile.gwt.GwtDialogHandler.PromptForOptionsResponseHandler::selectedOptionResult(ZLjava/lang/String;)(true, res.option);
+            } else {
+                promptForOptionsResponseHandler.@com.agifans.agile.gwt.GwtDialogHandler.PromptForOptionsResponseHandler::selectedOptionResult(ZLjava/lang/String;)(false, null);
+            }
+        });
+    }-*/;
+    
+    public static interface PromptForOptionsResponseHandler {
+        void selectedOptionResult(boolean success, String optionText);
     }
     
     @Override
@@ -68,40 +107,62 @@ public class GwtDialogHandler implements DialogHandler {
         showHtmlOpenFileDialog(fileType, new GwtOpenFileResultsHandler() {
             @Override
             public void onFileResultsReady(GwtOpenFileResult[] openFileResultArray) {
-                
-                // TODO: Handle ZIP fle.
-                
                 boolean hasVolFile = false;
                 boolean hasDirFile = false;
                 String directoryName = null;
                 Map<String, byte[]> gameFilesMap = new HashMap<>();
                 
-                for (GwtOpenFileResult result : openFileResultArray) {
-                    String fileName = result.getFileName().toLowerCase();
-                    
-                    // Use the first file to get the directory name.
-                    if ((directoryName == null) && !(result.getFilePath().isEmpty())) {
-                        // Note that / is used in Windows as well, so the below is fine.
-                        String[] pathParts = result.getFilePath().split("/");
-                        if (pathParts.length > 1) {
-                            directoryName = pathParts[0];
+                if ((openFileResultArray.length == 1) && 
+                        (openFileResultArray[0].getFileName().toLowerCase().endsWith(".zip"))) {
+                    // A ZIP file was selected.
+                    GwtOpenFileResult result = openFileResultArray[0];
+                    JSZip jsZip = JSZip.loadFromArrayBuffer(result.getFileData());
+                    JsArrayString files = jsZip.getFiles();
+
+                    for (int i=0; i < files.length(); i++) {
+                        String fileName = files.get(i);
+                        if (isGameFile(fileName)) {
+                            JSFile gameFile = jsZip.getFile(fileName);
+                            gameFilesMap.put(fileName.toLowerCase(), gameFile.asUint8Array().toByteArray());
+                        
+                            if (fileName.matches("^[a-z0-9]*vol.[0-9]+$")) {
+                                hasVolFile = true;
+                            }
+                            if (fileName.endsWith("dir")) {
+                                hasDirFile = true;
+                            }
                         }
                     }
                     
-                    if (isGameFile(fileName)) {
-                        Int8Array fileDataInt8Array = TypedArrays.createInt8Array(result.getFileData());
-                        byte[] gameFileByteArray = new byte[fileDataInt8Array.byteLength()];
-                        for (int index=0; index<fileDataInt8Array.byteLength(); index++) {
-                            gameFileByteArray[index] = fileDataInt8Array.get(index);
+                } else {
+                    // Folder of files selected.
+                    for (GwtOpenFileResult result : openFileResultArray) {
+                        String fileName = result.getFileName().toLowerCase();
+                        
+                        // Use the first file to get the directory name.
+                        if ((directoryName == null) && !(result.getFilePath().isEmpty())) {
+                            // Note that / is used in Windows as well, so the below is fine.
+                            String[] pathParts = result.getFilePath().split("/");
+                            if (pathParts.length > 1) {
+                                directoryName = pathParts[0];
+                            }
                         }
                         
-                        gameFilesMap.put(fileName, gameFileByteArray);
-                    
-                        if (fileName.matches("^[a-z0-9]*vol.[0-9]+$")) {
-                            hasVolFile = true;
-                        }
-                        if (fileName.endsWith("dir")) {
-                            hasDirFile = true;
+                        if (isGameFile(fileName)) {
+                            Int8Array fileDataInt8Array = TypedArrays.createInt8Array(result.getFileData());
+                            byte[] gameFileByteArray = new byte[fileDataInt8Array.byteLength()];
+                            for (int index=0; index<fileDataInt8Array.byteLength(); index++) {
+                                gameFileByteArray[index] = fileDataInt8Array.get(index);
+                            }
+                            
+                            gameFilesMap.put(fileName, gameFileByteArray);
+                        
+                            if (fileName.matches("^[a-z0-9]*vol.[0-9]+$")) {
+                                hasVolFile = true;
+                            }
+                            if (fileName.endsWith("dir")) {
+                                hasDirFile = true;
+                            }
                         }
                     }
                 }

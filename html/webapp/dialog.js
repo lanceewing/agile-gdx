@@ -112,7 +112,10 @@ class Dialog {
 
 		if (this.hasFormData) {
 			this.focusable[0].focus();
-			this.focusable[0].select();
+			// input fields and text areas have a select method that we call.
+			if (this.focusable[0].select) {
+			    this.focusable[0].select();
+			}
 		}
 		else {
 			this.elements.accept.focus();
@@ -160,6 +163,18 @@ class Dialog {
 	prompt(message, value) {
 		const template = `<label aria-label="${message}"><input type="text" name="prompt" value="${value}"></label>`;
 		const settings = Object.assign({}, { message, template });
+		this.open(settings);
+		return this.waitForUser();
+	}
+	
+	promptForOption(message, options) {
+		let template = `<label for="options-select">${message}</label>`;
+		template += '<select name="option" id="options-select">';
+		options.forEach((option) => {
+			template += `<option value="${option}">${option}</option>`;
+		});
+		template += '</select>';
+		const settings = Object.assign({}, { message, template});
 		this.open(settings);
 		return this.waitForUser();
 	}
