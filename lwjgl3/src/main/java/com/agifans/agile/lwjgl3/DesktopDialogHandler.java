@@ -45,12 +45,12 @@ public class DesktopDialogHandler implements DialogHandler {
 
     @Override
     public void promptForImportType(AppConfigItem appConfigItem, ImportTypeResponseHandler importTypeResponseHandler) {
-        String gameName = (appConfigItem != null? "'" + appConfigItem.getName() + "'" : "an AGI game");
+        String gameName = (appConfigItem != null? "\"" + appConfigItem.getName() + "\"" : "an AGI game");
         String[] values = ImportType.getDescriptions();
         Object selectedOption = JOptionPane.showInputDialog(
                 null, 
                 (appConfigItem != null? 
-                        "For legal reasons, AGILE does not include " + gameName + " by default.\nYou must import your own copy.\n\n" : "") + 
+                        "For legal reasons, you must import your own copy of \n" + gameName + "\n\n" : "") + 
                 "Please select the type of import:", 
                 "Import " + gameName, 
                 JOptionPane.DEFAULT_OPTION, 
