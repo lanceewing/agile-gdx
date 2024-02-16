@@ -123,12 +123,13 @@ public class GwtDialogHandler implements DialogHandler {
                         String fileName = files.get(i);
                         if (isGameFile(fileName)) {
                             JSFile gameFile = jsZip.getFile(fileName);
-                            gameFilesMap.put(fileName.toLowerCase(), gameFile.asUint8Array().toByteArray());
+                            String fileNameLowerCase = fileName.toLowerCase();
+                            gameFilesMap.put(fileNameLowerCase, gameFile.asUint8Array().toByteArray());
                         
-                            if (fileName.matches("^[a-z0-9]*vol.[0-9]+$")) {
+                            if (fileNameLowerCase.matches("^[a-z0-9]*vol.[0-9]+$")) {
                                 hasVolFile = true;
                             }
-                            if (fileName.endsWith("dir")) {
+                            if (fileNameLowerCase.endsWith("dir")) {
                                 hasDirFile = true;
                             }
                         }
