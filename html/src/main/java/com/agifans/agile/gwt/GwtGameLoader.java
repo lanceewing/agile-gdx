@@ -33,30 +33,34 @@ public class GwtGameLoader extends GameLoader {
 
     @Override
     public void fetchGameFiles(String gameUri, Consumer<Map<String, byte[]>> gameFilesConsumer) {
-        //Map<String, byte[]> gameFileMap = new HashMap<>();
-        
-        opfsGameFiles.readGameFilesData(gameUri, new GwtOpenFileResultsHandler() {
-            @Override
-            public void onFileResultsReady(GwtOpenFileResult[] openFileResultArray) {
-                if (openFileResultArray.length == 1) {
-                    GwtOpenFileResult openFileResult = openFileResultArray[0];
-                    Map<String, byte[]> gameFileMap = gameFileMapEncoder.decodeGameFileMap(openFileResult.getFileData());
-                    gameFilesConsumer.accept(gameFileMap);
+        if (gameUri.toLowerCase().endsWith(".zip")) {
+            // Must be a ZIP URL for one of the embedded fan made games.
+            Map<String, byte[]> gameFileMap = new HashMap<>();
+            JSZip jsZip = JSZip.loadFile(gameUri);
+            JsArrayString files = jsZip.getFiles();
+
+            for (int i=0; i < files.length(); i++) {
+                String fileName = files.get(i);
+                if (isGameFile(fileName)) {
+                    JSFile gameFile = jsZip.getFile(fileName);
+                    gameFileMap.put(fileName.toLowerCase(), gameFile.asUint8Array().toByteArray());
                 }
             }
-        });
+            
+            gameFilesConsumer.accept(gameFileMap);
         
-        /* TODO: Add back in when ZIP files are supported again.
-        JSZip jsZip = JSZip.loadFile(gameUri);
-        JsArrayString files = jsZip.getFiles();
-
-        for (int i=0; i < files.length(); i++) {
-            String fileName = files.get(i);
-            if (isGameFile(fileName)) {
-                JSFile gameFile = jsZip.getFile(fileName);
-                gameFileMap.put(fileName.toLowerCase(), gameFile.asUint8Array().toByteArray());
-            }
+        } else {
+            // Otherwise, if it isn't a ZIP URL, then it must be in the OPFS.
+            opfsGameFiles.readGameFilesData(gameUri, new GwtOpenFileResultsHandler() {
+                @Override
+                public void onFileResultsReady(GwtOpenFileResult[] openFileResultArray) {
+                    if (openFileResultArray.length == 1) {
+                        GwtOpenFileResult openFileResult = openFileResultArray[0];
+                        Map<String, byte[]> gameFileMap = gameFileMapEncoder.decodeGameFileMap(openFileResult.getFileData());
+                        gameFilesConsumer.accept(gameFileMap);
+                    }
+                }
+            });
         }
-        */
     }
 }

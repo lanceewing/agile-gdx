@@ -107,13 +107,7 @@ public class HomeScreen extends InputAdapter implements Screen {
         this.agile = agile;
         this.dialogHandler = dialogHandler;
 
-        // Load the app meta data.
-        Json json = getJson();
-        //String appConfigJson = Gdx.files.internal("data/games.json").readString();
-        String appConfigJson =
-            json.prettyPrint(agile.getPreferences().getString(HOME_SCREEN_APP_LIST_PREF_NAME, DEFAULT_APP_CONFIG_JSON));
-        agile.getPreferences().putString(HOME_SCREEN_APP_LIST_PREF_NAME, appConfigJson);
-        AppConfig appConfig = json.fromJson(AppConfig.class, appConfigJson);
+        AppConfig appConfig = loadAppConfig();
         appConfigMap = new TreeMap<String, AppConfigItem>();
         for (AppConfigItem appConfigItem : appConfig.getApps()) {
             appConfigMap.put(appConfigItem.getName(), appConfigItem);
@@ -144,6 +138,24 @@ public class HomeScreen extends InputAdapter implements Screen {
         landscapeInputProcessor = new InputMultiplexer();
         landscapeInputProcessor.addProcessor(landscapeStage);
         landscapeInputProcessor.addProcessor(this);
+    }
+    
+    private AppConfig loadAppConfig() {
+        Json json = getJson();
+        String appConfigJson = null;
+        if (agile.getPreferences().contains(HOME_SCREEN_APP_LIST_PREF_NAME)) {
+            appConfigJson = json.prettyPrint(agile.getPreferences().getString(HOME_SCREEN_APP_LIST_PREF_NAME));
+        } else {
+            if (Gdx.app.getType().equals(ApplicationType.WebGL)) {
+                // First time use for web version, so load preconfigured file.
+                appConfigJson = Gdx.files.internal("data/games.json").readString();
+            } else {
+                // Desktop currently empty to begin with.
+                appConfigJson = DEFAULT_APP_CONFIG_JSON;
+            }
+        }
+        agile.getPreferences().putString(HOME_SCREEN_APP_LIST_PREF_NAME, appConfigJson);
+        return json.fromJson(AppConfig.class, appConfigJson);
     }
     
     private Texture createWhitePixelTexture() {
