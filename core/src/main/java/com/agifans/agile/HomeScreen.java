@@ -743,14 +743,31 @@ public class HomeScreen extends InputAdapter implements Screen {
         return -1;
     }
     
-    private int getGameIndex(AppConfigItem appConfigItem) {
+    private int getGameIndex(AppConfigItem game) {
         int gameIndex = 0;
+        
+        for (int loopCount=0; loopCount < 2; loopCount++) {
+            for (AppConfigItem appConfigItem : appConfigMap.values()) {
+                String gameId = appConfigItem.getGameId().toLowerCase();
+                if (((loopCount == 0) && (SIERRA_GAMES.contains(gameId))) ||
+                    ((loopCount == 1) && (!SIERRA_GAMES.contains(gameId)))) {
+                    gameIndex++;
+                    if (appConfigItem.getName().equals(game.getName())) {
+                        return gameIndex;
+                    }
+                }
+            }
+        }
+        
+        /*
         for (String gameName : appConfigMap.keySet()) {
             gameIndex++;
-            if (gameName.equals(appConfigItem.getName())) {
+            if (gameName.equals(game.getName())) {
                 return gameIndex;
             }
         }
+        */
+        
         return 0;
     }
     
