@@ -149,32 +149,32 @@ class Dialog {
 	}
 
 	alert(message) {
-		const settings = Object.assign({}, { cancel: '', message, template: '' });
+		const settings = Object.assign({}, { cancel: '', message: message, template: '' });
 		this.open(settings);
 		return this.waitForUser();
 	}
 
 	confirm(message) {
-		const settings = Object.assign({}, { message, template: '' });
+		const settings = Object.assign({}, { message: message, template: '' });
 		this.open(settings);
 		return this.waitForUser();
 	}
 
 	prompt(message, value) {
 		const template = `<label aria-label="${message}"><input type="text" name="prompt" value="${value}"></label>`;
-		const settings = Object.assign({}, { message, template });
+		const settings = Object.assign({}, { message: message, template: template });
 		this.open(settings);
 		return this.waitForUser();
 	}
 	
-	promptForOption(message, options) {
+	promptForOption(title, message, options) {
 		let template = `<label for="options-select">${message}</label>`;
 		template += '<select name="option" id="options-select">';
 		options.forEach((option) => {
 			template += `<option value="${option}">${option}</option>`;
 		});
 		template += '</select>';
-		const settings = Object.assign({}, { message, template});
+		const settings = Object.assign({}, { message: title, template: template});
 		this.open(settings);
 		return this.waitForUser();
 	}

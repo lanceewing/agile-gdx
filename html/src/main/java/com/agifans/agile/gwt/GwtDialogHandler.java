@@ -62,13 +62,13 @@ public class GwtDialogHandler implements DialogHandler {
     public void promptForImportType(AppConfigItem appConfigItem, ImportTypeResponseHandler importTypeResponseHandler) {
         String gameName = (appConfigItem != null? "\"" + appConfigItem.getName() + "\"" : "an AGI game");
         String[] values = ImportType.getDescriptions();
+        String title = "Please select the type of import:";
         String message = (appConfigItem != null? 
-                "For legal reasons, you must import your own copy of \n" + gameName + "\n\n" : "") + 
-                "Please select the type of import:";
+                "For legal reasons, you must import your own copy of <br>" + gameName + "<br><br>" : "");
         Gdx.app.postRunnable(new Runnable() {
             @Override
             public void run() {
-                showHtmlPromptForImportType(message, values, new PromptForOptionsResponseHandler() {
+                showHtmlPromptForImportType(title, message, values, new PromptForOptionsResponseHandler() {
                     @Override
                     public void selectedOptionResult(boolean success, String optionText) {
                         if (success) {
@@ -83,9 +83,9 @@ public class GwtDialogHandler implements DialogHandler {
         });
     }
     
-    private final native void showHtmlPromptForImportType(String message, String[] options, PromptForOptionsResponseHandler promptForOptionsResponseHandler)/*-{
+    private final native void showHtmlPromptForImportType(String title, String message, String[] options, PromptForOptionsResponseHandler promptForOptionsResponseHandler)/*-{
         var dialog = new $wnd.Dialog();
-        dialog.promptForOption(message, options).then(function (res) {
+        dialog.promptForOption(title, message, options).then(function (res) {
             if (res) {
                 promptForOptionsResponseHandler.@com.agifans.agile.gwt.GwtDialogHandler.PromptForOptionsResponseHandler::selectedOptionResult(ZLjava/lang/String;)(true, res.option);
             } else {
