@@ -1,7 +1,9 @@
 package com.agifans.agile;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 import com.agifans.agile.config.AppConfig;
@@ -96,6 +98,27 @@ public class HomeScreen extends InputAdapter implements Screen {
      * first time. This is the basis for starting to add apps to the home screen.
      */
     private static final String DEFAULT_APP_CONFIG_JSON = "{}";
+    
+    /**
+     * Set containing the game IDs for all original Sierra AGI games.
+     */
+    private static final Set<String> SIERRA_GAMES = new HashSet<>();
+    static {
+        SIERRA_GAMES.add("bc");
+        SIERRA_GAMES.add("dp");
+        SIERRA_GAMES.add("gr");
+        SIERRA_GAMES.add("kq1");
+        SIERRA_GAMES.add("kq2");
+        SIERRA_GAMES.add("kq3");
+        SIERRA_GAMES.add("kq4");
+        SIERRA_GAMES.add("lllll");
+        SIERRA_GAMES.add("mh1");
+        SIERRA_GAMES.add("mh2");
+        SIERRA_GAMES.add("mg");
+        SIERRA_GAMES.add("pq");
+        SIERRA_GAMES.add("sq");
+        SIERRA_GAMES.add("sq2");
+    }
     
     /**
      * Constructor for HomeScreen.
@@ -233,23 +256,30 @@ public class HomeScreen extends InputAdapter implements Screen {
         currentPage.add(buildAppButton(addGameIcon)).expand().fill();
         pageItemCount++;
         
-        for (AppConfigItem appConfigItem : appConfig.getApps()) {
-            // Every itemsPerPage apps, add a new page.
-            if (pageItemCount == itemsPerPage) {
-                pagedScrollPane.addPage(currentPage);
-                pageItemCount = 0;
-                currentPage = new Table().pad(0, 0, 0, 0);
-                currentPage.defaults().pad(0, horizPaddingUnit, 0, horizPaddingUnit);
+        // Add the original Sierra AGI games first, then the fan made games.
+        for (int loopCount=0; loopCount < 2; loopCount++) {
+            for (AppConfigItem appConfigItem : appConfig.getApps()) {
+                String gameId = appConfigItem.getGameId().toLowerCase();
+                if (((loopCount == 0) && (SIERRA_GAMES.contains(gameId))) ||
+                    ((loopCount == 1) && (!SIERRA_GAMES.contains(gameId)))) {
+                    // Every itemsPerPage apps, add a new page.
+                    if (pageItemCount == itemsPerPage) {
+                        pagedScrollPane.addPage(currentPage);
+                        pageItemCount = 0;
+                        currentPage = new Table().pad(0, 0, 0, 0);
+                        currentPage.defaults().pad(0, horizPaddingUnit, 0, horizPaddingUnit);
+                    }
+        
+                    // Every number of columns apps, add a new row to the current page.
+                    if ((pageItemCount % columns) == 0) {
+                        currentPage.row();
+                    }
+        
+                    currentPage.add(buildAppButton(appConfigItem)).expand().fill();
+        
+                    pageItemCount++;
+                }
             }
-
-            // Every number of columns apps, add a new row to the current page.
-            if ((pageItemCount % columns) == 0) {
-                currentPage.row();
-            }
-
-            currentPage.add(buildAppButton(appConfigItem)).expand().fill();
-
-            pageItemCount++;
         }
 
         // Add the last page of apps.
@@ -702,7 +732,8 @@ public class HomeScreen extends InputAdapter implements Screen {
     }
     
     private int getIndexOfFirstGameStartingWithChar(char letter) {
-        int gameIndex = -1;
+        // Ignore the original Sierra AGI games, as they're all on the first page.
+        int gameIndex = 14;
         for (String gameName : appConfigMap.keySet()) {
             gameIndex++;
             if (gameName.toUpperCase().startsWith("" + letter)) {
