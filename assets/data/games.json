@@ -1,0 +1,1138 @@
+{
+	"apps": [
+		{
+			"gameId": "2PLAYD",
+			"name": "2 Player Demo",
+			"displayName": "2 Player Demo",
+			"filePath": "/games/2playd.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "DEMO1",
+			"name": "AGI Demo 1",
+			"displayName": "AGI Demo 1",
+			"filePath": "/games/demo1.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "DEMO2",
+			"name": "AGI Demo 2",
+			"displayName": "AGI Demo 2",
+			"filePath": "/games/demo2.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "DEMO3",
+			"name": "AGI Demo 3",
+			"displayName": "AGI Demo 3",
+			"filePath": "/games/demo3.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "MOUSED",
+			"name": "AGI Mouse Demo",
+			"displayName": "AGI Mouse Demo",
+			"filePath": "/games/moused.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "PIANO",
+			"name": "AGI Piano",
+			"displayName": "AGI Piano",
+			"filePath": "/games/piano.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "AQUEST",
+			"name": "AGI Quest",
+			"displayName": "AGI Quest",
+			"filePath": "/games/aquest.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "TETRIS",
+			"name": "AGI Tetris",
+			"displayName": "AGI Tetris",
+			"filePath": "/games/tetris.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "TREK",
+			"name": "AGI Trek",
+			"displayName": "AGI Trek",
+			"filePath": "/games/trek.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "AGI256",
+			"name": "AGI256 Demo",
+			"displayName": "AGI256 Demo",
+			"filePath": "/games/agi256.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "AG2562",
+			"name": "AGI256-2 Demo",
+			"displayName": "AGI256-2 Demo",
+			"filePath": "/games/ag2562.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "ABRAH",
+			"name": "Abrah, L'Orphelin De L'Espace",
+			"displayName": "Abrah, L'Orphelin\nDe L'Espace",
+			"filePath": "/games/abrah.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "ACIDOP",
+			"name": "Acidopolis",
+			"displayName": "Acidopolis",
+			"filePath": "/games/acidop.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "AGNT55",
+			"name": "Agent 0055",
+			"displayName": "Agent 0055",
+			"filePath": "/games/agnt55.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "AG6VSN",
+			"name": "Agent 06 vs. The Super Nazi",
+			"displayName": "Agent 06 vs. The\nSuper Nazi",
+			"filePath": "/games/ag6vsn.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "AGENTQ",
+			"name": "Agent Quest",
+			"displayName": "Agent Quest",
+			"filePath": "/games/agentq.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "ALPNDH",
+			"name": "Al Pond - On Holiday",
+			"displayName": "Al Pond -\nOn Holiday",
+			"filePath": "/games/alpndh.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "ALPND1",
+			"name": "Al Pond 1 - Al Lives Forever",
+			"displayName": "Al Pond 1 - \nAl Lives Forever",
+			"filePath": "/games/alpnd1.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "APOCAQ",
+			"name": "Apocalyptic Quest",
+			"displayName": "Apocalyptic Quest",
+			"filePath": "/games/apocaq.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "BANDQ",
+			"name": "Band Quest Demo",
+			"displayName": "Band Quest Demo",
+			"filePath": "/games/bandq.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "BTITAN",
+			"name": "Beyond the Titanic 2",
+			"displayName": "Beyond the Titanic\n2",
+			"filePath": "/games/btitan.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "BIRIQ1",
+			"name": "Biri Quest 1",
+			"displayName": "Biri Quest 1",
+			"filePath": "/games/biriq1.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "BC",
+			"name": "Black Cauldron",
+			"displayName": "Black Cauldron",
+			"filePath": "",
+			"fileType": "UNK"
+		},
+		{
+			"gameId": "BOBFBY",
+			"name": "Bob The Farmboy",
+			"displayName": "Bob The Farmboy",
+			"filePath": "/games/bobfby.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "BORMN1",
+			"name": "Boring Man 1 - The Road to Robinland",
+			"displayName": "Boring Man 1 - The\nRoad to Robinland",
+			"filePath": "/games/bormn1.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "BORMN2",
+			"name": "Boring Man 2 - Ho Man! This Game Sucks!",
+			"displayName": "Boring Man 2 - Ho\nMan! This Game\nSucks!",
+			"filePath": "/games/bormn2.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "BOTZ",
+			"name": "Botz",
+			"displayName": "Botz",
+			"filePath": "/games/botz.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "BRIANQ",
+			"name": "Brian's Quest",
+			"displayName": "Brian's Quest",
+			"filePath": "/games/brianq.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "CPU21",
+			"name": "CPU-21",
+			"displayName": "CPU-21",
+			"filePath": "/games/cpu21.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "CLDEST",
+			"name": "Caitlyn's Destiny",
+			"displayName": "Caitlyn's Destiny",
+			"filePath": "/games/cldest.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "CARDRV",
+			"name": "Car Driver",
+			"displayName": "Car Driver",
+			"filePath": "/games/cardrv.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "XMAS",
+			"name": "Christmas Card",
+			"displayName": "Christmas Card",
+			"filePath": "/games/xmas.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "COCOEN",
+			"name": "Coco Coq In Grostesteing's Base",
+			"displayName": "Coco Coq In\nGrostesteing's Base",
+			"filePath": "/games/cocoen.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "CORBMM",
+			"name": "Corby's Murder Mystery",
+			"displayName": "Corby's Murder\nMystery",
+			"filePath": "/games/corbmm.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "DGAGMS",
+			"name": "DG - The AGIMouse Adventure",
+			"displayName": "DG - The AGIMouse\nAdventure",
+			"filePath": "/games/dgagms.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "DGADGM",
+			"name": "DG: The Adventure Game",
+			"displayName": "DG: The Adventure\nGame",
+			"filePath": "/games/dgadgm.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "DASHIK",
+			"name": "Dashiki",
+			"displayName": "Dashiki",
+			"filePath": "/games/dashik.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "DSH256",
+			"name": "Dashiki - 256 Colors",
+			"displayName": "Dashiki - 256\nColors",
+			"filePath": "/games/dsh256.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "DATEQ1",
+			"name": "Date Quest 1",
+			"displayName": "Date Quest 1",
+			"filePath": "/games/dateq1.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "DATEQ2",
+			"name": "Date Quest 2",
+			"displayName": "Date Quest 2",
+			"filePath": "/games/dateq2.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "DAVESQ",
+			"name": "Dave's Quest",
+			"displayName": "Dave's Quest",
+			"filePath": "/games/davesq.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "DISCON",
+			"name": "Disco Nights",
+			"displayName": "Disco Nights",
+			"filePath": "/games/discon.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "DOGSQ",
+			"name": "Dogs Quest - The Quest for the Golden Bone",
+			"displayName": "Dogs Quest - The\nQuest for the\nGolden Bone",
+			"filePath": "/games/dogsq.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "DP",
+			"name": "Donald Duck's Playground",
+			"displayName": "Donald Duck's\nPlayground",
+			"filePath": "",
+			"fileType": "UNK"
+		},
+		{
+			"gameId": "DRJUMM",
+			"name": "Dr. Jummybummy's Space Adventure",
+			"displayName": "Dr. Jummybummy's\nSpace Adventure",
+			"filePath": "/games/drjumm.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "EDWARD",
+			"name": "Ed Ward",
+			"displayName": "Ed Ward",
+			"filePath": "/games/edward.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "ELFINT",
+			"name": "Elfintard",
+			"displayName": "Elfintard",
+			"filePath": "/games/elfint.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "ENCLOS",
+			"name": "Enclosure",
+			"displayName": "Enclosure\n",
+			"filePath": "/games/enclos.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "EPICFT",
+			"name": "Epic Fighting",
+			"displayName": "Epic Fighting",
+			"filePath": "/games/epicft.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "ESCAPE",
+			"name": "Escape Quest",
+			"displayName": "Escape Quest",
+			"filePath": "/games/escape.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "EDESRT",
+			"name": "Escape from the Desert",
+			"displayName": "Escape from the\nDesert",
+			"filePath": "/games/edesrt.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "ESALES",
+			"name": "Escape from the Salesman",
+			"displayName": "Escape from the\nSalesman",
+			"filePath": "/games/esales.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "FLAGQ",
+			"name": "Flag Quest",
+			"displayName": "Flag Quest",
+			"filePath": "/games/flagq.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "GTAMP1",
+			"name": "Gennadi Tahab Autot - Mission Pack 1 - Kuressaare",
+			"displayName": "Gennadi Tahab Autot\n- Mission Pack 1 -\nKuressaare",
+			"filePath": "/games/gtamp1.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "GOUTSQ",
+			"name": "Get Outta Space Quest",
+			"displayName": "Get Outta Space\nQuest",
+			"filePath": "/games/goutsq.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "GOWEST",
+			"name": "Go West, Young Hippie",
+			"displayName": "Go West, Young\nHippie",
+			"filePath": "/games/gowest.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "GR",
+			"name": "Gold Rush!",
+			"displayName": "Gold Rush!",
+			"filePath": "",
+			"fileType": "UNK"
+		},
+		{
+			"gameId": "GOODMN",
+			"name": "Good Man",
+			"displayName": "Good Man",
+			"filePath": "/games/goodmn.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "GOURDB",
+			"name": "Gourd of the Beans",
+			"displayName": "Gourd of the\nBeans",
+			"filePath": "/games/gourdb.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "GROZA",
+			"name": "Groza",
+			"displayName": "Groza",
+			"filePath": "/games/groza.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "HLFDTH",
+			"name": "Half-Death - Terror At White-Mesa",
+			"displayName": "Half-Death - Terror\nAt White-Mesa",
+			"filePath": "/games/hlfdth.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "HANKQE",
+			"name": "Hank's Quest",
+			"displayName": "Hank's Quest",
+			"filePath": "/games/hankqe.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "HERBAO",
+			"name": "Herbao",
+			"displayName": "Herbao",
+			"filePath": "/games/herbao.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "HITLER",
+			"name": "Hitler's Legacy",
+			"displayName": "Hitler's Legacy",
+			"filePath": "/games/hitler.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "ISABEL",
+			"name": "Isabella Coq - A Present For My Dad",
+			"displayName": "Isabella Coq - A\nPresent For My Dad",
+			"filePath": "/games/isabel.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "JJVAMP",
+			"name": "Jack &amp; Julia - VAMPYR",
+			"displayName": "Jack &amp; Julia -\nVAMPYR",
+			"filePath": "/games/jjvamp.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "JEFFSQ",
+			"name": "Jeff's Quest",
+			"displayName": "Jeff's Quest",
+			"filePath": "/games/jeffsq.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "JENSQ",
+			"name": "Jen's Quest",
+			"displayName": "Jen's Quest",
+			"filePath": "/games/jensq.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "JIGGY",
+			"name": "Jiggy Jiggy Uh! Uh!",
+			"displayName": "Jiggy Jiggy Uh! Uh!",
+			"filePath": "/games/jiggy.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "JOEMCM",
+			"name": "Joe McMuffin In \"What's Cooking, Doc\"",
+			"displayName": "Joe McMuffin In\n\"What's Cooking,\nDoc\"",
+			"filePath": "/games/joemcm.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "JOLIMI",
+			"name": "Jolimie, le Village Maudit",
+			"displayName": "Jolimie, le Village\nMaudit",
+			"filePath": "/games/jolimi.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "JOCHEF",
+			"name": "Journey Of Chef",
+			"displayName": "Journey Of Chef",
+			"filePath": "/games/jochef.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "JUKEBX",
+			"name": "Jukebox",
+			"displayName": "Jukebox",
+			"filePath": "/games/jukebx.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "JUSTIN",
+			"name": "Justin Quest",
+			"displayName": "Justin Quest",
+			"filePath": "/games/justin.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "JOULUM",
+			"name": "Jõulumaa",
+			"displayName": "Jõulumaa",
+			"filePath": "/games/joulum.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "KQ1",
+			"name": "King's Quest",
+			"displayName": "King's Quest",
+			"filePath": "",
+			"fileType": "UNK"
+		},
+		{
+			"gameId": "KQ2",
+			"name": "King's Quest 2",
+			"displayName": "King's Quest 2",
+			"filePath": "",
+			"fileType": "UNK"
+		},
+		{
+			"gameId": "KQ3",
+			"name": "King's Quest 3",
+			"displayName": "King's Quest 3",
+			"filePath": "",
+			"fileType": "UNK"
+		},
+		{
+			"gameId": "KQ4",
+			"name": "King's Quest 4",
+			"displayName": "King's Quest 4",
+			"filePath": "",
+			"fileType": "UNK"
+		},
+		{
+			"gameId": "KQ4DEM",
+			"name": "King's Quest IV Demo",
+			"displayName": "King's Quest IV\nDemo",
+			"filePath": "/games/kq4dem.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "KQ2BI",
+			"name": "Kings Quest 2 1/4 - Breast Intentions",
+			"displayName": "Kings Quest 2 1/4  -\nBreast Intentions",
+			"filePath": "/games/kq2bi.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "LASSEH",
+			"name": "Lasse Holm: The Quest for Revenge",
+			"displayName": "Lasse Holm: The\nQuest for Revenge",
+			"filePath": "/games/lasseh.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "LAWMAN",
+			"name": "Lawman for Hire",
+			"displayName": "Lawman for Hire",
+			"filePath": "/games/lawman.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "LEFTYV",
+			"name": "Lefty Goes on Vacation",
+			"displayName": "Lefty Goes on\nVacation",
+			"filePath": "/games/leftyv.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "LLLLL",
+			"name": "Leisure Suit Larry",
+			"displayName": "Leisure Suit Larry",
+			"filePath": "",
+			"fileType": "UNK"
+		},
+		{
+			"gameId": "INSEPA",
+			"name": "Les Inseparables",
+			"displayName": "Les Inseparables",
+			"filePath": "/games/insepa.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "LPIRAT",
+			"name": "Little Pirate",
+			"displayName": "Little Pirate",
+			"filePath": "/games/lpirat.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "LSTETY",
+			"name": "Lost Eternity",
+			"displayName": "Lost Eternity",
+			"filePath": "/games/lstety.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "MDQUST",
+			"name": "MD Quest - The Search for Michiel",
+			"displayName": "MD Quest - The\nSearch for Michiel",
+			"filePath": "/games/mdqust.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "MAALEA",
+			"name": "Maale Adummin Quest",
+			"displayName": "Maale Adummin Quest",
+			"filePath": "/games/maalea.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "MH1",
+			"name": "Manhunter: New York",
+			"displayName": "Manhunter:\nNew York",
+			"filePath": "",
+			"fileType": "UNK"
+		},
+		{
+			"gameId": "MH2",
+			"name": "Manhunter: San Francisco",
+			"displayName": "Manhunter:\nSan Francisco",
+			"filePath": "",
+			"fileType": "UNK"
+		},
+		{
+			"gameId": "MG",
+			"name": "Mixed Up Mother Goose",
+			"displayName": "Mixed Up\nMother Goose",
+			"filePath": "",
+			"fileType": "UNK"
+		},
+		{
+			"gameId": "MONKEY",
+			"name": "Monkey Man",
+			"displayName": "Monkey Man",
+			"filePath": "/games/monkey.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "NAPALM",
+			"name": "Napalm Quest",
+			"displayName": "Napalm Quest",
+			"filePath": "/games/napalm.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "NATU1E",
+			"name": "Naturette 1",
+			"displayName": "Naturette 1",
+			"filePath": "/games/natu1e.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "NATU2E",
+			"name": "Naturette 2 - Daughter of the Moon",
+			"displayName": "Naturette 2 -\nDaughter of the\nMoon",
+			"filePath": "/games/natu2e.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "NATU3E",
+			"name": "Naturette 3 - Adventure in Treeworld",
+			"displayName": "Naturette 3 -\nAdventure in\nTreeworld",
+			"filePath": "/games/natu3e.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "NATU4",
+			"name": "Naturette 4",
+			"displayName": "Naturette 4",
+			"filePath": "/games/natu4.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "HANGMN",
+			"name": "New AGI Hangman Test",
+			"displayName": "New AGI Hangman\nTest",
+			"filePath": "/games/hangmn.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "NICKQ",
+			"name": "Nick's Quest - In Pursuit of QuakeMovie",
+			"displayName": "Nick's Quest - In\nPursuit of\nQuakeMovie",
+			"filePath": "/games/nickq.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "OPENMN",
+			"name": "Open Mic Night",
+			"displayName": "Open Mic Night",
+			"filePath": "/games/openmn.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "PKTETR",
+			"name": "PK AGI Tetris",
+			"displayName": "PK AGI Tetris",
+			"filePath": "/games/pktetr.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "PATQST",
+			"name": "Patrick's Quest",
+			"displayName": "Patrick's Quest",
+			"filePath": "/games/patqst.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "PHANTA",
+			"name": "Phantasmagoria",
+			"displayName": "Phantasmagoria",
+			"filePath": "/games/phanta.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "PHARQ",
+			"name": "Pharaoh Quest",
+			"displayName": "Pharaoh Quest",
+			"filePath": "/games/pharq.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "PHILQ",
+			"name": "Phil's Quest - the Search for Tolbaga",
+			"displayName": "Phil's Quest - the\nSearch for Tolbaga",
+			"filePath": "/games/philq.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "PINKUN",
+			"name": "Pinkun Maze Quest",
+			"displayName": "Pinkun Maze Quest",
+			"filePath": "/games/pinkun.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "PIRATQ",
+			"name": "Pirate Quest",
+			"displayName": "Pirate Quest",
+			"filePath": "/games/piratq.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "PQ",
+			"name": "Police Quest",
+			"displayName": "Police Quest",
+			"filePath": "",
+			"fileType": "UNK"
+		},
+		{
+			"gameId": "POTHDQ",
+			"name": "Pothead Quest",
+			"displayName": "Pothead Quest",
+			"filePath": "/games/pothdq.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "PRESQ",
+			"name": "President's Quest",
+			"displayName": "President's Quest",
+			"filePath": "/games/presq.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "PRINCE",
+			"name": "Prince Quest",
+			"displayName": "Prince Quest",
+			"filePath": "/games/prince.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "QFG6",
+			"name": "Quest for Glory VI - Hero's Adventure",
+			"displayName": "Quest for Glory VI\n- Hero's Adventure",
+			"filePath": "/games/qfg6.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "QFHOME",
+			"name": "Quest for Home",
+			"displayName": "Quest for Home",
+			"filePath": "/games/qfhome.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "QLADY",
+			"name": "Quest for Ladies",
+			"displayName": "Quest for Ladies",
+			"filePath": "/games/qlady.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "QRDEAL",
+			"name": "Quest for a Record Deal",
+			"displayName": "Quest for a Record\nDeal",
+			"filePath": "/games/qrdeal.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "RALPHQ",
+			"name": "Ralph's Quest",
+			"displayName": "Ralph's Quest",
+			"filePath": "/games/ralphq.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "RESI44",
+			"name": "Residence 44",
+			"displayName": "Residence 44",
+			"filePath": "/games/resi44.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "SARIEN",
+			"name": "Sarien",
+			"displayName": "Sarien",
+			"filePath": "/games/sarien.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "SAVSAN",
+			"name": "Save Santa",
+			"displayName": "Save Santa",
+			"filePath": "/games/savsan.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "SCHILL",
+			"name": "Schiller",
+			"displayName": "Schiller",
+			"filePath": "/games/schill.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "SERGD1",
+			"name": "Serguei's Destiny 1",
+			"displayName": "Serguei's Destiny 1",
+			"filePath": "/games/sergd1.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "SERGD2",
+			"name": "Serguei's Destiny 2",
+			"displayName": "Serguei's Destiny 2",
+			"filePath": "/games/sergd2.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "SHIFTY",
+			"name": "Shifty",
+			"displayName": "Shifty",
+			"filePath": "/games/shifty.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "STILEG",
+			"name": "Sliding Tile Game",
+			"displayName": "Sliding Tile Game",
+			"filePath": "/games/stileg.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "SNWBRD",
+			"name": "Snowboarding Demo",
+			"displayName": "Snowboarding Demo",
+			"filePath": "/games/snwbrd.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "SOLSYS",
+			"name": "Solar System Tour",
+			"displayName": "Solar System Tour",
+			"filePath": "/games/solsys.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "SORAPP",
+			"name": "Sorceror's Appraisal",
+			"displayName": "Sorceror's\nAppraisal",
+			"filePath": "/games/sorapp.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "SQ",
+			"name": "Space Quest",
+			"displayName": "Space Quest",
+			"filePath": "",
+			"fileType": "UNK"
+		},
+		{
+			"gameId": "SQ0",
+			"name": "Space Quest 0 Replicated",
+			"displayName": "Space Quest 0\nReplicated",
+			"filePath": "/games/sq0.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "SQ2",
+			"name": "Space Quest 2",
+			"displayName": "Space Quest 2",
+			"filePath": "",
+			"fileType": "UNK"
+		},
+		{
+			"gameId": "SQX",
+			"name": "Space Quest X The Lost Chapter",
+			"displayName": "Space Quest X\nThe Lost Chapter",
+			"filePath": "/games/sqx.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "STREK",
+			"name": "Space Trek",
+			"displayName": "Space Trek",
+			"filePath": "/games/strek.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "SPCDLV",
+			"name": "Special Delivery",
+			"displayName": "Special Delivery",
+			"filePath": "/games/spcdlv.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "SPBIKE",
+			"name": "Speeder Bike Challenge",
+			"displayName": "Speeder Bike\nChallenge",
+			"filePath": "/games/spbike.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "STARCO",
+			"name": "Star Commander 1",
+			"displayName": "Star Commander 1",
+			"filePath": "/games/starco.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "STARPI",
+			"name": "Star Pilot: Bigger Fish",
+			"displayName": "Star Pilot: Bigger\nFish",
+			"filePath": "/games/starpi.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "STREET",
+			"name": "Street Quest",
+			"displayName": "Street Quest",
+			"filePath": "/games/street.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "TOTIKI",
+			"name": "Tales of the Tiki",
+			"displayName": "Tales of the Tiki",
+			"filePath": "/games/totiki.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "TEXM1",
+			"name": "Tex McPhilip 1 - Quest For The Papacy",
+			"displayName": "Tex McPhilip 1 -\nQuest For The\nPapacy",
+			"filePath": "/games/texm1.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "TEXM2",
+			"name": "Tex McPhilip 2 - Road To Divinity",
+			"displayName": "Tex McPhilip 2 -\nRoad To Divinity",
+			"filePath": "/games/texm2.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "TEXM3",
+			"name": "Tex McPhilip 3 - A Destiny of Sin",
+			"displayName": "Tex McPhilip 3 - A\nDestiny of Sin",
+			"filePath": "/games/texm3.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "13THDI",
+			"name": "The 13th Disciple",
+			"displayName": "The 13th Disciple",
+			"filePath": "/games/13thdi.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "CZHERM",
+			"name": "The Adventures of a Crazed Hermit",
+			"displayName": "The Adventures of a\nCrazed Hermit",
+			"filePath": "/games/czherm.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "GRDEAD",
+			"name": "The Grateful Dead",
+			"displayName": "The Grateful Dead",
+			"filePath": "/games/grdead.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "LSHAYL",
+			"name": "The Legend of Shay-Larah 1 - The Lost Prince",
+			"displayName": "The Legend of\nShay-Larah 1 - The\nLost Prince",
+			"filePath": "/games/lshayl.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "HARRYS",
+			"name": "The Legendary Harry Soupsmith",
+			"displayName": "The Legendary Harry\nSoupsmith",
+			"filePath": "/games/harrys.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "LHDUDE",
+			"name": "The Long Haired Dude: Encounter of the 18-th Kind",
+			"displayName": "The Long Haired\nDude: Encounter of\nthe 18-th Kind",
+			"filePath": "/games/lhdude.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "LOSTPL",
+			"name": "The Lost Planet",
+			"displayName": "The Lost Planet",
+			"filePath": "/games/lostpl.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "TNAORW",
+			"name": "The New Adventure of Roger Wilco",
+			"displayName": "The New Adventure\nof Roger Wilco",
+			"filePath": "/games/tnaorw.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "PROFEN",
+			"name": "The Professor is Missing",
+			"displayName": "The Professor is\nMissing",
+			"filePath": "/games/profen.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "RUBY",
+			"name": "The Ruby Cast",
+			"displayName": "The Ruby Cast",
+			"filePath": "/games/ruby.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "SHWPLN",
+			"name": "The Shadow Plan",
+			"displayName": "The Shadow Plan",
+			"filePath": "/games/shwpln.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "TOBYWD",
+			"name": "Toby's World",
+			"displayName": "Toby's World",
+			"filePath": "/games/tobywd.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "TTSCB",
+			"name": "Tonight The Shrieking Corpses Bleed",
+			"displayName": "Tonight The\nShrieking Corpses\nBleed",
+			"filePath": "/games/ttscb.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "TURKSQ",
+			"name": "Turks' Quest - Heir to the Planet",
+			"displayName": "Turks' Quest - Heir\nto the Planet",
+			"filePath": "/games/turksq.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "URIQ",
+			"name": "URI Quest",
+			"displayName": "URI Quest",
+			"filePath": "/games/uriq.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "UAGIFG",
+			"name": "Ultimate AGI Fangame",
+			"displayName": "Ultimate AGI\nFangame",
+			"filePath": "/games/uagifg.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "VTGADV",
+			"name": "V - The Graphical Adventure",
+			"displayName": "V - The Graphical\nAdventure",
+			"filePath": "/games/vtgadv.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "VDGIRL",
+			"name": "Voodoo Girl",
+			"displayName": "Voodoo Girl",
+			"filePath": "/games/vdgirl.zip",
+			"fileType": "ZIP"
+		},
+		{
+			"gameId": "WIZARO",
+			"name": "Wizaro",
+			"displayName": "Wizaro",
+			"filePath": "/games/wizaro.zip",
+			"fileType": "ZIP"
+		}
+	]
+}
