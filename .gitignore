@@ -1,6 +1,3 @@
-## AGILE additions
-html/webapp/games
-
 ## Gradle:
 .gradle/
 gradle-app.setting
