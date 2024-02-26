@@ -728,32 +728,47 @@ public class HomeScreen extends InputAdapter implements Screen {
                         agile.getPreferences().flush();
                     }
                     final String appConfigFilePath = filePath;
-                    dialogHandler.promptForTextInput("Confirm name of AGI game", gameName,
-                        new TextInputResponseHandler() {
-                            @Override
-                            public void inputTextResult(boolean success, String text) {
-                                if (success) {
-                                    AppConfigItem appConfigItem = new AppConfigItem();
-                                    appConfigItem.setGameId(gameId);
-                                    appConfigItem.setName(text);
-                                    appConfigItem.setFilePath(appConfigFilePath);
-                                    if (Gdx.app.getType().equals(ApplicationType.WebGL)) {
-                                        appConfigItem.setFileType("GAMEFILES.DAT");
-                                    } else {
-                                        if (appConfigFilePath.toLowerCase().endsWith(".zip")) {
-                                            appConfigItem.setFileType("ZIP");
-                                        }
-                                        else {
-                                            appConfigItem.setFileType("DIR");
-                                        }
+                    final TextInputResponseHandler textInputResponseHandler = new TextInputResponseHandler() {
+                        @Override
+                        public void inputTextResult(boolean success, String text) {
+                            if (success) {
+                                AppConfigItem appConfigItem = new AppConfigItem();
+                                appConfigItem.setGameId(gameId);
+                                appConfigItem.setName(text);
+                                appConfigItem.setFilePath(appConfigFilePath);
+                                if (Gdx.app.getType().equals(ApplicationType.WebGL)) {
+                                    appConfigItem.setFileType("GAMEFILES.DAT");
+                                } else {
+                                    if (appConfigFilePath.toLowerCase().endsWith(".zip")) {
+                                        appConfigItem.setFileType("ZIP");
                                     }
-                                    appConfigMap.put(appConfigItem.getName(), appConfigItem);
-                                    disposeCachedIcon(appConfigItem);
-                                    updateHomeScreenButtonStages();
-                                    showGamePage(appConfigItem);
+                                    else {
+                                        appConfigItem.setFileType("DIR");
+                                    }
                                 }
+                                appConfigMap.put(appConfigItem.getName(), appConfigItem);
+                                disposeCachedIcon(appConfigItem);
+                                updateHomeScreenButtonStages();
+                                showGamePage(appConfigItem);
                             }
-                        });
+                        }
+                    };
+                    if (appConfigItem != null) {
+                        if (appConfigItem.getGameId().equals(gameId)) {
+                            // Imported Sierra game matches, so add without any prompt.
+                            textInputResponseHandler.inputTextResult(true, gameName);
+                        } else {
+                            // Imported game does not match what was clicked.
+                            dialogHandler.showMessageDialog(
+                                    "The selected AGI game does not appear to match '" + 
+                                    appConfigItem.getName() + "'.");
+                            textInputResponseHandler.inputTextResult(false, null);
+                        }
+                    } else {
+                        // Normal 'Add Game', i.e. add new game, not import Sierra game.
+                        dialogHandler.promptForTextInput("Confirm name of AGI game", 
+                                gameName, textInputResponseHandler);
+                    }
                 }
             }
         });
