@@ -358,14 +358,31 @@ public class HomeScreen extends InputAdapter implements Screen {
         portraitStage.dispose();
         landscapeStage.dispose();
         skin.dispose();
-
-        for (Texture texture : buttonTextureMap.values()) {
-            texture.dispose();
-        }
-
+        disposeButtonTextureMap();
         whitePixelTexture.dispose();
         
         saveAppConfigMap();
+    }
+    
+    private void disposeButtonTextureMap() {
+        if ((buttonTextureMap != null) && (!buttonTextureMap.isEmpty())) {
+            for (Texture texture : buttonTextureMap.values()) {
+                texture.dispose();
+            }
+            buttonTextureMap.clear();
+        }
+    }
+    
+    private void disposeCachedIcon(AppConfigItem appConfigItem) {
+        String iconPath = appConfigItem.getGameId() != null?
+                StringUtils.format("screenshots/{0}.png", appConfigItem.getGameId().toUpperCase()) : "";
+        if ((buttonTextureMap != null) && (buttonTextureMap.containsKey(iconPath))) {
+            Texture texture = buttonTextureMap.get(iconPath);
+            if (texture != null) {
+                texture.dispose();
+                buttonTextureMap.remove(iconPath);
+            }
+        }
     }
     
     /**
@@ -731,6 +748,7 @@ public class HomeScreen extends InputAdapter implements Screen {
                                         }
                                     }
                                     appConfigMap.put(appConfigItem.getName(), appConfigItem);
+                                    disposeCachedIcon(appConfigItem);
                                     updateHomeScreenButtonStages();
                                     showGamePage(appConfigItem);
                                 }
@@ -768,15 +786,6 @@ public class HomeScreen extends InputAdapter implements Screen {
                 }
             }
         }
-        
-        /*
-        for (String gameName : appConfigMap.keySet()) {
-            gameIndex++;
-            if (gameName.equals(game.getName())) {
-                return gameIndex;
-            }
-        }
-        */
         
         return 0;
     }
