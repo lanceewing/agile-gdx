@@ -51,4 +51,11 @@ public interface DialogHandler {
    * @param importTypeResponseHandler The handler to be invoked with the user's response.
    */
   public void promptForImportType(AppConfigItem appConfigItem, ImportTypeResponseHandler importTypeResponseHandler);
+
+  /**
+   * Returns true if a dialog is currently open.
+   * 
+   * @return true if a dialog is currently open.
+   */
+  public boolean isDialogOpen();
 }

@@ -29,6 +29,8 @@ public class GwtDialogHandler implements DialogHandler {
     
     private GameFileMapEncoder gameFileMapEncoder;
     
+    private boolean dialogOpen;
+    
     /**
      * Constructor for GwtDialogHandler.
      */
@@ -42,12 +44,14 @@ public class GwtDialogHandler implements DialogHandler {
         Gdx.app.postRunnable(new Runnable() {
             @Override
             public void run() {
+                dialogOpen = true;
                 showHtmlConfirmBox(message, confirmResponseHandler);
             }
         });
     }
 
     private final native void showHtmlConfirmBox(String message, ConfirmResponseHandler confirmResponseHandler)/*-{
+        var that = this;
         var dialog = new $wnd.Dialog();
         dialog.confirm(message).then(function (res) {
             if (res) {
@@ -55,6 +59,7 @@ public class GwtDialogHandler implements DialogHandler {
             } else {
                 confirmResponseHandler.@com.agifans.agile.ui.ConfirmResponseHandler::no()();
             }
+            that.@com.agifans.agile.gwt.GwtDialogHandler::dialogOpen = false;
         });
     }-*/;
     
@@ -68,6 +73,7 @@ public class GwtDialogHandler implements DialogHandler {
         Gdx.app.postRunnable(new Runnable() {
             @Override
             public void run() {
+                dialogOpen = true;
                 showHtmlPromptForImportType(title, message, values, new PromptForOptionsResponseHandler() {
                     @Override
                     public void selectedOptionResult(boolean success, String optionText) {
@@ -77,6 +83,7 @@ public class GwtDialogHandler implements DialogHandler {
                         } else {
                             importTypeResponseHandler.importTypeResult(false, null);
                         }
+                        dialogOpen = false;
                     }
                 });
             }
@@ -104,6 +111,7 @@ public class GwtDialogHandler implements DialogHandler {
         // - The startPath parameter can't be used with GWT.
         // - The title cannot be used with GWT.
         // - The path cannot be passed back to the core module without changing interface to accept the file content.
+        dialogOpen = true;
         showHtmlOpenFileDialog(fileType, new GwtOpenFileResultsHandler() {
             @Override
             public void onFileResultsReady(GwtOpenFileResult[] openFileResultArray) {
@@ -167,6 +175,8 @@ public class GwtDialogHandler implements DialogHandler {
                         }
                     }
                 }
+                
+                dialogOpen = false;
                 
                 // Check for the minimum set of files required.
                 if (gameFilesMap.containsKey("words.tok") && 
@@ -302,12 +312,14 @@ public class GwtDialogHandler implements DialogHandler {
         Gdx.app.postRunnable(new Runnable() {
             @Override
             public void run() {
+                dialogOpen = true;
                 showHtmlPromptBox(message, initialValue, textInputResponseHandler);
             }
         });
     }
     
     private final native void showHtmlPromptBox(String message, String initialValue, TextInputResponseHandler textInputResponseHandler)/*-{
+        var that = this;
         var dialog = new $wnd.Dialog();
         dialog.prompt(message, initialValue).then(function (res) {
             if (res) {
@@ -315,6 +327,7 @@ public class GwtDialogHandler implements DialogHandler {
             } else {
                 textInputResponseHandler.@com.agifans.agile.ui.TextInputResponseHandler::inputTextResult(ZLjava/lang/String;)(false, null);
             }
+            that.@com.agifans.agile.gwt.GwtDialogHandler::dialogOpen = false;
         });
     }-*/;
 
@@ -323,6 +336,7 @@ public class GwtDialogHandler implements DialogHandler {
         Gdx.app.postRunnable(new Runnable() {
             @Override
             public void run() {
+                dialogOpen = true;
                 showHtmlMessageBox(message);
             }
         });
@@ -331,5 +345,11 @@ public class GwtDialogHandler implements DialogHandler {
     private final native void showHtmlMessageBox(String message)/*-{
         var dialog = new $wnd.Dialog();
         dialog.alert(message);
+        this.@com.agifans.agile.gwt.GwtDialogHandler::dialogOpen = false;
     }-*/;
+
+    @Override
+    public boolean isDialogOpen() {
+        return dialogOpen;
+    }
 }

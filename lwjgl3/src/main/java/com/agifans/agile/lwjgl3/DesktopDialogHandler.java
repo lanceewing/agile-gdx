@@ -25,6 +25,8 @@ import com.badlogic.gdx.files.FileHandle;
  * Desktop implementation of the DialogHandler interface.
  */
 public class DesktopDialogHandler implements DialogHandler {
+    
+    private boolean dialogOpen;
 
     @Override
     public void confirm(final String message, final ConfirmResponseHandler responseHandler) {
@@ -32,7 +34,9 @@ public class DesktopDialogHandler implements DialogHandler {
 
             @Override
             public void run() {
+                dialogOpen = true;
                 int output = JOptionPane.showConfirmDialog(null, message, "Please confirm", JOptionPane.YES_NO_OPTION);
+                dialogOpen = false;
                 if (output != 0) {
                     responseHandler.no();
                 } else {
@@ -46,6 +50,7 @@ public class DesktopDialogHandler implements DialogHandler {
     public void promptForImportType(AppConfigItem appConfigItem, ImportTypeResponseHandler importTypeResponseHandler) {
         String gameName = (appConfigItem != null? "\"" + appConfigItem.getName() + "\"" : "an AGI game");
         String[] values = ImportType.getDescriptions();
+        dialogOpen = true;
         Object selectedOption = JOptionPane.showInputDialog(
                 null, 
                 (appConfigItem != null? 
@@ -56,6 +61,7 @@ public class DesktopDialogHandler implements DialogHandler {
                 null, 
                 values, 
                 values[0]);
+        dialogOpen = false;
         if (selectedOption != null) {
             ImportType importType = ImportType.getImportTypeByDescription(selectedOption.toString());
             importTypeResponseHandler.importTypeResult(true, importType);
@@ -89,7 +95,9 @@ public class DesktopDialogHandler implements DialogHandler {
                     jfc.setFileFilter(new FileNameExtensionFilter("ZIP files", "zip"));
                 }
 
+                dialogOpen = true;
                 int returnValue = jfc.showOpenDialog(null);
+                dialogOpen = false;
                 if (returnValue == JFileChooser.APPROVE_OPTION) {
                     String filePath = jfc.getSelectedFile().getPath();
                     FileHandle fileHandle = new FileHandle(filePath);
@@ -166,9 +174,11 @@ public class DesktopDialogHandler implements DialogHandler {
         Gdx.app.postRunnable(new Runnable() {
             @Override
             public void run() {
+                dialogOpen = true;
                 String text = (String) JOptionPane.showInputDialog(null, message, "Please enter value",
                         JOptionPane.INFORMATION_MESSAGE, null, null, initialValue != null ? initialValue : "");
-
+                dialogOpen = false;
+                
                 if (text != null) {
                     textInputResponseHandler.inputTextResult(true, text);
                 } else {
@@ -180,6 +190,13 @@ public class DesktopDialogHandler implements DialogHandler {
 
     @Override
     public void showMessageDialog(String message) {
+        dialogOpen = true;
         JOptionPane.showMessageDialog(null, message);
+        dialogOpen = false;
+    }
+
+    @Override
+    public boolean isDialogOpen() {
+        return dialogOpen;
     }
 }

@@ -379,6 +379,14 @@ public class HomeScreen extends InputAdapter implements Screen {
         // Close the radial menu, if it is open.
         getCurrentMenuWidget().closeImmediately();
         
+        boolean modifierDown = 
+                Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) ||
+                Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT) ||
+                Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) ||
+                Gdx.input.isKeyPressed(Keys.CONTROL_RIGHT) ||
+                Gdx.input.isKeyPressed(Keys.ALT_LEFT) ||
+                Gdx.input.isKeyPressed(Keys.ALT_RIGHT);
+        
         float pageWidth = 0.0f;
         PagedScrollPane pagedScrollPane = null;
         if (viewportManager.isPortrait()) {
@@ -407,31 +415,33 @@ public class HomeScreen extends InputAdapter implements Screen {
                 return true;
             }
         }
-        else if (keycode == Keys.LEFT) {
-            float newScrollX = MathUtils.clamp(pagedScrollPane.getScrollX() - pageWidth, 0, pagedScrollPane.getMaxX());
-            pagedScrollPane.setScrollX(newScrollX);
-            pagedScrollPane.setLastScrollX(newScrollX);
-        }
-        else if (keycode == Keys.RIGHT) {
-            float newScrollX = MathUtils.clamp(pagedScrollPane.getScrollX() + pageWidth, 0, pagedScrollPane.getMaxX());
-            pagedScrollPane.setScrollX(newScrollX);
-            pagedScrollPane.setLastScrollX(newScrollX);
-        }
-        else if (keycode == Keys.UP) {
-            pagedScrollPane.setScrollX(0.0f);
-            pagedScrollPane.setLastScrollX(0.0f);
-        }
-        else if (keycode == Keys.DOWN) {
-            pagedScrollPane.setScrollX(pagedScrollPane.getMaxX());
-            pagedScrollPane.setLastScrollX(pagedScrollPane.getMaxX());
-        }
-        else if ((keycode >= Keys.A) && (keycode <= Keys.Z)) {
-            // Shortcut keys for accessing games that start with each letter.
-            // Keys.A is 29, Keys.Z is 54. ASCII is A=65, Z=90. So we add 36.
-            int gameIndex = getIndexOfFirstGameStartingWithChar((char)(keycode + 36));
-            if (gameIndex > -1) {
-                // Add one to allow for the "Add Game" icon in the first slot.
-                showGamePage(gameIndex + 1, false);
+        else if (!modifierDown && !dialogHandler.isDialogOpen()) {
+            if (keycode == Keys.LEFT) {
+                float newScrollX = MathUtils.clamp(pagedScrollPane.getScrollX() - pageWidth, 0, pagedScrollPane.getMaxX());
+                pagedScrollPane.setScrollX(newScrollX);
+                pagedScrollPane.setLastScrollX(newScrollX);
+            }
+            else if (keycode == Keys.RIGHT) {
+                float newScrollX = MathUtils.clamp(pagedScrollPane.getScrollX() + pageWidth, 0, pagedScrollPane.getMaxX());
+                pagedScrollPane.setScrollX(newScrollX);
+                pagedScrollPane.setLastScrollX(newScrollX);
+            }
+            else if (keycode == Keys.UP) {
+                pagedScrollPane.setScrollX(0.0f);
+                pagedScrollPane.setLastScrollX(0.0f);
+            }
+            else if (keycode == Keys.DOWN) {
+                pagedScrollPane.setScrollX(pagedScrollPane.getMaxX());
+                pagedScrollPane.setLastScrollX(pagedScrollPane.getMaxX());
+            }
+            else if ((keycode >= Keys.A) && (keycode <= Keys.Z)) {
+                // Shortcut keys for accessing games that start with each letter.
+                // Keys.A is 29, Keys.Z is 54. ASCII is A=65, Z=90. So we add 36.
+                int gameIndex = getIndexOfFirstGameStartingWithChar((char)(keycode + 36));
+                if (gameIndex > -1) {
+                    // Add one to allow for the "Add Game" icon in the first slot.
+                    showGamePage(gameIndex + 1, false);
+                }
             }
         }
         return false;
