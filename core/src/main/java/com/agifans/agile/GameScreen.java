@@ -65,6 +65,7 @@ public class GameScreen implements Screen {
     private Texture joystickIcon;
     private Texture keyboardIcon;
     private Texture backIcon;
+    private Texture fullScreenIcon;
 
     private ViewportManager viewportManager;
     
@@ -108,6 +109,7 @@ public class GameScreen implements Screen {
         keyboardIcon = new Texture("png/keyboard_icon.png");
         joystickIcon = new Texture("png/joystick_icon.png");
         backIcon = new Texture("png/back_arrow.png");
+        fullScreenIcon = new Texture("png/full_screen.png");
         
         // Create the portrait and landscape joystick touchpads.
         portraitTouchpad = createTouchpad(300);
@@ -166,6 +168,10 @@ public class GameScreen implements Screen {
         screens[0].dispose();
         screens[1].dispose();
         screens[2].dispose();
+        joystickIcon.dispose();
+        keyboardIcon.dispose();
+        backIcon.dispose();
+        fullScreenIcon.dispose();
         batch.dispose();
     }
 
@@ -310,8 +316,10 @@ public class GameScreen implements Screen {
 
             } else {
                 batch.draw(joystickIcon, 0, viewportManager.getHeight() - 140);
-                batch.draw(keyboardIcon, viewportManager.getWidth() - 150, viewportManager.getHeight() - 125);
+                batch.draw(fullScreenIcon, viewportManager.getWidth() - 150, viewportManager.getHeight() - 140);
                 batch.draw(backIcon, viewportManager.getWidth() - 150, 0);
+                batch.draw(keyboardIcon, 0, 0);
+                
             }
         //}
         batch.end();
