@@ -3,7 +3,7 @@ package com.agifans.agile.ui;
 import com.agifans.agile.GameScreen;
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.math.Vector2;
 
@@ -66,6 +66,16 @@ public class GameScreenInputProcessor extends InputAdapter {
      * the AGI Mouse hack. 0 = not down, whereas 1 and 2 are left and right buttons.
      */
     private int agiMouseButton;
+    
+    /**
+     * The width of the screen/window before full screen mode was activated.
+     */
+    private int screenWidthBeforeFullScreen;
+    
+    /**
+     * The height of the screen/width before ful screen mode was activated.
+     */
+    private int screenHeightBeforeFullScreen;
     
     /**
      * Constructor for GameScreenInputProcessor.
@@ -222,6 +232,7 @@ public class GameScreenInputProcessor extends InputAdapter {
             boolean keyboardClicked = false;
             boolean joystickClicked = false;
             boolean backArrowClicked = false;
+            boolean fullScreenClicked = false;
 
             if (viewportManager.isPortrait()) {
                 // Portrait.
@@ -255,13 +266,14 @@ public class GameScreenInputProcessor extends InputAdapter {
                 if (touchXY.y > (screenTop - 140)) {
                     if (touchXY.x < 140) {
                         joystickClicked = true;
-
                     } else if (touchXY.x > (viewportManager.getWidth() - 150)) {
-                        keyboardClicked = true;
+                        fullScreenClicked = true;
                     }
                 } else if (touchXY.y < 140) {
                     if (touchXY.x > (viewportManager.getWidth() - 150)) {
                         backArrowClicked = true;
+                    } else if (touchXY.x < 140) {
+                        keyboardClicked = true;
                     }
                 }
             }
@@ -277,6 +289,19 @@ public class GameScreenInputProcessor extends InputAdapter {
 
             if (joystickClicked) {
                 keyboardType = KeyboardType.JOYSTICK;
+            }
+            
+            if (fullScreenClicked) {
+                Boolean fullScreen = Gdx.graphics.isFullscreen();
+                if (fullScreen == true) {
+                    Gdx.graphics.setWindowedMode(screenWidthBeforeFullScreen, screenHeightBeforeFullScreen);
+                }
+                else {
+                    Graphics.DisplayMode currentMode = Gdx.graphics.getDisplayMode();
+                    screenWidthBeforeFullScreen = Gdx.graphics.getWidth();
+                    screenHeightBeforeFullScreen = Gdx.graphics.getHeight();
+                    Gdx.graphics.setFullscreenMode(currentMode);
+                }
             }
 
             if (backArrowClicked) {
