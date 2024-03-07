@@ -45,7 +45,7 @@ jobs:
       with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy html/build/dist --project-name='agile-gdx' --commit-dirty=true --verbose
+          command: pages deploy html/build/dist --project-name='agile-gdx' --commit-dirty=true
       #uses: cloudflare/pages-action@1
       #with:
       #    apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
