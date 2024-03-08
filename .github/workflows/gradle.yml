@@ -39,13 +39,15 @@ jobs:
           chmod u+x gradlew
           ./gradlew html:dist
           rm -rf html/build/dist/WEB-INF
+          mv html/build/dist/functions ..
 
     - name: Publish to Cloudflare Pages
       uses: cloudflare/wrangler-action@v3
       with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy html/build/dist --project-name='agile-gdx' --commit-dirty=true
+          workingDirectory: html/build
+          command: pages deploy dist --project-name='agile-gdx' --commit-dirty=true
       #uses: cloudflare/pages-action@1
       #with:
       #    apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
