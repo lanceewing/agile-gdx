@@ -41,13 +41,19 @@ jobs:
           rm -rf html/build/dist/WEB-INF
 
     - name: Publish to Cloudflare Pages
-      uses: cloudflare/pages-action@1
+      uses: cloudflare/wrangler-action@v3
       with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          projectName: 'agile-gdx'
-          directory: 'html/build/dist'
-          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+          command: pages deploy html/build/dist --project-name='agile-gdx' --commit-dirty=true
+      #uses: cloudflare/pages-action@1
+      #with:
+      #    apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      #    accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      #    projectName: 'agile-gdx'
+      #    directory: 'html/build/dist'
+      #    gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+      #    wranglerVersion: '3'
 
     # NOTE: The Gradle Wrapper is the default and recommended way to run Gradle (https://docs.gradle.org/current/userguide/gradle_wrapper.html).
     # If your project does not have the Gradle Wrapper configured, you can use the following configuration to run Gradle with a specified version.
