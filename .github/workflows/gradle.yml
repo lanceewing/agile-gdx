@@ -39,7 +39,7 @@ jobs:
           chmod u+x gradlew
           ./gradlew html:dist
           rm -rf html/build/dist/WEB-INF
-          mv html/build/dist/functions ..
+          mv html/build/dist/functions html/build
 
     - name: Publish to Cloudflare Pages
       uses: cloudflare/wrangler-action@v3
