@@ -19,6 +19,7 @@ public class GwtVariableData implements VariableData {
     private static final int MOUSE_BUTTON = 513;
     private static final int MOUSE_X = 514;
     private static final int MOUSE_Y = 515;
+    private static final int OLD_MOUSE_BUTTON = 516;
     
     private static final int TRUE = 1;
     private static final int FALSE = 0;
@@ -56,7 +57,7 @@ public class GwtVariableData implements VariableData {
         if (variableArraySAB == null) {
             // Uses extra slots at the end for the total ticks and mouse vars.
             variableArraySAB = SharedArray.getStorageForCapacity(
-                    Defines.NUMVARS + Defines.NUMFLAGS + 4);
+                    Defines.NUMVARS + Defines.NUMFLAGS + 5);
         }
         
         this.variableArray = new SharedArray(variableArraySAB);
@@ -94,7 +95,7 @@ public class GwtVariableData implements VariableData {
     
     @Override
     public void clearState() {
-        int arrayLength = Defines.NUMVARS + Defines.NUMFLAGS + 4;
+        int arrayLength = Defines.NUMVARS + Defines.NUMFLAGS + 5;
         for (int index=0; index < arrayLength; index++) {
             variableArray.set(index, 0);
         }
@@ -116,6 +117,11 @@ public class GwtVariableData implements VariableData {
     }
 
     @Override
+    public int getOldMouseButton() {
+        return variableArray.get(OLD_MOUSE_BUTTON);
+    }
+
+    @Override
     public void setMouseX(int mouseX) {
         variableArray.set(MOUSE_X, mouseX);
     }
@@ -128,6 +134,11 @@ public class GwtVariableData implements VariableData {
     @Override
     public void setMouseButton(int mouseButton) {
         variableArray.set(MOUSE_BUTTON, mouseButton);
+    }
+    
+    @Override
+    public void setOldMousButton(int oldMouseButton) {
+        variableArray.set(OLD_MOUSE_BUTTON, oldMouseButton);
     }
 
     /**

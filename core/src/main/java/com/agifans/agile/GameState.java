@@ -559,6 +559,22 @@ public class GameState {
     }
     
     /**
+     * Gets the value of the AGI Mouse button state from the previous cycle.
+     * 
+     * @return the value of the AGI Mouse button state from the previous cycle.
+     */
+    public int getOldMouseButton() {
+        return variableData.getOldMouseButton();
+    }
+    
+    /**
+     * Sets the old mouse button variable to the value of the current mouse button state.
+     */
+    public void copyMouseButtonToOldMouseButton() {
+        variableData.setOldMousButton(getMouseButton());
+    }
+    
+    /**
      * Gets the RGBA8888 palette data (AGIPAL) for the given palette number.
      * 
      * @param paletteNum The number of the palette to get.

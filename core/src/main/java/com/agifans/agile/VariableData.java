@@ -98,9 +98,14 @@ public interface VariableData {
     
     int getMouseButton();
     
+    int getOldMouseButton();
+    
     void setMouseX(int mouseX);
     
     void setMouseY(int mouseY);
     
     void setMouseButton(int mouseButton);
+    
+    void setOldMousButton(int mouseButton);
+    
 }

@@ -168,8 +168,9 @@ public class Interpreter {
                 textGraphics.drawWindow();
             }
 
-            // Store what the key states were in this cycle before leaving.
+            // Store what the key and mouse button states were in this cycle before leaving.
             userInput.copyKeysToOldKeys();
+            state.copyMouseButtonToOldMouseButton();
             
             inTick = false;
         }
@@ -221,6 +222,107 @@ public class Interpreter {
             aniObj.updateDirection();
         }
     }
+    
+    private byte getMouseClickDirection(boolean holdKeyMode) {
+        byte direction = 0;
+        
+        // Is the left mouse button down? And it isn't an AGI Mouse game?
+        if ((state.getMouseButton() == 1) && !state.game.hasAGIMouse) {
+            // If is not in hold.key mode, then we only continue if mouse button 
+            // wasn't previously down.
+            if (holdKeyMode || (state.getOldMouseButton() == 0)) {
+                int mouseY = (state.getMouseY() - (state.pictureRow * 8));
+                int egoX = (state.ego.x + (state.ego.xSize() / 2));
+                int xDiff = (((state.getMouseX() - egoX) * 3) / 2);
+                int yDiff = mouseY - state.ego.y;
+                double heading = Math.atan2(yDiff, xDiff);
+                double distance = Math.sqrt((xDiff * xDiff) + (yDiff * yDiff));
+                
+                if (distance > 3) {
+                    // Convert heading to an AGI direction.
+                    // LEFT: 3.14159
+                    // -2.7488936
+                    // LEFT/UP: -2.35619
+                    // -1.9634954
+                    // UP: -1.5707963267948966
+                    // -1.178097
+                    // RIGHT/UP: -0.785398
+                    // -0.3926991
+                    // RIGHT: 0.0
+                    // 0.3926991
+                    // RIGHT/DOWN: 0.785398
+                    // 1.178097
+                    // DOWN: 1.5707963267948966
+                    // 1.9634954
+                    // LEFT/DOWN: 2.35619
+                    // 2.7488936
+                    // LEFT: 3.14159
+                    
+                    if (heading == 0) {
+                        // Right
+                        direction = 3;
+                    }
+                    else if (heading > 0) {
+                        // Down
+                        if (heading < 0.3926991) {
+                            // Right
+                            direction = 3;
+                        }
+                        else if (heading < 1.178097) {
+                            // Down/Right
+                            direction = 4;
+                        }
+                        else if (heading < 1.9634954) {
+                            // Down
+                            direction = 5;
+                        }
+                        else if (heading < 2.7488936) {
+                            // Down/Left
+                            direction = 6;
+                        }
+                        else {
+                            // Left
+                            direction = 7;
+                        }
+                    }
+                    else {
+                        // Up
+                        if (heading > -0.3926991) {
+                            // Right
+                            direction = 3;
+                        }
+                        else if (heading > -1.178097) {
+                            // Up/Right
+                            direction = 2;
+                        }
+                        else if (heading > -1.9634954) {
+                            // Up
+                            direction = 1;
+                        }
+                        else if (heading > -2.7488936) {
+                            // Up/Left
+                            direction = 8;
+                        }
+                        else {
+                            // Left
+                            direction = 7;
+                        }
+                    }
+                }
+                
+                System.out.println(
+                        "ego.x: " + egoX + ", " +
+                        "ego.y: " + state.ego.y + ", " + 
+                        "mouseX: " + state.getMouseX() + ", " + 
+                        "mouseY: " + mouseY + ", " + 
+                        "heading: " + heading + ", " + 
+                        "distance: " + distance + ", " + 
+                        "direction: " + direction);
+            }
+        }
+        
+        return direction;
+    }
 
     /**
      * Processes the user's input.
@@ -255,6 +357,9 @@ public class Interpreter {
                 if (userInput.keys((int)Keys.END)) direction = 6;
                 if (userInput.keys((int)Keys.LEFT)) direction = 7;
                 if (userInput.keys((int)Keys.HOME)) direction = 8;
+                if (direction == 0) {
+                    direction = getMouseClickDirection(true);
+                }
                 state.setVar(Defines.EGODIR, direction);
             }
             else {
@@ -268,6 +373,9 @@ public class Interpreter {
                 if (userInput.keys((int)Keys.END) && !userInput.oldKeys((int)Keys.END)) direction = 6;
                 if (userInput.keys((int)Keys.LEFT) && !userInput.oldKeys((int)Keys.LEFT)) direction = 7;
                 if (userInput.keys((int)Keys.HOME) && !userInput.oldKeys((int)Keys.HOME)) direction = 8;
+                if (direction == 0) {
+                    direction = getMouseClickDirection(false);
+                }
                 if (direction > 0) {
                     state.setVar(Defines.EGODIR, (state.getVar(Defines.EGODIR) == direction ? (byte)0 : direction));
                 }
