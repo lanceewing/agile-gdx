@@ -42,34 +42,6 @@ public enum KeyboardType {
             -1,
             -2
           ),
-      JOYSTICK(
-            new Integer[][][] {{
-              { Keys.NUMPAD_7, Keys.NUMPAD_7, Keys.NUMPAD_7, Keys.NUMPAD_8, Keys.NUMPAD_8, Keys.NUMPAD_8, Keys.NUMPAD_9, Keys.NUMPAD_9, Keys.NUMPAD_9 },
-              { Keys.NUMPAD_7, Keys.NUMPAD_7, Keys.NUMPAD_7, Keys.NUMPAD_8, Keys.NUMPAD_8, Keys.NUMPAD_8, Keys.NUMPAD_9, Keys.NUMPAD_9, Keys.NUMPAD_9 },
-              { Keys.NUMPAD_7, Keys.NUMPAD_7, Keys.NUMPAD_7, Keys.NUMPAD_8, Keys.NUMPAD_8, Keys.NUMPAD_8, Keys.NUMPAD_9, Keys.NUMPAD_9, Keys.NUMPAD_9 },
-              { Keys.NUMPAD_4, Keys.NUMPAD_4, Keys.NUMPAD_4, Keys.NUMPAD_7, Keys.NUMPAD_8, Keys.NUMPAD_9, Keys.NUMPAD_6, Keys.NUMPAD_6, Keys.NUMPAD_6 },
-              { Keys.NUMPAD_4, Keys.NUMPAD_4, Keys.NUMPAD_4, Keys.NUMPAD_4, null,          Keys.NUMPAD_6, Keys.NUMPAD_6, Keys.NUMPAD_6, Keys.NUMPAD_6 },
-              { Keys.NUMPAD_4, Keys.NUMPAD_4, Keys.NUMPAD_4, Keys.NUMPAD_1, Keys.NUMPAD_2, Keys.NUMPAD_3, Keys.NUMPAD_6, Keys.NUMPAD_6, Keys.NUMPAD_6 },
-              { Keys.NUMPAD_1, Keys.NUMPAD_1, Keys.NUMPAD_1, Keys.NUMPAD_2, Keys.NUMPAD_2, Keys.NUMPAD_2, Keys.NUMPAD_3, Keys.NUMPAD_3, Keys.NUMPAD_3 },
-              { Keys.NUMPAD_1, Keys.NUMPAD_1, Keys.NUMPAD_1, Keys.NUMPAD_2, Keys.NUMPAD_2, Keys.NUMPAD_2, Keys.NUMPAD_3, Keys.NUMPAD_3, Keys.NUMPAD_3 },
-              { Keys.NUMPAD_1, Keys.NUMPAD_1, Keys.NUMPAD_1, Keys.NUMPAD_2, Keys.NUMPAD_2, Keys.NUMPAD_2, Keys.NUMPAD_3, Keys.NUMPAD_3, Keys.NUMPAD_3 }
-            },
-            {
-              { Keys.NUMPAD_0, Keys.NUMPAD_0, Keys.NUMPAD_0 },
-              { Keys.NUMPAD_0, Keys.NUMPAD_0, Keys.NUMPAD_0 },
-              { Keys.NUMPAD_0, Keys.NUMPAD_0, Keys.NUMPAD_0 },
-              { Keys.NUMPAD_0, Keys.NUMPAD_0, Keys.NUMPAD_0 },
-              { Keys.NUMPAD_0, Keys.NUMPAD_0, Keys.NUMPAD_0 },
-              { Keys.NUMPAD_0, Keys.NUMPAD_0, Keys.NUMPAD_0 }
-            }},
-            new String[] {"png/joystick_arrows.png", "png/joystick_fire.png"},
-            1.0f,
-            0,
-            100,
-            0,
-            -1,
-            0
-          ),
     MOBILE_ON_SCREEN, OFF;
 
     // Constants for the two sides of a keyboard..
@@ -215,41 +187,23 @@ public enum KeyboardType {
         Integer keyCode = null;
         int keyRow = 0;
 
-        // If we're showing the mini version of the joystick, adjust the height here.
-        if (equals(JOYSTICK) && !ViewportManager.getInstance().isPortrait() && (side == LEFT)) {
-            // TODO: Make this a flag in the construction of a KeyboardType.
-            keyRow = (int) ((textures[side].getHeight() - (y * 2) + renderOffset) / vertKeySize);
+        
+        keyRow = (int) ((textures[side].getHeight() - (y - yStart) + renderOffset) / vertKeySize);
 
-        } else {
-            keyRow = (int) ((textures[side].getHeight() - (y - yStart) + renderOffset) / vertKeySize);
+        if (keyRow >= keyMap[side].length) {
+            keyRow = keyMap[side].length - 1;
         }
 
-        if (keyRow >= keyMap[side].length)
-            keyRow = keyMap[side].length - 1;
-
         switch (this) {
-        case LANDSCAPE:
-        case PORTRAIT:
-            if (x >= xStart) {
-                keyCode = keyMap[side][keyRow][(int) ((x - xStart) / horizKeySize)];
-            }
-            break;
-
-        case JOYSTICK:
-            if (!ViewportManager.getInstance().isPortrait() && (side == LEFT)) {
-                x = x * 2;
-            }
-            if (side == RIGHT) {
-                x = x - (ViewportManager.getInstance().getWidth() - getTexture(RIGHT).getWidth());
-            }
-            int keyCol = (int) (x / vertKeySize);
-            if (keyCol < keyMap[side][keyRow].length) {
-                keyCode = keyMap[side][keyRow][keyCol];
-            }
-            break;
-
-        default:
-            break;
+            case LANDSCAPE:
+            case PORTRAIT:
+                if (x >= xStart) {
+                    keyCode = keyMap[side][keyRow][(int) ((x - xStart) / horizKeySize)];
+                }
+                break;
+    
+            default:
+                break;
         }
 
         return keyCode;
@@ -288,11 +242,6 @@ public enum KeyboardType {
         if (isRendered()) {
             int textureHeight = getTextures()[side].getHeight();
             int textureWidth = getTextures()[side].getWidth();
-
-            if (this.equals(JOYSTICK) && !ViewportManager.getInstance().isPortrait() && (side == LEFT)) {
-                textureHeight = textureHeight / 2;
-                textureWidth = textureWidth / 2;
-            }
 
             boolean isInYBounds = (y < (textureHeight + renderOffset) && (y > renderOffset));
             if (numOfSides == 1) {
