@@ -223,6 +223,17 @@ public class Interpreter {
         }
     }
     
+    /**
+     * For AGI games that do not use the AGI Mouse hack, AGILE provides a way to 
+     * control ego via mouse clicks, where clicking starts moving in the direction
+     * of the click, and then clicking again stops movement. That is unless it is
+     * hold.key mode, in which case it simply follows where the mouse is while the 
+     * button is down.
+     * 
+     * @param holdKeyMode true if hold.key mode is active.
+     * 
+     * @return
+     */
     private byte getMouseClickDirection(boolean holdKeyMode) {
         byte direction = 0;
         
@@ -231,6 +242,13 @@ public class Interpreter {
             // If is not in hold.key mode, then we only continue if mouse button 
             // wasn't previously down.
             if (holdKeyMode || (state.getOldMouseButton() == 0)) {
+                
+                if (!holdKeyMode && (state.getVar(Defines.EGODIR) != 0)) {
+                    // If ego is already moving, and it isn't hold key mode, then
+                    // clicking will stop ego.
+                    return (byte)state.getVar(Defines.EGODIR);
+                }
+                
                 int mouseY = (state.getMouseY() - (state.pictureRow * 8));
                 int egoX = (state.ego.x + (state.ego.xSize() / 2));
                 int xDiff = (((state.getMouseX() - egoX) * 3) / 2);
@@ -240,24 +258,6 @@ public class Interpreter {
                 
                 if (distance > 3) {
                     // Convert heading to an AGI direction.
-                    // LEFT: 3.14159
-                    // -2.7488936
-                    // LEFT/UP: -2.35619
-                    // -1.9634954
-                    // UP: -1.5707963267948966
-                    // -1.178097
-                    // RIGHT/UP: -0.785398
-                    // -0.3926991
-                    // RIGHT: 0.0
-                    // 0.3926991
-                    // RIGHT/DOWN: 0.785398
-                    // 1.178097
-                    // DOWN: 1.5707963267948966
-                    // 1.9634954
-                    // LEFT/DOWN: 2.35619
-                    // 2.7488936
-                    // LEFT: 3.14159
-                    
                     if (heading == 0) {
                         // Right
                         direction = 3;
@@ -309,15 +309,6 @@ public class Interpreter {
                         }
                     }
                 }
-                
-                System.out.println(
-                        "ego.x: " + egoX + ", " +
-                        "ego.y: " + state.ego.y + ", " + 
-                        "mouseX: " + state.getMouseX() + ", " + 
-                        "mouseY: " + mouseY + ", " + 
-                        "heading: " + heading + ", " + 
-                        "distance: " + distance + ", " + 
-                        "direction: " + direction);
             }
         }
         
