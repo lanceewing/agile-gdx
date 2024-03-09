@@ -706,7 +706,6 @@ public class HomeScreen extends InputAdapter implements Screen {
                     @Override
                     public void importTypeResult(boolean success, ImportType importType) {
                         if (success) {
-                            // TODO: Add support for URL fetch?
                             importGameUsingOpenFileDialog(appConfigItem, importType);
                         }
                     }

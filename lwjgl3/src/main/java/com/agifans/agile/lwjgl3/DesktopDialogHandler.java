@@ -194,7 +194,7 @@ public class DesktopDialogHandler implements DialogHandler {
         JOptionPane.showMessageDialog(null, message);
         dialogOpen = false;
     }
-
+    
     @Override
     public boolean isDialogOpen() {
         return dialogOpen;

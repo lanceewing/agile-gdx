@@ -6,8 +6,7 @@ package com.agifans.agile.ui;
 public enum ImportType {
 
     DIR("Local folder containing the AGI game files"),
-    ZIP("Local ZIP file containing the AGI game files"),
-    URL("URL of a ZIP file containing the AGI game files");
+    ZIP("Local ZIP file containing the AGI game files");
     
     private String description;
     
