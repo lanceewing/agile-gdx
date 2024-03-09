@@ -25,6 +25,11 @@ public class GameScreenInputProcessor extends InputAdapter {
     private KeyboardType keyboardType;
     
     /**
+     * Whether the joystick is active or not.
+     */
+    private boolean joystickActive;
+    
+    /**
      * Invoked by AGILE whenever it would like to show a dialog, such as when it
      * needs the user to confirm an action, or to choose a file.
      */
@@ -110,6 +115,8 @@ public class GameScreenInputProcessor extends InputAdapter {
      * @return whether the input was processed
      */
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        System.out.println("touchDown: screenX=" + screenX + ", screenY=" + screenY);
+        
         // Convert the screen coordinates to world coordinates.
         Vector2 touchXY = viewportManager.unproject(screenX, screenY);
 
@@ -191,6 +198,8 @@ public class GameScreenInputProcessor extends InputAdapter {
      * @return whether the input was processed
      */
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+        System.out.println("touchUp: screenX=" + screenX + ", screenY=" + screenY);
+        
         // Convert the screen coordinates to world coordinates.
         Vector2 touchXY = viewportManager.unproject(screenX, screenY);
 
@@ -288,7 +297,7 @@ public class GameScreenInputProcessor extends InputAdapter {
             }
 
             if (joystickClicked) {
-                keyboardType = KeyboardType.JOYSTICK;
+                joystickActive = !joystickActive;
             }
             
             if (fullScreenClicked) {
@@ -347,6 +356,8 @@ public class GameScreenInputProcessor extends InputAdapter {
      * @return whether the input was processed
      */
     public boolean touchDragged(int screenX, int screenY, int pointer) {
+        System.out.println("touchDragged: screenX=" + screenX + ", screenY=" + screenY);
+        
         // Convert the screen coordinates to world coordinates.
         Vector2 touchXY = viewportManager.unproject(screenX, screenY);
         
@@ -390,7 +401,7 @@ public class GameScreenInputProcessor extends InputAdapter {
      * @param height The new screen height.
      */
     public void resize(int width, int height) {
-        if (keyboardType.isRendered() && !keyboardType.equals(KeyboardType.JOYSTICK)) {
+        if (keyboardType.isRendered()) {
             // Switch keyboard layout based on the orientation.
             keyboardType = (height > width ? KeyboardType.PORTRAIT : KeyboardType.LANDSCAPE);
         }
@@ -403,5 +414,14 @@ public class GameScreenInputProcessor extends InputAdapter {
      */
     public KeyboardType getKeyboardType() {
         return keyboardType;
+    }
+    
+    /**
+     * Returns whether the joystick is active or not.
+     * 
+     * @return whether the joystick is active or not.
+     */
+    public boolean isJoystickActive() {
+        return joystickActive;
     }
 }

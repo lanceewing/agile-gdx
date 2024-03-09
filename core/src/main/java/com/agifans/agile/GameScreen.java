@@ -3,6 +3,7 @@ package com.agifans.agile;
 import com.agifans.agile.config.AppConfigItem;
 import com.agifans.agile.ui.DialogHandler;
 import com.agifans.agile.ui.GameScreenInputProcessor;
+import com.agifans.agile.ui.KeyboardType;
 import com.agifans.agile.ui.ViewportManager;
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
@@ -70,8 +71,8 @@ public class GameScreen implements Screen {
     private ViewportManager viewportManager;
     
     // Touchpad
-    private Stage portraitStage;
-    private Stage landscapeStage;
+    private Stage portraitTouchpadStage;
+    private Stage landscapeTouchpadStage;
     private Touchpad portraitTouchpad;
     private Touchpad landscapeTouchpad;
     
@@ -118,20 +119,20 @@ public class GameScreen implements Screen {
         viewportManager = ViewportManager.getInstance();
         
         // Create a Stage and add TouchPad
-        portraitStage = new Stage(viewportManager.getPortraitViewport(), batch);
-        portraitStage.addActor(portraitTouchpad);
-        landscapeStage = new Stage(viewportManager.getLandscapeViewport(), batch);
-        landscapeStage.addActor(landscapeTouchpad);
+        portraitTouchpadStage = new Stage(viewportManager.getPortraitViewport(), batch);
+        portraitTouchpadStage.addActor(portraitTouchpad);
+        landscapeTouchpadStage = new Stage(viewportManager.getLandscapeViewport(), batch);
+        landscapeTouchpadStage.addActor(landscapeTouchpad);
         
         // Create and register an input processor for keys, etc.
         gameScreenInputProcessor = new GameScreenInputProcessor(this, dialogHandler);
         portraitInputProcessor = new InputMultiplexer();
         portraitInputProcessor.addProcessor(agileRunner.userInput);
-        portraitInputProcessor.addProcessor(portraitStage);
+        portraitInputProcessor.addProcessor(portraitTouchpadStage);
         portraitInputProcessor.addProcessor(gameScreenInputProcessor);
         landscapeInputProcessor = new InputMultiplexer();
         landscapeInputProcessor.addProcessor(agileRunner.userInput);
-        landscapeInputProcessor.addProcessor(landscapeStage);
+        landscapeInputProcessor.addProcessor(landscapeTouchpadStage);
         landscapeInputProcessor.addProcessor(gameScreenInputProcessor);
     }
     
@@ -256,8 +257,8 @@ public class GameScreen implements Screen {
     }
 
     private void draw(float delta) {
-        // Get the KeyboardType currently being used by the MachineScreenProcessor.
-        //KeyboardType keyboardType = machineInputProcessor.getKeyboardType();
+        // Get the KeyboardType currently being used by the GameScreenInputProcessor.
+        KeyboardType keyboardType = gameScreenInputProcessor.getKeyboardType();
 
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -282,19 +283,10 @@ public class GameScreen implements Screen {
         batch.enableBlending();
         batch.begin();
         
-        // TODO: Implement joystick being active.
-        //if (keyboardType.equals(KeyboardType.JOYSTICK)) {
-        //    if (viewportManager.isPortrait()) {
-        //        // batch.draw(keyboardType.getTexture(KeyboardType.LEFT), 0, 0);
-        //        batch.draw(keyboardType.getTexture(KeyboardType.RIGHT), viewportManager.getWidth() - 135, 0);
-        //    } else {
-        //        // batch.draw(keyboardType.getTexture(KeyboardType.LEFT), 0, 0, 201, 201);
-        //        batch.draw(keyboardType.getTexture(KeyboardType.RIGHT), viewportManager.getWidth() - 135, 0);
-        //    }
-        //} else if (keyboardType.isRendered()) {
-        //    batch.setColor(c.r, c.g, c.b, keyboardType.getOpacity());
-        //    batch.draw(keyboardType.getTexture(), 0, keyboardType.getRenderOffset());
-        //} else if (keyboardType.equals(KeyboardType.OFF)) {
+        if (keyboardType.isRendered()) {
+            batch.setColor(c.r, c.g, c.b, keyboardType.getOpacity());
+            batch.draw(keyboardType.getTexture(), 0, keyboardType.getRenderOffset());
+        } else if (keyboardType.equals(KeyboardType.OFF)) {
             // The keyboard and joystick icons are rendered only when an input type isn't
             // showing.
             batch.setColor(c.r, c.g, c.b, 0.5f);
@@ -321,25 +313,26 @@ public class GameScreen implements Screen {
                 batch.draw(keyboardIcon, 0, 0);
                 
             }
-        //}
+        }
         batch.end();
         
-        //        if (keyboardType.equals(KeyboardType.JOYSTICK)) {
-        //            float joyX = 0;
-        //            float joyY = 0;
-        //            if (viewportManager.isPortrait()) {
-        //                portraitStage.act(delta);
-        //                portraitStage.draw();
-        //                joyX = portraitTouchpad.getKnobPercentX();
-        //                joyY = portraitTouchpad.getKnobPercentY();
-        //            } else {
-        //                landscapeStage.act(delta);
-        //                landscapeStage.draw();
-        //                joyX = landscapeTouchpad.getKnobPercentX();
-        //                joyY = landscapeTouchpad.getKnobPercentY();
-        //            }
-        //            machine.getJoystick().touchPad(joyX, joyY);
-        //        }
+        if (gameScreenInputProcessor.isJoystickActive()) {
+            float joyX = 0;
+            float joyY = 0;
+            if (viewportManager.isPortrait()) {
+                portraitTouchpadStage.act(delta);
+                portraitTouchpadStage.draw();
+                joyX = portraitTouchpad.getKnobPercentX();
+                joyY = portraitTouchpad.getKnobPercentY();
+            } else {
+                landscapeTouchpadStage.act(delta);
+                landscapeTouchpadStage.draw();
+                joyX = landscapeTouchpad.getKnobPercentX();
+                joyY = landscapeTouchpad.getKnobPercentY();
+            }
+            // TODO: Apply movement
+            //machine.getJoystick().touchPad(joyX, joyY);
+        }
     }
     
     @Override
