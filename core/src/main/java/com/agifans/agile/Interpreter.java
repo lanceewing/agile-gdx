@@ -235,6 +235,7 @@ public class Interpreter {
      * @return
      */
     private byte getMouseClickDirection(boolean holdKeyMode) {
+        // EXPERIMENTAL method. Not used currently.
         byte direction = 0;
         
         // Is the left mouse button down? And it isn't an AGI Mouse game?
@@ -348,9 +349,6 @@ public class Interpreter {
                 if (userInput.keys((int)Keys.END)) direction = 6;
                 if (userInput.keys((int)Keys.LEFT)) direction = 7;
                 if (userInput.keys((int)Keys.HOME)) direction = 8;
-                if (direction == 0) {
-                    direction = getMouseClickDirection(true);
-                }
                 state.setVar(Defines.EGODIR, direction);
             }
             else {
@@ -364,9 +362,6 @@ public class Interpreter {
                 if (userInput.keys((int)Keys.END) && !userInput.oldKeys((int)Keys.END)) direction = 6;
                 if (userInput.keys((int)Keys.LEFT) && !userInput.oldKeys((int)Keys.LEFT)) direction = 7;
                 if (userInput.keys((int)Keys.HOME) && !userInput.oldKeys((int)Keys.HOME)) direction = 8;
-                if (direction == 0) {
-                    direction = getMouseClickDirection(false);
-                }
                 if (direction > 0) {
                     state.setVar(Defines.EGODIR, (state.getVar(Defines.EGODIR) == direction ? (byte)0 : direction));
                 }
