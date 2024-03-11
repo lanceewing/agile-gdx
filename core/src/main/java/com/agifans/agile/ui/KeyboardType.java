@@ -18,7 +18,7 @@ public enum KeyboardType {
               { null, Keys.SHIFT_LEFT, Keys.SHIFT_LEFT, Keys.SHIFT_LEFT, Keys.SHIFT_LEFT, Keys.SHIFT_LEFT, Keys.SHIFT_LEFT, Keys.Z, Keys.Z, Keys.Z, Keys.Z, Keys.X, Keys.X, Keys.X, Keys.X, Keys.C, Keys.C, Keys.C, Keys.C, Keys.V, Keys.V, Keys.V, Keys.V, Keys.B, Keys.B, Keys.B, Keys.B, Keys.N, Keys.N, Keys.N, Keys.N, Keys.M, Keys.M, Keys.M, Keys.M, Keys.COMMA, Keys.COMMA, Keys.COMMA, Keys.COMMA, Keys.PERIOD, Keys.PERIOD, Keys.PERIOD, Keys.PERIOD, Keys.SLASH, Keys.SLASH, Keys.SLASH, Keys.SLASH, Keys.SHIFT_RIGHT, Keys.SHIFT_RIGHT, Keys.SHIFT_RIGHT, Keys.SHIFT_RIGHT, Keys.SHIFT_RIGHT, Keys.SHIFT_RIGHT, null, null, null },
               { null, null, null, Keys.LEFT, Keys.LEFT, Keys.LEFT, Keys.LEFT, Keys.DOWN, Keys.DOWN, Keys.DOWN, Keys.DOWN, Keys.SPACE, Keys.SPACE, Keys.SPACE, Keys.SPACE, Keys.SPACE, Keys.SPACE, Keys.SPACE, Keys.SPACE, Keys.SPACE, Keys.SPACE, Keys.SPACE, Keys.SPACE, Keys.SPACE, Keys.SPACE, Keys.SPACE, Keys.SPACE, Keys.SPACE, Keys.SPACE, Keys.SPACE, Keys.SPACE, Keys.SPACE, Keys.SPACE, Keys.SPACE, Keys.SPACE, Keys.SPACE, Keys.SPACE, Keys.SPACE, Keys.SPACE, Keys.SPACE, Keys.SPACE, Keys.SPACE, Keys.SPACE, Keys.UP, Keys.UP, Keys.UP, Keys.UP, Keys.RIGHT, Keys.RIGHT, Keys.RIGHT, Keys.RIGHT, Keys.ALT_RIGHT, Keys.ALT_RIGHT, Keys.ALT_RIGHT, Keys.ALT_RIGHT, null }
             }},
-            new String[] {"png/keyboard_landscape.png"},
+            new String[] {"png/landscape_keyboard_lowercase.png"},
             0.4f,
             0,
             0,
@@ -26,7 +26,7 @@ public enum KeyboardType {
             1890,
             0
           ),
-      PORTRAIT(
+    PORTRAIT(
             new Integer[][][] {{
               { null, null, Keys.NUM_1, Keys.NUM_1, Keys.NUM_1, Keys.NUM_1, Keys.NUM_2, Keys.NUM_2, Keys.NUM_2, Keys.NUM_2, Keys.NUM_3, Keys.NUM_3, Keys.NUM_3, Keys.NUM_3, Keys.NUM_4, Keys.NUM_4, Keys.NUM_4, Keys.NUM_4, Keys.NUM_5, Keys.NUM_5, Keys.NUM_5, Keys.NUM_5, Keys.NUM_6, Keys.NUM_6, Keys.NUM_6, Keys.NUM_6, Keys.NUM_7, Keys.NUM_7, Keys.NUM_7, Keys.NUM_7, Keys.NUM_8, Keys.NUM_8, Keys.NUM_8, Keys.NUM_8, Keys.NUM_9, Keys.NUM_9, Keys.NUM_9, Keys.NUM_9, Keys.NUM_0, Keys.NUM_0, Keys.NUM_0, Keys.NUM_0, Keys.MINUS, Keys.MINUS, Keys.MINUS, Keys.MINUS, Keys.EQUALS, Keys.EQUALS, Keys.EQUALS, Keys.EQUALS, Keys.BACKSLASH, Keys.BACKSLASH, Keys.BACKSLASH, Keys.BACKSLASH, null, null },
               { Keys.ESCAPE, Keys.ESCAPE, Keys.ESCAPE, Keys.ESCAPE, Keys.Q, Keys.Q, Keys.Q, Keys.Q, Keys.W, Keys.W, Keys.W, Keys.W, Keys.E, Keys.E, Keys.E, Keys.E, Keys.R, Keys.R, Keys.R, Keys.R, Keys.T, Keys.T, Keys.T, Keys.T, Keys.Y, Keys.Y, Keys.Y, Keys.Y, Keys.U, Keys.U, Keys.U, Keys.U, Keys.I, Keys.I, Keys.I, Keys.I, Keys.O, Keys.O, Keys.O, Keys.O, Keys.P, Keys.P, Keys.P, Keys.P, Keys.LEFT_BRACKET, Keys.LEFT_BRACKET, Keys.LEFT_BRACKET, Keys.LEFT_BRACKET, Keys.RIGHT_BRACKET, Keys.RIGHT_BRACKET, Keys.RIGHT_BRACKET, Keys.RIGHT_BRACKET, Keys.DEL, Keys.DEL, Keys.DEL, Keys.DEL },
@@ -34,7 +34,7 @@ public enum KeyboardType {
               { null, Keys.SHIFT_LEFT, Keys.SHIFT_LEFT, Keys.SHIFT_LEFT, Keys.SHIFT_LEFT, Keys.SHIFT_LEFT, Keys.SHIFT_LEFT, Keys.Z, Keys.Z, Keys.Z, Keys.Z, Keys.X, Keys.X, Keys.X, Keys.X, Keys.C, Keys.C, Keys.C, Keys.C, Keys.V, Keys.V, Keys.V, Keys.V, Keys.B, Keys.B, Keys.B, Keys.B, Keys.N, Keys.N, Keys.N, Keys.N, Keys.M, Keys.M, Keys.M, Keys.M, Keys.COMMA, Keys.COMMA, Keys.COMMA, Keys.COMMA, Keys.PERIOD, Keys.PERIOD, Keys.PERIOD, Keys.PERIOD, Keys.SLASH, Keys.SLASH, Keys.SLASH, Keys.SLASH, Keys.SHIFT_RIGHT, Keys.SHIFT_RIGHT, Keys.SHIFT_RIGHT, Keys.SHIFT_RIGHT, Keys.SHIFT_RIGHT, Keys.SHIFT_RIGHT, null, null, null },
               { null, null, null, Keys.LEFT, Keys.LEFT, Keys.LEFT, Keys.LEFT, Keys.DOWN, Keys.DOWN, Keys.DOWN, Keys.DOWN, Keys.SPACE, Keys.SPACE, Keys.SPACE, Keys.SPACE, Keys.SPACE, Keys.SPACE, Keys.SPACE, Keys.SPACE, Keys.SPACE, Keys.SPACE, Keys.SPACE, Keys.SPACE, Keys.SPACE, Keys.SPACE, Keys.SPACE, Keys.SPACE, Keys.SPACE, Keys.SPACE, Keys.SPACE, Keys.SPACE, Keys.SPACE, Keys.SPACE, Keys.SPACE, Keys.SPACE, Keys.SPACE, Keys.SPACE, Keys.SPACE, Keys.SPACE, Keys.SPACE, Keys.SPACE, Keys.SPACE, Keys.SPACE, Keys.UP, Keys.UP, Keys.UP, Keys.UP, Keys.RIGHT, Keys.RIGHT, Keys.RIGHT, Keys.RIGHT, Keys.ALT_RIGHT, Keys.ALT_RIGHT, Keys.ALT_RIGHT, Keys.ALT_RIGHT, null }
             }},
-            new String[] {"png/keyboard_portrait.png"},
+            new String[] {"png/portrait_keyboard_lowercase.png"},
             0.6f,
             0,
             0,
