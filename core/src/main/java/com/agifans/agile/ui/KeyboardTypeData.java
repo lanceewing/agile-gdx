@@ -1,5 +1,8 @@
 package com.agifans.agile.ui;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.badlogic.gdx.Input.Keys;
 
 /**
@@ -53,4 +56,119 @@ public class KeyboardTypeData {
     public static final int UPPER_X = ((Keys.SHIFT_LEFT << 8) | Keys.X);
     public static final int UPPER_Y = ((Keys.SHIFT_LEFT << 8) | Keys.Y);
     public static final int UPPER_Z = ((Keys.SHIFT_LEFT << 8) | Keys.Z);
+    
+    /**
+     * These are the virtual keystrokes that we will also map to keyTyped calls, in addition
+     * to keyDown and keyUp.
+     */
+    public static final Map<Integer, Character> KEYTYPED_CHAR_MAP = new HashMap<>();
+    static {
+        // Note: ESC doesn't go through libgdx keyTyped, so we don't map it here.
+        
+        KEYTYPED_CHAR_MAP.put(Keys.SPACE,  (char)32);
+        KEYTYPED_CHAR_MAP.put(EXCLAIMATION_MARK, (char)33);
+        KEYTYPED_CHAR_MAP.put(DOUBLE_QUOTE, (char)34);
+        KEYTYPED_CHAR_MAP.put(HASH, (char)35);
+        KEYTYPED_CHAR_MAP.put(DOLLAR_SIGN, (char)36);
+        KEYTYPED_CHAR_MAP.put(PERCENTAGE_SIGN, (char)37);
+        KEYTYPED_CHAR_MAP.put(AMPERSAND, (char)38);
+        KEYTYPED_CHAR_MAP.put(Keys.APOSTROPHE, (char)39);
+        KEYTYPED_CHAR_MAP.put(OPEN_BRACKET, (char)40);
+        
+        KEYTYPED_CHAR_MAP.put(CLOSE_BRACKET, (char)41);
+        KEYTYPED_CHAR_MAP.put(ASTERISK, (char)42);
+        KEYTYPED_CHAR_MAP.put(Keys.PLUS, (char)43);
+        KEYTYPED_CHAR_MAP.put(Keys.COMMA, (char)44);
+        KEYTYPED_CHAR_MAP.put(Keys.MINUS, (char)45);
+        KEYTYPED_CHAR_MAP.put(Keys.PERIOD, (char)46);
+        KEYTYPED_CHAR_MAP.put(Keys.SLASH, (char)47);
+        KEYTYPED_CHAR_MAP.put(Keys.NUM_0, (char)48);
+        KEYTYPED_CHAR_MAP.put(Keys.NUM_1, (char)49);
+        KEYTYPED_CHAR_MAP.put(Keys.NUM_2, (char)50);
+        
+        KEYTYPED_CHAR_MAP.put(Keys.NUM_3, (char)51);
+        KEYTYPED_CHAR_MAP.put(Keys.NUM_4, (char)52);
+        KEYTYPED_CHAR_MAP.put(Keys.NUM_5, (char)53);
+        KEYTYPED_CHAR_MAP.put(Keys.NUM_6, (char)54);
+        KEYTYPED_CHAR_MAP.put(Keys.NUM_7, (char)55);
+        KEYTYPED_CHAR_MAP.put(Keys.NUM_8, (char)56);
+        KEYTYPED_CHAR_MAP.put(Keys.NUM_9, (char)57);
+        KEYTYPED_CHAR_MAP.put(Keys.COLON, (char)58);
+        KEYTYPED_CHAR_MAP.put(Keys.SEMICOLON, (char)59);
+        KEYTYPED_CHAR_MAP.put(LESS_THAN, (char)60);
+        
+        KEYTYPED_CHAR_MAP.put(Keys.EQUALS, (char)61);
+        KEYTYPED_CHAR_MAP.put(GREATER_THAN, (char)62);
+        KEYTYPED_CHAR_MAP.put(QUESTION_MARK, (char)63);
+        KEYTYPED_CHAR_MAP.put(AT, (char)64);
+        KEYTYPED_CHAR_MAP.put(UPPER_A, (char)65);
+        KEYTYPED_CHAR_MAP.put(UPPER_B, (char)66);
+        KEYTYPED_CHAR_MAP.put(UPPER_C, (char)67);
+        KEYTYPED_CHAR_MAP.put(UPPER_D, (char)68);
+        KEYTYPED_CHAR_MAP.put(UPPER_E, (char)69);
+        KEYTYPED_CHAR_MAP.put(UPPER_F, (char)70);
+        
+        KEYTYPED_CHAR_MAP.put(UPPER_G, (char)71);
+        KEYTYPED_CHAR_MAP.put(UPPER_H, (char)72);
+        KEYTYPED_CHAR_MAP.put(UPPER_I, (char)73);
+        KEYTYPED_CHAR_MAP.put(UPPER_J, (char)74);
+        KEYTYPED_CHAR_MAP.put(UPPER_K, (char)75);
+        KEYTYPED_CHAR_MAP.put(UPPER_L, (char)76);
+        KEYTYPED_CHAR_MAP.put(UPPER_M, (char)77);
+        KEYTYPED_CHAR_MAP.put(UPPER_N, (char)78);
+        KEYTYPED_CHAR_MAP.put(UPPER_O, (char)79);
+        KEYTYPED_CHAR_MAP.put(UPPER_P, (char)80);
+        
+        KEYTYPED_CHAR_MAP.put(UPPER_Q, (char)81);
+        KEYTYPED_CHAR_MAP.put(UPPER_R, (char)82);
+        KEYTYPED_CHAR_MAP.put(UPPER_S, (char)83);
+        KEYTYPED_CHAR_MAP.put(UPPER_T, (char)84);
+        KEYTYPED_CHAR_MAP.put(UPPER_U, (char)85);
+        KEYTYPED_CHAR_MAP.put(UPPER_V, (char)86);
+        KEYTYPED_CHAR_MAP.put(UPPER_W, (char)87);
+        KEYTYPED_CHAR_MAP.put(UPPER_X, (char)88);
+        KEYTYPED_CHAR_MAP.put(UPPER_Y, (char)89);
+        KEYTYPED_CHAR_MAP.put(UPPER_Z, (char)90);
+        
+        KEYTYPED_CHAR_MAP.put(Keys.LEFT_BRACKET, (char)91);
+        KEYTYPED_CHAR_MAP.put(Keys.BACKSLASH, (char)92);
+        KEYTYPED_CHAR_MAP.put(Keys.RIGHT_BRACKET, (char)93);
+        KEYTYPED_CHAR_MAP.put(CARAT, (char)94);
+        KEYTYPED_CHAR_MAP.put(UNDERSCORE, (char)95);
+        KEYTYPED_CHAR_MAP.put(Keys.GRAVE, (char)96);
+        KEYTYPED_CHAR_MAP.put(Keys.A, (char)97);
+        KEYTYPED_CHAR_MAP.put(Keys.B, (char)98);
+        KEYTYPED_CHAR_MAP.put(Keys.C, (char)99);
+        KEYTYPED_CHAR_MAP.put(Keys.D, (char)100);
+        
+        KEYTYPED_CHAR_MAP.put(Keys.E, (char)101);
+        KEYTYPED_CHAR_MAP.put(Keys.F, (char)102);
+        KEYTYPED_CHAR_MAP.put(Keys.G, (char)103);
+        KEYTYPED_CHAR_MAP.put(Keys.H, (char)104);
+        KEYTYPED_CHAR_MAP.put(Keys.I, (char)105);
+        KEYTYPED_CHAR_MAP.put(Keys.J, (char)106);
+        KEYTYPED_CHAR_MAP.put(Keys.K, (char)107);
+        KEYTYPED_CHAR_MAP.put(Keys.L, (char)108);
+        KEYTYPED_CHAR_MAP.put(Keys.M, (char)109);
+        KEYTYPED_CHAR_MAP.put(Keys.N, (char)110);
+        
+        KEYTYPED_CHAR_MAP.put(Keys.O, (char)111);
+        KEYTYPED_CHAR_MAP.put(Keys.P, (char)112);
+        KEYTYPED_CHAR_MAP.put(Keys.Q, (char)113);
+        KEYTYPED_CHAR_MAP.put(Keys.R, (char)114);
+        KEYTYPED_CHAR_MAP.put(Keys.S, (char)115);
+        KEYTYPED_CHAR_MAP.put(Keys.T, (char)116);
+        KEYTYPED_CHAR_MAP.put(Keys.U, (char)117);
+        KEYTYPED_CHAR_MAP.put(Keys.V, (char)118);
+        KEYTYPED_CHAR_MAP.put(Keys.W, (char)119);
+        KEYTYPED_CHAR_MAP.put(Keys.X, (char)120);
+        
+        KEYTYPED_CHAR_MAP.put(Keys.Y, (char)121);
+        KEYTYPED_CHAR_MAP.put(Keys.Z, (char)122);
+        KEYTYPED_CHAR_MAP.put(OPEN_BRACE, (char)123);
+        KEYTYPED_CHAR_MAP.put(PIPE, (char)124);
+        KEYTYPED_CHAR_MAP.put(CLOSE_BRACE, (char)125);
+        KEYTYPED_CHAR_MAP.put(TILDE, (char)126);
+        KEYTYPED_CHAR_MAP.put(Keys.FORWARD_DEL, (char)127);
+    }
 }
