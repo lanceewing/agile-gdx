@@ -115,8 +115,6 @@ public class GameScreenInputProcessor extends InputAdapter {
      * @return whether the input was processed
      */
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        System.out.println("touchDown: screenX=" + screenX + ", screenY=" + screenY);
-        
         // Convert the screen coordinates to world coordinates.
         Vector2 touchXY = viewportManager.unproject(screenX, screenY);
 
@@ -198,8 +196,6 @@ public class GameScreenInputProcessor extends InputAdapter {
      * @return whether the input was processed
      */
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        System.out.println("touchUp: screenX=" + screenX + ", screenY=" + screenY);
-        
         // Convert the screen coordinates to world coordinates.
         Vector2 touchXY = viewportManager.unproject(screenX, screenY);
 
@@ -289,7 +285,7 @@ public class GameScreenInputProcessor extends InputAdapter {
 
             if (keyboardClicked) {
                 if (keyboardType.equals(KeyboardType.OFF)) {
-                    keyboardType = (viewportManager.isPortrait() ? KeyboardType.PORTRAIT : KeyboardType.LANDSCAPE);
+                    keyboardType = (viewportManager.isPortrait() ? KeyboardType.PORTRAIT_LOWER_CASE : KeyboardType.LANDSCAPE_LOWER_CASE);
                     viewportManager.update();
                 } else {
                     keyboardType = KeyboardType.OFF;
@@ -356,8 +352,6 @@ public class GameScreenInputProcessor extends InputAdapter {
      * @return whether the input was processed
      */
     public boolean touchDragged(int screenX, int screenY, int pointer) {
-        System.out.println("touchDragged: screenX=" + screenX + ", screenY=" + screenY);
-        
         // Convert the screen coordinates to world coordinates.
         Vector2 touchXY = viewportManager.unproject(screenX, screenY);
         
@@ -403,7 +397,7 @@ public class GameScreenInputProcessor extends InputAdapter {
     public void resize(int width, int height) {
         if (keyboardType.isRendered()) {
             // Switch keyboard layout based on the orientation.
-            keyboardType = (height > width ? KeyboardType.PORTRAIT : KeyboardType.LANDSCAPE);
+            keyboardType = (height > width ? KeyboardType.PORTRAIT_LOWER_CASE : KeyboardType.LANDSCAPE_LOWER_CASE);
         }
     }
 
