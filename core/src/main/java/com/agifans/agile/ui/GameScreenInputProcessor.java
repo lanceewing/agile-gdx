@@ -1,9 +1,11 @@
 package com.agifans.agile.ui;
 
 import com.agifans.agile.GameScreen;
+import com.agifans.agile.UserInput;
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.math.Vector2;
 
@@ -134,7 +136,7 @@ public class GameScreenInputProcessor extends InputAdapter {
         if (keyboardType.isInKeyboard(touchXY.x, touchXY.y)) {
             Integer keycode = keyboardType.getKeyCode(touchXY.x, touchXY.y);
             if (keycode != null) {
-                keyDown(keycode);
+                processVirtualKeyboardKeyDown(keycode);
             }
             if (touchInfo != null) {
                 touchInfo.lastKey = keycode;
@@ -142,6 +144,30 @@ public class GameScreenInputProcessor extends InputAdapter {
         }
 
         return true;
+    }
+    
+    private UserInput getUserInput() {
+        return gameScreen.getAgileRunner().getUserInput();
+    }
+    
+    private void processVirtualKeyboardKeyDown(int keycode) {
+        if (((keycode >> 8) & 0xFF) == Keys.SHIFT_LEFT) {
+            getUserInput().keyDown(Keys.SHIFT_LEFT);
+        }
+        
+        getUserInput().keyDown(keycode & 0xFF);
+        
+        if (KeyboardTypeData.KEYTYPED_CHAR_MAP.containsKey(keycode)) {
+            getUserInput().keyTyped(KeyboardTypeData.KEYTYPED_CHAR_MAP.get(keycode));
+        }
+    }
+    
+    private void processVirtualKeyboardKeyUp(int keycode) {
+        getUserInput().keyUp(keycode & 0xFF);
+        
+        if (((keycode >> 8) & 0xFF) == Keys.SHIFT_LEFT) {
+            getUserInput().keyUp(Keys.SHIFT_LEFT);
+        }
     }
 
     /**
@@ -214,7 +240,7 @@ public class GameScreenInputProcessor extends InputAdapter {
         if (keyboardType.isInKeyboard(touchXY.x, touchXY.y)) {
             Integer keycode = keyboardType.getKeyCode(touchXY.x, touchXY.y);
             if (keycode != null) {
-                keyUp(keycode);
+                processVirtualKeyboardKeyUp(keycode);
             }
         } else if (keyboardType.equals(KeyboardType.MOBILE_ON_SCREEN)) {
             // If the onscreen keyboard is being shown then if we receive a tap event, it
@@ -370,13 +396,13 @@ public class GameScreenInputProcessor extends InputAdapter {
                 newKey = keyboardType.getKeyCode(touchXY.x, touchXY.y);
             }
 
-            // If the drag has resulting in the position moving in to or out of a key, then
-            // we simulate the coresponding key events.
+            // If the drag has resulted in the position moving in to or out of a key, then
+            // we simulate the corresponding key events.
             if ((lastKey != null) && ((newKey == null) || (newKey != lastKey))) {
-                keyUp(lastKey);
+                processVirtualKeyboardKeyUp(lastKey);
             }
             if ((newKey != null) && ((lastKey == null) || (lastKey != newKey))) {
-                keyDown(newKey);
+                processVirtualKeyboardKeyDown(newKey);
             }
 
             // Finally we update the new last position and last key for this pointer.
