@@ -151,23 +151,83 @@ public class GameScreenInputProcessor extends InputAdapter {
     }
     
     private void processVirtualKeyboardKeyDown(int keycode) {
-        if (((keycode >> 8) & 0xFF) == Keys.SHIFT_LEFT) {
-            getUserInput().keyDown(Keys.SHIFT_LEFT);
-        }
-        
-        getUserInput().keyDown(keycode & 0xFF);
-        
-        if (KeyboardTypeData.KEYTYPED_CHAR_MAP.containsKey(keycode)) {
-            getUserInput().keyTyped(KeyboardTypeData.KEYTYPED_CHAR_MAP.get(keycode));
+        if ((keycode != Keys.SWITCH_CHARSET) && (keycode != Keys.CAPS_LOCK)) {
+            if (((keycode >> 8) & 0xFF) == Keys.SHIFT_LEFT) {
+                getUserInput().keyDown(Keys.SHIFT_LEFT);
+            }
+            
+            getUserInput().keyDown(keycode & 0xFF);
+            
+            if (KeyboardTypeData.KEYTYPED_CHAR_MAP.containsKey(keycode)) {
+                getUserInput().keyTyped(KeyboardTypeData.KEYTYPED_CHAR_MAP.get(keycode));
+            }
         }
     }
     
     private void processVirtualKeyboardKeyUp(int keycode) {
-        getUserInput().keyUp(keycode & 0xFF);
-        
-        if (((keycode >> 8) & 0xFF) == Keys.SHIFT_LEFT) {
-            getUserInput().keyUp(Keys.SHIFT_LEFT);
+        if (keycode == Keys.SWITCH_CHARSET) {
+            processSwitchCharacterSet();
+        } else if (keycode == Keys.CAPS_LOCK) {
+            processCapsLockToggle();
+        } else {
+            getUserInput().keyUp(keycode & 0xFF);
+            
+            if (((keycode >> 8) & 0xFF) == Keys.SHIFT_LEFT) {
+                getUserInput().keyUp(Keys.SHIFT_LEFT);
+            }
         }
+    }
+    
+    private void processSwitchCharacterSet() {
+        switch (keyboardType) {
+            case PORTRAIT_LOWER_CASE:
+            case PORTRAIT_UPPER_CASE:
+                keyboardType = KeyboardType.PORTRAIT_PUNC_NUMBERS;
+                break;
+                
+            case LANDSCAPE_LOWER_CASE:
+            case LANDSCAPE_UPPER_CASE:
+                keyboardType = KeyboardType.LANDSCAPE_PUNC_NUMBERS;
+                break;
+                
+            case PORTRAIT_PUNC_NUMBERS:
+                keyboardType = KeyboardType.PORTRAIT_LOWER_CASE;
+                break;
+                
+            case LANDSCAPE_PUNC_NUMBERS:
+                keyboardType = KeyboardType.LANDSCAPE_LOWER_CASE;
+                break;
+                
+            default:
+                break;
+        }
+        
+        viewportManager.update();
+    }
+    
+    private void processCapsLockToggle() {
+        switch (keyboardType) {
+            case PORTRAIT_LOWER_CASE:
+                keyboardType = KeyboardType.PORTRAIT_UPPER_CASE;
+                break;
+                
+            case PORTRAIT_UPPER_CASE:
+                keyboardType = KeyboardType.PORTRAIT_LOWER_CASE;
+                break;
+                
+            case LANDSCAPE_LOWER_CASE:
+                keyboardType = KeyboardType.LANDSCAPE_UPPER_CASE;
+                break;
+                
+            case LANDSCAPE_UPPER_CASE:
+                keyboardType = KeyboardType.LANDSCAPE_LOWER_CASE;
+                break;
+                
+            default:
+                break;
+        }
+        
+        viewportManager.update();
     }
 
     /**

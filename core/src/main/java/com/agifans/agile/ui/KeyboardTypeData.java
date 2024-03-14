@@ -65,7 +65,9 @@ public class KeyboardTypeData {
     static {
         // Note: ESC doesn't go through libgdx keyTyped, so we don't map it here.
         
-        KEYTYPED_CHAR_MAP.put(Keys.SPACE,  (char)32);
+        KEYTYPED_CHAR_MAP.put(Keys.BACKSPACE, (char)8);
+        KEYTYPED_CHAR_MAP.put(Keys.TAB, (char)9);
+        KEYTYPED_CHAR_MAP.put(Keys.SPACE, (char)32);
         KEYTYPED_CHAR_MAP.put(EXCLAIMATION_MARK, (char)33);
         KEYTYPED_CHAR_MAP.put(DOUBLE_QUOTE, (char)34);
         KEYTYPED_CHAR_MAP.put(HASH, (char)35);
@@ -93,7 +95,7 @@ public class KeyboardTypeData {
         KEYTYPED_CHAR_MAP.put(Keys.NUM_7, (char)55);
         KEYTYPED_CHAR_MAP.put(Keys.NUM_8, (char)56);
         KEYTYPED_CHAR_MAP.put(Keys.NUM_9, (char)57);
-        KEYTYPED_CHAR_MAP.put(Keys.COLON, (char)58);
+        KEYTYPED_CHAR_MAP.put(COLON, (char)58);
         KEYTYPED_CHAR_MAP.put(Keys.SEMICOLON, (char)59);
         KEYTYPED_CHAR_MAP.put(LESS_THAN, (char)60);
         
