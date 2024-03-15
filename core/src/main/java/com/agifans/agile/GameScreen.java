@@ -6,6 +6,7 @@ import com.agifans.agile.ui.GameScreenInputProcessor;
 import com.agifans.agile.ui.KeyboardType;
 import com.agifans.agile.ui.ViewportManager;
 import com.badlogic.gdx.Application.ApplicationType;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
@@ -75,6 +76,7 @@ public class GameScreen implements Screen {
     private Stage landscapeTouchpadStage;
     private Touchpad portraitTouchpad;
     private Touchpad landscapeTouchpad;
+    private int previousDirection;
     
     /**
      * Details about the AGI game that was selected to be run.
@@ -330,9 +332,103 @@ public class GameScreen implements Screen {
                 joyX = landscapeTouchpad.getKnobPercentX();
                 joyY = landscapeTouchpad.getKnobPercentY();
             }
-            // TODO: Apply movement
-            //machine.getJoystick().touchPad(joyX, joyY);
+            processJoystickInput(joyX, joyY);
         }
+    }
+    
+    private static final int[] DIRECTION_TO_KEY_MAP = new int[] {
+        0, 
+        Keys.UP, 
+        Keys.PAGE_UP, 
+        Keys.RIGHT, 
+        Keys.PAGE_DOWN, 
+        Keys.DOWN, 
+        Keys.END, 
+        Keys.LEFT, 
+        Keys.HOME
+    };
+    
+    /**
+     * Processes joystick input, converting the touchpad position into an AGI
+     * direction and then setting the corresponding direction key.
+     * 
+     * @param joyX
+     * @param joyY
+     */
+    private void processJoystickInput(float joyX, float joyY) {
+        double heading = Math.atan2(-joyY, joyX);
+        double distance = Math.sqrt((joyX * joyX) + (joyY * joyY));
+        
+        int direction = 0;
+        
+        if (distance > 0.3) {
+            // Convert heading to an AGI direction.
+            if (heading == 0) {
+                // Right
+                direction = 3;
+            }
+            else if (heading > 0) {
+                // Down
+                if (heading < 0.3926991) {
+                    // Right
+                    direction = 3;
+                }
+                else if (heading < 1.178097) {
+                    // Down/Right
+                    direction = 4;
+                }
+                else if (heading < 1.9634954) {
+                    // Down
+                    direction = 5;
+                }
+                else if (heading < 2.7488936) {
+                    // Down/Left
+                    direction = 6;
+                }
+                else {
+                    // Left
+                    direction = 7;
+                }
+            }
+            else {
+                // Up
+                if (heading > -0.3926991) {
+                    // Right
+                    direction = 3;
+                }
+                else if (heading > -1.178097) {
+                    // Up/Right
+                    direction = 2;
+                }
+                else if (heading > -1.9634954) {
+                    // Up
+                    direction = 1;
+                }
+                else if (heading > -2.7488936) {
+                    // Up/Left
+                    direction = 8;
+                }
+                else {
+                    // Left
+                    direction = 7;
+                }
+            }
+        }
+        
+        UserInput userInput = getAgileRunner().getUserInput();
+        
+        if (previousDirection != 0) {
+            userInput.setKey(DIRECTION_TO_KEY_MAP[previousDirection], false);
+        }
+        
+        if ((previousDirection != 0) && (direction == 0)) {
+            getAgileRunner().getVariableData().setVar(Defines.EGODIR, direction);
+        }
+        else if (direction != 0) {
+            userInput.setKey(DIRECTION_TO_KEY_MAP[direction], true);
+        }
+        
+        previousDirection = direction;
     }
     
     @Override

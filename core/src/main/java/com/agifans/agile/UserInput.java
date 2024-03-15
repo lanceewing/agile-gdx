@@ -286,7 +286,7 @@ public abstract class UserInput extends InputAdapter {
     
     public abstract boolean oldKeys(int keycode);
     
-    protected abstract void setKey(int keycode, boolean value);
+    public abstract void setKey(int keycode, boolean value);
     
     protected abstract void setOldKey(int keycode, boolean value);
 

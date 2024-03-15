@@ -49,7 +49,7 @@ public class DesktopUserInput extends UserInput {
     }
 
     @Override
-    protected void setKey(int keycode, boolean value) {
+    public void setKey(int keycode, boolean value) {
         keys[keycode] = value;
     }
 

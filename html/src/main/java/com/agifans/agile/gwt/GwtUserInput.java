@@ -72,7 +72,7 @@ public class GwtUserInput extends UserInput {
     }
 
     @Override
-    protected void setKey(int keycode, boolean value) {
+    public void setKey(int keycode, boolean value) {
         keys.set(keycode, value? TRUE : FALSE);
     }
 
