@@ -32,6 +32,11 @@ public class GameScreenInputProcessor extends InputAdapter {
     private boolean joystickActive;
     
     /**
+     * The position at which to draw the joystick when it is active.
+     */
+    private Vector2 joystickPosition;
+    
+    /**
      * Invoked by AGILE whenever it would like to show a dialog, such as when it
      * needs the user to confirm an action, or to choose a file.
      */
@@ -238,8 +243,10 @@ public class GameScreenInputProcessor extends InputAdapter {
      * @param touchXY
      * @param button
      * @param buttonDown
+     * 
+     * @return true if AGI mouse state was updated; otherwise false.
      */
-    private void updateAGIMouse(Vector2 touchXY, int button, boolean buttonDown) {
+    private boolean updateAGIMouse(Vector2 touchXY, int button, boolean buttonDown) {
         int agiX = 0;
         int agiY = 0;
         if (viewportManager.isPortrait()) {
@@ -258,6 +265,9 @@ public class GameScreenInputProcessor extends InputAdapter {
             float agiStart = (1920 / 2) - (agiWidth / 2);
             agiX = Math.round((touchXY.x - agiStart) / agiRatio);
         }
+        
+        boolean agiMouseUpdated = false;
+        
         if ((agiX >= 0) && (agiX <= 159) && (agiY >= 0) && (agiY < 199)) {
             // Only if it is within the AGI Screen do we set the mouse vars.
             if (buttonDown) {
@@ -267,9 +277,12 @@ public class GameScreenInputProcessor extends InputAdapter {
             }
             gameScreen.getAgileRunner().getVariableData().setMouseX(agiX);
             gameScreen.getAgileRunner().getVariableData().setMouseY(agiY);
+            agiMouseUpdated = true;
         }
         
         agiMouseButton = (buttonDown? button + 1 : 0);
+        
+        return agiMouseUpdated;
     }
     
     /**
@@ -286,7 +299,7 @@ public class GameScreenInputProcessor extends InputAdapter {
         Vector2 touchXY = viewportManager.unproject(screenX, screenY);
 
         // Update AGI mouse variables (click/touch released, so clear all to 0)
-        updateAGIMouse(touchXY, button, false);
+        boolean agiMouseUpdated = updateAGIMouse(touchXY, button, false);
         
         // Update the touch info for this pointer.
         TouchInfo touchInfo = null;
@@ -318,7 +331,8 @@ public class GameScreenInputProcessor extends InputAdapter {
                 keyboardType = KeyboardType.OFF;
             }
 
-        } else {
+        }
+        //else {
             // TODO: Need to handle the magic numbers in this block in a better way.
             boolean keyboardClicked = false;
             boolean joystickClicked = false;
@@ -379,7 +393,7 @@ public class GameScreenInputProcessor extends InputAdapter {
             }
 
             if (joystickClicked) {
-                joystickActive = !joystickActive;
+               joystickActive = !joystickActive;
             }
             
             if (fullScreenClicked) {
@@ -409,7 +423,11 @@ public class GameScreenInputProcessor extends InputAdapter {
                     }
                 });
             }
-        }
+            
+            if (joystickActive && agiMouseUpdated) {
+                joystickPosition = touchXY;
+            }
+        //}
 
         return true;
     }
@@ -503,5 +521,14 @@ public class GameScreenInputProcessor extends InputAdapter {
      */
     public boolean isJoystickActive() {
         return joystickActive;
+    }
+    
+    /**
+     * Gets the position of the joystick when it is active.
+     * 
+     * @return The position of the joystick when it is active.
+     */
+    public Vector2 getJoystickPosition() {
+        return joystickPosition;
     }
 }

@@ -17,6 +17,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
@@ -115,8 +116,8 @@ public class GameScreen implements Screen {
         fullScreenIcon = new Texture("png/full_screen.png");
         
         // Create the portrait and landscape joystick touchpads.
-        portraitTouchpad = createTouchpad(300);
-        landscapeTouchpad = createTouchpad(200);
+        portraitTouchpad = createTouchpad(200, 1080 - 200 - 15, 1920);
+        landscapeTouchpad = createTouchpad(150, 1920 - 150 - 15, 815);
         
         viewportManager = ViewportManager.getInstance();
         
@@ -138,7 +139,7 @@ public class GameScreen implements Screen {
         landscapeInputProcessor.addProcessor(gameScreenInputProcessor);
     }
     
-    protected Touchpad createTouchpad(int size) {
+    protected Touchpad createTouchpad(int size, int x, int y) {
         Skin touchpadSkin = new Skin();
         touchpadSkin.add("touchBackground", new Texture("png/touchBackground.png"));
         touchpadSkin.add("touchKnob", new Texture("png/touchKnob.png"));
@@ -148,7 +149,7 @@ public class GameScreen implements Screen {
         touchpadStyle.background = touchBackground;
         touchpadStyle.knob = touchKnob;
         Touchpad touchpad = new Touchpad(10, touchpadStyle);
-        touchpad.setBounds(15, 15, size, size);
+        touchpad.setBounds(x, y, size, size);
         return touchpad;
     }
     
@@ -247,11 +248,6 @@ public class GameScreen implements Screen {
 
         if ((lastLogTime == 0) || (renderStartTime - lastLogTime > 10000000000L)) {
             lastLogTime = renderStartTime;
-            // Gdx.app.log("RenderTime", String.format(
-            // "[%d] avgDrawTime: %d avgRenderTime: %d maxFrameDuration: %d delta: %f fps:
-            // %d",
-            // drawCount, avgDrawTime, avgRenderTime, maxFrameDuration, delta,
-            // Gdx.graphics.getFramesPerSecond()));
         }
 
         // Trigger tick.
@@ -288,7 +284,9 @@ public class GameScreen implements Screen {
         if (keyboardType.isRendered()) {
             batch.setColor(c.r, c.g, c.b, keyboardType.getOpacity());
             batch.draw(keyboardType.getTexture(), 0, keyboardType.getRenderOffset());
-        } else if (keyboardType.equals(KeyboardType.OFF)) {
+        } 
+        
+        //else if (keyboardType.equals(KeyboardType.OFF)) {
             // The keyboard and joystick icons are rendered only when an input type isn't
             // showing.
             batch.setColor(c.r, c.g, c.b, 0.5f);
@@ -315,18 +313,35 @@ public class GameScreen implements Screen {
                 batch.draw(keyboardIcon, 0, 0);
                 
             }
-        }
+        //}
+        
         batch.end();
         
         if (gameScreenInputProcessor.isJoystickActive()) {
+            Vector2 joystickPosition = gameScreenInputProcessor.getJoystickPosition();
             float joyX = 0;
             float joyY = 0;
             if (viewportManager.isPortrait()) {
+                //if (joystickPosition != null) {
+                //    portraitTouchpad.setX(joystickPosition.x);
+                //    portraitTouchpad.setY(joystickPosition.y);
+                //} else {
+                    portraitTouchpad.setY(0);
+                //}
+                portraitTouchpad.setY(viewportManager.getHeight() - 1050);
                 portraitTouchpadStage.act(delta);
                 portraitTouchpadStage.draw();
                 joyX = portraitTouchpad.getKnobPercentX();
                 joyY = portraitTouchpad.getKnobPercentY();
             } else {
+                //landscapeTouchpad.setY(0);
+                //if (joystickPosition != null) {
+                //    landscapeTouchpad.setX(joystickPosition.x);
+                //    landscapeTouchpad.setY(joystickPosition.y);
+                //} else {
+                    landscapeTouchpad.setY(0);
+                //}
+                landscapeTouchpad.setY(viewportManager.getHeight() - (viewportManager.getHeight() / 2) - 75);
                 landscapeTouchpadStage.act(delta);
                 landscapeTouchpadStage.draw();
                 joyX = landscapeTouchpad.getKnobPercentX();
