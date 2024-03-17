@@ -22,10 +22,10 @@ public enum KeyboardType {
             },
             "png/landscape_keyboard_lowercase.png",
             0.4f,
-            150,
+            145,
             0,
-            5,
-            1911,
+            176,
+            1568,
             0
           ),
     LANDSCAPE_UPPER_CASE(
@@ -38,10 +38,10 @@ public enum KeyboardType {
             },
             "png/landscape_keyboard_uppercase.png",
             0.4f,
-            150,
+            145,
             0,
-            5,
-            1911,
+            176,
+            1568,
             0
           ),
     LANDSCAPE_PUNC_NUMBERS(
@@ -54,10 +54,10 @@ public enum KeyboardType {
             },
             "png/landscape_keyboard_punc_numbers.png",
             0.4f,
-            150,
+            145,
             0,
-            5,
-            1911,
+            176,
+            1568,
             0
           ),
     PORTRAIT_LOWER_CASE(
@@ -70,7 +70,7 @@ public enum KeyboardType {
             },
             "png/portrait_keyboard_lowercase.png",
             0.6f,
-            150,
+            145,
             0,
             1,
             -1,
@@ -86,7 +86,7 @@ public enum KeyboardType {
             },
             "png/portrait_keyboard_uppercase.png",
             0.6f,
-            150,
+            145,
             0,
             1,
             -1,
@@ -102,7 +102,7 @@ public enum KeyboardType {
             },
             "png/portrait_keyboard_punc_numbers.png",
             0.6f,
-            150,
+            145,
             0,
             1,
             -1,
@@ -157,6 +157,11 @@ public enum KeyboardType {
     private int yStart;
 
     /**
+     * The width of the active part of the keyboard image, or -1 to deduce from texture width and xStart.
+     */
+    private int activeWidth;
+    
+    /**
      * Constructor for KeyboardType.
      * 
      * @param keyMap         The position of each key within this KeyboardType.
@@ -188,6 +193,7 @@ public enum KeyboardType {
         this.opacity = opacity;
         this.renderOffset = renderOffset;
         this.closeHeight = this.texture.getHeight() + renderOffset + closeBuffer;
+        this.activeWidth = activeWidth;
     }
 
     /**
@@ -247,10 +253,8 @@ public enum KeyboardType {
     public boolean isInKeyboard(float x, float y) {
         if (isRendered()) {
             boolean isInYBounds = (y < (texture.getHeight() + renderOffset) && (y > renderOffset));
-            
-            // In this case, we only need to test the Y position since the keyboard image
-            // will span the whole width.
-            return isInYBounds;
+            boolean isInXBounds = ((x >= xStart) && (x < (xStart + activeWidth)));
+            return isInYBounds && isInXBounds;
             
         } else {
             // isInKeyboard only applies to rendered keyboards.

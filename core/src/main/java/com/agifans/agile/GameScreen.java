@@ -286,34 +286,32 @@ public class GameScreen implements Screen {
             batch.draw(keyboardType.getTexture(), 0, keyboardType.getRenderOffset());
         } 
         
-        //else if (keyboardType.equals(KeyboardType.OFF)) {
-            // The keyboard and joystick icons are rendered only when an input type isn't
-            // showing.
-            batch.setColor(c.r, c.g, c.b, 0.5f);
-            if (viewportManager.isPortrait()) {
-                batch.draw(joystickIcon, 0, 0);
-                if (Gdx.app.getType().equals(ApplicationType.Android)) {
-                    // Main AGI keyboard on the left.
-                    batch.draw(keyboardIcon, viewportManager.getWidth() - 145, 0);
-                    // Mobile keyboard for debug purpose. Wouldn't normally make this available.
-                    batch.setColor(c.r, c.g, c.b, 0.15f);
-                    batch.draw(keyboardIcon, viewportManager.getWidth() - viewportManager.getWidth() / 2 - 70, 0);
-
-                } else {
-                    // Desktop puts keyboard button in the middle.
-                    batch.draw(keyboardIcon, viewportManager.getWidth() - viewportManager.getWidth() / 2 - 70, 0);
-                    // and the back button on the right.
-                    batch.draw(backIcon, viewportManager.getWidth() - 145, 0);
-                }
+        // The keyboard and joystick icons are rendered only when an input type isn't
+        // showing.
+        batch.setColor(c.r, c.g, c.b, 0.5f);
+        if (viewportManager.isPortrait()) {
+            batch.draw(joystickIcon, 0, 0);
+            if (Gdx.app.getType().equals(ApplicationType.Android)) {
+                // Main AGI keyboard on the left.
+                batch.draw(keyboardIcon, viewportManager.getWidth() - 145, 0);
+                // Mobile keyboard for debug purpose. Wouldn't normally make this available.
+                batch.setColor(c.r, c.g, c.b, 0.15f);
+                batch.draw(keyboardIcon, viewportManager.getWidth() - viewportManager.getWidth() / 2 - 70, 0);
 
             } else {
-                batch.draw(joystickIcon, 0, viewportManager.getHeight() - 140);
-                batch.draw(fullScreenIcon, viewportManager.getWidth() - 150, viewportManager.getHeight() - 140);
-                batch.draw(backIcon, viewportManager.getWidth() - 150, 0);
-                batch.draw(keyboardIcon, 0, 0);
-                
+                // Desktop puts keyboard button in the middle.
+                batch.draw(keyboardIcon, viewportManager.getWidth() - viewportManager.getWidth() / 2 - 70, 0);
+                // and the back button on the right.
+                batch.draw(backIcon, viewportManager.getWidth() - 145, 0);
             }
-        //}
+
+        } else {
+            batch.draw(joystickIcon, 0, viewportManager.getHeight() - 140);
+            batch.draw(fullScreenIcon, viewportManager.getWidth() - 150, viewportManager.getHeight() - 140);
+            batch.draw(backIcon, viewportManager.getWidth() - 150, 0);
+            batch.draw(keyboardIcon, 0, 0);
+            
+        }
         
         batch.end();
         
@@ -322,25 +320,12 @@ public class GameScreen implements Screen {
             float joyX = 0;
             float joyY = 0;
             if (viewportManager.isPortrait()) {
-                //if (joystickPosition != null) {
-                //    portraitTouchpad.setX(joystickPosition.x);
-                //    portraitTouchpad.setY(joystickPosition.y);
-                //} else {
-                    portraitTouchpad.setY(0);
-                //}
                 portraitTouchpad.setY(viewportManager.getHeight() - 1050);
                 portraitTouchpadStage.act(delta);
                 portraitTouchpadStage.draw();
                 joyX = portraitTouchpad.getKnobPercentX();
                 joyY = portraitTouchpad.getKnobPercentY();
             } else {
-                //landscapeTouchpad.setY(0);
-                //if (joystickPosition != null) {
-                //    landscapeTouchpad.setX(joystickPosition.x);
-                //    landscapeTouchpad.setY(joystickPosition.y);
-                //} else {
-                    landscapeTouchpad.setY(0);
-                //}
                 landscapeTouchpad.setY(viewportManager.getHeight() - (viewportManager.getHeight() / 2) - 75);
                 landscapeTouchpadStage.act(delta);
                 landscapeTouchpadStage.draw();
