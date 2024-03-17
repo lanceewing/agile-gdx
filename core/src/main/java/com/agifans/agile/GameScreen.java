@@ -280,7 +280,7 @@ public class GameScreen implements Screen {
         batch.enableBlending();
         batch.begin();
         
-        if (keyboardType.isRendered()) {
+        if (keyboardType.isRendered() || viewportManager.isPortrait()) {
             batch.setColor(c.r, c.g, c.b, keyboardType.getOpacity());
             batch.draw(keyboardType.getTexture(), 0, keyboardType.getRenderOffset());
         } 
@@ -290,26 +290,13 @@ public class GameScreen implements Screen {
         batch.setColor(c.r, c.g, c.b, 0.5f);
         if (viewportManager.isPortrait()) {
             batch.draw(joystickIcon, 0, 0);
-            if (Gdx.app.getType().equals(ApplicationType.Android)) {
-                // Main AGI keyboard on the left.
-                batch.draw(keyboardIcon, viewportManager.getWidth() - 145, 0);
-                // Mobile keyboard for debug purpose. Wouldn't normally make this available.
-                batch.setColor(c.r, c.g, c.b, 0.15f);
-                batch.draw(keyboardIcon, viewportManager.getWidth() - viewportManager.getWidth() / 2 - 70, 0);
-
-            } else {
-                // Desktop puts keyboard button in the middle.
-                batch.draw(keyboardIcon, viewportManager.getWidth() - viewportManager.getWidth() / 2 - 70, 0);
-                // and the back button on the right.
-                batch.draw(backIcon, viewportManager.getWidth() - 145, 0);
-            }
-
+            batch.draw(fullScreenIcon, viewportManager.getWidth() - viewportManager.getWidth() / 2 - 70, 0);
+            batch.draw(backIcon, viewportManager.getWidth() - 145, 0);
         } else {
             batch.draw(joystickIcon, 0, viewportManager.getHeight() - 140);
             batch.draw(fullScreenIcon, viewportManager.getWidth() - 150, viewportManager.getHeight() - 140);
             batch.draw(backIcon, viewportManager.getWidth() - 150, 0);
             batch.draw(keyboardIcon, 0, 0);
-            
         }
         
         batch.end();

@@ -309,13 +309,6 @@ public class GameScreenInputProcessor extends InputAdapter {
             if (keycode != null) {
                 processVirtualKeyboardKeyUp(keycode);
             }
-        } else if (keyboardType.equals(KeyboardType.MOBILE_ON_SCREEN)) {
-            // If the onscreen keyboard is being shown then if we receive a tap event, it
-            // won't be on the virtual keyboard but must therefore be outside it. So we 
-            // hide the keyboard.
-            Gdx.input.setOnscreenKeyboardVisible(false);
-            keyboardType = KeyboardType.OFF;
-
         }
         
         // TODO: Need to handle the magic numbers in this block in a better way.
@@ -329,24 +322,12 @@ public class GameScreenInputProcessor extends InputAdapter {
             if (touchXY.y < 130) {
                 if (touchXY.x < 140) {
                     joystickClicked = true;
-
                 } else if (touchXY.x > (viewportManager.getWidth() - 145)) {
-                    // If not Android, then right area is Back button.
-                    if (Gdx.app.getType().equals(ApplicationType.Android)) {
-                        keyboardClicked = true;
-                    } else {
-                        backArrowClicked = true;
-                    }
+                    backArrowClicked = true;
                 } else {
-                    // Mobile soft keyboard is only available in portrait mode (debug only)
                     int midWidth = (int) (viewportManager.getWidth() - viewportManager.getWidth() / 2);
                     if ((touchXY.x > (midWidth - 70)) && (touchXY.y < (midWidth + 70))) {
-                        if (Gdx.app.getType().equals(ApplicationType.Android)) {
-                            Gdx.input.setOnscreenKeyboardVisible(true);
-                            keyboardType = KeyboardType.MOBILE_ON_SCREEN;
-                        } else {
-                            keyboardClicked = true;
-                        }
+                        fullScreenClicked = true;
                     }
                 }
             }
@@ -473,15 +454,22 @@ public class GameScreenInputProcessor extends InputAdapter {
     }
 
     /**
-     * Invokes by its MachineScreen when the screen has resized.
+     * Invokes by its GameScreen when the screen has resized.
      * 
      * @param width  The new screen width.
      * @param height The new screen height.
      */
     public void resize(int width, int height) {
-        if (keyboardType.isRendered()) {
-            // Switch keyboard layout based on the orientation.
-            keyboardType = (height > width ? KeyboardType.PORTRAIT_LOWER_CASE : KeyboardType.LANDSCAPE_LOWER_CASE);
+        if (height > width) {
+            // Change to portrait if it is not already a portrait keyboard.
+            if (!keyboardType.isPortrait()) {
+                keyboardType = KeyboardType.PORTRAIT_LOWER_CASE;
+            }
+        } else if (keyboardType.isRendered()) {
+            // Change to landscape if it is not already a landscape keyboard.
+            if (!keyboardType.isLandscape()) {
+                keyboardType = KeyboardType.LANDSCAPE_LOWER_CASE;
+            }
         }
     }
 

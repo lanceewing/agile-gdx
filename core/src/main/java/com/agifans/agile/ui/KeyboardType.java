@@ -283,6 +283,24 @@ public enum KeyboardType {
     public boolean isRendered() {
         return (texture != null);
     }
+    
+    /**
+     * @return true if this KeyboardType is a landscape keyboard, otherwise false.
+     */
+    public boolean isLandscape() {
+        return (equals(LANDSCAPE_LOWER_CASE) ||
+                equals(LANDSCAPE_UPPER_CASE) || 
+                equals(LANDSCAPE_PUNC_NUMBERS));
+    }
+    
+    /**
+     * @return true if this KeyboardType is a portrait keyboard, otherwise false.
+     */
+    public boolean isPortrait() {
+        return (equals(PORTRAIT_LOWER_CASE) ||
+                equals(PORTRAIT_UPPER_CASE) || 
+                equals(PORTRAIT_PUNC_NUMBERS));
+    }
 
     /**
      * @return Offset from the bottom of the screen that the keyboard is rendered
