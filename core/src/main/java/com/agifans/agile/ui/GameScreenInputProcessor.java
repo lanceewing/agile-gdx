@@ -365,9 +365,13 @@ public class GameScreenInputProcessor extends InputAdapter {
         if (fullScreenClicked) {
             Boolean fullScreen = Gdx.graphics.isFullscreen();
             if (fullScreen == true) {
+                if (screenWidthBeforeFullScreen > screenHeightBeforeFullScreen) {
+                    keyboardType = KeyboardType.OFF;
+                }
                 Gdx.graphics.setWindowedMode(screenWidthBeforeFullScreen, screenHeightBeforeFullScreen);
             }
             else {
+                keyboardType = KeyboardType.OFF;
                 Graphics.DisplayMode currentMode = Gdx.graphics.getDisplayMode();
                 screenWidthBeforeFullScreen = Gdx.graphics.getWidth();
                 screenHeightBeforeFullScreen = Gdx.graphics.getHeight();
