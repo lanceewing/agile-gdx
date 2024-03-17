@@ -311,9 +311,8 @@ public class GameScreenInputProcessor extends InputAdapter {
             }
         } else if (keyboardType.equals(KeyboardType.MOBILE_ON_SCREEN)) {
             // If the onscreen keyboard is being shown then if we receive a tap event, it
-            // won't be
-            // on the virtual keyboard but must therefore be outside it. So we hide the
-            // keyboard.
+            // won't be on the virtual keyboard but must therefore be outside it. So we 
+            // hide the keyboard.
             Gdx.input.setOnscreenKeyboardVisible(false);
             keyboardType = KeyboardType.OFF;
 
