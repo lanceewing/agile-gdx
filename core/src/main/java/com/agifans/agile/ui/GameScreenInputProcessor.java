@@ -32,11 +32,6 @@ public class GameScreenInputProcessor extends InputAdapter {
     private boolean joystickActive;
     
     /**
-     * The position at which to draw the joystick when it is active.
-     */
-    private Vector2 joystickPosition;
-    
-    /**
      * Invoked by AGILE whenever it would like to show a dialog, such as when it
      * needs the user to confirm an action, or to choose a file.
      */
@@ -102,8 +97,7 @@ public class GameScreenInputProcessor extends InputAdapter {
         this.viewportManager = ViewportManager.getInstance();
 
         // Initialise the touch info for max num of pointers (multi touch). We create
-        // these up
-        // front and reuse them so as to avoid garbage collection.
+        // these up front and reuse them so as to avoid garbage collection.
         this.touches = new TouchInfo[MAX_SIMULTANEOUS_TOUCH_EVENTS];
         for (int i = 0; i < MAX_SIMULTANEOUS_TOUCH_EVENTS; i++) {
             touches[i] = new TouchInfo();
@@ -299,7 +293,7 @@ public class GameScreenInputProcessor extends InputAdapter {
         Vector2 touchXY = viewportManager.unproject(screenX, screenY);
 
         // Update AGI mouse variables (click/touch released, so clear all to 0)
-        boolean agiMouseUpdated = updateAGIMouse(touchXY, button, false);
+        updateAGIMouse(touchXY, button, false);
         
         // Update the touch info for this pointer.
         TouchInfo touchInfo = null;
@@ -323,112 +317,99 @@ public class GameScreenInputProcessor extends InputAdapter {
             Gdx.input.setOnscreenKeyboardVisible(false);
             keyboardType = KeyboardType.OFF;
 
-        } else if (!keyboardType.equals(KeyboardType.OFF)) {
-            // If rendered keyboard is being shown, and the tap isn't within the keyboard,
-            // but is
-            // instead above the close height, then we close it.
-            if (touchXY.y > keyboardType.getCloseHeight()) {
+        }
+        
+        // TODO: Need to handle the magic numbers in this block in a better way.
+        boolean keyboardClicked = false;
+        boolean joystickClicked = false;
+        boolean backArrowClicked = false;
+        boolean fullScreenClicked = false;
+
+        if (viewportManager.isPortrait()) {
+            // Portrait.
+            if (touchXY.y < 130) {
+                if (touchXY.x < 140) {
+                    joystickClicked = true;
+
+                } else if (touchXY.x > (viewportManager.getWidth() - 145)) {
+                    // If not Android, then right area is Back button.
+                    if (Gdx.app.getType().equals(ApplicationType.Android)) {
+                        keyboardClicked = true;
+                    } else {
+                        backArrowClicked = true;
+                    }
+                } else {
+                    // Mobile soft keyboard is only available in portrait mode (debug only)
+                    int midWidth = (int) (viewportManager.getWidth() - viewportManager.getWidth() / 2);
+                    if ((touchXY.x > (midWidth - 70)) && (touchXY.y < (midWidth + 70))) {
+                        if (Gdx.app.getType().equals(ApplicationType.Android)) {
+                            Gdx.input.setOnscreenKeyboardVisible(true);
+                            keyboardType = KeyboardType.MOBILE_ON_SCREEN;
+                        } else {
+                            keyboardClicked = true;
+                        }
+                    }
+                }
+            }
+        } else {
+            // Landscape.
+            int screenTop = (int) viewportManager.getHeight();
+            if (touchXY.y > (screenTop - 140)) {
+                if (touchXY.x < 140) {
+                    joystickClicked = true;
+                } else if (touchXY.x > (viewportManager.getWidth() - 150)) {
+                    fullScreenClicked = true;
+                }
+            } else if (touchXY.y < 140) {
+                if (touchXY.x > (viewportManager.getWidth() - 150)) {
+                    backArrowClicked = true;
+                } else if (touchXY.x < 140) {
+                    keyboardClicked = true;
+                }
+            }
+        }
+
+        if (keyboardClicked) {
+            if (keyboardType.equals(KeyboardType.OFF)) {
+                keyboardType = (viewportManager.isPortrait() ? KeyboardType.PORTRAIT_LOWER_CASE : KeyboardType.LANDSCAPE_LOWER_CASE);
+                viewportManager.update();
+            } else {
                 keyboardType = KeyboardType.OFF;
             }
-
         }
-        //else {
-            // TODO: Need to handle the magic numbers in this block in a better way.
-            boolean keyboardClicked = false;
-            boolean joystickClicked = false;
-            boolean backArrowClicked = false;
-            boolean fullScreenClicked = false;
 
-            if (viewportManager.isPortrait()) {
-                // Portrait.
-                if (touchXY.y < 130) {
-                    if (touchXY.x < 140) {
-                        joystickClicked = true;
+        if (joystickClicked) {
+           joystickActive = !joystickActive;
+        }
+        
+        if (fullScreenClicked) {
+            Boolean fullScreen = Gdx.graphics.isFullscreen();
+            if (fullScreen == true) {
+                Gdx.graphics.setWindowedMode(screenWidthBeforeFullScreen, screenHeightBeforeFullScreen);
+            }
+            else {
+                Graphics.DisplayMode currentMode = Gdx.graphics.getDisplayMode();
+                screenWidthBeforeFullScreen = Gdx.graphics.getWidth();
+                screenHeightBeforeFullScreen = Gdx.graphics.getHeight();
+                Gdx.graphics.setFullscreenMode(currentMode);
+            }
+        }
 
-                    } else if (touchXY.x > (viewportManager.getWidth() - 145)) {
-                        // If not Android, then right area is Back button.
-                        if (Gdx.app.getType().equals(ApplicationType.Android)) {
-                            keyboardClicked = true;
-                        } else {
-                            backArrowClicked = true;
-                        }
-                    } else {
-                        // Mobile soft keyboard is only available in portrait mode (debug only)
-                        int midWidth = (int) (viewportManager.getWidth() - viewportManager.getWidth() / 2);
-                        if ((touchXY.x > (midWidth - 70)) && (touchXY.y < (midWidth + 70))) {
-                            if (Gdx.app.getType().equals(ApplicationType.Android)) {
-                                Gdx.input.setOnscreenKeyboardVisible(true);
-                                keyboardType = KeyboardType.MOBILE_ON_SCREEN;
-                            } else {
-                                keyboardClicked = true;
-                            }
-                        }
-                    }
+        if (backArrowClicked) {
+            dialogHandler.confirm("Are you sure you want to quit the game?", 
+                    new ConfirmResponseHandler() {
+                @Override
+                public void yes() {
+                    gameScreen.getAgileRunner().stop();
                 }
-            } else {
-                // Landscape.
-                int screenTop = (int) viewportManager.getHeight();
-                if (touchXY.y > (screenTop - 140)) {
-                    if (touchXY.x < 140) {
-                        joystickClicked = true;
-                    } else if (touchXY.x > (viewportManager.getWidth() - 150)) {
-                        fullScreenClicked = true;
-                    }
-                } else if (touchXY.y < 140) {
-                    if (touchXY.x > (viewportManager.getWidth() - 150)) {
-                        backArrowClicked = true;
-                    } else if (touchXY.x < 140) {
-                        keyboardClicked = true;
-                    }
+                
+                @Override
+                public void no() {
+                    // Nothing to do.
                 }
-            }
-
-            if (keyboardClicked) {
-                if (keyboardType.equals(KeyboardType.OFF)) {
-                    keyboardType = (viewportManager.isPortrait() ? KeyboardType.PORTRAIT_LOWER_CASE : KeyboardType.LANDSCAPE_LOWER_CASE);
-                    viewportManager.update();
-                } else {
-                    keyboardType = KeyboardType.OFF;
-                }
-            }
-
-            if (joystickClicked) {
-               joystickActive = !joystickActive;
-            }
-            
-            if (fullScreenClicked) {
-                Boolean fullScreen = Gdx.graphics.isFullscreen();
-                if (fullScreen == true) {
-                    Gdx.graphics.setWindowedMode(screenWidthBeforeFullScreen, screenHeightBeforeFullScreen);
-                }
-                else {
-                    Graphics.DisplayMode currentMode = Gdx.graphics.getDisplayMode();
-                    screenWidthBeforeFullScreen = Gdx.graphics.getWidth();
-                    screenHeightBeforeFullScreen = Gdx.graphics.getHeight();
-                    Gdx.graphics.setFullscreenMode(currentMode);
-                }
-            }
-
-            if (backArrowClicked) {
-                dialogHandler.confirm("Are you sure you want to quit the game?", 
-                        new ConfirmResponseHandler() {
-                    @Override
-                    public void yes() {
-                        gameScreen.getAgileRunner().stop();
-                    }
-                    
-                    @Override
-                    public void no() {
-                        // Nothing to do.
-                    }
-                });
-            }
-            
-            if (joystickActive && agiMouseUpdated) {
-                joystickPosition = touchXY;
-            }
-        //}
-
+            });
+        }
+        
         return true;
     }
 
@@ -521,14 +502,5 @@ public class GameScreenInputProcessor extends InputAdapter {
      */
     public boolean isJoystickActive() {
         return joystickActive;
-    }
-    
-    /**
-     * Gets the position of the joystick when it is active.
-     * 
-     * @return The position of the joystick when it is active.
-     */
-    public Vector2 getJoystickPosition() {
-        return joystickPosition;
     }
 }
