@@ -466,9 +466,9 @@ public class GameScreenInputProcessor extends InputAdapter {
                 keyboardType = KeyboardType.PORTRAIT_LOWER_CASE;
             }
         } else if (keyboardType.isRendered()) {
-            // Change to landscape if it is not already a landscape keyboard.
+            // If it wasn't previously landscape, then turn it off.
             if (!keyboardType.isLandscape()) {
-                keyboardType = KeyboardType.LANDSCAPE_LOWER_CASE;
+                keyboardType = KeyboardType.OFF;
             }
         }
     }
