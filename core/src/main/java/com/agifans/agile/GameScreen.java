@@ -274,19 +274,19 @@ public class GameScreen implements Screen {
                 false, false);
         batch.end();
 
-        // Render the UI elements, e.g. the keyboard and joystick icons.
+        // Now render the UI elements, e.g. the keyboard, full screen, and joystick icons.
         viewportManager.getCurrentCamera().update();
         batch.setProjectionMatrix(viewportManager.getCurrentCamera().combined);
         batch.enableBlending();
         batch.begin();
         
+        // The keyboard is always render in portrait mode, as there is space for it,
+        // but in landscape mode, it needs to be enabled via the keyboard icon.
         if (keyboardType.isRendered() || viewportManager.isPortrait()) {
             batch.setColor(c.r, c.g, c.b, keyboardType.getOpacity());
             batch.draw(keyboardType.getTexture(), 0, keyboardType.getRenderOffset());
         } 
         
-        // The keyboard and joystick icons are rendered only when an input type isn't
-        // showing.
         batch.setColor(c.r, c.g, c.b, 0.5f);
         if (viewportManager.isPortrait()) {
             batch.draw(joystickIcon, 0, 0);
@@ -301,11 +301,15 @@ public class GameScreen implements Screen {
         
         batch.end();
         
+        // The joystick touch pad is updated and rendered via the Stage.
         if (gameScreenInputProcessor.isJoystickActive()) {
             float joyX = 0;
             float joyY = 0;
             if (viewportManager.isPortrait()) {
-                portraitTouchpad.setY(viewportManager.getHeight() - 1050);
+                // Top of keyboard is: 765 + 145 = 910. Touchpad is 200 high.
+                int agiScreenBase = (int)(viewportManager.getHeight() - (viewportManager.getWidth() / 1.32));
+                int midBetweenKeybAndPic = ((agiScreenBase + 910) / 2);
+                portraitTouchpad.setY(midBetweenKeybAndPic - 100);
                 portraitTouchpadStage.act(delta);
                 portraitTouchpadStage.draw();
                 joyX = portraitTouchpad.getKnobPercentX();

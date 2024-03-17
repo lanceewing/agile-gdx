@@ -2,7 +2,6 @@ package com.agifans.agile.ui;
 
 import com.agifans.agile.GameScreen;
 import com.agifans.agile.UserInput;
-import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Input.Keys;
@@ -118,7 +117,7 @@ public class GameScreenInputProcessor extends InputAdapter {
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         // Convert the screen coordinates to world coordinates.
         Vector2 touchXY = viewportManager.unproject(screenX, screenY);
-
+        
         // Update AGI mouse variables.
         updateAGIMouse(touchXY, button, true);
                 
