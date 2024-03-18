@@ -114,8 +114,8 @@ public class GameScreen implements Screen {
         fullScreenIcon = new Texture("png/full_screen.png");
         
         // Create the portrait and landscape joystick touchpads.
-        portraitTouchpad = createTouchpad(200);
-        landscapeTouchpad = createTouchpad(150);
+        portraitTouchpad = createTouchpad();
+        landscapeTouchpad = createTouchpad();
         
         viewportManager = ViewportManager.getInstance();
         
@@ -137,7 +137,7 @@ public class GameScreen implements Screen {
         landscapeInputProcessor.addProcessor(gameScreenInputProcessor);
     }
     
-    protected Touchpad createTouchpad(int size) {
+    protected Touchpad createTouchpad() {
         Skin touchpadSkin = new Skin();
         touchpadSkin.add("touchBackground", new Texture("png/touchBackground.png"));
         touchpadSkin.add("touchKnob", new Texture("png/touchKnob.png"));
@@ -146,9 +146,7 @@ public class GameScreen implements Screen {
         Drawable touchKnob = touchpadSkin.getDrawable("touchKnob");
         touchpadStyle.background = touchBackground;
         touchpadStyle.knob = touchKnob;
-        Touchpad touchpad = new Touchpad(10, touchpadStyle);
-        touchpad.setSize(size, size);
-        return touchpad;
+        return new Touchpad(10, touchpadStyle);
     }
     
     public boolean copyPixels() {
@@ -307,19 +305,23 @@ public class GameScreen implements Screen {
             float joyX = 0;
             float joyY = 0;
             if (viewportManager.isPortrait()) {
-                // Top of keyboard is: 765 + 125 = 890. Touchpad is 200 high.
+                // Top of keyboard is: 765 + 125 = 890.
+                int joyWidth = 200;
                 int agiScreenBase = (int)(viewportManager.getHeight() - (viewportManager.getWidth() / 1.32));
                 int midBetweenKeybAndPic = ((agiScreenBase + 890) / 2);
-                portraitTouchpad.setY(midBetweenKeybAndPic - 100);
-                portraitTouchpad.setX(1080 - 200 - 10);
+                portraitTouchpad.setSize(joyWidth, joyWidth);
+                portraitTouchpad.setY(midBetweenKeybAndPic - (joyWidth / 2));
+                portraitTouchpad.setX(1080 - joyWidth - 10);
                 portraitTouchpadStage.act(delta);
                 portraitTouchpadStage.draw();
                 joyX = portraitTouchpad.getKnobPercentX();
                 joyY = portraitTouchpad.getKnobPercentY();
             } else {
                 // Landscape
-                landscapeTouchpad.setY(viewportManager.getHeight() - (viewportManager.getHeight() / 2) - 75);
-                landscapeTouchpad.setX(1920 - 150);
+                int joyWidth = 96;//150;
+                landscapeTouchpad.setSize(joyWidth, joyWidth);
+                landscapeTouchpad.setY(viewportManager.getHeight() - (viewportManager.getHeight() / 2) - (joyWidth / 2));
+                landscapeTouchpad.setX(1920 - joyWidth - 8);
                 landscapeTouchpadStage.act(delta);
                 landscapeTouchpadStage.draw();
                 joyX = landscapeTouchpad.getKnobPercentX();

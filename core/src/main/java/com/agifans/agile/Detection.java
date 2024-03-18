@@ -81,12 +81,6 @@ public class Detection {
                 // value for the game ID.
                 gameId = md5HashString.substring(0, 6).toUpperCase();
             }
-            
-            System.out.print("MD5 Hash: " + md5HashString);
-            System.out.print(", Game Name: " + gameName);
-            System.out.print(", Game ID (detected): " + gameId);
-            System.out.print(", Game ID (in game): " + game.gameId);
-            System.out.println(", V3 Sig: " + game.v3GameSig);
         }
         catch (Exception e) {
             // Failure in game detection code. Continue with the default unrecognised game values.
