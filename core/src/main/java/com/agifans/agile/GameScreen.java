@@ -114,8 +114,8 @@ public class GameScreen implements Screen {
         fullScreenIcon = new Texture("png/full_screen.png");
         
         // Create the portrait and landscape joystick touchpads.
-        portraitTouchpad = createTouchpad(200, 1080 - 200, 1920);
-        landscapeTouchpad = createTouchpad(150, 1920 - 150, 815);
+        portraitTouchpad = createTouchpad(200);
+        landscapeTouchpad = createTouchpad(150);
         
         viewportManager = ViewportManager.getInstance();
         
@@ -137,7 +137,7 @@ public class GameScreen implements Screen {
         landscapeInputProcessor.addProcessor(gameScreenInputProcessor);
     }
     
-    protected Touchpad createTouchpad(int size, int x, int y) {
+    protected Touchpad createTouchpad(int size) {
         Skin touchpadSkin = new Skin();
         touchpadSkin.add("touchBackground", new Texture("png/touchBackground.png"));
         touchpadSkin.add("touchKnob", new Texture("png/touchKnob.png"));
@@ -147,7 +147,7 @@ public class GameScreen implements Screen {
         touchpadStyle.background = touchBackground;
         touchpadStyle.knob = touchKnob;
         Touchpad touchpad = new Touchpad(10, touchpadStyle);
-        touchpad.setBounds(x, y, size, size);
+        touchpad.setSize(size, size);
         return touchpad;
     }
     
@@ -288,14 +288,16 @@ public class GameScreen implements Screen {
         
         batch.setColor(c.r, c.g, c.b, 0.5f);
         if (viewportManager.isPortrait()) {
-            batch.draw(joystickIcon, 4, 4);
-            batch.draw(fullScreenIcon, viewportManager.getWidth() - viewportManager.getWidth() / 2 - 48, 4);
-            batch.draw(backIcon, viewportManager.getWidth() - 98, 4);
+            // Portrait
+            batch.draw(joystickIcon, 10, 15);
+            batch.draw(fullScreenIcon, viewportManager.getWidth() - viewportManager.getWidth() / 2 - 48, 15);
+            batch.draw(backIcon, viewportManager.getWidth() - 106, 15);
         } else {
-            batch.draw(joystickIcon, 0, viewportManager.getHeight() - 100);
-            batch.draw(fullScreenIcon, viewportManager.getWidth() - 100, viewportManager.getHeight() - 100);
-            batch.draw(backIcon, viewportManager.getWidth() - 100, 4);
-            batch.draw(keyboardIcon, 4, 4);
+            // Landscape
+            batch.draw(joystickIcon, 8, viewportManager.getHeight() - 104);
+            batch.draw(fullScreenIcon, viewportManager.getWidth() - 104, viewportManager.getHeight() - 104);
+            batch.draw(backIcon, viewportManager.getWidth() - 104, 8);
+            batch.draw(keyboardIcon, 8, 0);
         }
         
         batch.end();
@@ -305,17 +307,19 @@ public class GameScreen implements Screen {
             float joyX = 0;
             float joyY = 0;
             if (viewportManager.isPortrait()) {
-                // Top of keyboard is: 765 + 120 = 910. Touchpad is 200 high.
+                // Top of keyboard is: 765 + 125 = 890. Touchpad is 200 high.
                 int agiScreenBase = (int)(viewportManager.getHeight() - (viewportManager.getWidth() / 1.32));
-                int midBetweenKeybAndPic = ((agiScreenBase + 885) / 2);
+                int midBetweenKeybAndPic = ((agiScreenBase + 890) / 2);
                 portraitTouchpad.setY(midBetweenKeybAndPic - 100);
-                portraitTouchpad.setX(viewportManager.getWidth() - (viewportManager.getWidth() / 2) - 75);
+                portraitTouchpad.setX(1080 - 200 - 10);
                 portraitTouchpadStage.act(delta);
                 portraitTouchpadStage.draw();
                 joyX = portraitTouchpad.getKnobPercentX();
                 joyY = portraitTouchpad.getKnobPercentY();
             } else {
+                // Landscape
                 landscapeTouchpad.setY(viewportManager.getHeight() - (viewportManager.getHeight() / 2) - 75);
+                landscapeTouchpad.setX(1920 - 150);
                 landscapeTouchpadStage.act(delta);
                 landscapeTouchpadStage.draw();
                 joyX = landscapeTouchpad.getKnobPercentX();
