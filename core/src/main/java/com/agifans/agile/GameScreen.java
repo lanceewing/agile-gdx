@@ -311,7 +311,7 @@ public class GameScreen implements Screen {
                 int midBetweenKeybAndPic = ((agiScreenBase + 900) / 2);
                 portraitTouchpad.setSize(joyWidth, joyWidth);
                 portraitTouchpad.setY(midBetweenKeybAndPic - (joyWidth / 2));
-                portraitTouchpad.setX(1080 - joyWidth - 10);
+                portraitTouchpad.setX(1080 - joyWidth - 20);
                 portraitTouchpadStage.act(delta);
                 portraitTouchpadStage.draw();
                 joyX = portraitTouchpad.getKnobPercentX();
@@ -321,7 +321,7 @@ public class GameScreen implements Screen {
                 int joyWidth = 96;
                 landscapeTouchpad.setSize(joyWidth, joyWidth);
                 landscapeTouchpad.setY(viewportManager.getHeight() - (viewportManager.getHeight() / 2) - (joyWidth / 2));
-                landscapeTouchpad.setX(1920 - joyWidth - 8);
+                landscapeTouchpad.setX(1920 - joyWidth - 16);
                 landscapeTouchpadStage.act(delta);
                 landscapeTouchpadStage.draw();
                 joyX = landscapeTouchpad.getKnobPercentX();
