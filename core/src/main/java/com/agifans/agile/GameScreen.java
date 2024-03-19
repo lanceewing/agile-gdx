@@ -292,10 +292,10 @@ public class GameScreen implements Screen {
             batch.draw(backIcon, viewportManager.getWidth() - 116, 20);
         } else {
             // Landscape
-            batch.draw(joystickIcon, 8, viewportManager.getHeight() - 104);
-            batch.draw(fullScreenIcon, viewportManager.getWidth() - 104, viewportManager.getHeight() - 104);
-            batch.draw(backIcon, viewportManager.getWidth() - 104, 8);
-            batch.draw(keyboardIcon, 8, 0);
+            batch.draw(joystickIcon, 16, viewportManager.getHeight() - 112);
+            batch.draw(fullScreenIcon, viewportManager.getWidth() - 104, viewportManager.getHeight() - 112);
+            batch.draw(backIcon, viewportManager.getWidth() - 112, 16);
+            batch.draw(keyboardIcon, 16, 0);
         }
         
         batch.end();
@@ -318,7 +318,7 @@ public class GameScreen implements Screen {
                 joyY = portraitTouchpad.getKnobPercentY();
             } else {
                 // Landscape
-                int joyWidth = 96;//150;
+                int joyWidth = 96;
                 landscapeTouchpad.setSize(joyWidth, joyWidth);
                 landscapeTouchpad.setY(viewportManager.getHeight() - (viewportManager.getHeight() / 2) - (joyWidth / 2));
                 landscapeTouchpad.setX(1920 - joyWidth - 8);
