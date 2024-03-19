@@ -305,10 +305,10 @@ public class GameScreen implements Screen {
             float joyX = 0;
             float joyY = 0;
             if (viewportManager.isPortrait()) {
-                // Top of keyboard is: 765 + 130 = 895.
+                // Top of keyboard is: 765 + 135 = 900.
                 int joyWidth = 200;
                 int agiScreenBase = (int)(viewportManager.getHeight() - (viewportManager.getWidth() / 1.32));
-                int midBetweenKeybAndPic = ((agiScreenBase + 895) / 2);
+                int midBetweenKeybAndPic = ((agiScreenBase + 900) / 2);
                 portraitTouchpad.setSize(joyWidth, joyWidth);
                 portraitTouchpad.setY(midBetweenKeybAndPic - (joyWidth / 2));
                 portraitTouchpad.setX(1080 - joyWidth - 10);

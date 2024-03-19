@@ -318,7 +318,7 @@ public class GameScreenInputProcessor extends InputAdapter {
 
         if (viewportManager.isPortrait()) {
             // Portrait.
-            if (touchXY.y < 130) {
+            if (touchXY.y < 135) {
                 if (touchXY.x < 126) {
                     joystickClicked = true;
                 } else if (touchXY.x > (viewportManager.getWidth() - 126)) {
