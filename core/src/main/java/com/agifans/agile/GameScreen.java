@@ -293,7 +293,7 @@ public class GameScreen implements Screen {
         } else {
             // Landscape
             batch.draw(joystickIcon, 16, viewportManager.getHeight() - 112);
-            batch.draw(fullScreenIcon, viewportManager.getWidth() - 104, viewportManager.getHeight() - 112);
+            batch.draw(fullScreenIcon, viewportManager.getWidth() - 112, viewportManager.getHeight() - 112);
             batch.draw(backIcon, viewportManager.getWidth() - 112, 16);
             batch.draw(keyboardIcon, 16, 0);
         }
