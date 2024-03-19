@@ -26,9 +26,10 @@ public class GameScreenInputProcessor extends InputAdapter {
     private KeyboardType keyboardType;
     
     /**
-     * Whether the joystick is active or not.
+     * The current alignment of the joystick on screen, if active, otherwise
+     * set to the OFF value.
      */
-    private boolean joystickActive;
+    private JoystickAlignment joystickAlignment = JoystickAlignment.OFF;
     
     /**
      * Invoked by AGILE whenever it would like to show a dialog, such as when it
@@ -358,7 +359,11 @@ public class GameScreenInputProcessor extends InputAdapter {
         }
 
         if (joystickClicked) {
-           joystickActive = !joystickActive;
+           // Rotate the joystick screen alignment.
+           joystickAlignment = joystickAlignment.rotateValue();
+           if (!viewportManager.isPortrait() && joystickAlignment.equals(JoystickAlignment.MIDDLE)) {
+               joystickAlignment = joystickAlignment.rotateValue();
+           }
         }
         
         if (fullScreenClicked) {
@@ -367,14 +372,11 @@ public class GameScreenInputProcessor extends InputAdapter {
                 if (screenWidthBeforeFullScreen > screenHeightBeforeFullScreen) {
                     keyboardType = KeyboardType.OFF;
                 }
-                Gdx.graphics.setWindowedMode(screenWidthBeforeFullScreen, screenHeightBeforeFullScreen);
+                switchOutOfFullScreen();
             }
             else {
                 keyboardType = KeyboardType.OFF;
-                Graphics.DisplayMode currentMode = Gdx.graphics.getDisplayMode();
-                screenWidthBeforeFullScreen = Gdx.graphics.getWidth();
-                screenHeightBeforeFullScreen = Gdx.graphics.getHeight();
-                Gdx.graphics.setFullscreenMode(currentMode);
+                switchIntoFullScreen();
             }
         }
 
@@ -396,6 +398,25 @@ public class GameScreenInputProcessor extends InputAdapter {
         return true;
     }
 
+    /**
+     * Switches to full screen mode, storing the width and height beforehand so 
+     * that it can be restored when switching back.
+     */
+    private void switchIntoFullScreen() {
+        Graphics.DisplayMode currentMode = Gdx.graphics.getDisplayMode();
+        screenWidthBeforeFullScreen = Gdx.graphics.getWidth();
+        screenHeightBeforeFullScreen = Gdx.graphics.getHeight();
+        Gdx.graphics.setFullscreenMode(currentMode);
+    }
+    
+    /**
+     * Switches out of full screen mode back to the windowed mode, restoring the
+     * saved width and height.
+     */
+    private void switchOutOfFullScreen() {
+        Gdx.graphics.setWindowedMode(screenWidthBeforeFullScreen, screenHeightBeforeFullScreen);
+    }
+    
     /**
      * Called whenever the mouse moves.
      * 
@@ -486,11 +507,20 @@ public class GameScreenInputProcessor extends InputAdapter {
     }
     
     /**
-     * Returns whether the joystick is active or not.
+     * Gets the current joystick screen alignment, i.e. where to place it on the 
+     * screen (left aligned, middle aligned, right aligned, or turned off)
      * 
-     * @return whether the joystick is active or not.
+     * @return The current joystick screen alignment.
      */
-    public boolean isJoystickActive() {
-        return joystickActive;
+    public JoystickAlignment getJoystickAlignment() {
+        return joystickAlignment;
+    }
+    
+    public static enum JoystickAlignment {
+        OFF, RIGHT, MIDDLE, LEFT;
+        
+        JoystickAlignment rotateValue() {
+            return values()[(ordinal() + 1) % 4];
+        }
     }
 }

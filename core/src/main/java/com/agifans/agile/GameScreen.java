@@ -3,6 +3,7 @@ package com.agifans.agile;
 import com.agifans.agile.config.AppConfigItem;
 import com.agifans.agile.ui.DialogHandler;
 import com.agifans.agile.ui.GameScreenInputProcessor;
+import com.agifans.agile.ui.GameScreenInputProcessor.JoystickAlignment;
 import com.agifans.agile.ui.KeyboardType;
 import com.agifans.agile.ui.ViewportManager;
 import com.badlogic.gdx.Input.Keys;
@@ -301,7 +302,7 @@ public class GameScreen implements Screen {
         batch.end();
         
         // The joystick touch pad is updated and rendered via the Stage.
-        if (gameScreenInputProcessor.isJoystickActive()) {
+        if (!gameScreenInputProcessor.getJoystickAlignment().equals(JoystickAlignment.OFF)) {
             float joyX = 0;
             float joyY = 0;
             if (viewportManager.isPortrait()) {
@@ -311,7 +312,19 @@ public class GameScreen implements Screen {
                 int midBetweenKeybAndPic = ((agiScreenBase + 900) / 2);
                 portraitTouchpad.setSize(joyWidth, joyWidth);
                 portraitTouchpad.setY(midBetweenKeybAndPic - (joyWidth / 2));
-                portraitTouchpad.setX(1080 - joyWidth - 20);
+                switch (gameScreenInputProcessor.getJoystickAlignment()) {
+                    case OFF:
+                        break;
+                    case RIGHT:
+                        portraitTouchpad.setX(1080 - joyWidth - 20);
+                        break;
+                    case MIDDLE:
+                        portraitTouchpad.setX(viewportManager.getWidth() - viewportManager.getWidth() / 2 - (joyWidth / 2));
+                        break;
+                    case LEFT:
+                        portraitTouchpad.setX(20);
+                        break;
+                }
                 portraitTouchpadStage.act(delta);
                 portraitTouchpadStage.draw();
                 joyX = portraitTouchpad.getKnobPercentX();
@@ -321,7 +334,18 @@ public class GameScreen implements Screen {
                 int joyWidth = 96;
                 landscapeTouchpad.setSize(joyWidth, joyWidth);
                 landscapeTouchpad.setY(viewportManager.getHeight() - (viewportManager.getHeight() / 2) - (joyWidth / 2));
-                landscapeTouchpad.setX(1920 - joyWidth - 16);
+                switch (gameScreenInputProcessor.getJoystickAlignment()) {
+                    case OFF:
+                        break;
+                    case RIGHT:
+                        landscapeTouchpad.setX(1920 - joyWidth - 16);
+                        break;
+                    case MIDDLE:
+                        break;
+                    case LEFT:
+                        landscapeTouchpad.setX(16);
+                        break;
+                }
                 landscapeTouchpadStage.act(delta);
                 landscapeTouchpadStage.draw();
                 joyX = landscapeTouchpad.getKnobPercentX();
