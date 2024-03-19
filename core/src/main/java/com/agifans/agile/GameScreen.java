@@ -287,9 +287,9 @@ public class GameScreen implements Screen {
         batch.setColor(c.r, c.g, c.b, 0.5f);
         if (viewportManager.isPortrait()) {
             // Portrait
-            batch.draw(joystickIcon, 10, 15);
-            batch.draw(fullScreenIcon, viewportManager.getWidth() - viewportManager.getWidth() / 2 - 48, 15);
-            batch.draw(backIcon, viewportManager.getWidth() - 106, 15);
+            batch.draw(joystickIcon, 20, 20);
+            batch.draw(fullScreenIcon, viewportManager.getWidth() - viewportManager.getWidth() / 2 - 48, 20);
+            batch.draw(backIcon, viewportManager.getWidth() - 116, 20);
         } else {
             // Landscape
             batch.draw(joystickIcon, 8, viewportManager.getHeight() - 104);
@@ -305,10 +305,10 @@ public class GameScreen implements Screen {
             float joyX = 0;
             float joyY = 0;
             if (viewportManager.isPortrait()) {
-                // Top of keyboard is: 765 + 125 = 890.
+                // Top of keyboard is: 765 + 130 = 895.
                 int joyWidth = 200;
                 int agiScreenBase = (int)(viewportManager.getHeight() - (viewportManager.getWidth() / 1.32));
-                int midBetweenKeybAndPic = ((agiScreenBase + 890) / 2);
+                int midBetweenKeybAndPic = ((agiScreenBase + 895) / 2);
                 portraitTouchpad.setSize(joyWidth, joyWidth);
                 portraitTouchpad.setY(midBetweenKeybAndPic - (joyWidth / 2));
                 portraitTouchpad.setX(1080 - joyWidth - 10);
