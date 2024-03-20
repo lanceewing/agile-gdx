@@ -334,8 +334,10 @@ public class GameScreen implements Screen {
                 int extraWidth = (int)(viewportManager.getWidth() - (viewportManager.getHeight() * 1.32));
                 int blackStripWidth = extraWidth / 2;
                 //System.out.println("blackStripWidth: " + blackStripWidth);
-                int joyWidth = Math.min(blackStripWidth - 32, 200);
+                int joyWidth = Math.min(Math.max(blackStripWidth - 32, 96), 200);
                 landscapeTouchpad.setSize(joyWidth, joyWidth);
+                landscapeTouchpad.getStyle().knob.setMinHeight(joyWidth * 0.6f);
+                landscapeTouchpad.getStyle().knob.setMinWidth(joyWidth * 0.6f);
                 landscapeTouchpad.setY(viewportManager.getHeight() - (viewportManager.getHeight() / 2) - (joyWidth / 2));
                 switch (gameScreenInputProcessor.getJoystickAlignment()) {
                     case OFF:
