@@ -73,6 +73,7 @@ public class ViewportManager {
    * @param height The new screen height.
    */
   public void update(int width, int height) {
+    // TODO: This should ideally switch to portrait as soon as gap appears in Y direction.
     portrait = (height > width);
     getCurrentViewport().update(width, height, true);
   }
@@ -93,6 +94,15 @@ public class ViewportManager {
     return portrait;
   }
 
+  /**
+   * Returns true if the orientation is currently landscape; otherwise false.
+   * 
+   * @return true if the orientation is currently landscape; otherwise false.
+   */
+  public boolean isLandscape() {
+    return !portrait;
+  }
+  
   /**
    * Gets the current Camera to use when rendering UI components.
    * 

@@ -259,6 +259,25 @@ public class GameScreen implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         // Render the AGI screen.
+        float cameraXOffset = 0;
+        float cameraYOffset = 0;
+        float sidePaddingWidth = 0;
+        if (viewportManager.isLandscape()) {
+            // Override default screen centering logic to allow for narrower screens, so 
+            // that the joystick can be rendered as a decent size.
+            float agiScreenWidth = (viewportManager.getHeight() * 1.32f);
+            float agiWidthRatio = (agiScreenWidth / ADJUSTED_WIDTH);
+            sidePaddingWidth = ((viewportManager.getWidth() - agiScreenWidth) / 2);
+            if (sidePaddingWidth < 216) {
+                cameraXOffset = (sidePaddingWidth / agiWidthRatio);
+            }
+        } else {
+            float agiScreenHeight = (viewportManager.getWidth() / 1.32f);
+            float agiHeightRatio = (agiScreenHeight / ADJUSTED_HEIGHT);
+            float topPadding = ((viewportManager.getHeight() - agiScreenHeight) / 2);
+            cameraYOffset = (topPadding / agiHeightRatio);
+        }
+        camera.position.set((ADJUSTED_WIDTH / 2) + cameraXOffset, (ADJUSTED_HEIGHT / 2) - cameraYOffset, 0.0f);
         camera.update();
         batch.setProjectionMatrix(camera.combined);
         batch.disableBlending();
@@ -331,10 +350,7 @@ public class GameScreen implements Screen {
                 joyY = portraitTouchpad.getKnobPercentY();
             } else {
                 // Landscape
-                int extraWidth = (int)(viewportManager.getWidth() - (viewportManager.getHeight() * 1.32));
-                int blackStripWidth = extraWidth / 2;
-                //System.out.println("blackStripWidth: " + blackStripWidth);
-                int joyWidth = Math.min(Math.max(blackStripWidth - 32, 96), 200);
+                float joyWidth = Math.min(Math.max((sidePaddingWidth * 2) - 32, 96), 200);
                 landscapeTouchpad.setSize(joyWidth, joyWidth);
                 landscapeTouchpad.getStyle().knob.setMinHeight(joyWidth * 0.6f);
                 landscapeTouchpad.getStyle().knob.setMinWidth(joyWidth * 0.6f);
