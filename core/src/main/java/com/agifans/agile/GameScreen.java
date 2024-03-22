@@ -252,8 +252,9 @@ public class GameScreen implements Screen {
     }
 
     private void draw(float delta) {
-        // Get the KeyboardType currently being used by the GameScreenInputProcessor.
+        // Get the KeyboardType & JoystickAlignment currently being used by the GameScreenInputProcessor.
         KeyboardType keyboardType = gameScreenInputProcessor.getKeyboardType();
+        JoystickAlignment joystickAlignment = gameScreenInputProcessor.getJoystickAlignment();
 
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -270,6 +271,9 @@ public class GameScreen implements Screen {
             sidePaddingWidth = ((viewportManager.getWidth() - agiScreenWidth) / 2);
             if (sidePaddingWidth < 216) {
                 cameraXOffset = (sidePaddingWidth / agiWidthRatio);
+                if (joystickAlignment.equals(JoystickAlignment.LEFT)) {
+                    cameraXOffset *= -1;
+                }
             }
         } else {
             float agiScreenHeight = (viewportManager.getWidth() / 1.32f);
@@ -314,16 +318,30 @@ public class GameScreen implements Screen {
             batch.draw(backIcon, viewportManager.getWidth() - 116, 20);
         } else {
             // Landscape
-            batch.draw(joystickIcon, 16, viewportManager.getHeight() - 112);
-            batch.draw(fullScreenIcon, viewportManager.getWidth() - 112, viewportManager.getHeight() - 112);
-            batch.draw(backIcon, viewportManager.getWidth() - 112, 16);
-            batch.draw(keyboardIcon, 16, 0);
+            if (cameraXOffset != 0) {
+                if (joystickAlignment.equals(JoystickAlignment.LEFT)) {
+                    batch.draw(joystickIcon, 16, viewportManager.getHeight() - 324);
+                    batch.draw(fullScreenIcon, 16, viewportManager.getHeight() - 112);
+                    batch.draw(backIcon, 16, 16);
+                    batch.draw(keyboardIcon, 16, 228);
+                } else {
+                    batch.draw(joystickIcon, viewportManager.getWidth() - 112, viewportManager.getHeight() - 324);
+                    batch.draw(fullScreenIcon, viewportManager.getWidth() - 112, viewportManager.getHeight() - 112);
+                    batch.draw(backIcon, viewportManager.getWidth() - 112, 16);
+                    batch.draw(keyboardIcon, viewportManager.getWidth() - 112, 228);
+                }
+            } else {
+                batch.draw(joystickIcon, 16, viewportManager.getHeight() - 112);
+                batch.draw(fullScreenIcon, viewportManager.getWidth() - 112, viewportManager.getHeight() - 112);
+                batch.draw(backIcon, viewportManager.getWidth() - 112, 16);
+                batch.draw(keyboardIcon, 16, 0);
+            }
         }
         
         batch.end();
         
         // The joystick touch pad is updated and rendered via the Stage.
-        if (!gameScreenInputProcessor.getJoystickAlignment().equals(JoystickAlignment.OFF)) {
+        if (!joystickAlignment.equals(JoystickAlignment.OFF)) {
             float joyX = 0;
             float joyY = 0;
             if (viewportManager.isPortrait()) {
@@ -333,7 +351,7 @@ public class GameScreen implements Screen {
                 int midBetweenKeybAndPic = ((agiScreenBase + 900) / 2);
                 portraitTouchpad.setSize(joyWidth, joyWidth);
                 portraitTouchpad.setY(midBetweenKeybAndPic - (joyWidth / 2));
-                switch (gameScreenInputProcessor.getJoystickAlignment()) {
+                switch (joystickAlignment) {
                     case OFF:
                         break;
                     case RIGHT:
@@ -357,7 +375,7 @@ public class GameScreen implements Screen {
                 landscapeTouchpad.getStyle().knob.setMinHeight(joyWidth * 0.6f);
                 landscapeTouchpad.getStyle().knob.setMinWidth(joyWidth * 0.6f);
                 landscapeTouchpad.setY(viewportManager.getHeight() - (viewportManager.getHeight() / 2) - (joyWidth / 2));
-                switch (gameScreenInputProcessor.getJoystickAlignment()) {
+                switch (joystickAlignment) {
                     case OFF:
                         break;
                     case RIGHT:
