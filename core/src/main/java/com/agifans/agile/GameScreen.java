@@ -281,6 +281,7 @@ public class GameScreen implements Screen {
             float topPadding = ((viewportManager.getHeight() - agiScreenHeight) / 2);
             cameraYOffset = (topPadding / agiHeightRatio);
         }
+        gameScreenInputProcessor.setCameraXOffset(cameraXOffset);
         camera.position.set((ADJUSTED_WIDTH / 2) + cameraXOffset, (ADJUSTED_HEIGHT / 2) - cameraYOffset, 0.0f);
         camera.update();
         batch.setProjectionMatrix(camera.combined);
@@ -318,23 +319,24 @@ public class GameScreen implements Screen {
             batch.draw(backIcon, viewportManager.getWidth() - 116, 20);
         } else {
             // Landscape
-            if (cameraXOffset != 0) {
-                if (joystickAlignment.equals(JoystickAlignment.LEFT)) {
-                    batch.draw(joystickIcon, 16, viewportManager.getHeight() - 324);
-                    batch.draw(fullScreenIcon, 16, viewportManager.getHeight() - 112);
-                    batch.draw(backIcon, 16, 16);
-                    batch.draw(keyboardIcon, 16, 228);
-                } else {
-                    batch.draw(joystickIcon, viewportManager.getWidth() - 112, viewportManager.getHeight() - 324);
-                    batch.draw(fullScreenIcon, viewportManager.getWidth() - 112, viewportManager.getHeight() - 112);
-                    batch.draw(backIcon, viewportManager.getWidth() - 112, 16);
-                    batch.draw(keyboardIcon, viewportManager.getWidth() - 112, 228);
-                }
-            } else {
+            if (cameraXOffset == 0) {
+                // Middle
                 batch.draw(joystickIcon, 16, viewportManager.getHeight() - 112);
                 batch.draw(fullScreenIcon, viewportManager.getWidth() - 112, viewportManager.getHeight() - 112);
                 batch.draw(backIcon, viewportManager.getWidth() - 112, 16);
                 batch.draw(keyboardIcon, 16, 0);
+            } else if (cameraXOffset < 0) {
+                // Left
+                batch.draw(joystickIcon, 16, viewportManager.getHeight() - 324);
+                batch.draw(fullScreenIcon, 16, viewportManager.getHeight() - 112);
+                batch.draw(backIcon, 16, 16);
+                batch.draw(keyboardIcon, 16, 228);
+            } else if (cameraXOffset > 0) {
+                // Right
+                batch.draw(joystickIcon, viewportManager.getWidth() - 112, viewportManager.getHeight() - 324);
+                batch.draw(fullScreenIcon, viewportManager.getWidth() - 112, viewportManager.getHeight() - 112);
+                batch.draw(backIcon, viewportManager.getWidth() - 112, 16);
+                batch.draw(keyboardIcon, viewportManager.getWidth() - 112, 228);
             }
         }
         

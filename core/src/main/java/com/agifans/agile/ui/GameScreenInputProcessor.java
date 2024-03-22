@@ -32,6 +32,11 @@ public class GameScreenInputProcessor extends InputAdapter {
     private JoystickAlignment joystickAlignment = JoystickAlignment.OFF;
     
     /**
+     * The current offset from centre of the camera in the X direction.
+     */
+    private float cameraXOffset;
+    
+    /**
      * Invoked by AGILE whenever it would like to show a dialog, such as when it
      * needs the user to confirm an action, or to choose a file.
      */
@@ -334,17 +339,37 @@ public class GameScreenInputProcessor extends InputAdapter {
         } else {
             // Landscape.
             int screenTop = (int) viewportManager.getHeight();
-            if (touchXY.y > (screenTop - 104)) {
-                if (touchXY.x < 112) {
-                    joystickClicked = true;
-                } else if (touchXY.x > (viewportManager.getWidth() - 112)) {
-                    fullScreenClicked = true;
+            if (cameraXOffset == 0) {
+                // Screen in middle.
+                if (touchXY.y > (screenTop - 104)) {
+                    if (touchXY.x < 112) {
+                        joystickClicked = true;
+                    } else if (touchXY.x > (viewportManager.getWidth() - 112)) {
+                        fullScreenClicked = true;
+                    }
+                } else if (touchXY.y < 104) {
+                    if (touchXY.x > (viewportManager.getWidth() - 112)) {
+                        backArrowClicked = true;
+                    } else if (touchXY.x < 112) {
+                        keyboardClicked = true;
+                    }
                 }
-            } else if (touchXY.y < 104) {
-                if (touchXY.x > (viewportManager.getWidth() - 112)) {
-                    backArrowClicked = true;
-                } else if (touchXY.x < 112) {
-                    keyboardClicked = true;
+            }
+            else {
+                // All buttons on same side
+                if ((touchXY.x < 128) || (touchXY.x > (viewportManager.getWidth() - 128))) {
+                    if (touchXY.y > (screenTop - 128)) {
+                        fullScreenClicked = true;
+                    }
+                    else if ((touchXY.y < (screenTop - 212)) && (touchXY.y > (screenTop - 340))) {
+                        joystickClicked = true;
+                    }
+                    else if ((touchXY.y > 212) && (touchXY.y < 340)) {
+                        keyboardClicked = true;
+                    }
+                    else if ((touchXY.y > 0) && (touchXY.y < 128)) {
+                        backArrowClicked = true;
+                    }
                 }
             }
         }
@@ -522,5 +547,14 @@ public class GameScreenInputProcessor extends InputAdapter {
         JoystickAlignment rotateValue() {
             return values()[(ordinal() + 1) % 4];
         }
+    }
+
+    /**
+     * Sets the current offset from centre of the camera in the X direction.
+     * 
+     * @param cameraXOffset The current offset from centre of the camera in the X direction.
+     */
+    public void setCameraXOffset(float cameraXOffset) {
+        this.cameraXOffset = cameraXOffset;
     }
 }
