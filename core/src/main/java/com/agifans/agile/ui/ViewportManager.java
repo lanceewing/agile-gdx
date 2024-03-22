@@ -73,8 +73,7 @@ public class ViewportManager {
    * @param height The new screen height.
    */
   public void update(int width, int height) {
-    // TODO: This should ideally switch to portrait as soon as gap appears in Y direction.
-    portrait = (height > width);
+    portrait = (height > (width / 1.32f));
     getCurrentViewport().update(width, height, true);
   }
   

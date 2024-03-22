@@ -484,7 +484,7 @@ public class GameScreenInputProcessor extends InputAdapter {
      * @param height The new screen height.
      */
     public void resize(int width, int height) {
-        if (height > width) {
+        if (height > (width / 1.32f)) {
             // Change to portrait if it is not already a portrait keyboard.
             if (!keyboardType.isPortrait()) {
                 keyboardType = KeyboardType.PORTRAIT_LOWER_CASE;

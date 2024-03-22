@@ -300,8 +300,10 @@ public class GameScreen implements Screen {
         // The keyboard is always render in portrait mode, as there is space for it,
         // but in landscape mode, it needs to be enabled via the keyboard icon.
         if (keyboardType.isRendered() || viewportManager.isPortrait()) {
-            batch.setColor(c.r, c.g, c.b, keyboardType.getOpacity());
-            batch.draw(keyboardType.getTexture(), 0, keyboardType.getRenderOffset());
+            if (keyboardType.getTexture() != null) {
+                batch.setColor(c.r, c.g, c.b, keyboardType.getOpacity());
+                batch.draw(keyboardType.getTexture(), 0, keyboardType.getRenderOffset());
+            }
         } 
         
         batch.setColor(c.r, c.g, c.b, 0.5f);
