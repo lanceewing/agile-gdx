@@ -132,4 +132,10 @@ public class DesktopAgileRunner extends AgileRunner {
             }
         }
     }
+
+    @Override
+    public boolean hasTouchScreen() {
+        // We don't check this for Desktop.
+        return false;
+    }
 }

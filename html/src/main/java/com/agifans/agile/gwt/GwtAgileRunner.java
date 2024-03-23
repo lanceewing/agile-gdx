@@ -277,4 +277,19 @@ public class GwtAgileRunner extends AgileRunner {
         // TODO Auto-generated method stub
         
     }
+
+    @Override
+    public boolean hasTouchScreen() {
+        return hasTouchScreenHtml();
+    }
+    
+    private native boolean hasTouchScreenHtml() /*-{
+        if ("maxTouchPoints" in navigator) {
+            return navigator.maxTouchPoints > 0;
+        } else if ("msMaxTouchPoints" in navigator) {
+            return navigator.msMaxTouchPoints > 0;
+        } else {
+            return false;
+        }
+    }-*/;
 }

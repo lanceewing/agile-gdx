@@ -394,13 +394,9 @@ public class GameScreenInputProcessor extends InputAdapter {
         if (fullScreenClicked) {
             Boolean fullScreen = Gdx.graphics.isFullscreen();
             if (fullScreen == true) {
-                if (screenWidthBeforeFullScreen > screenHeightBeforeFullScreen) {
-                    keyboardType = KeyboardType.OFF;
-                }
                 switchOutOfFullScreen();
             }
             else {
-                keyboardType = KeyboardType.OFF;
                 switchIntoFullScreen();
             }
         }
@@ -427,7 +423,8 @@ public class GameScreenInputProcessor extends InputAdapter {
      * Switches to full screen mode, storing the width and height beforehand so 
      * that it can be restored when switching back.
      */
-    private void switchIntoFullScreen() {
+    public void switchIntoFullScreen() {
+        keyboardType = KeyboardType.OFF;
         Graphics.DisplayMode currentMode = Gdx.graphics.getDisplayMode();
         screenWidthBeforeFullScreen = Gdx.graphics.getWidth();
         screenHeightBeforeFullScreen = Gdx.graphics.getHeight();
@@ -438,7 +435,10 @@ public class GameScreenInputProcessor extends InputAdapter {
      * Switches out of full screen mode back to the windowed mode, restoring the
      * saved width and height.
      */
-    private void switchOutOfFullScreen() {
+    public void switchOutOfFullScreen() {
+        if (screenWidthBeforeFullScreen > (screenHeightBeforeFullScreen * 1.32f)) {
+            keyboardType = KeyboardType.OFF;
+        }
         Gdx.graphics.setWindowedMode(screenWidthBeforeFullScreen, screenHeightBeforeFullScreen);
     }
     

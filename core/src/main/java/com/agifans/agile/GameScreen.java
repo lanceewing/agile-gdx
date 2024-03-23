@@ -184,6 +184,10 @@ public class GameScreen implements Screen {
             Gdx.input.setInputProcessor(landscapeInputProcessor);
         }
         
+        if (agileRunner.hasTouchScreen() && !Gdx.graphics.isFullscreen()) {
+            gameScreenInputProcessor.switchIntoFullScreen();
+        }
+        
         agileRunner.start(appConfigItem.getFilePath());
     }
 
@@ -207,7 +211,10 @@ public class GameScreen implements Screen {
             // This makes sure we update the Pixmap one last time before leaving, as that
             // will mean that the AGI game screen starts out black for the next game.
             copyPixels();
-            agile.setScreen(agile.getHomeScreen());;
+            if (agileRunner.hasTouchScreen() && Gdx.graphics.isFullscreen()) {
+                gameScreenInputProcessor.switchOutOfFullScreen();
+            }
+            agile.setScreen(agile.getHomeScreen());
             return;
         }
         

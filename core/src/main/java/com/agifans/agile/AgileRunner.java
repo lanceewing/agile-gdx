@@ -182,4 +182,5 @@ public abstract class AgileRunner {
     
     public abstract void saveScreenshot(Agile agile, AppConfigItem appConfigItem, Pixmap pixmap);
     
+    public abstract boolean hasTouchScreen();
 }
