@@ -69,7 +69,7 @@ public class GwtDialogHandler implements DialogHandler {
         String[] values = ImportType.getDescriptions();
         String title = "Please select the type of import:";
         String message = (appConfigItem != null? 
-                "For legal reasons, you must import your own copy of <br>" + gameName + "<br><br>" : "");
+                "For legal reasons, you must import your own copy of " + gameName + "<br><br>" : "");
         Gdx.app.postRunnable(new Runnable() {
             @Override
             public void run() {
