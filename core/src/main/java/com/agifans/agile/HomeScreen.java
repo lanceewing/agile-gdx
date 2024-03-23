@@ -135,6 +135,9 @@ public class HomeScreen extends InputAdapter implements Screen {
         for (AppConfigItem appConfigItem : appConfig.getApps()) {
             appConfigMap.put(appConfigItem.getName(), appConfigItem);
         }
+        
+        // Convert back from TreeMap, to guarantee ordering on first render.
+        appConfig = convertAppConfigItemMapToAppConfig(appConfigMap);
 
         buttonTextureMap = new HashMap<String, Texture>();
         skin = new Skin(Gdx.files.internal("data/uiskin.json"));
