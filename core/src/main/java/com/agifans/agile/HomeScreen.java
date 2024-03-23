@@ -104,7 +104,6 @@ public class HomeScreen extends InputAdapter implements Screen {
      */
     private static final Set<String> SIERRA_GAMES = new HashSet<>();
     static {
-        SIERRA_GAMES.add("bc");
         SIERRA_GAMES.add("dp");
         SIERRA_GAMES.add("gr");
         SIERRA_GAMES.add("kq1");
@@ -118,6 +117,7 @@ public class HomeScreen extends InputAdapter implements Screen {
         SIERRA_GAMES.add("pq");
         SIERRA_GAMES.add("sq");
         SIERRA_GAMES.add("sq2");
+        SIERRA_GAMES.add("bc");
     }
     
     /**
