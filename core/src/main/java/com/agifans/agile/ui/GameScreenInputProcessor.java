@@ -541,6 +541,16 @@ public class GameScreenInputProcessor extends InputAdapter {
         return joystickAlignment;
     }
     
+    /**
+     * Sets the current joystick screen alignment, i.e. where to place it on the 
+     * screen (left aligned, middle aligned, right aligned, or turned off)
+     * 
+     * @param joystickAlignment
+     */
+    public void setJoystickAlignment(JoystickAlignment joystickAlignment) {
+        this.joystickAlignment = joystickAlignment;
+    }
+
     public static enum JoystickAlignment {
         OFF, RIGHT, MIDDLE, LEFT;
         

@@ -184,8 +184,12 @@ public class GameScreen implements Screen {
             Gdx.input.setInputProcessor(landscapeInputProcessor);
         }
         
-        if (agileRunner.hasTouchScreen() && !Gdx.graphics.isFullscreen()) {
-            gameScreenInputProcessor.switchIntoFullScreen();
+        if (agileRunner.hasTouchScreen()) {
+            gameScreenInputProcessor.setJoystickAlignment(JoystickAlignment.RIGHT);
+            
+            if (!Gdx.graphics.isFullscreen()) {
+                gameScreenInputProcessor.switchIntoFullScreen();
+            }
         }
         
         agileRunner.start(appConfigItem.getFilePath());
