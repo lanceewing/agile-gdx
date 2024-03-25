@@ -170,7 +170,7 @@ public abstract class AgileRunner {
         }
     }
     
-    public abstract void start(String gameUri);
+    public abstract void start(AppConfigItem appConfigItem);
     
     public abstract void animationTick();
     

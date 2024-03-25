@@ -18,6 +18,7 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.dom.client.AudioElement;
 import com.google.gwt.typedarrays.shared.ArrayBuffer;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.webworker.client.ErrorEvent;
 import com.google.gwt.webworker.client.ErrorHandler;
 
@@ -69,13 +70,21 @@ public class GwtAgileRunner extends AgileRunner {
     }
     
     @Override
-    public void start(String gameUri) {
+    public void start(AppConfigItem appConfigItem) {
+        String newURL = Window.Location.createUrlBuilder().setParameter("id", appConfigItem.getGameId().toLowerCase()).buildString();
+        updateURLWithoutReloading(newURL);
+        
         // The game data files have been stored/cached in the OPFS. We load it from
         // there, using the gameUri as the identifier, and then pass it to the worker 
         // to decode.
         GwtGameLoader gameLoader = new GwtGameLoader(pixelData);
-        gameLoader.fetchGameFiles(gameUri, gameFilesMap -> createWorker(gameFilesMap));
+        gameLoader.fetchGameFiles(appConfigItem.getFilePath(), gameFilesMap -> createWorker(gameFilesMap));
     }
+    
+    private static native void updateURLWithoutReloading(String newUrl) /*-{
+        console.log("Setting URL to : " + newUrl);
+        $wnd.history.pushState(newUrl, "", newUrl);
+    }-*/;
     
     /**
      * Creates a new web worker to run the AGI game whose data files are in the given Map.
@@ -265,6 +274,12 @@ public class GwtAgileRunner extends AgileRunner {
         // Resets to the original state, as if a game has not been previously run.
         stopped = false;
         worker = null;
+        
+        String newURL = Window.Location.createUrlBuilder()
+                .removeParameter("id")
+                .removeParameter("path")
+                .buildString();
+        updateURLWithoutReloading(newURL);
     }
 
     @Override

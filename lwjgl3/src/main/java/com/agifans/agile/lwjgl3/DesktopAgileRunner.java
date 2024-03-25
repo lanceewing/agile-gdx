@@ -31,11 +31,11 @@ public class DesktopAgileRunner extends AgileRunner {
     }
 
     @Override
-    public void start(String gameUri) {
+    public void start(AppConfigItem appConfigItem) {
         interpreterThread = new Thread(new Runnable() {
             @Override
             public void run() {
-                runGame(gameUri);
+                runGame(appConfigItem.getFilePath());
             }
         });
         interpreterThread.start();

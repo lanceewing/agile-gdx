@@ -192,7 +192,7 @@ public class GameScreen implements Screen {
             }
         }
         
-        agileRunner.start(appConfigItem.getFilePath());
+        agileRunner.start(appConfigItem);
     }
 
     // TODO: Remove once satisfied with performance.
