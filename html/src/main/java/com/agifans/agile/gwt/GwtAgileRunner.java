@@ -71,7 +71,7 @@ public class GwtAgileRunner extends AgileRunner {
     
     @Override
     public void start(AppConfigItem appConfigItem) {
-        String newURL = Window.Location.createUrlBuilder().setParameter("id", appConfigItem.getGameId().toLowerCase()).buildString();
+        String newURL = Window.Location.createUrlBuilder().setHash("/id/" + appConfigItem.getGameId().toLowerCase()).buildString();
         updateURLWithoutReloading(newURL);
         
         // The game data files have been stored/cached in the OPFS. We load it from
@@ -276,8 +276,7 @@ public class GwtAgileRunner extends AgileRunner {
         worker = null;
         
         String newURL = Window.Location.createUrlBuilder()
-                .removeParameter("id")
-                .removeParameter("path")
+                .setHash(null)
                 .buildString();
         updateURLWithoutReloading(newURL);
     }
