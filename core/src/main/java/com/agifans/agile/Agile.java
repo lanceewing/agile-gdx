@@ -1,5 +1,7 @@
 package com.agifans.agile;
 
+import java.util.Map;
+
 import com.agifans.agile.config.AppConfigItem;
 import com.agifans.agile.ui.DialogHandler;
 import com.badlogic.gdx.Game;
@@ -28,9 +30,9 @@ public class Agile extends Game {
     private DialogHandler dialogHandler;
     
     /**
-     * Command line args. Mainly applicable to desktop.
+     * For desktop, contains command line args. For HTML5, the hash and/or query parameters.
      */
-    private String[] args;
+    private Map<String, String> args;
     
     /**
      * AGILE's saved preferences.
@@ -44,7 +46,7 @@ public class Agile extends Game {
      * @param dialogHandler 
      * @param args 
      */
-    public Agile(AgileRunner agileRunner, DialogHandler dialogHandler, String... args) {
+    public Agile(AgileRunner agileRunner, DialogHandler dialogHandler, Map<String, String> args) {
         this.agileRunner = agileRunner;
         this.dialogHandler = dialogHandler;
         this.args = args;
@@ -56,15 +58,30 @@ public class Agile extends Game {
         homeScreen = new HomeScreen(this, dialogHandler);
         gameScreen = new GameScreen(this, agileRunner, dialogHandler);
         
-        if ((args != null) && (args.length > 0)) {
-            AppConfigItem appConfigItem = new AppConfigItem();
-            appConfigItem.setFilePath(args[0]);
-            if ((args[0].toLowerCase().endsWith(".zip"))) {
-                appConfigItem.setFileType("ZIP");
+        AppConfigItem appConfigItem = null;
+        
+        if ((args != null) && (args.size() > 0)) {
+            if (args.containsKey("id")) {
+                appConfigItem = homeScreen.getAppConfigItemByGameId(args.get("id"));
             }
-            GameScreen machineScreen = getGameScreen();
-            machineScreen.initGame(appConfigItem);
-            setScreen(machineScreen);
+            if (args.containsKey("uri")) {
+                appConfigItem = homeScreen.getAppConfigItemByGameUri(args.get("uri"));
+            }
+            if (args.containsKey("path")) {
+                String filePath = args.get("path");
+                appConfigItem = new AppConfigItem();
+                appConfigItem.setFilePath(filePath);
+                if ((filePath.toLowerCase().endsWith(".zip"))) {
+                    appConfigItem.setFileType("ZIP");
+                } else {
+                    appConfigItem.setFileType("DIR");
+                }
+            }
+        }
+        
+        if (appConfigItem != null) {
+            gameScreen.initGame(appConfigItem, false);
+            setScreen(gameScreen);
         } else {
             setScreen(homeScreen);
         }

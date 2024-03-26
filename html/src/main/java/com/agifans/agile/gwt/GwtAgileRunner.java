@@ -82,7 +82,6 @@ public class GwtAgileRunner extends AgileRunner {
     }
     
     private static native void updateURLWithoutReloading(String newUrl) /*-{
-        console.log("Setting URL to : " + newUrl);
         $wnd.history.pushState(newUrl, "", newUrl);
     }-*/;
     

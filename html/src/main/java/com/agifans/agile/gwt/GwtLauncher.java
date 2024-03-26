@@ -6,7 +6,12 @@ import com.badlogic.gdx.backends.gwt.GwtApplicationConfiguration;
 import com.badlogic.gdx.backends.gwt.preloader.Preloader;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Panel;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import com.agifans.agile.Agile;
 
 /** Launches the GWT application. */
@@ -26,11 +31,27 @@ public class GwtLauncher extends GwtApplication {
 
     @Override
     public ApplicationListener createApplicationListener () {
+        Map<String, String> argsMap = new HashMap<>();
+        
+        // HTML5 version supports /id/ and /uri/ hash values, e.g. #/id/kq2
+        String hash = Window.Location.getHash().toLowerCase();
+        
+        if ((hash != null) && (hash.length() > 0)) {
+            if (hash.startsWith("#/id/") && !hash.endsWith("/")) {
+                String gameId = hash.substring(hash.lastIndexOf('/') + 1);
+                argsMap.put("id", gameId);
+            }
+            if (hash.startsWith("#/uri/") && !hash.endsWith("/")) {
+                String gameUri = hash.substring(hash.lastIndexOf('/') + 1);
+                argsMap.put("uri", gameUri);
+            }
+        }
+        
         GwtDialogHandler gwtDialogHandler = new GwtDialogHandler();
     	GwtAgileRunner gwtAgileRunner = new GwtAgileRunner(
     	        new GwtUserInput(), new GwtWavePlayer(), new GwtSavedGameStore(),
     	        new GwtPixelData(), new GwtVariableData());
-        return new Agile(gwtAgileRunner, gwtDialogHandler);
+        return new Agile(gwtAgileRunner, gwtDialogHandler, argsMap);
     }
     
     @Override

@@ -576,6 +576,40 @@ public class HomeScreen extends InputAdapter implements Screen {
     }
 
     /**
+     * If there is a game in the AppConfigItem Map that has the given game ID, then
+     * that is returned; otherwise returns false.
+     * 
+     * @param gameId The ID of the game to get the AppConfigItem for, if it exists.
+     * 
+     * @return
+     */
+    public AppConfigItem getAppConfigItemByGameId(String gameId) {
+        for (AppConfigItem appConfigItem : appConfigMap.values()) {
+            if (appConfigItem.getGameId().equalsIgnoreCase(gameId)) {
+                return appConfigItem;
+            }
+        }
+        return null;
+    }
+    
+    /**
+     * If there is a game in the AppConfigItem Map that has the given URI, then
+     * that is returned; otherwise returns false.
+     * 
+     * @param gameId The URI of the game to get the AppConfigItem for, if it exists.
+     * 
+     * @return
+     */
+    public AppConfigItem getAppConfigItemByGameUri(String gameUri) {
+        for (AppConfigItem appConfigItem : appConfigMap.values()) {
+            if (appConfigItem.getFilePath().equalsIgnoreCase(gameUri)) {
+                return appConfigItem;
+            }
+        }
+        return null;
+    }
+    
+    /**
      * Converts the given Map of AppConfigItems to an AppConfig instance.
      * 
      * @param appConfigMap The Map of AppConfigItems to convert.
@@ -687,7 +721,7 @@ public class HomeScreen extends InputAdapter implements Screen {
                                 importGame(appConfigItem);
                             } else {
                                 GameScreen gameScreen = agile.getGameScreen();
-                                gameScreen.initGame(appConfigItem);
+                                gameScreen.initGame(appConfigItem, true);
                                 agile.setScreen(gameScreen);
                             }
                         }
@@ -891,7 +925,7 @@ public class HomeScreen extends InputAdapter implements Screen {
             closeImmediately();
             
             GameScreen gameScreen = agile.getGameScreen();
-            gameScreen.initGame(gameToRun);
+            gameScreen.initGame(gameToRun, true);
             agile.setScreen(gameScreen);
         }
         

@@ -84,6 +84,11 @@ public class GameScreen implements Screen {
     private AppConfigItem appConfigItem;
     
     /**
+     * Whether or not the game was started by a user interaction.
+     */
+    private boolean startedByUser;
+    
+    /**
      * Constructor for GameScreen.
      * 
      * @param agileRunner 
@@ -187,7 +192,7 @@ public class GameScreen implements Screen {
         if (agileRunner.hasTouchScreen()) {
             gameScreenInputProcessor.setJoystickAlignment(JoystickAlignment.RIGHT);
             
-            if (!Gdx.graphics.isFullscreen()) {
+            if (!Gdx.graphics.isFullscreen() && startedByUser) {
                 gameScreenInputProcessor.switchIntoFullScreen();
             }
         }
@@ -548,9 +553,11 @@ public class GameScreen implements Screen {
      * that was selected on the HomeScreen.
      * 
      * @param appConfigItem The configuration for the app that was selected on the HomeScreen.
+     * @param startedByUser true if the game is being started by a user interaction; otherwise false.
      */
-    public void initGame(AppConfigItem appConfigItem) {
+    public void initGame(AppConfigItem appConfigItem, boolean startedByUser) {
         this.appConfigItem = appConfigItem;
+        this.startedByUser = startedByUser;
     }
     
     /**
