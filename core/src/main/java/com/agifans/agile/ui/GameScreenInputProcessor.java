@@ -330,8 +330,8 @@ public class GameScreenInputProcessor extends InputAdapter {
                 } else if (touchXY.x > (viewportManager.getWidth() - 126)) {
                     backArrowClicked = true;
                 } else {
-                    int midWidth = (int) (viewportManager.getWidth() - viewportManager.getWidth() / 2);
-                    if ((touchXY.x > (midWidth - 63)) && (touchXY.y < (midWidth + 63))) {
+                    int midWidth = (int) (viewportManager.getWidth() - (viewportManager.getWidth() / 2));
+                    if ((touchXY.x > (midWidth - 63)) && (touchXY.x < (midWidth + 63))) {
                         fullScreenClicked = true;
                     }
                 }
