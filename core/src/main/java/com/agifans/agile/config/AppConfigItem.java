@@ -45,22 +45,30 @@ public class AppConfigItem {
      * @return the displayName
      */
     public String getDisplayName() {
-        if ((displayName == null) && (name != null)) {
+        if (/*(displayName == null) && */(name != null)) {
             // Word wrap default to 20 chars.
             StringBuilder displayNameBuilder = new StringBuilder();
             StringBuilder currentLine = new StringBuilder();
             String[] words = name.split(" ");
+            int lineCount = 1;
             for (String word : words) {
-                if ((currentLine.length() + word.length() + 1) < 20) {
+                if ((currentLine.length() + word.length() + 1) <= 20) {
                     if (currentLine.length() > 0) {
                         currentLine.append(" ");
                     }
                     currentLine.append(word);
                 } else {
+                    // New line. Check for max 2 lines.
                     displayNameBuilder.append(currentLine.toString());
-                    displayNameBuilder.append("\n");
                     currentLine.setLength(0);
-                    currentLine.append(word);
+                    if (lineCount == 2) {
+                        displayNameBuilder.append("...");
+                        break;
+                    } else {
+                        lineCount++;
+                        displayNameBuilder.append("\n");
+                        currentLine.append(word);
+                    }
                 }
             }
             if (currentLine.length() > 0) {

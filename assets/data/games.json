@@ -178,7 +178,7 @@
 		{
 			"gameId": "BORMN2",
 			"name": "Boring Man 2 - Ho Man! This Game Sucks!",
-			"displayName": "Boring Man 2 - Ho\nMan! This Game\nSucks!",
+			"displayName": "Boring Man 2 - Ho\nMan! This Game...",
 			"filePath": "/games/bormn2.zip",
 			"fileType": "ZIP"
 		},
@@ -297,7 +297,7 @@
 		{
 			"gameId": "DOGSQ",
 			"name": "Dogs Quest - The Quest for the Golden Bone",
-			"displayName": "Dogs Quest - The\nQuest for the\nGolden Bone",
+			"displayName": "Dogs Quest - The\nQuest for the...",
 			"filePath": "/games/dogsq.zip",
 			"fileType": "ZIP"
 		},
@@ -374,7 +374,7 @@
 		{
 			"gameId": "GTAMP1",
 			"name": "Gennadi Tahab Autot - Mission Pack 1 - Kuressaare",
-			"displayName": "Gennadi Tahab Autot\n- Mission Pack 1 -\nKuressaare",
+			"displayName": "Gennadi Tahab Autot\n- Mission Pack 1...",
 			"filePath": "/games/gtamp1.zip",
 			"fileType": "ZIP"
 		},
@@ -486,7 +486,7 @@
 		{
 			"gameId": "JOEMCM",
 			"name": "Joe McMuffin In \"What's Cooking, Doc\"",
-			"displayName": "Joe McMuffin In\n\"What's Cooking,\nDoc\"",
+			"displayName": "Joe McMuffin In\n\"What's Cooking,...",
 			"filePath": "/games/joemcm.zip",
 			"fileType": "ZIP"
 		},
@@ -675,14 +675,14 @@
 		{
 			"gameId": "NATU2E",
 			"name": "Naturette 2 - Daughter of the Moon",
-			"displayName": "Naturette 2 -\nDaughter of the\nMoon",
+			"displayName": "Naturette 2 -\nDaughter of the Moon",
 			"filePath": "/games/natu2e.zip",
 			"fileType": "ZIP"
 		},
 		{
 			"gameId": "NATU3E",
 			"name": "Naturette 3 - Adventure in Treeworld",
-			"displayName": "Naturette 3 -\nAdventure in\nTreeworld",
+			"displayName": "Naturette 3 -\nAdventure in Treeworld",
 			"filePath": "/games/natu3e.zip",
 			"fileType": "ZIP"
 		},
@@ -703,7 +703,7 @@
 		{
 			"gameId": "NICKQ",
 			"name": "Nick's Quest - In Pursuit of QuakeMovie",
-			"displayName": "Nick's Quest - In\nPursuit of\nQuakeMovie",
+			"displayName": "Nick's Quest - In\nPursuit of...",
 			"filePath": "/games/nickq.zip",
 			"fileType": "ZIP"
 		},
@@ -983,7 +983,7 @@
 		{
 			"gameId": "TEXM1",
 			"name": "Tex McPhilip 1 - Quest For The Papacy",
-			"displayName": "Tex McPhilip 1 -\nQuest For The\nPapacy",
+			"displayName": "Tex McPhilip 1 -\nQuest For The Papacy",
 			"filePath": "/games/texm1.zip",
 			"fileType": "ZIP"
 		},
@@ -1025,7 +1025,7 @@
 		{
 			"gameId": "LSHAYL",
 			"name": "The Legend of Shay-Larah 1 - The Lost Prince",
-			"displayName": "The Legend of\nShay-Larah 1 - The\nLost Prince",
+			"displayName": "The Legend of\nShay-Larah 1 - The...",
 			"filePath": "/games/lshayl.zip",
 			"fileType": "ZIP"
 		},
@@ -1039,7 +1039,7 @@
 		{
 			"gameId": "LHDUDE",
 			"name": "The Long Haired Dude: Encounter of the 18-th Kind",
-			"displayName": "The Long Haired\nDude: Encounter of\nthe 18-th Kind",
+			"displayName": "The Long Haired\nDude: Encounter of...",
 			"filePath": "/games/lhdude.zip",
 			"fileType": "ZIP"
 		},
@@ -1088,7 +1088,7 @@
 		{
 			"gameId": "TTSCB",
 			"name": "Tonight The Shrieking Corpses Bleed",
-			"displayName": "Tonight The\nShrieking Corpses\nBleed",
+			"displayName": "Tonight The\nShrieking Corpses...",
 			"filePath": "/games/ttscb.zip",
 			"fileType": "ZIP"
 		},
