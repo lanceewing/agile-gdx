@@ -228,18 +228,21 @@ public class HomeScreen extends InputAdapter implements Screen {
         stage.addActor(container);
         container.setFillParent(true);
 
+        int sidePadding = 0;
         int totalHorizPadding = 0;
         int horizPaddingUnit = 0;
 
         if (columns > rows) {
             // Landscape.
+            sidePadding = 50;
             container.setBackground(new Image(backgroundLandscape).getDrawable());
-            totalHorizPadding = 1920 - (ICON_IMAGE_WIDTH * columns);
+            totalHorizPadding = 1920 - (ICON_IMAGE_WIDTH * columns) - (sidePadding * 2);
             horizPaddingUnit = totalHorizPadding / (columns * 2);
         } else {
             // Portrait.
+            sidePadding = 15;
             container.setBackground(new Image(backgroundPortrait).getDrawable());
-            totalHorizPadding = 1080 - (ICON_IMAGE_WIDTH * columns);
+            totalHorizPadding = 1080 - (ICON_IMAGE_WIDTH * columns) - (sidePadding * 2);
             horizPaddingUnit = totalHorizPadding / (columns * 2);
         }
         
@@ -249,7 +252,7 @@ public class HomeScreen extends InputAdapter implements Screen {
         int itemsPerPage = columns * rows;
         int pageItemCount = 0;
 
-        Table currentPage = new Table().pad(0, 0, 0, 0);
+        Table currentPage = new Table().pad(0, sidePadding, 0, sidePadding);
         currentPage.defaults().pad(0, horizPaddingUnit, 0, horizPaddingUnit);
 
         // Add empty slot at the start that will always be present for adding a new game.
@@ -269,7 +272,7 @@ public class HomeScreen extends InputAdapter implements Screen {
                     if (pageItemCount == itemsPerPage) {
                         pagedScrollPane.addPage(currentPage);
                         pageItemCount = 0;
-                        currentPage = new Table().pad(0, 0, 0, 0);
+                        currentPage = new Table().pad(0, sidePadding, 0, sidePadding);
                         currentPage.defaults().pad(0, horizPaddingUnit, 0, horizPaddingUnit);
                     }
         
@@ -296,7 +299,7 @@ public class HomeScreen extends InputAdapter implements Screen {
             }
             pagedScrollPane.addPage(currentPage);
             if (pageItemCount == itemsPerPage) {
-                currentPage = new Table().pad(0, 0, 0, 0);
+                currentPage = new Table().pad(0, sidePadding, 0, sidePadding);
                 currentPage.defaults().pad(0, horizPaddingUnit, 0, horizPaddingUnit);
                 for (int i = 0; i < itemsPerPage; i++) {
                     if ((i % columns) == 0) {
