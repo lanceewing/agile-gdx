@@ -234,13 +234,13 @@ public class HomeScreen extends InputAdapter implements Screen {
 
         if (columns > rows) {
             // Landscape.
-            sidePadding = 50;
+            sidePadding = 85;  // 100 leaves 24 (i.e. 12 * 2) between. 85 leaves 30.
             container.setBackground(new Image(backgroundLandscape).getDrawable());
             totalHorizPadding = 1920 - (ICON_IMAGE_WIDTH * columns) - (sidePadding * 2);
             horizPaddingUnit = totalHorizPadding / (columns * 2);
         } else {
             // Portrait.
-            sidePadding = 15;
+            sidePadding = 15;  // 24 leaves 24 between. 15 leaves 30.
             container.setBackground(new Image(backgroundPortrait).getDrawable());
             totalHorizPadding = 1080 - (ICON_IMAGE_WIDTH * columns) - (sidePadding * 2);
             horizPaddingUnit = totalHorizPadding / (columns * 2);
