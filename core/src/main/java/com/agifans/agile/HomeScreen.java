@@ -228,19 +228,32 @@ public class HomeScreen extends InputAdapter implements Screen {
         stage.addActor(container);
         container.setFillParent(true);
 
-        int sidePadding = 0;
+        float viewportWidth = viewportManager.getWidth();
+        float viewportHeight = viewportManager.getHeight();
+        
+        int sidePadding = (viewportHeight > (viewportWidth / 1.32f))? 15 : 85;
+        
+        columns = (int)((viewportWidth - sidePadding) / ICON_IMAGE_WIDTH);
+        rows = (int)((viewportHeight - sidePadding) / (ICON_IMAGE_HEIGHT + ICON_LABEL_HEIGHT));
+        
+        System.out.print("width: " + viewportWidth + 
+                ", height: " + viewportHeight + 
+                ", rows: " + rows + 
+                ", columns: " + columns + 
+                "\n");
+        
         int totalHorizPadding = 0;
         int horizPaddingUnit = 0;
 
-        if (columns > rows) {
+        if (viewportManager.isLandscape()) {
             // Landscape.
-            sidePadding = 85;  // 100 leaves 24 (i.e. 12 * 2) between. 85 leaves 30.
+            //sidePadding = 85;  // 100 leaves 24 (i.e. 12 * 2) between. 85 leaves 30.
             container.setBackground(new Image(backgroundLandscape).getDrawable());
             totalHorizPadding = 1920 - (ICON_IMAGE_WIDTH * columns) - (sidePadding * 2);
             horizPaddingUnit = totalHorizPadding / (columns * 2);
         } else {
             // Portrait.
-            sidePadding = 15;  // 24 leaves 24 between. 15 leaves 30.
+            //sidePadding = 15;  // 24 leaves 24 between. 15 leaves 30.
             container.setBackground(new Image(backgroundPortrait).getDrawable());
             totalHorizPadding = 1080 - (ICON_IMAGE_WIDTH * columns) - (sidePadding * 2);
             horizPaddingUnit = totalHorizPadding / (columns * 2);
@@ -342,6 +355,7 @@ public class HomeScreen extends InputAdapter implements Screen {
         } else {
             Gdx.input.setInputProcessor(landscapeInputProcessor);
         }
+        updateHomeScreenButtonStages();
     }
 
     @Override
@@ -490,6 +504,7 @@ public class HomeScreen extends InputAdapter implements Screen {
     
     private static final int ICON_IMAGE_WIDTH = 320;
     private static final int ICON_IMAGE_HEIGHT = 240;
+    private static final int ICON_LABEL_HEIGHT = 110;
 
     /**
      * Creates a button to represent the given AppConfigItem.
