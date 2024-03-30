@@ -504,7 +504,7 @@ public class HomeScreen extends InputAdapter implements Screen {
     
     private static final int ICON_IMAGE_WIDTH = 320;
     private static final int ICON_IMAGE_HEIGHT = 240;
-    private static final int ICON_LABEL_HEIGHT = 110;
+    private static final int ICON_LABEL_HEIGHT = 90;
 
     /**
      * Creates a button to represent the given AppConfigItem.
@@ -585,7 +585,7 @@ public class HomeScreen extends InputAdapter implements Screen {
         label.setFontScale(2f);
         label.setAlignment(Align.top);
         label.setWrap(false);
-        button.add(label).width(150).height(90).padTop(20);
+        button.add(label).width(150).height(90).padTop(15);
 
         button.setName(appConfigItem.getName());
         button.addListener(appClickListener);
