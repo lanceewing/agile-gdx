@@ -236,11 +236,11 @@ public class HomeScreen extends InputAdapter implements Screen {
         columns = (int)((viewportWidth - sidePadding) / ICON_IMAGE_WIDTH);
         rows = (int)((viewportHeight - sidePadding) / (ICON_IMAGE_HEIGHT + ICON_LABEL_HEIGHT));
         
-        System.out.print("width: " + viewportWidth + 
-                ", height: " + viewportHeight + 
-                ", rows: " + rows + 
-                ", columns: " + columns + 
-                "\n");
+        //System.out.print("width: " + viewportWidth + 
+        //        ", height: " + viewportHeight + 
+        //        ", rows: " + rows + 
+        //        ", columns: " + columns + 
+        //        "\n");
         
         int totalHorizPadding = 0;
         int horizPaddingUnit = 0;
