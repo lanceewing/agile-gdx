@@ -285,8 +285,9 @@ public class GameScreen implements Screen {
             float agiScreenWidth = (viewportManager.getHeight() * 1.32f);
             float agiWidthRatio = (agiScreenWidth / ADJUSTED_WIDTH);
             sidePaddingWidth = ((viewportManager.getWidth() - agiScreenWidth) / 2);
-            if (sidePaddingWidth < 216) {
-                cameraXOffset = (sidePaddingWidth / agiWidthRatio);
+            if (sidePaddingWidth < 232) {
+                float unadjustedXOffset = Math.min(232 - sidePaddingWidth, sidePaddingWidth);
+                cameraXOffset = (unadjustedXOffset / agiWidthRatio);
                 if (joystickAlignment.equals(JoystickAlignment.LEFT)) {
                     cameraXOffset *= -1;
                 }
