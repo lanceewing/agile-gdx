@@ -260,9 +260,10 @@ public class GameScreenInputProcessor extends InputAdapter {
             // Landscape
             agiY = 200 - Math.round((touchXY.y / viewportManager.getHeight()) * 200);
             float agiWidth = (viewportManager.getHeight() * 1.32f);
-            float agiRatio = (agiWidth / 160); 
+            float agiRatio = (agiWidth / 160);
             float agiStart = (1920 / 2) - (agiWidth / 2);
-            agiX = Math.round((touchXY.x - agiStart) / agiRatio);
+            float adjustedCameraXOffset = (cameraXOffset * (agiWidth / 264));
+            agiX = (int)(Math.round(((touchXY.x + adjustedCameraXOffset) - agiStart) / agiRatio));
         }
         
         boolean agiMouseUpdated = false;
