@@ -3,6 +3,7 @@
   "short_name": "AGILE",
   "start_url": ".",
   "display": "standalone",
+  "theme_color": "#000000",
   "background_color": "#fff",
   "description": "An HTML5 implementation of Sierra On-Line's AGI interpreter",
   "icons": [
