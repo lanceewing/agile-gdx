@@ -103,6 +103,10 @@ public class PagedScrollPane extends ScrollPane {
         this.wasPanDragFling = false;
         setScrollX(0);
     }
+    
+    public int getNumOfPages() {
+        return content.getChildren().size;
+    }
 
     private void scrollToPage() {
         final float width = getWidth();

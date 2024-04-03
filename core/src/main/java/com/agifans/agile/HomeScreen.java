@@ -14,6 +14,7 @@ import com.agifans.agile.ui.ImportTypeResponseHandler;
 import com.agifans.agile.ui.ImportType;
 import com.agifans.agile.ui.OpenFileResponseHandler;
 import com.agifans.agile.ui.PagedScrollPane;
+import com.agifans.agile.ui.PaginationWidget;
 import com.agifans.agile.ui.TextInputResponseHandler;
 import com.agifans.agile.ui.ViewportManager;
 import com.agifans.agile.util.StringUtils;
@@ -73,6 +74,8 @@ public class HomeScreen extends InputAdapter implements Screen {
     private Texture backgroundPortrait;
     private MenuWidget portraitMenuWidget;
     private MenuWidget landscapeMenuWidget;
+    private PaginationWidget portraitPaginationWidget;
+    private PaginationWidget landscapePaginationWidget;
     private Texture whitePixelTexture;
     
     /**
@@ -149,8 +152,10 @@ public class HomeScreen extends InputAdapter implements Screen {
         backgroundPortrait = new Texture("jpg/portrait_back.jpg");
         backgroundPortrait.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
         viewportManager = ViewportManager.getInstance();
-        portraitStage = createStage(viewportManager.getPortraitViewport(), appConfig, 3, 5);
-        landscapeStage = createStage(viewportManager.getLandscapeViewport(), appConfig, 5, 3);
+        portraitPaginationWidget = new PaginationWidget(this, 1080);
+        landscapePaginationWidget = new PaginationWidget(this, 1920);
+        portraitStage = createStage(viewportManager.getPortraitViewport(), portraitPaginationWidget, appConfig);
+        landscapeStage = createStage(viewportManager.getLandscapeViewport(), landscapePaginationWidget, appConfig);
         
         whitePixelTexture = createWhitePixelTexture();
         portraitMenuWidget = createMenuWidget(portraitStage);
@@ -208,9 +213,9 @@ public class HomeScreen extends InputAdapter implements Screen {
         return widget;
     }
     
-    private Stage createStage(Viewport viewport, AppConfig appConfig, int columns, int rows) {
+    private Stage createStage(Viewport viewport, PaginationWidget paginationWidget, AppConfig appConfig) {
         Stage stage = new Stage(viewport);
-        addAppButtonsToStage(stage, appConfig, columns, rows);
+        addAppButtonsToStage(stage, paginationWidget, appConfig);
         return stage;
     }
     
@@ -223,7 +228,7 @@ public class HomeScreen extends InputAdapter implements Screen {
         }
     }
 
-    private void addAppButtonsToStage(Stage stage, AppConfig appConfig, int columns, int rows) {
+    private void addAppButtonsToStage(Stage stage, PaginationWidget paginationWidget, AppConfig appConfig) {
         Table container = new Table();
         stage.addActor(container);
         container.setFillParent(true);
@@ -233,14 +238,9 @@ public class HomeScreen extends InputAdapter implements Screen {
         
         int sidePadding = (viewportHeight > (viewportWidth / 1.32f))? 15 : 85;
         
-        columns = (int)((viewportWidth - sidePadding) / ICON_IMAGE_WIDTH);
-        rows = (int)((viewportHeight - sidePadding) / (ICON_IMAGE_HEIGHT + ICON_LABEL_HEIGHT));
-        
-        //System.out.print("width: " + viewportWidth + 
-        //        ", height: " + viewportHeight + 
-        //        ", rows: " + rows + 
-        //        ", columns: " + columns + 
-        //        "\n");
+        int availableHeight = (int)(viewportHeight - PAGINATION_HEIGHT);
+        int columns = (int)((viewportWidth - sidePadding) / ICON_IMAGE_WIDTH);
+        int rows = (int)(availableHeight / (ICON_IMAGE_HEIGHT + ICON_LABEL_HEIGHT + 30));
         
         int totalHorizPadding = 0;
         int horizPaddingUnit = 0;
@@ -325,6 +325,10 @@ public class HomeScreen extends InputAdapter implements Screen {
         }
 
         container.add(pagedScrollPane).expand().fill();
+        
+        container.row();
+        container.add(paginationWidget).expand().fill();
+        stage.addActor(paginationWidget);
     }
     
     @Override
@@ -380,6 +384,8 @@ public class HomeScreen extends InputAdapter implements Screen {
         skin.dispose();
         disposeButtonTextureMap();
         whitePixelTexture.dispose();
+        landscapePaginationWidget.dispose();
+        portraitPaginationWidget.dispose();
         
         saveAppConfigMap();
     }
@@ -502,9 +508,60 @@ public class HomeScreen extends InputAdapter implements Screen {
         return texture;
     }
     
+    private Button buildPageIndicatorDots(int currentPage, int numOfPages) {
+        int imageWidth = numOfPages * 100;
+        Pixmap pixmap = new Pixmap(imageWidth, 80, Pixmap.Format.RGBA8888);
+        Texture texture = new Texture(pixmap, Pixmap.Format.RGBA8888, false);
+        pixmap.setColor(1.0f, 1.0f, 1.0f, 0.10f);
+        pixmap.fill();
+        texture.draw(pixmap, 0, 0);
+        Image icon = new Image(texture);
+        icon.setAlign(Align.center);
+        Container<Image> iconContainer = new Container<Image>();
+        iconContainer.setActor(icon);
+        iconContainer.align(Align.center);
+        iconContainer.setWidth(imageWidth);
+        iconContainer.setHeight(80);
+        Button pageIndicator = new Button(skin);
+        ButtonStyle style = pageIndicator.getStyle();
+        style.up = style.down = null;
+        pageIndicator.stack(new Image(skin.getDrawable("top")), iconContainer)
+                .width(imageWidth)
+                .height(80);
+        return pageIndicator;
+    }
+    
+    private Button buildNavButton(String iconPath) {
+        Button button = new Button(skin);
+        ButtonStyle style = button.getStyle();
+        style.up = style.down = null;
+
+        Pixmap iconPixmap = new Pixmap(Gdx.files.internal(iconPath));
+        Texture iconTexture = new Texture(iconPixmap);
+        iconPixmap.dispose();
+        iconTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+        
+        Image icon = new Image(iconTexture);
+        icon.setAlign(Align.center);
+        Container<Image> iconContainer = new Container<Image>();
+        iconContainer.setActor(icon);
+        iconContainer.align(Align.center);
+        iconContainer.setWidth(80);
+        iconContainer.setHeight(80);
+        button.stack(new Image(skin.getDrawable("top")), iconContainer)
+                .width(80)
+                .height(80);
+        button.row();
+        
+        button.addListener(appClickListener);
+        button.addListener(appGestureListener);
+        return button;
+    }
+    
     private static final int ICON_IMAGE_WIDTH = 320;
     private static final int ICON_IMAGE_HEIGHT = 240;
     private static final int ICON_LABEL_HEIGHT = 90;
+    private static final int PAGINATION_HEIGHT = 80;
 
     /**
      * Creates a button to represent the given AppConfigItem.
@@ -675,8 +732,8 @@ public class HomeScreen extends InputAdapter implements Screen {
         AppConfig appConfig = convertAppConfigItemMapToAppConfig(appConfigMap);
         portraitStage.clear();
         landscapeStage.clear();
-        addAppButtonsToStage(portraitStage, appConfig, 3, 5);
-        addAppButtonsToStage(landscapeStage, appConfig, 5, 3);
+        addAppButtonsToStage(portraitStage, portraitPaginationWidget, appConfig);
+        addAppButtonsToStage(landscapeStage, landscapePaginationWidget, appConfig);
         saveAppConfigMap();
         agile.getPreferences().flush();
         portraitStage.addActor(portraitMenuWidget);
