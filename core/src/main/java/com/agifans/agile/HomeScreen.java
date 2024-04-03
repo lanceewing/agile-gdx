@@ -240,7 +240,7 @@ public class HomeScreen extends InputAdapter implements Screen {
         
         int availableHeight = (int)(viewportHeight - PAGINATION_HEIGHT);
         int columns = (int)((viewportWidth - sidePadding) / ICON_IMAGE_WIDTH);
-        int rows = (int)(availableHeight / (ICON_IMAGE_HEIGHT + ICON_LABEL_HEIGHT + 30));
+        int rows = (int)(availableHeight / (ICON_IMAGE_HEIGHT + ICON_LABEL_HEIGHT + 15));
         
         int totalHorizPadding = 0;
         int horizPaddingUnit = 0;
@@ -327,7 +327,7 @@ public class HomeScreen extends InputAdapter implements Screen {
         container.add(pagedScrollPane).expand().fill();
         
         container.row();
-        container.add(paginationWidget).expand().fill();
+        container.add(paginationWidget).maxHeight(80).minHeight(80);
         stage.addActor(paginationWidget);
     }
     
