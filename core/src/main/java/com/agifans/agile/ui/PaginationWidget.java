@@ -17,6 +17,10 @@ public class PaginationWidget extends Widget {
     private static final int PAGINATION_BAR_HEIGHT = 60;
     
     private static final int ICON_SIZE = 50;
+    
+    private static final int CIRCLE_DIAMETER = 16;
+    
+    private static final int CIRCLE_RADIUS = CIRCLE_DIAMETER / 2;
 
     private HomeScreen homeScreen;
     
@@ -65,10 +69,27 @@ public class PaginationWidget extends Widget {
         if (pagedScrollPane != null) {
             int numOfPages = pagedScrollPane.getNumOfPages();
             if (numOfPages > 0) {
+                int gapBetweenCircles = Math.min((width - (PAGINATION_BAR_HEIGHT * 10)) / numOfPages, 20);
+                int totalCirclesWidth = (numOfPages * (CIRCLE_DIAMETER + gapBetweenCircles)) - gapBetweenCircles;
+                
                 int currentPage = pagedScrollPane.getCurrentPageNumber();
                 if (currentPage > 0) {
                     pixmap.drawPixmap(prevIconPixmap, 0, 5);
                 }
+                
+                for (int pageNum=0; pageNum < numOfPages; pageNum++) {
+                    if (pageNum == currentPage) {
+                        pixmap.setColor(1.0f, 1.0f, 1.0f, 0.3f);
+                    } else {
+                        pixmap.setColor(1.0f, 1.0f, 1.0f, 0.1f);
+                    }
+                    pixmap.fillCircle(
+                            ((width / 2) - (totalCirclesWidth / 2)) + CIRCLE_RADIUS + 
+                            (pageNum * (CIRCLE_DIAMETER + gapBetweenCircles)), 
+                            PAGINATION_BAR_HEIGHT / 2, 
+                            CIRCLE_RADIUS);
+                }
+                
                 if (currentPage < (numOfPages - 1)) {
                     pixmap.drawPixmap(nextIconPixmap, width - ICON_SIZE, 5);
                 }
