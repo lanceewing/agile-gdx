@@ -14,7 +14,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Widget;
  */
 public class PaginationWidget extends Widget {
     
-    private static final int ICON_SIZE = 60;
+    private static final int PAGINATION_BAR_HEIGHT = 60;
+    
+    private static final int ICON_SIZE = 50;
 
     private HomeScreen homeScreen;
     
@@ -40,7 +42,7 @@ public class PaginationWidget extends Widget {
         
         prevIconPixmap = new Pixmap(Gdx.files.internal("png/prev.png"));
         nextIconPixmap = new Pixmap(Gdx.files.internal("png/next.png"));
-        pixmap = new Pixmap((int)width, ICON_SIZE, Pixmap.Format.RGBA8888);
+        pixmap = new Pixmap((int)width, PAGINATION_BAR_HEIGHT, Pixmap.Format.RGBA8888);
         texture = new Texture(pixmap, Pixmap.Format.RGBA8888, false);
         
         setSize(getPrefWidth(), getPrefHeight());
@@ -58,8 +60,8 @@ public class PaginationWidget extends Widget {
         
         pixmap.setColor(1.0f, 1.0f, 1.0f, 0.10f);
         pixmap.fill();
-        pixmap.drawPixmap(prevIconPixmap, 0, 0);
-        pixmap.drawPixmap(nextIconPixmap, width - ICON_SIZE, 0);
+        pixmap.drawPixmap(prevIconPixmap, 0, 5);
+        pixmap.drawPixmap(nextIconPixmap, width - ICON_SIZE, 5);
         
         texture.draw(pixmap, 0, 0);
         
@@ -71,11 +73,11 @@ public class PaginationWidget extends Widget {
     }
 
     public float getPrefHeight () {
-        return ICON_SIZE;
+        return PAGINATION_BAR_HEIGHT;
     }
     
     public float getMaxHeight() {
-        return ICON_SIZE;
+        return PAGINATION_BAR_HEIGHT;
     }
     
     public void dispose() {
