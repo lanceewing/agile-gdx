@@ -327,7 +327,7 @@ public class HomeScreen extends InputAdapter implements Screen {
         container.add(pagedScrollPane).expand().fill();
         
         container.row();
-        container.add(paginationWidget).maxHeight(80).minHeight(80);
+        container.add(paginationWidget).maxHeight(PAGINATION_HEIGHT).minHeight(PAGINATION_HEIGHT);
         stage.addActor(paginationWidget);
     }
     
