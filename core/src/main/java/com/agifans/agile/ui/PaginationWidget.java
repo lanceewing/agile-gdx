@@ -14,7 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Widget;
  */
 public class PaginationWidget extends Widget {
     
-    private static final int ICON_SIZE = 80;
+    private static final int ICON_SIZE = 60;
 
     private HomeScreen homeScreen;
     

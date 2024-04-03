@@ -561,7 +561,7 @@ public class HomeScreen extends InputAdapter implements Screen {
     private static final int ICON_IMAGE_WIDTH = 320;
     private static final int ICON_IMAGE_HEIGHT = 240;
     private static final int ICON_LABEL_HEIGHT = 90;
-    private static final int PAGINATION_HEIGHT = 80;
+    private static final int PAGINATION_HEIGHT = 60;
 
     /**
      * Creates a button to represent the given AppConfigItem.
