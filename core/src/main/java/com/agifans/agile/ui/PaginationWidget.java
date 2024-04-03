@@ -60,8 +60,20 @@ public class PaginationWidget extends Widget {
         
         pixmap.setColor(1.0f, 1.0f, 1.0f, 0.10f);
         pixmap.fill();
-        pixmap.drawPixmap(prevIconPixmap, 0, 5);
-        pixmap.drawPixmap(nextIconPixmap, width - ICON_SIZE, 5);
+        
+        PagedScrollPane pagedScrollPane = homeScreen.getPagedScrollPane();
+        if (pagedScrollPane != null) {
+            int numOfPages = pagedScrollPane.getNumOfPages();
+            if (numOfPages > 0) {
+                int currentPage = pagedScrollPane.getCurrentPageNumber();
+                if (currentPage > 0) {
+                    pixmap.drawPixmap(prevIconPixmap, 0, 5);
+                }
+                if (currentPage < (numOfPages - 1)) {
+                    pixmap.drawPixmap(nextIconPixmap, width - ICON_SIZE, 5);
+                }
+            }
+        }
         
         texture.draw(pixmap, 0, 0);
         

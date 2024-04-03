@@ -937,6 +937,15 @@ public class HomeScreen extends InputAdapter implements Screen {
         }
     }
     
+    public PagedScrollPane getPagedScrollPane() {
+        Stage currentStage = viewportManager.isPortrait()? portraitStage : landscapeStage;
+        if (currentStage.getActors().notEmpty()) {
+            return (PagedScrollPane)((Table)currentStage.getActors().get(0)).getChild(0);
+        } else {
+            return null;
+        }
+    }
+    
     /**
      * An AnimatedPieMenu (i.e. radial menu) for interacting with games on the home screen.
      */

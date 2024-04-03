@@ -107,6 +107,15 @@ public class PagedScrollPane extends ScrollPane {
     public int getNumOfPages() {
         return content.getChildren().size;
     }
+    
+    public int getCurrentPageNumber() {
+        int pageNumber = 0;
+        if (content.getChildren().notEmpty()) {
+            int pageWidth = (int)content.getChild(0).getWidth();
+            pageNumber = Math.round(getScrollX() / pageWidth);
+        }
+        return pageNumber;
+    }
 
     private void scrollToPage() {
         final float width = getWidth();
