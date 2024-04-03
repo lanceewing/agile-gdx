@@ -92,9 +92,9 @@ public class PaginationWidget extends Widget {
                 
                 for (int pageNum=0; pageNum < numOfPages; pageNum++) {
                     if (pageNum == currentPage) {
-                        pixmap.setColor(1.0f, 1.0f, 1.0f, 0.3f);
+                        pixmap.setColor(1.0f, 1.0f, 1.0f, 0.4f);
                     } else {
-                        pixmap.setColor(1.0f, 1.0f, 1.0f, 0.1f);
+                        pixmap.setColor(1.0f, 1.0f, 1.0f, 0.2f);
                     }
                     pixmap.fillCircle(
                             ((width / 2) - (totalCirclesWidth / 2)) + CIRCLE_RADIUS + 
