@@ -508,56 +508,6 @@ public class HomeScreen extends InputAdapter implements Screen {
         return texture;
     }
     
-    private Button buildPageIndicatorDots(int currentPage, int numOfPages) {
-        int imageWidth = numOfPages * 100;
-        Pixmap pixmap = new Pixmap(imageWidth, 80, Pixmap.Format.RGBA8888);
-        Texture texture = new Texture(pixmap, Pixmap.Format.RGBA8888, false);
-        pixmap.setColor(1.0f, 1.0f, 1.0f, 0.10f);
-        pixmap.fill();
-        texture.draw(pixmap, 0, 0);
-        Image icon = new Image(texture);
-        icon.setAlign(Align.center);
-        Container<Image> iconContainer = new Container<Image>();
-        iconContainer.setActor(icon);
-        iconContainer.align(Align.center);
-        iconContainer.setWidth(imageWidth);
-        iconContainer.setHeight(80);
-        Button pageIndicator = new Button(skin);
-        ButtonStyle style = pageIndicator.getStyle();
-        style.up = style.down = null;
-        pageIndicator.stack(new Image(skin.getDrawable("top")), iconContainer)
-                .width(imageWidth)
-                .height(80);
-        return pageIndicator;
-    }
-    
-    private Button buildNavButton(String iconPath) {
-        Button button = new Button(skin);
-        ButtonStyle style = button.getStyle();
-        style.up = style.down = null;
-
-        Pixmap iconPixmap = new Pixmap(Gdx.files.internal(iconPath));
-        Texture iconTexture = new Texture(iconPixmap);
-        iconPixmap.dispose();
-        iconTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
-        
-        Image icon = new Image(iconTexture);
-        icon.setAlign(Align.center);
-        Container<Image> iconContainer = new Container<Image>();
-        iconContainer.setActor(icon);
-        iconContainer.align(Align.center);
-        iconContainer.setWidth(80);
-        iconContainer.setHeight(80);
-        button.stack(new Image(skin.getDrawable("top")), iconContainer)
-                .width(80)
-                .height(80);
-        button.row();
-        
-        button.addListener(appClickListener);
-        button.addListener(appGestureListener);
-        return button;
-    }
-    
     private static final int ICON_IMAGE_WIDTH = 320;
     private static final int ICON_IMAGE_HEIGHT = 240;
     private static final int ICON_LABEL_HEIGHT = 90;
