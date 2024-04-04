@@ -24,8 +24,8 @@ public enum KeyboardType {
             0.4f,
             110,
             0,
-            176,
-            1568,
+            250,
+            1421,
             0
           ),
     LANDSCAPE_UPPER_CASE(
@@ -40,8 +40,8 @@ public enum KeyboardType {
             0.4f,
             110,
             0,
-            176,
-            1568,
+            250,
+            1421,
             0
           ),
     LANDSCAPE_PUNC_NUMBERS(
@@ -56,8 +56,8 @@ public enum KeyboardType {
             0.4f,
             110,
             0,
-            176,
-            1568,
+            250,
+            1421,
             0
           ),
     PORTRAIT_LOWER_CASE(
