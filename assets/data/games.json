@@ -701,13 +701,6 @@
 			"fileType": "ZIP"
 		},
 		{
-			"gameId": "NICKQ",
-			"name": "Nick's Quest - In Pursuit of QuakeMovie",
-			"displayName": "Nick's Quest - In\nPursuit of...",
-			"filePath": "/games/nickq.zip",
-			"fileType": "ZIP"
-		},
-		{
 			"gameId": "OPENMN",
 			"name": "Open Mic Night",
 			"displayName": "Open Mic Night",
@@ -957,13 +950,6 @@
 			"name": "Star Commander 1",
 			"displayName": "Star Commander 1",
 			"filePath": "/games/starco.zip",
-			"fileType": "ZIP"
-		},
-		{
-			"gameId": "STARPI",
-			"name": "Star Pilot: Bigger Fish",
-			"displayName": "Star Pilot: Bigger\nFish",
-			"filePath": "/games/starpi.zip",
 			"fileType": "ZIP"
 		},
 		{
