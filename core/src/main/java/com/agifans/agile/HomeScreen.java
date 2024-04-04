@@ -240,7 +240,7 @@ public class HomeScreen extends InputAdapter implements Screen {
         
         int availableHeight = (int)(viewportHeight - PAGINATION_HEIGHT);
         int columns = (int)((viewportWidth - sidePadding) / ICON_IMAGE_WIDTH);
-        int rows = (int)(availableHeight / (ICON_IMAGE_HEIGHT + ICON_LABEL_HEIGHT + 15));
+        int rows = (int)(availableHeight / (ICON_IMAGE_HEIGHT + ICON_LABEL_HEIGHT + 10));
         
         int totalHorizPadding = 0;
         int horizPaddingUnit = 0;
