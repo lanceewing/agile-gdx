@@ -138,4 +138,10 @@ public class DesktopAgileRunner extends AgileRunner {
         // We don't check this for Desktop.
         return false;
     }
+
+    @Override
+    public boolean isMobile() {
+        // Desktop/Java/LWJGL platform is obviously not mobile.
+        return false;
+    }
 }

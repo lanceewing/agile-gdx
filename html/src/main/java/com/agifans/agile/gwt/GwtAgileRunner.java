@@ -305,4 +305,30 @@ public class GwtAgileRunner extends AgileRunner {
             return false;
         }
     }-*/;
+
+    @Override
+    public boolean isMobile() {
+        return isMobileHtml();
+    }
+    
+    private native boolean isMobileHtml() /*-{
+        if (navigator.userAgentData) {
+            return navigator.userAgentData.mobile;
+        } else {
+            // Fall back to user-agent parsing, as some browsers don't support above yet.
+            if (navigator.platform.indexOf("Win") != -1) return false;
+            if (navigator.platform.indexOf("Mac") != -1) return false;
+            if (navigator.platform.indexOf("Android") != -1) return true;
+            if (navigator.platform.indexOf("iPhone") != -1) return true;
+            if (navigator.platform.indexOf("iPad") != -1) return true;
+            // For other devices, we'll use touch screen logic.
+            if ("maxTouchPoints" in navigator) {
+                return navigator.maxTouchPoints > 0;
+            } else if ("msMaxTouchPoints" in navigator) {
+                return navigator.msMaxTouchPoints > 0;
+            } else {
+                return false;
+            }
+        }
+    }-*/;
 }
