@@ -836,14 +836,25 @@ public class HomeScreen extends InputAdapter implements Screen {
     }
     
     private int getIndexOfFirstGameStartingWithChar(char letter) {
-        // Ignore the original Sierra AGI games, as they're all on the first page.
-        int gameIndex = 14;
-        for (String gameName : appConfigMap.keySet()) {
-            gameIndex++;
-            if (gameName.toUpperCase().startsWith("" + letter)) {
-                return gameIndex;
+        int gameIndex = 0;
+        
+        for (int loopCount=0; loopCount < 2; loopCount++) {
+            for (AppConfigItem appConfigItem : appConfigMap.values()) {
+                String gameId = appConfigItem.getGameId().toLowerCase();
+                if (((loopCount == 0) && (SIERRA_GAMES.contains(gameId))) ||
+                    ((loopCount == 1) && (!SIERRA_GAMES.contains(gameId)))) {
+                    gameIndex++;
+                    // Ignore the original Sierra AGI games, as they're all on the first page.
+                    if (loopCount == 1) {
+                        String gameName = appConfigItem.getName();
+                        if (gameName.toUpperCase().startsWith("" + letter)) {
+                            return gameIndex;
+                        }
+                    }
+                }
             }
         }
+        
         return -1;
     }
     
@@ -871,15 +882,17 @@ public class HomeScreen extends InputAdapter implements Screen {
     }
     
     private void showGamePage(int gameIndex, boolean skipScroll) {
-        // Work out how far to move from far left to get to game's page.
-        float pageWidth = viewportManager.isPortrait()? 1130.0f : 1970.0f;
-        float newScrollX = pageWidth * (gameIndex / 15);
-        
         // Apply scroll X without animating, i.e. move immediately to the page.
         Stage currentStage = viewportManager.isPortrait()? portraitStage : landscapeStage;
         PagedScrollPane pagedScrollPane = (PagedScrollPane)
                 ((Table)currentStage.getActors().get(0)).getChild(0);
         currentStage.act(0f);
+        
+        // Work out how far to move from far left to get to game's page.
+        int gamesPerPage = pagedScrollPane.getGamesPerPage();
+        float pageWidth = viewportManager.isPortrait()? 1130.0f : 1970.0f;
+        float newScrollX = pageWidth * (gameIndex / gamesPerPage);
+        
         pagedScrollPane.setScrollX(newScrollX);
         pagedScrollPane.setLastScrollX(newScrollX);
         if (skipScroll) {

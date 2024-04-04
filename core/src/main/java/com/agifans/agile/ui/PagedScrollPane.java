@@ -104,6 +104,15 @@ public class PagedScrollPane extends ScrollPane {
         setScrollX(0);
     }
     
+    public int getGamesPerPage() {
+        int gamesPerPage = 0;
+        if (content.getChildren().notEmpty()) {
+            Table firstPage = (Table)content.getChild(0);
+            gamesPerPage = firstPage.getColumns() * firstPage.getRows();
+        }
+        return gamesPerPage;
+    }
+    
     public int getNumOfPages() {
         return content.getChildren().size;
     }
