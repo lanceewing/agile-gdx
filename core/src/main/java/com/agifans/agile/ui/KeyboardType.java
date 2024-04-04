@@ -21,7 +21,7 @@ public enum KeyboardType {
               { Keys.SWITCH_CHARSET, Keys.SWITCH_CHARSET, Keys.SWITCH_CHARSET, Keys.SWITCH_CHARSET, Keys.CONTROL_LEFT, Keys.CONTROL_LEFT, Keys.CONTROL_LEFT, Keys.CONTROL_LEFT, Keys.CONTROL_LEFT, Keys.CONTROL_LEFT, Keys.ALT_LEFT, Keys.ALT_LEFT, Keys.ALT_LEFT, Keys.ALT_LEFT, Keys.SPACE, Keys.SPACE, Keys.SPACE, Keys.SPACE, Keys.SPACE, Keys.SPACE, Keys.SPACE, Keys.SPACE, Keys.SPACE, Keys.SPACE, Keys.SPACE, Keys.SPACE, Keys.SPACE, Keys.SPACE, Keys.SPACE, Keys.SPACE, Keys.SPACE, Keys.SPACE, Keys.SPACE, Keys.ALT_RIGHT, Keys.ALT_RIGHT, Keys.ALT_RIGHT,   Keys.ALT_RIGHT,   Keys.LEFT,        Keys.LEFT,        Keys.LEFT,        Keys.LEFT,        Keys.DOWN, Keys.DOWN,  Keys.DOWN,  Keys.DOWN,      Keys.RIGHT,     Keys.RIGHT,     Keys.RIGHT,     Keys.RIGHT }
             },
             "png/landscape_keyboard_lowercase.png",
-            0.4f,
+            0.3f,
             110,
             0,
             250,
@@ -37,7 +37,7 @@ public enum KeyboardType {
               { Keys.SWITCH_CHARSET, Keys.SWITCH_CHARSET, Keys.SWITCH_CHARSET, Keys.SWITCH_CHARSET, Keys.CONTROL_LEFT, Keys.CONTROL_LEFT, Keys.CONTROL_LEFT, Keys.CONTROL_LEFT, Keys.CONTROL_LEFT, Keys.CONTROL_LEFT, Keys.ALT_LEFT, Keys.ALT_LEFT, Keys.ALT_LEFT, Keys.ALT_LEFT, Keys.SPACE, Keys.SPACE, Keys.SPACE, Keys.SPACE, Keys.SPACE, Keys.SPACE, Keys.SPACE, Keys.SPACE, Keys.SPACE, Keys.SPACE, Keys.SPACE, Keys.SPACE, Keys.SPACE, Keys.SPACE, Keys.SPACE, Keys.SPACE, Keys.SPACE, Keys.SPACE, Keys.SPACE, Keys.ALT_RIGHT, Keys.ALT_RIGHT, Keys.ALT_RIGHT,   Keys.ALT_RIGHT,   Keys.LEFT,        Keys.LEFT,        Keys.LEFT,        Keys.LEFT,        Keys.DOWN, Keys.DOWN,  Keys.DOWN,  Keys.DOWN,      Keys.RIGHT,     Keys.RIGHT,     Keys.RIGHT,     Keys.RIGHT }
             },
             "png/landscape_keyboard_uppercase.png",
-            0.4f,
+            0.3f,
             110,
             0,
             250,
@@ -53,7 +53,7 @@ public enum KeyboardType {
               { Keys.SWITCH_CHARSET, Keys.SWITCH_CHARSET, Keys.SWITCH_CHARSET, Keys.SWITCH_CHARSET, Keys.CONTROL_LEFT, Keys.CONTROL_LEFT, Keys.CONTROL_LEFT, Keys.CONTROL_LEFT, Keys.CONTROL_LEFT, Keys.CONTROL_LEFT, Keys.ALT_LEFT,     Keys.ALT_LEFT,      Keys.ALT_LEFT,      Keys.ALT_LEFT,      Keys.SPACE,         Keys.SPACE,  Keys.SPACE,  Keys.SPACE,  Keys.SPACE,  Keys.SPACE,  Keys.SPACE,  Keys.SPACE,      Keys.SPACE,      Keys.SPACE,      Keys.SPACE,      Keys.SPACE, Keys.SPACE,     Keys.SPACE,     Keys.SPACE,     Keys.SPACE,      Keys.SPACE,      Keys.SPACE,      Keys.SPACE,      Keys.AT,        Keys.AT,        Keys.AT,          Keys.AT,          Keys.HOME,        Keys.HOME,        Keys.HOME,        Keys.HOME,        Keys.PAGE_DOWN, Keys.PAGE_DOWN, Keys.PAGE_DOWN, Keys.PAGE_DOWN, Keys.END,        Keys.END,         Keys.END,         Keys.END }
             },
             "png/landscape_keyboard_punc_numbers.png",
-            0.4f,
+            0.3f,
             110,
             0,
             250,
