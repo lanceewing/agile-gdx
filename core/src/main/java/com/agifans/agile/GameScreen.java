@@ -105,11 +105,11 @@ public class GameScreen implements Screen {
         agileRunner.init(this, screenPixmap);
         screens = new Texture[3];
         screens[0] = new Texture(screenPixmap, Pixmap.Format.RGBA8888, false);
-        screens[0].setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+        screens[0].setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Nearest);
         screens[1] = new Texture(screenPixmap, Pixmap.Format.RGBA8888, false);
-        screens[1].setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+        screens[1].setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Nearest);
         screens[2] = new Texture(screenPixmap, Pixmap.Format.RGBA8888, false);
-        screens[2].setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+        screens[2].setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Nearest);
     
         camera = new OrthographicCamera();
         viewport = new ExtendViewport(ADJUSTED_WIDTH, ADJUSTED_HEIGHT, camera);
