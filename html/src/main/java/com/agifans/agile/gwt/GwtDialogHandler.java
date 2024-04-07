@@ -280,11 +280,8 @@ public class GwtDialogHandler implements DialogHandler {
         
         console.log('Finished creating input element of type file');
         
-        // The onchange event occurs after a file is chosen.
-        fileInputElem.onchange = function(event) {
-            console.log('File input element onchange event triggered.');
-            console.log('The event object is: ' + event);
-        
+        // The change event occurs after a file is chosen.
+        fileInputElem.addEventListener("change", function(event) {
             if (this.files.length === 0) {
                 console.log('No files selected for import');
             
@@ -320,7 +317,7 @@ public class GwtDialogHandler implements DialogHandler {
                     resultsHandler.@com.agifans.agile.gwt.GwtOpenFileResultsHandler::onFileResultsReady([Lcom/agifans/agile/gwt/GwtOpenFileResult;)(results);
                 });
             }
-        };
+        });
         
         // Trigger the display of the open file dialog.
         fileInputElem.click();
