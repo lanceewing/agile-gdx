@@ -280,8 +280,12 @@ public class GwtDialogHandler implements DialogHandler {
         
         console.log('Finished creating input element of type file');
         
+        document.body.appendChild(fileInputElem);
+        
         // The change event occurs after a file is chosen.
         fileInputElem.addEventListener("change", function(event) {
+            document.body.removeChild(fileInputElem);
+        
             if (this.files.length === 0) {
                 console.log('No files selected for import');
             
@@ -317,6 +321,15 @@ public class GwtDialogHandler implements DialogHandler {
                     resultsHandler.@com.agifans.agile.gwt.GwtOpenFileResultsHandler::onFileResultsReady([Lcom/agifans/agile/gwt/GwtOpenFileResult;)(results);
                 });
             }
+        });
+        
+        fileInputElem.addEventListener("cancel", function(event) {
+            document.body.removeChild(fileInputElem);
+            
+            console.log('Open file dialog was cancelled.');
+            
+            // No file was selected, so nothing more to do.
+            resultsHandler.@com.agifans.agile.gwt.GwtOpenFileResultsHandler::onFileResultsReady([Lcom/agifans/agile/gwt/GwtOpenFileResult;)([]);
         });
         
         // Trigger the display of the open file dialog.
