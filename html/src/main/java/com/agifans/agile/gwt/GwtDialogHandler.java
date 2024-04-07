@@ -300,14 +300,14 @@ public class GwtDialogHandler implements DialogHandler {
                         var reader = new FileReader();
                         // NOTE 1: loadend called regards of whether it was successful or not.
                         // NOTE 2: file has .name, .size and .lastModified fields.
-                        reader.onloadend = function (event) {
+                        reader.addEventListener("loadend", function (event) {
                             console.log('Finished reading in file ' + file.name);
                             resolve({
                                 fileName: file.name,
                                 filePath: file.webkitRelativePath? file.webkitRelativePath : '',
                                 fileData: reader.result
                             });
-                        };
+                        });
                         reader.readAsArrayBuffer(file);
                     });
                 })).then(function (results) {
