@@ -53,6 +53,18 @@ public class Worker extends com.google.gwt.webworker.client.Worker {
         this.postMessage({name: name, buffer: buffer}, [buffer]);
     }-*/;
     
+    /**
+     * This method can be used to transfer an ArrayBuffer along with a normal JavaScript
+     * object in the same message.
+     * 
+     * @param name The name of the object. Used for identification of the object.
+     * @param buffer The JS ArrayByffer to send in the postMessage call.
+     * @param object The normal JavaScript object to send with the ArrayBuffer.
+     */
+    public final native void postArrayBufferAndObject(String name, ArrayBuffer buffer, JavaScriptObject object) /*-{
+        this.postMessage({name: name, buffer: buffer, object: object}, [buffer]);
+    }-*/;
+    
     private static void onMessageImpl(MessageHandler messageHandler, MessageEvent event) {
         UncaughtExceptionHandler ueh = GWT.getUncaughtExceptionHandler();
         if (ueh != null) {

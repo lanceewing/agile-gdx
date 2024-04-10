@@ -12,9 +12,11 @@ import com.agifans.agile.ui.ImportType;
 import com.agifans.agile.ui.ImportTypeResponseHandler;
 import com.agifans.agile.ui.OpenFileResponseHandler;
 import com.agifans.agile.ui.TextInputResponseHandler;
+import com.agifans.agile.worker.Worker;
 import com.akjava.gwt.jszip.JSFile;
 import com.akjava.gwt.jszip.JSZip;
 import com.badlogic.gdx.Gdx;
+import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArrayString;
 import com.google.gwt.typedarrays.shared.ArrayBuffer;
 import com.google.gwt.typedarrays.shared.Int8Array;
@@ -29,6 +31,8 @@ public class GwtDialogHandler implements DialogHandler {
     
     private GameFileMapEncoder gameFileMapEncoder;
     
+    private Worker worker;
+    
     private boolean dialogOpen;
     
     /**
@@ -37,6 +41,10 @@ public class GwtDialogHandler implements DialogHandler {
     public GwtDialogHandler() {
         gameFileMapEncoder = new GameFileMapEncoder();
         opfsGameFiles = new OPFSGameFiles();
+        
+        // The same worker script is used for importing game data as is used for 
+        // the interpreter but they are run in two different running web workers.
+        worker = Worker.create("worker/worker.nocache.js");
     }
 
     @Override
@@ -215,7 +223,8 @@ public class GwtDialogHandler implements DialogHandler {
 
                         // Use GameFileMapEncoder to encode to single ArrayBuffer and store in OPFS.
                         ArrayBuffer fullGameBuffer = gameFileMapEncoder.encodeGameFileMap(gameFilesMap);
-                        opfsGameFiles.writeGameFilesData(opfsDirectoryName, fullGameBuffer);
+                        worker.postArrayBufferAndObject(
+                                "ImportGame", fullGameBuffer, createDirectoryNameObject(opfsDirectoryName));
                         
                         openFileResponseHandler.openFileResult(true, opfsDirectoryName, gameName, detection.gameId);
                         
@@ -233,6 +242,10 @@ public class GwtDialogHandler implements DialogHandler {
             }
         });
     }
+    
+    private native JavaScriptObject createDirectoryNameObject(String directoryName)/*-{
+        return { directoryName: directoryName };
+    }-*/;
     
     private final native String slugify(String str)/*-{
         return String(str)

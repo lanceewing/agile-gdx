@@ -10,6 +10,7 @@ import com.agifans.agile.gwt.GwtSavedGameStore;
 import com.agifans.agile.gwt.GwtUserInput;
 import com.agifans.agile.gwt.GwtVariableData;
 import com.agifans.agile.gwt.GwtWavePlayer;
+import com.agifans.agile.gwt.OPFSGameFiles;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.typedarrays.shared.ArrayBuffer;
 import com.google.gwt.webworker.client.DedicatedWorkerEntryPoint;
@@ -73,6 +74,11 @@ public class AgileWebWorker extends DedicatedWorkerEntryPoint implements Message
     private Interpreter interpreter;
     
     /**
+     * Used to store game data files.
+     */
+    private OPFSGameFiles opfsGameFiles;
+    
+    /**
      * Incoming messages from the UI thread are for two purposes: One is to set things 
      * up, and then once both sides are up and running, the UI thread then starts sending
      * "Tick" messages, which request the web worker to perform a tick. The UI thread 
@@ -88,6 +94,12 @@ public class AgileWebWorker extends DedicatedWorkerEntryPoint implements Message
         JavaScriptObject eventObject = event.getDataAsObject();
         
         switch (getEventType(eventObject)) {
+            case "ImportGame":
+                ArrayBuffer importGameDataBuffer = getArrayBuffer(eventObject);
+                String opfsDirectionName = getNestedString(eventObject, "directoryName");
+                opfsGameFiles.writeGameFilesData(opfsDirectionName, importGameDataBuffer);
+                break;
+        
             case "Initialise":
                 JavaScriptObject keyPressQueueSAB = getNestedObject(eventObject, "keyPressQueueSAB");
                 JavaScriptObject keysSAB = getNestedObject(eventObject, "keysSAB");
@@ -106,7 +118,6 @@ public class AgileWebWorker extends DedicatedWorkerEntryPoint implements Message
                 GameFileMapEncoder gameFileMapDecoder = new GameFileMapEncoder();
                 gameLoader = new GwtGameLoader(pixelData);
                 Game game = gameLoader.loadGame(gameFileMapDecoder.decodeGameFileMap(gameDataBuffer));
-                // TODO: This won't work for fan games that haven't set the game ID.
                 savedGameStore.initialise(game.gameId);
                 interpreter = new Interpreter(
                         game, userInput, wavePlayer, savedGameStore, 
@@ -166,6 +177,7 @@ public class AgileWebWorker extends DedicatedWorkerEntryPoint implements Message
     @Override
     public void onWorkerLoad() {
         this.scope = DedicatedWorkerGlobalScope.get();
+        this.opfsGameFiles = new OPFSGameFiles();
         
         this.importScript("/opfs-saved-games.js");
         
