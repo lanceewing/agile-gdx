@@ -123,10 +123,6 @@ public class GwtDialogHandler implements DialogHandler {
         showHtmlOpenFileDialog(fileType, new GwtOpenFileResultsHandler() {
             @Override
             public void onFileResultsReady(GwtOpenFileResult[] openFileResultArray) {
-                if (openFileResultArray.length > 0) {
-                    logToJSConsole("Game files are now being imported into AGILE...");
-                }
-                
                 boolean hasVolFile = false;
                 boolean hasDirFile = false;
                 String directoryName = null;
@@ -274,8 +270,6 @@ public class GwtDialogHandler implements DialogHandler {
     }
 
     private final native void showHtmlOpenFileDialog(String type, GwtOpenFileResultsHandler resultsHandler)/*-{
-        console.log('About to create input element of type file...');
-        
         var fileInputElem = document.createElement('input');
         fileInputElem.type = "file";
         
@@ -291,8 +285,6 @@ public class GwtDialogHandler implements DialogHandler {
             fileInputElem.multiple = true;
         }
         
-        console.log('Finished creating input element of type file');
-        
         document.body.appendChild(fileInputElem);
         
         // The change event occurs after a file is chosen.
@@ -300,25 +292,19 @@ public class GwtDialogHandler implements DialogHandler {
             document.body.removeChild(fileInputElem);
         
             if (this.files.length === 0) {
-                console.log('No files selected for import');
-            
                 // No file was selected, so nothing more to do.
                 resultsHandler.@com.agifans.agile.gwt.GwtOpenFileResultsHandler::onFileResultsReady([Lcom/agifans/agile/gwt/GwtOpenFileResult;)([]);
             }
             else {
-                console.log('File(s) were selected for import. Reading them now...');
-            
                 // There can be multiple files, so we need to fetch all of them, and
                 // only when all have finished loading do we invoke the callback with
                 // content of the files.
                 Promise.all([].map.call(this.files, function (file) {
-                    console.log('Starting to read in file ' + file.name);
                     return new Promise(function (resolve, reject) {
                         var reader = new FileReader();
                         // NOTE 1: loadend called regards of whether it was successful or not.
                         // NOTE 2: file has .name, .size and .lastModified fields.
                         reader.addEventListener("loadend", function (event) {
-                            console.log('Finished reading in file ' + file.name);
                             resolve({
                                 fileName: file.name,
                                 filePath: file.webkitRelativePath? file.webkitRelativePath : '',
@@ -328,8 +314,6 @@ public class GwtDialogHandler implements DialogHandler {
                         reader.readAsArrayBuffer(file);
                     });
                 })).then(function (results) {
-                    console.log('Finished reading in all selected files.');
-                
                     // The results param is an array of result objects
                     resultsHandler.@com.agifans.agile.gwt.GwtOpenFileResultsHandler::onFileResultsReady([Lcom/agifans/agile/gwt/GwtOpenFileResult;)(results);
                 });
@@ -339,16 +323,12 @@ public class GwtDialogHandler implements DialogHandler {
         fileInputElem.addEventListener("cancel", function(event) {
             document.body.removeChild(fileInputElem);
             
-            console.log('Open file dialog was cancelled.');
-            
             // No file was selected, so nothing more to do.
             resultsHandler.@com.agifans.agile.gwt.GwtOpenFileResultsHandler::onFileResultsReady([Lcom/agifans/agile/gwt/GwtOpenFileResult;)([]);
         });
         
         // Trigger the display of the open file dialog.
         fileInputElem.click();
-        
-        console.log('File input element has been clicked.');
     }-*/;
 
     @Override
