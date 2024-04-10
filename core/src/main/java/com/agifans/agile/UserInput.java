@@ -74,7 +74,17 @@ public abstract class UserInput extends InputAdapter {
             Keys.PAGE_DOWN,
             Keys.HOME,
             Keys.INSERT, 
-            Keys.DEL);
+            Keys.DEL,
+            Keys.NUMPAD_1,
+            Keys.NUMPAD_2,
+            Keys.NUMPAD_3,
+            Keys.NUMPAD_4,
+            Keys.NUMPAD_5,
+            Keys.NUMPAD_6,
+            Keys.NUMPAD_7,
+            Keys.NUMPAD_8,
+            Keys.NUMPAD_9
+            );
     
     /**
      * Constructor for UserInput.
@@ -102,7 +112,7 @@ public abstract class UserInput extends InputAdapter {
      * 
      * @return whether the input was processed 
      */
-    public boolean keyDown (int keycode) {
+    public boolean keyDown(int keycode) {
         // For now, we're interpreting back as request to Quit.
         if (keycode == Keys.BACK) {
             keyPressQueueAdd(ALT_MODIFIER | Keys.Z);

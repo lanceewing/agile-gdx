@@ -338,6 +338,8 @@ public class Interpreter {
 
         // Handle arrow keys.
         if (state.userControl) {
+            // To handle the hold key mode, it needs to check the current key state rather 
+            // than the keypress queue.
             if (state.holdKey) {
                 // In "hold key" mode, the ego direction directly reflects the direction key currently being held down.
                 byte direction = 0;
@@ -351,29 +353,31 @@ public class Interpreter {
                 if (userInput.keys((int)Keys.HOME)) direction = 8;
                 state.setVar(Defines.EGODIR, direction);
             }
-            else {
-                // Whereas in "release key" mode, the direction key press will toggle movement in that direction.
-                byte direction = 0;
-                if (userInput.keys((int)Keys.UP) && !userInput.oldKeys((int)Keys.UP)) direction = 1;
-                if (userInput.keys((int)Keys.PAGE_UP) && !userInput.oldKeys((int)Keys.PAGE_UP)) direction = 2;
-                if (userInput.keys((int)Keys.RIGHT) && !userInput.oldKeys((int)Keys.RIGHT)) direction = 3;
-                if (userInput.keys((int)Keys.PAGE_DOWN) && !userInput.oldKeys((int)Keys.PAGE_DOWN)) direction = 4;
-                if (userInput.keys((int)Keys.DOWN) && !userInput.oldKeys((int)Keys.DOWN)) direction = 5;
-                if (userInput.keys((int)Keys.END) && !userInput.oldKeys((int)Keys.END)) direction = 6;
-                if (userInput.keys((int)Keys.LEFT) && !userInput.oldKeys((int)Keys.LEFT)) direction = 7;
-                if (userInput.keys((int)Keys.HOME) && !userInput.oldKeys((int)Keys.HOME)) direction = 8;
-                if (direction > 0) {
-                    state.setVar(Defines.EGODIR, (state.getVar(Defines.EGODIR) == direction ? (byte)0 : direction));
-                }
-            }
         }
 
         // Check all waiting characters.
         int ch;
         while ((ch = userInput.getKey()) > 0) {
-            
-            // Check controller matches. They take precedence.
-            if (state.keyToControllerMap.containsKey(ch)) {
+            // Direction keys are checked first
+            if (isDirectionKey(ch) && state.userControl && !state.holdKey) {
+                byte direction = 0;
+                if ((ch == (int)Keys.UP) || (ch == (int)Keys.NUMPAD_8)) direction = 1;
+                if ((ch == (int)Keys.PAGE_UP) || (ch == (int)Keys.NUMPAD_9)) direction = 2;
+                if ((ch == (int)Keys.RIGHT) || (ch == (int)Keys.NUMPAD_6)) direction = 3;
+                if ((ch == (int)Keys.PAGE_DOWN) || (ch == (int)Keys.NUMPAD_3)) direction = 4;
+                if ((ch == (int)Keys.DOWN) || (ch == (int)Keys.NUMPAD_2)) direction = 5;
+                if ((ch == (int)Keys.END) || (ch == (int)Keys.NUMPAD_1)) direction = 6;
+                if ((ch == (int)Keys.LEFT) || (ch == (int)Keys.NUMPAD_4)) direction = 7;
+                if ((ch == (int)Keys.HOME) || (ch == (int)Keys.NUMPAD_7)) direction = 8;
+                if (direction > 0) {
+                    state.setVar(Defines.EGODIR, (state.getVar(Defines.EGODIR) == direction ? (byte)0 : direction));
+                }
+                else if (ch == (int)Keys.NUMPAD_5) {
+                    state.setVar(Defines.EGODIR, 0);
+                }
+            }
+            // Then check controller matches. They take precedence.
+            else if (state.keyToControllerMap.containsKey(ch)) {
                 state.controllers[state.keyToControllerMap.get(ch)] = true;
             }
             else if ((ch & 0xF0000) == UserInput.ASCII) {  // Standard char from a keypress event.
@@ -408,5 +412,27 @@ public class Interpreter {
                 }
             }
         }
+    }
+    
+    private boolean isDirectionKey(int ch) {
+        return ((ch == (int)Keys.UP) || 
+                (ch == (int)Keys.PAGE_UP) || 
+                (ch == (int)Keys.RIGHT) || 
+                (ch == (int)Keys.PAGE_DOWN) || 
+                (ch == (int)Keys.DOWN) || 
+                (ch == (int)Keys.END)|| 
+                (ch == (int)Keys.LEFT)|| 
+                (ch == (int)Keys.HOME) || 
+                // Number pad direction keys
+                (ch == (int)Keys.NUMPAD_1) ||
+                (ch == (int)Keys.NUMPAD_2) ||
+                (ch == (int)Keys.NUMPAD_3) ||
+                (ch == (int)Keys.NUMPAD_4) ||
+                (ch == (int)Keys.NUMPAD_5) ||
+                (ch == (int)Keys.NUMPAD_6) ||
+                (ch == (int)Keys.NUMPAD_7) ||
+                (ch == (int)Keys.NUMPAD_8) ||
+                (ch == (int)Keys.NUMPAD_9)
+                );
     }
 }

@@ -504,7 +504,11 @@ public class GameScreen implements Screen {
             getAgileRunner().getVariableData().setVar(Defines.EGODIR, direction);
         }
         else if (direction != 0) {
-            userInput.setKey(DIRECTION_TO_KEY_MAP[direction], true);
+            if (direction != previousDirection) {
+                userInput.keyDown(DIRECTION_TO_KEY_MAP[direction]);
+            } else {
+                userInput.setKey(DIRECTION_TO_KEY_MAP[direction], true);
+            }
         }
         
         previousDirection = direction;
