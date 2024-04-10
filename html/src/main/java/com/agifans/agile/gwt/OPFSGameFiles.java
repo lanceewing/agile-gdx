@@ -24,12 +24,12 @@ public class OPFSGameFiles {
                 // Create an OPFS sub-directory and data file for this game.
                 gameFilesDir.getDirectoryHandle(gameDirectoryName, {create: true}).then(function(gameDir) {
                     gameDir.getFileHandle('GAMEFILES.DAT', {create: true}).then(function(gameDataFileHandle) {
-                        // Open a writable stream for the file.
-                        gameDataFileHandle.createWritable().then(function(gameDataFileStream) {
+                        // Create a sync access handle for the file (supported in Safari)
+                        gameDataFileHandle.createSyncAccessHandle().then(function(gameDataSyncAccessHandle) {
                             // Write the game data out and then close.
-                            gameDataFileStream.write(gameDataArrayBuffer).then(function() {
-                                gameDataFileStream.close()
-                            });
+                            gameDataSyncAccessHandle.write(gameDataArrayBuffer);
+                            gameDataSyncAccessHandle.flush();
+                            gameDataSyncAccessHandle.close();
                         });
                     });
                 });
