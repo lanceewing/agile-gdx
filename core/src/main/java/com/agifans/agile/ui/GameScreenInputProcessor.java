@@ -272,6 +272,7 @@ public class GameScreenInputProcessor extends InputAdapter {
             // Only if it is within the AGI Screen do we set the mouse vars.
             if (buttonDown) {
                 gameScreen.getAgileRunner().getVariableData().setMouseButton(button + 1);
+                getUserInput().keyDown(Keys.ENTER);
             } else {
                 gameScreen.getAgileRunner().getVariableData().setMouseButton(0);
             }
