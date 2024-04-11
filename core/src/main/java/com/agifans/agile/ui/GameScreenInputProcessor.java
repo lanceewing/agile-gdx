@@ -359,7 +359,8 @@ public class GameScreenInputProcessor extends InputAdapter {
             }
             else {
                 // All buttons on same side
-                if ((touchXY.x < 128) || (touchXY.x > (viewportManager.getWidth() - 128))) {
+                if (((touchXY.x < 128) && (cameraXOffset < 0)) || 
+                    ((touchXY.x > (viewportManager.getWidth() - 128)) && (cameraXOffset > 0))) {
                     if (touchXY.y > (screenTop - 128)) {
                         fullScreenClicked = true;
                     }
