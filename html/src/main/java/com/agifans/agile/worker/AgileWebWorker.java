@@ -79,6 +79,11 @@ public class AgileWebWorker extends DedicatedWorkerEntryPoint implements Message
     private OPFSGameFiles opfsGameFiles;
     
     /**
+     * The total tick count at the time of the last animation tick.
+     */
+    private int lastTotalTickCount;
+    
+    /**
      * Incoming messages from the UI thread are for two purposes: One is to set things 
      * up, and then once both sides are up and running, the UI thread then starts sending
      * "Tick" messages, which request the web worker to perform a tick. The UI thread 
@@ -122,24 +127,45 @@ public class AgileWebWorker extends DedicatedWorkerEntryPoint implements Message
                 interpreter = new Interpreter(
                         game, userInput, wavePlayer, savedGameStore, 
                         pixelData, variableData);
-                break;
-                
-            case "Tick":
-                try {
-                    // Perform one animation tick.
-                    interpreter.animationTick();
-                    // Then notify the UI thread that the tick is complete.
-                    postObject("TickComplete", JavaScriptObject.createObject());
-                } catch (QuitAction qa) {
-                    // The user has quit the game, so notify the UI thread of this.
-                    postObject("QuitGame", JavaScriptObject.createObject());
-                }
+                lastTotalTickCount = variableData.getTotalTicks();
+                performAnimationTick(0);
                 break;
                 
             default:
                 // Unknown message. Ignore.
         }
     }
+    
+    public void performAnimationTick(double timestamp) {
+        try {
+            int currentTotalTicks = variableData.getTotalTicks();
+            int numOfTicksToRun = (currentTotalTicks - this.lastTotalTickCount);
+            this.lastTotalTickCount = currentTotalTicks;
+            
+            // Catch up with ticks, if we are behind.
+            while ((numOfTicksToRun-- > 0) && (variableData.getTotalTicks() == currentTotalTicks)) {
+                // Perform one animation tick.
+                interpreter.animationTick();
+            }
+            
+            requestNextAnimationFrame();
+            
+        } catch (QuitAction qa) {
+            // The user has quit the game, so notify the UI thread of this.
+            postObject("QuitGame", JavaScriptObject.createObject());
+        }
+    }
+    
+    public native void exportPerformAnimationTick() /*-{
+        var that = this;
+        $self.performAnimationTick = $entry(function(timestamp) {
+          that.@com.agifans.agile.worker.AgileWebWorker::performAnimationTick(D)(timestamp);
+        });
+    }-*/;
+
+    private native void requestNextAnimationFrame()/*-{
+        $self.requestAnimationFrame($self.performAnimationTick);
+    }-*/;
     
     private native String getEventType(JavaScriptObject obj)/*-{
         return obj.name;
@@ -176,6 +202,8 @@ public class AgileWebWorker extends DedicatedWorkerEntryPoint implements Message
     
     @Override
     public void onWorkerLoad() {
+        exportPerformAnimationTick();
+        
         this.scope = DedicatedWorkerGlobalScope.get();
         this.opfsGameFiles = new OPFSGameFiles();
         
@@ -183,4 +211,8 @@ public class AgileWebWorker extends DedicatedWorkerEntryPoint implements Message
         
         this.setOnMessage(this);
     }
+    
+    private final native void logToJSConsole(String message)/*-{
+        console.log(message);
+    }-*/;
 }

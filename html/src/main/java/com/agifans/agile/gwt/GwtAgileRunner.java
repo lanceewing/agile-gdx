@@ -34,15 +34,6 @@ public class GwtAgileRunner extends AgileRunner {
     private Worker worker;
     
     /**
-     * Indicates that the worker is currently executing the tick, i.e. a single interpretation 
-     * cycle. This flag exists because there are some AGI commands that wait for something to 
-     * happen before continuing. For example, a print window will stay up for a defined timeout
-     * period or until a key is pressed. In such cases, the thread can be performing a tick 
-     * for the duration of what would normally be many ticks. 
-     */
-    private boolean inTick;
-    
-    /**
      * Holds a reference to the Audio HTML element that is playing the current sound, or null
      * if there is no sound being played. It is not possible in AGI to play two sounds at 
      * the same time, so we only need this one reference to track sounds.
@@ -102,13 +93,6 @@ public class GwtAgileRunner extends AgileRunner {
                 JavaScriptObject eventObject = event.getDataAsObject();
                 
                 switch (getEventType(eventObject)) {
-                    case "TickComplete":
-                        // Allows the next tick to be triggered. We only allow one tick at
-                        // a time, otherwise the web worker would get a flood of Tick messages
-                        // when it is busy waiting for a key or similar.
-                        inTick = false;
-                        break;
-                        
                     case "QuitGame":
                         // This message is sent from the worker when the game has ended, usually
                         // due to the user quitting the game.
@@ -247,13 +231,9 @@ public class GwtAgileRunner extends AgileRunner {
     
     @Override
     public void animationTick() {
-        if (!inTick && (worker != null)) {
-            inTick = true;  // NOTE: Set to false by "TickComplete" message.
-            
-            // Send a message to the web worker to tell it to perform an animation tick, 
-            // but only if it isn't already in an animation tick.
-            worker.postObject("Tick", JavaScriptObject.createObject());
-        }
+        // Nothing to do for GWT version. The web worker triggers itself for animation
+        // ticks, using the total ticks that is set by UI thread to determine when to
+        // run.
     }
 
     @Override
@@ -264,7 +244,6 @@ public class GwtAgileRunner extends AgileRunner {
         stopCurrentSound();
         pixelData.clearState();
         variableData.clearState();
-        inTick = false;
         stopped = true;
     }
 
