@@ -24,6 +24,8 @@ public class DesktopVariableData implements VariableData {
     
     private int oldMouseButton;
     
+    private boolean inTick;
+    
     /**
      * Constructor for DesktopVariableData.
      */
@@ -111,5 +113,15 @@ public class DesktopVariableData implements VariableData {
     @Override
     public void setOldMousButton(int oldMouseButton) {
         this.oldMouseButton = oldMouseButton;
+    }
+
+    @Override
+    public void setInTick(boolean inTick) {
+        this.inTick = inTick;
+    }
+
+    @Override
+    public boolean getInTick() {
+        return inTick;
     }
 }

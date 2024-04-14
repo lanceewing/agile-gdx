@@ -231,9 +231,10 @@ public class GwtAgileRunner extends AgileRunner {
     
     @Override
     public void animationTick() {
-        // Nothing to do for GWT version. The web worker triggers itself for animation
-        // ticks, using the total ticks that is set by UI thread to determine when to
-        // run.
+        if ((variableData.getInTick() == false) && (worker != null)) {
+            // Signals to web worker to start tick.
+            variableData.setInTick(true);  // NOTE: Set to false by web worker.
+        }
     }
 
     @Override

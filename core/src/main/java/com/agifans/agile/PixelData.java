@@ -134,5 +134,4 @@ public abstract class PixelData {
      * @param pixmap 
      */
     public abstract void updatePixmap(Pixmap pixmap);
-    
 }

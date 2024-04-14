@@ -108,4 +108,8 @@ public interface VariableData {
     
     void setOldMousButton(int mouseButton);
     
+    void setInTick(boolean inTick);
+    
+    boolean getInTick();
+    
 }

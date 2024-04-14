@@ -138,15 +138,17 @@ public class AgileWebWorker extends DedicatedWorkerEntryPoint implements Message
     
     public void performAnimationTick(double timestamp) {
         try {
+            while (variableData.getInTick() == false) {
+                // Wait for UI thread to say its ready for us. Syncs the pixel data update.
+            }
+            
             int currentTotalTicks = variableData.getTotalTicks();
-            int numOfTicksToRun = (currentTotalTicks - this.lastTotalTickCount);
             this.lastTotalTickCount = currentTotalTicks;
             
-            // Catch up with ticks, if we are behind.
-            while ((numOfTicksToRun-- > 0) && (variableData.getTotalTicks() == currentTotalTicks)) {
-                // Perform one animation tick.
-                interpreter.animationTick();
-            }
+            // Perform one animation tick.
+            interpreter.animationTick();
+            
+            variableData.setInTick(false);
             
             requestNextAnimationFrame();
             
