@@ -6,6 +6,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.math.Vector2;
 
 /**
@@ -405,6 +406,11 @@ public class GameScreenInputProcessor extends InputAdapter {
         }
 
         if (backArrowClicked) {
+            if (Gdx.app.getType().equals(ApplicationType.Desktop) && Gdx.graphics.isFullscreen()) {
+                // Dialog won't show for desktop unless we exit full screen,
+                switchOutOfFullScreen();
+            }
+            
             dialogHandler.confirm("Are you sure you want to quit the game?", 
                     new ConfirmResponseHandler() {
                 @Override
