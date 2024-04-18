@@ -186,54 +186,56 @@ public class GwtDialogHandler implements DialogHandler {
                 
                 dialogOpen = false;
                 
-                // Check for the minimum set of files required.
-                if (gameFilesMap.containsKey("words.tok") && 
-                    gameFilesMap.containsKey("object") &&
-                    hasDirFile && hasVolFile) {
-                    try {
-                        // Now check that the files are able to be decoded.
-                        Game game = new Game(gameFilesMap);
-                        Detection detection = new Detection(game);
-                        String opfsDirectoryName = null;
-                        String gameName = null;
-                        
-                        if (detection.gameName.equals("Unrecognised game")) {
-                            if ((directoryName != null) && (!directoryName.isEmpty())) {
-                                opfsDirectoryName = directoryName;
-                                gameName = directoryName;
+                if (openFileResultArray.length > 0) {
+                    // Check for the minimum set of files required.
+                    if (gameFilesMap.containsKey("words.tok") && 
+                        gameFilesMap.containsKey("object") &&
+                        hasDirFile && hasVolFile) {
+                        try {
+                            // Now check that the files are able to be decoded.
+                            Game game = new Game(gameFilesMap);
+                            Detection detection = new Detection(game);
+                            String opfsDirectoryName = null;
+                            String gameName = null;
+                            
+                            if (detection.gameName.equals("Unrecognised game")) {
+                                if ((directoryName != null) && (!directoryName.isEmpty())) {
+                                    opfsDirectoryName = directoryName;
+                                    gameName = directoryName;
+                                } else {
+                                    // Fallback on the game ID, which, for unknown games, is derived from the
+                                    // MD5 hash string.
+                                    opfsDirectoryName = detection.gameId;
+                                    gameName = detection.gameId;
+                                }
                             } else {
-                                // Fallback on the game ID, which, for unknown games, is derived from the
-                                // MD5 hash string.
-                                opfsDirectoryName = detection.gameId;
-                                gameName = detection.gameId;
+                                // Use the game's name, if we've identified it.
+                                opfsDirectoryName = slugify(detection.gameName);
+                                gameName = detection.gameName;
+                                if (gameName.contains("(")) {
+                                    int bracketIndex = gameName.indexOf('(');
+                                    gameName = gameName.substring(0, bracketIndex).trim();
+                                }
                             }
-                        } else {
-                            // Use the game's name, if we've identified it.
-                            opfsDirectoryName = slugify(detection.gameName);
-                            gameName = detection.gameName;
-                            if (gameName.contains("(")) {
-                                int bracketIndex = gameName.indexOf('(');
-                                gameName = gameName.substring(0, bracketIndex).trim();
-                            }
+    
+                            // Use GameFileMapEncoder to encode to single ArrayBuffer and store in OPFS.
+                            ArrayBuffer fullGameBuffer = gameFileMapEncoder.encodeGameFileMap(gameFilesMap);
+                            worker.postArrayBufferAndObject(
+                                    "ImportGame", fullGameBuffer, createDirectoryNameObject(opfsDirectoryName));
+                            
+                            openFileResponseHandler.openFileResult(true, opfsDirectoryName, gameName, detection.gameId);
+                            
+                        } catch (RuntimeException e) {
+                            // The game failed to decode, so AGILE will not be able to run it.
+                            showMessageDialog("AGILE is unable to run the selected game. Please try another one.");
+                            openFileResponseHandler.openFileResult(false, null, null, null);
                         }
-
-                        // Use GameFileMapEncoder to encode to single ArrayBuffer and store in OPFS.
-                        ArrayBuffer fullGameBuffer = gameFileMapEncoder.encodeGameFileMap(gameFilesMap);
-                        worker.postArrayBufferAndObject(
-                                "ImportGame", fullGameBuffer, createDirectoryNameObject(opfsDirectoryName));
+                    } else {
+                        showMessageDialog("The selected folder or file does not appear to contain an AGI game.");
                         
-                        openFileResponseHandler.openFileResult(true, opfsDirectoryName, gameName, detection.gameId);
-                        
-                    } catch (RuntimeException e) {
-                        // The game failed to decode, so AGILE will not be able to run it.
-                        showMessageDialog("AGILE is unable to run the selected game. Please try another one.");
+                        // The game file map does not contain the minimum set of files.
                         openFileResponseHandler.openFileResult(false, null, null, null);
                     }
-                } else {
-                    showMessageDialog("The selected folder or file does not appear to contain an AGI game.");
-                    
-                    // The game file map does not contain the minimum set of files.
-                    openFileResponseHandler.openFileResult(false, null, null, null);
                 }
             }
         });
