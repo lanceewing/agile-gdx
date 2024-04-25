@@ -273,7 +273,8 @@ public class GameScreenInputProcessor extends InputAdapter {
             // Only if it is within the AGI Screen do we set the mouse vars.
             if (buttonDown) {
                 gameScreen.getAgileRunner().getVariableData().setMouseButton(button + 1);
-                getUserInput().keyDown(Keys.ENTER);
+                // TODO: Commenting this out for now, as it causes issues with menu and keyboard overlay. Needs rethinking.
+                //getUserInput().keyDown(Keys.ENTER);
             } else {
                 gameScreen.getAgileRunner().getVariableData().setMouseButton(0);
             }
