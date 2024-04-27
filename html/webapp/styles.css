@@ -67,6 +67,7 @@ a {
 	min-inline-size: var(--dlg-mis, auto);
 	padding: var(--dlg-p, var(--dlg-gap));
 	width: var(--dlg-w, fit-content);
+	user-select: none
 }
 
 :where([data-component="no-dialog"]:not([hidden])) {
@@ -78,7 +79,6 @@ a {
 }
 
 :where([data-component*="dialog"] menu) {
-	display: flex;
 	gap: calc(var(--dlg-gap)/2);
 	justify-content: var(--dlg-menu-jc, flex-end);
 	margin: 0;
@@ -92,16 +92,75 @@ a {
 	color: var(--dlg-button-c);
 	font-size: var(--dlg-button-fz, 0.8em);
 	padding: var(--dlg-button-p, 0.65em 1.5em);
+	height: 35px;
 }
 
 :where([data-component*="dialog"] [data-ref="accept"]) {
 	--dlg-button-bgc: var(--dlg-accept-bgc, hsl(218, 79.19%, 46.08%));
 	--dlg-button-c: var(--dlg-accept-c, #fff);
+	float: right;
+}
+
+:where([data-component*="dialog"] [data-ref="export"]) {
+	--dlg-button-bgc: var(--dlg-accept-bgc, hsl(218, 79.19%, 46.08%));
+	--dlg-button-c: var(--dlg-accept-c, #fff);
+	background: linear-gradient( to bottom, #bcc6cc, #eee, #bcc6cc);
+	border: 1px solid #7A8A99;
+}
+
+:where([data-component*="dialog"] [data-ref="export"] span) {
+	background: url(icons/export.png) no-repeat;
+    float: left;
+    width: 16px;
+    height: 16px;
+}
+
+:where([data-component*="dialog"] [data-ref="import"]) {
+	--dlg-button-bgc: var(--dlg-accept-bgc, hsl(218, 79.19%, 46.08%));
+	--dlg-button-c: var(--dlg-accept-c, #fff);
+	background: linear-gradient( to bottom, #bcc6cc, #eee, #bcc6cc);
+	border: 1px solid #7A8A99;
+}
+
+:where([data-component*="dialog"] [data-ref="import"] span) {
+	background: url(icons/import.png) no-repeat;
+    float: left;
+    width: 16px;
+    height: 16px;
+}
+
+:where([data-component*="dialog"] [data-ref="clear"]) {
+	--dlg-button-bgc: var(--dlg-accept-bgc, hsl(218, 79.19%, 46.08%));
+	--dlg-button-c: var(--dlg-accept-c, #fff);
+	background: linear-gradient( to bottom, #bcc6cc, #eee, #bcc6cc);
+	border: 1px solid #7A8A99;
+}
+
+:where([data-component*="dialog"] [data-ref="clear"] span) {
+	background: url(icons/clear.png) no-repeat;
+    float: left;
+    width: 16px;
+    height: 16px;
+}
+
+:where([data-component*="dialog"] [data-ref="reset"]) {
+	--dlg-button-bgc: var(--dlg-accept-bgc, hsl(218, 79.19%, 46.08%));
+	--dlg-button-c: var(--dlg-accept-c, #fff);
+    background: linear-gradient( to bottom, #bcc6cc, #eee, #bcc6cc);
+	border: 1px solid #7A8A99;
+}
+
+:where([data-component*="dialog"] [data-ref="reset"] span) {
+	background: url(icons/reset.png) no-repeat;
+    float: left;
+    width: 16px;
+    height: 16px;
 }
 
 :where([data-component*="dialog"] [data-ref="cancel"]) {
 	--dlg-button-bgc: var(--dlg-cancel-bgc, transparent);
 	--dlg-button-c: var(--dlg-cancel-c, inherit);
+	float: right;
 }
 
 :where([data-component*="dialog"] [data-ref="fieldset"]) {

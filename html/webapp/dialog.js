@@ -17,9 +17,8 @@ class Dialog {
 				cancel: 'Cancel',
 				dialogClass: '',
 				message: '',
-				soundAccept: '',
-				soundOpen: '',
-				template: ''
+				template: '',
+				showStateButtons: false
 			},
 			settings
 		);
@@ -57,11 +56,13 @@ class Dialog {
 		        <div data-ref="template"></div>
 		      </fieldset>
 		      <menu>
-		        <button${this.dialogSupported ? '' : ` type="button"`} data-ref="cancel" value="cancel"></button>
+		        <button${this.dialogSupported ? '' : ` type="button"`} data-ref="export" value="export"><span></span></button>
+		        <button${this.dialogSupported ? '' : ` type="button"`} data-ref="import" value="import"><span></span></button>
+		        <button${this.dialogSupported ? '' : ` type="button"`} data-ref="reset" value="reset"><span></span></button>
+		        <button${this.dialogSupported ? '' : ` type="button"`} data-ref="clear" value="clear"><span></span></button>
 		        <button${this.dialogSupported ? '' : ` type="button"`} data-ref="accept" value="default"></button>
+		        <button${this.dialogSupported ? '' : ` type="button"`} data-ref="cancel" value="cancel"></button>
 		      </menu>
-		      <audio data-ref="soundAccept"></audio>
-		      <audio data-ref="soundOpen"></audio>
 		    </form>`;
 		document.body.appendChild(this.dialog);
 
@@ -94,19 +95,17 @@ class Dialog {
 		this.dialog.className = dialog.dialogClass || '';
 		this.elements.accept.innerText = dialog.accept;
 		this.elements.cancel.innerText = dialog.cancel;
-		this.elements.cancel.hidden = dialog.cancel === '';
+		this.elements.cancel.hidden = dialog.cancel === '';;
+		this.elements.export.hidden = !dialog.showStateButtons;
+		this.elements.import.hidden = !dialog.showStateButtons;
+		this.elements.clear.hidden = !dialog.showStateButtons;
+		this.elements.reset.hidden = !dialog.showStateButtons;
 		this.elements.message.innerText = dialog.message;
-		this.elements.soundAccept.src = dialog.soundAccept || '';
-		this.elements.soundOpen.src = dialog.soundOpen || '';
 		this.elements.target = dialog.target || '';
 		this.elements.template.innerHTML = dialog.template || '';
 
 		this.focusable = this.getFocusable();
 		this.hasFormData = this.elements.fieldset.elements.length > 0;
-
-		if (dialog.soundOpen) {
-			this.elements.soundOpen.play();
-		}
 
 		this.toggle(true);
 
@@ -141,15 +140,30 @@ class Dialog {
 			}, { once: true });
 			this.elements.accept.addEventListener('click', () => {
 				let value = this.hasFormData ? this.collectFormData(new FormData(this.elements.form)) : true;
-				if (this.elements.soundAccept.getAttribute('src').length > 0) this.elements.soundAccept.play();
 				this.toggle();
 				resolve(value);
+			}, { once: true });
+			this.elements.export.addEventListener('click', () => {
+				this.toggle();
+				resolve("EXPORT");
+			}, { once: true });
+			this.elements.import.addEventListener('click', () => {
+				this.toggle();
+				resolve("IMPORT");
+			}, { once: true });
+			this.elements.clear.addEventListener('click', () => {
+				this.toggle();
+				resolve("CLEAR");
+			}, { once: true });
+			this.elements.reset.addEventListener('click', () => {
+				this.toggle();
+				resolve("RESET");
 			}, { once: true });
 		})
 	}
 
-	alert(message) {
-		const settings = Object.assign({}, { cancel: '', message: message, template: '' });
+	alert(message, defaultSettings = { template: '' }) {
+		const settings = Object.assign(defaultSettings, { cancel: '', message: message });
 		this.open(settings);
 		return this.waitForUser();
 	}
