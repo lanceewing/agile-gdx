@@ -125,9 +125,6 @@ public class GameScreenInputProcessor extends InputAdapter {
         // Convert the screen coordinates to world coordinates.
         Vector2 touchXY = viewportManager.unproject(screenX, screenY);
         
-        // Update AGI mouse variables.
-        updateAGIMouse(touchXY, button, true);
-                
         // Update the touch info for this pointer.
         TouchInfo touchInfo = null;
         if (pointer < MAX_SIMULTANEOUS_TOUCH_EVENTS) {
@@ -146,6 +143,9 @@ public class GameScreenInputProcessor extends InputAdapter {
             if (touchInfo != null) {
                 touchInfo.lastKey = keycode;
             }
+        } else {
+            // Update AGI mouse variables.
+            updateAGIMouse(touchXY, button, true);
         }
 
         return true;
@@ -301,9 +301,6 @@ public class GameScreenInputProcessor extends InputAdapter {
         // Convert the screen coordinates to world coordinates.
         Vector2 touchXY = viewportManager.unproject(screenX, screenY);
 
-        // Update AGI mouse variables (click/touch released, so clear all to 0)
-        updateAGIMouse(touchXY, button, false);
-        
         // Update the touch info for this pointer.
         TouchInfo touchInfo = null;
         if (pointer < MAX_SIMULTANEOUS_TOUCH_EVENTS) {
@@ -319,115 +316,119 @@ public class GameScreenInputProcessor extends InputAdapter {
                 processVirtualKeyboardKeyUp(keycode);
             }
         }
-        
-        // TODO: Need to handle the magic numbers in this block in a better way.
-        boolean keyboardClicked = false;
-        boolean joystickClicked = false;
-        boolean backArrowClicked = false;
-        boolean fullScreenClicked = false;
-
-        if (viewportManager.isPortrait()) {
-            // Portrait.
-            if (touchXY.y < 135) {
-                if (touchXY.x < 126) {
-                    fullScreenClicked = true;
-                } else if (touchXY.x > (viewportManager.getWidth() - 126)) {
-                    backArrowClicked = true;
-                } else {
-                    float thirdPos = (viewportManager.getWidth() / 3);
-                    float twoThirdPos = (viewportManager.getWidth() - (viewportManager.getWidth() / 3));
-                    if ((touchXY.x > (thirdPos - 42)) && (touchXY.x < (thirdPos + 84))) {
-                        joystickClicked = true;
-                    }
-                    else if ((touchXY.x > (twoThirdPos - 84)) && (touchXY.x < (twoThirdPos + 42))) {
-                        keyboardClicked = true;
-                    }
-                }
-            }
-        } else {
-            // Landscape.
-            int screenTop = (int) viewportManager.getHeight();
-            if (cameraXOffset == 0) {
-                // Screen in middle.
-                if (touchXY.y > (screenTop - 104)) {
-                    if (touchXY.x < 112) {
-                        joystickClicked = true;
-                    } else if (touchXY.x > (viewportManager.getWidth() - 112)) {
+        else {
+            // Update AGI mouse variables (click/touch released, so clear all to 0)
+            updateAGIMouse(touchXY, button, false);
+            
+            // TODO: Need to handle the magic numbers in this block in a better way.
+            boolean keyboardClicked = false;
+            boolean joystickClicked = false;
+            boolean backArrowClicked = false;
+            boolean fullScreenClicked = false;
+    
+            if (viewportManager.isPortrait()) {
+                // Portrait.
+                if (touchXY.y < 135) {
+                    if (touchXY.x < 126) {
                         fullScreenClicked = true;
-                    }
-                } else if (touchXY.y < 104) {
-                    if (touchXY.x > (viewportManager.getWidth() - 112)) {
+                    } else if (touchXY.x > (viewportManager.getWidth() - 126)) {
                         backArrowClicked = true;
-                    } else if (touchXY.x < 112) {
-                        keyboardClicked = true;
+                    } else {
+                        float thirdPos = (viewportManager.getWidth() / 3);
+                        float twoThirdPos = (viewportManager.getWidth() - (viewportManager.getWidth() / 3));
+                        if ((touchXY.x > (thirdPos - 42)) && (touchXY.x < (thirdPos + 84))) {
+                            joystickClicked = true;
+                        }
+                        else if ((touchXY.x > (twoThirdPos - 84)) && (touchXY.x < (twoThirdPos + 42))) {
+                            keyboardClicked = true;
+                        }
                     }
                 }
-            }
-            else {
-                // All buttons on same side
-                if (((touchXY.x < 128) && (cameraXOffset < 0)) || 
-                    ((touchXY.x > (viewportManager.getWidth() - 128)) && (cameraXOffset > 0))) {
-                    if (touchXY.y > (screenTop - 128)) {
-                        fullScreenClicked = true;
-                    }
-                    else if ((touchXY.y < (screenTop - 212)) && (touchXY.y > (screenTop - 340))) {
-                        joystickClicked = true;
-                    }
-                    else if ((touchXY.y > 212) && (touchXY.y < 340)) {
-                        keyboardClicked = true;
-                    }
-                    else if ((touchXY.y > 0) && (touchXY.y < 128)) {
-                        backArrowClicked = true;
-                    }
-                }
-            }
-        }
-
-        if (keyboardClicked) {
-            if (keyboardType.equals(KeyboardType.OFF)) {
-                keyboardType = (viewportManager.isPortrait() ? KeyboardType.PORTRAIT_LOWER_CASE : KeyboardType.LANDSCAPE_LOWER_CASE);
-                viewportManager.update();
             } else {
-                keyboardType = KeyboardType.OFF;
+                // Landscape.
+                int screenTop = (int) viewportManager.getHeight();
+                if (cameraXOffset == 0) {
+                    // Screen in middle.
+                    if (touchXY.y > (screenTop - 104)) {
+                        if (touchXY.x < 112) {
+                            joystickClicked = true;
+                        } else if (touchXY.x > (viewportManager.getWidth() - 112)) {
+                            fullScreenClicked = true;
+                        }
+                    } else if (touchXY.y < 104) {
+                        if (touchXY.x > (viewportManager.getWidth() - 112)) {
+                            backArrowClicked = true;
+                        } else if (touchXY.x < 112) {
+                            keyboardClicked = true;
+                        }
+                    }
+                }
+                else {
+                    // All buttons on same side
+                    if (((touchXY.x < 128) && (cameraXOffset < 0)) || 
+                        ((touchXY.x > (viewportManager.getWidth() - 128)) && (cameraXOffset > 0))) {
+                        if (touchXY.y > (screenTop - 128)) {
+                            fullScreenClicked = true;
+                        }
+                        else if ((touchXY.y < (screenTop - 212)) && (touchXY.y > (screenTop - 340))) {
+                            joystickClicked = true;
+                        }
+                        else if ((touchXY.y > 212) && (touchXY.y < 340)) {
+                            keyboardClicked = true;
+                        }
+                        else if ((touchXY.y > 0) && (touchXY.y < 128)) {
+                            backArrowClicked = true;
+                        }
+                    }
+                }
             }
-        }
-
-        if (joystickClicked) {
-           // Rotate the joystick screen alignment.
-           joystickAlignment = joystickAlignment.rotateValue();
-           if (!viewportManager.isPortrait() && joystickAlignment.equals(JoystickAlignment.MIDDLE)) {
+    
+            if (keyboardClicked) {
+                if (keyboardType.equals(KeyboardType.OFF)) {
+                    keyboardType = (viewportManager.isPortrait() ? KeyboardType.PORTRAIT_LOWER_CASE : KeyboardType.LANDSCAPE_LOWER_CASE);
+                    viewportManager.update();
+                } else {
+                    keyboardType = KeyboardType.OFF;
+                }
+            }
+    
+            if (joystickClicked) {
+               // Rotate the joystick screen alignment.
                joystickAlignment = joystickAlignment.rotateValue();
-           }
-        }
-        
-        if (fullScreenClicked) {
-            Boolean fullScreen = Gdx.graphics.isFullscreen();
-            if (fullScreen == true) {
-                switchOutOfFullScreen();
-            }
-            else {
-                switchIntoFullScreen();
-            }
-        }
-
-        if (backArrowClicked) {
-            if (Gdx.app.getType().equals(ApplicationType.Desktop) && Gdx.graphics.isFullscreen()) {
-                // Dialog won't show for desktop unless we exit full screen,
-                switchOutOfFullScreen();
+               if (!viewportManager.isPortrait() && joystickAlignment.equals(JoystickAlignment.MIDDLE)) {
+                   joystickAlignment = joystickAlignment.rotateValue();
+               }
             }
             
-            dialogHandler.confirm("Are you sure you want to quit the game?", 
-                    new ConfirmResponseHandler() {
-                @Override
-                public void yes() {
-                    gameScreen.getAgileRunner().stop();
+            if (fullScreenClicked) {
+                Boolean fullScreen = Gdx.graphics.isFullscreen();
+                if (fullScreen == true) {
+                    switchOutOfFullScreen();
+                }
+                else {
+                    switchIntoFullScreen();
+                }
+            }
+    
+            if (backArrowClicked) {
+                if (Gdx.app.getType().equals(ApplicationType.Desktop) && Gdx.graphics.isFullscreen()) {
+                    // Dialog won't show for desktop unless we exit full screen,
+                    switchOutOfFullScreen();
                 }
                 
-                @Override
-                public void no() {
-                    // Nothing to do.
-                }
-            });
+                dialogHandler.confirm("Are you sure you want to quit the game?", 
+                        new ConfirmResponseHandler() {
+                    @Override
+                    public void yes() {
+                        gameScreen.getAgileRunner().stop();
+                    }
+                    
+                    @Override
+                    public void no() {
+                        // Nothing to do.
+                    }
+                });
+            }
         }
         
         return true;
