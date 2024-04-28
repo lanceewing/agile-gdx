@@ -77,6 +77,7 @@ public class HomeScreen extends InputAdapter implements Screen {
     private PaginationWidget portraitPaginationWidget;
     private PaginationWidget landscapePaginationWidget;
     private Texture whitePixelTexture;
+    private Texture titleTexture;
     
     /**
      * Invoked by AGILE whenever it would like to show a dialog, such as when it needs
@@ -124,6 +125,11 @@ public class HomeScreen extends InputAdapter implements Screen {
     }
     
     /**
+     * Holds a reference to the AppConfigItem for the last game that was launched.
+     */
+    private AppConfigItem lastGameLaunched;
+    
+    /**
      * Constructor for HomeScreen.
      * 
      * @param agile The Agile instance.
@@ -147,6 +153,7 @@ public class HomeScreen extends InputAdapter implements Screen {
         skin.add("top", skin.newDrawable("default-round", new Color(0, 0, 0, 0)), Drawable.class);
         skin.add("empty", skin.newDrawable("default-round", new Color(1f, 1f, 1f, 0.1f)), Drawable.class);
 
+        titleTexture = new Texture("png/agile_title.png");
         backgroundLandscape = new Texture("jpg/landscape_back.jpg");
         backgroundLandscape.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
         backgroundPortrait = new Texture("jpg/portrait_back.jpg");
@@ -233,6 +240,9 @@ public class HomeScreen extends InputAdapter implements Screen {
         stage.addActor(container);
         container.setFillParent(true);
 
+        Table currentPage = new Table().pad(0, 0, 0, 0);
+        Image title = new Image(titleTexture);
+        
         float viewportWidth = viewportManager.getWidth();
         float viewportHeight = viewportManager.getHeight();
         
@@ -245,18 +255,28 @@ public class HomeScreen extends InputAdapter implements Screen {
         int totalHorizPadding = 0;
         int horizPaddingUnit = 0;
 
+        Button infoButton = buildButton("INFO", null, "png/info.png", 96, 96, null, null);
+        currentPage.add().expandX();
+        currentPage.add(infoButton).pad(16, 0, 0, 16).align(Align.right).expandX();
+        currentPage.row();
+        currentPage.add().expandX();
+        
         if (viewportManager.isLandscape()) {
             // Landscape.
-            //sidePadding = 85;  // 100 leaves 24 (i.e. 12 * 2) between. 85 leaves 30.
             container.setBackground(new Image(backgroundLandscape).getDrawable());
             totalHorizPadding = 1920 - (ICON_IMAGE_WIDTH * columns) - (sidePadding * 2);
             horizPaddingUnit = totalHorizPadding / (columns * 2);
+            int titleWidth = 428;
+            float titlePadding = ((1920 - titleWidth) / 2);
+            currentPage.add(title).width(titleWidth).height(197).pad(0, titlePadding, 112 - 26, titlePadding).expand();
         } else {
             // Portrait.
-            //sidePadding = 15;  // 24 leaves 24 between. 15 leaves 30.
             container.setBackground(new Image(backgroundPortrait).getDrawable());
             totalHorizPadding = 1080 - (ICON_IMAGE_WIDTH * columns) - (sidePadding * 2);
             horizPaddingUnit = totalHorizPadding / (columns * 2);
+            int titleWidth = 428;
+            float titlePadding = ((1080 - titleWidth) / 2);
+            currentPage.add(title).width(titleWidth).height(197).pad(0, titlePadding, 112 - 26, titlePadding).expand();
         }
         
         PagedScrollPane pagedScrollPane = new PagedScrollPane();
@@ -265,7 +285,10 @@ public class HomeScreen extends InputAdapter implements Screen {
         int itemsPerPage = columns * rows;
         int pageItemCount = 0;
 
-        Table currentPage = new Table().pad(0, sidePadding, 0, sidePadding);
+        // Set up first page, which is mainly empty.
+        pagedScrollPane.addPage(currentPage);
+        
+        currentPage = new Table().pad(0, sidePadding, 0, sidePadding);
         currentPage.defaults().pad(0, horizPaddingUnit, 0, horizPaddingUnit);
 
         // Add empty slot at the start that will always be present for adding a new game.
@@ -360,6 +383,13 @@ public class HomeScreen extends InputAdapter implements Screen {
             Gdx.input.setInputProcessor(landscapeInputProcessor);
         }
         updateHomeScreenButtonStages();
+        
+        // Screen is resized after returning from GameScreen, so we need to scroll
+        // back to the page that the game that was running was on.
+        if (lastGameLaunched != null) {
+            showGamePage(lastGameLaunched, true);
+            lastGameLaunched = null;
+        }
     }
 
     @Override
@@ -386,7 +416,7 @@ public class HomeScreen extends InputAdapter implements Screen {
         whitePixelTexture.dispose();
         landscapePaginationWidget.dispose();
         portraitPaginationWidget.dispose();
-        
+        titleTexture.dispose();
         saveAppConfigMap();
     }
     
@@ -512,23 +542,44 @@ public class HomeScreen extends InputAdapter implements Screen {
     private static final int ICON_IMAGE_HEIGHT = 240;
     private static final int ICON_LABEL_HEIGHT = 90;
     private static final int PAGINATION_HEIGHT = 60;
-
+    
     /**
      * Creates a button to represent the given AppConfigItem.
      * 
-     * @param appConfigItem AppConfigItem containing details about the app to build a Button to represent.
+     * @param appConfigItem
      * 
-     * @return The button to use for running the given AppConfigItem.
+     * @return
      */
-    public Button buildAppButton(AppConfigItem appConfigItem) {
+    private Button buildAppButton(AppConfigItem appConfigItem) {
+        String iconPath = appConfigItem.getGameId() != null?
+                StringUtils.format("screenshots/{0}.png", appConfigItem.getGameId().toUpperCase()) : "";
+        return buildButton(
+                appConfigItem.getName(), 
+                appConfigItem.getDisplayName() != null? appConfigItem.getDisplayName() : "", 
+                iconPath, 
+                ICON_IMAGE_WIDTH, ICON_IMAGE_HEIGHT,
+                appConfigItem.getFileType(),
+                appConfigItem.getGameId());
+    }
+    
+    /**
+     * Creates a button using the given parameters.
+     * 
+     * @param name 
+     * @param displayName 
+     * @param iconPath 
+     * @param type 
+     * @param gameId
+     * 
+     * @return The created Button.
+     */
+    private Button buildButton(String name, String labelText, String iconPath, int width, int height, String type, String gameId) {
         Button button = new Button(skin);
         ButtonStyle style = button.getStyle();
         style.up = style.down = null;
 
         // An app button can contain an optional icon.
         Image icon = null;
-        String iconPath = appConfigItem.getGameId() != null?
-                StringUtils.format("screenshots/{0}.png", appConfigItem.getGameId().toUpperCase()) : "";
         
         Texture iconTexture = buttonTextureMap.get(iconPath);
         if (iconTexture == null) {
@@ -536,13 +587,13 @@ public class HomeScreen extends InputAdapter implements Screen {
                 try {
                     // See if there is screenshot icon in the assets folder.
                     Pixmap iconPixmap = new Pixmap(Gdx.files.internal(iconPath));
-                    if ("UNK".equals(appConfigItem.getFileType())) {
+                    if ("UNK".equals(type)) {
                         iconPixmap.setColor(0.0f, 0.0f, 0.0f, 0.5f);
                         iconPixmap.fillRectangle(0, 0, iconPixmap.getWidth(), iconPixmap.getHeight());
                     }
                     
                     // If there is, then it's expected to be 320x200, so we scale it to right aspect ratio.
-                    Pixmap iconStretchedPixmap = new Pixmap(ICON_IMAGE_WIDTH, ICON_IMAGE_HEIGHT, iconPixmap.getFormat());
+                    Pixmap iconStretchedPixmap = new Pixmap(width, height, iconPixmap.getFormat());
                     iconStretchedPixmap.drawPixmap(iconPixmap,
                             0, 0, iconPixmap.getWidth(), iconPixmap.getHeight(),
                             0, 0, iconStretchedPixmap.getWidth(), iconStretchedPixmap.getHeight()
@@ -556,10 +607,10 @@ public class HomeScreen extends InputAdapter implements Screen {
                     icon = new Image(iconTexture);
                     icon.setAlign(Align.center);
                 } catch (Exception e) {
-                    icon = new Image(drawEmptyIcon(ICON_IMAGE_WIDTH, ICON_IMAGE_HEIGHT));
+                    icon = new Image(drawEmptyIcon(width, height));
                 }
             } else {
-                icon = new Image(drawEmptyIcon(ICON_IMAGE_WIDTH, ICON_IMAGE_HEIGHT));
+                icon = new Image(drawEmptyIcon(width, height));
             }
         } else {
             icon = new Image(iconTexture);
@@ -570,31 +621,33 @@ public class HomeScreen extends InputAdapter implements Screen {
             Container<Image> iconContainer = new Container<Image>();
             iconContainer.setActor(icon);
             iconContainer.align(Align.center);
-            button.stack(new Image(skin.getDrawable("top")), iconContainer).width(ICON_IMAGE_WIDTH)
-                    .height(ICON_IMAGE_HEIGHT);
+            button.stack(new Image(skin.getDrawable("top")), iconContainer).width(width)
+                    .height(height);
         }
-        button.row();
-
-        Label label = null;
-        if ((appConfigItem.getDisplayName() == null) || appConfigItem.getDisplayName().trim().isEmpty()) {
-            if ("ADD_GAME".equals(appConfigItem.getGameId())) {
-                label = new Label("Add Game", skin);
-            } else {
-                label = new Label("[empty]", skin);
-            }
-            label.setColor(new Color(1f, 1f, 1f, 0.6f));
-        } else {
-            label = new Label(appConfigItem.getDisplayName(), skin);
-            if ("UNK".equals(appConfigItem.getFileType())) {
+        
+        if (labelText != null) {
+            button.row();
+            Label label = null;
+            if (labelText.trim().isEmpty()) {
+                if ((gameId != null) && "ADD_GAME".equals(gameId)) {
+                    label = new Label("Add Game", skin);
+                } else {
+                    label = new Label("[empty]", skin);
+                }
                 label.setColor(new Color(1f, 1f, 1f, 0.6f));
+            } else {
+                label = new Label(labelText, skin);
+                if ("UNK".equals(type)) {
+                    label.setColor(new Color(1f, 1f, 1f, 0.6f));
+                }
             }
+            label.setFontScale(2f);
+            label.setAlignment(Align.top);
+            label.setWrap(false);
+            button.add(label).width(150).height(90).padTop(10);
         }
-        label.setFontScale(2f);
-        label.setAlignment(Align.top);
-        label.setWrap(false);
-        button.add(label).width(150).height(90).padTop(10);
-
-        button.setName(appConfigItem.getName());
+        
+        button.setName(name);
         button.addListener(appClickListener);
         button.addListener(appGestureListener);
         return button;
@@ -727,7 +780,7 @@ public class HomeScreen extends InputAdapter implements Screen {
                     final AppConfigItem appConfigItem = appConfigMap.get(appName);
                     if (appConfigItem != null) {
                         if (!menu.isOpen()) {
-                            menu.open(appConfigItem, actor.getX(Align.center), actor.getY(Align.center) + 35);
+                            menu.open(appConfigItem, actor.getX(Align.center), actor.getY(Align.center) + 70);
                         }
                     }
                 }
@@ -745,10 +798,13 @@ public class HomeScreen extends InputAdapter implements Screen {
                                 // Known game but hasn't yet been imported.
                                 importGame(appConfigItem);
                             } else {
+                                lastGameLaunched = appConfigItem;
                                 GameScreen gameScreen = agile.getGameScreen();
                                 gameScreen.initGame(appConfigItem, true);
                                 agile.setScreen(gameScreen);
                             }
+                        } else if (appName.equals("INFO")) {
+                            showAboutAgileDialog();
                         }
                     } else {
                         // Add miscellaneous game option (i.e. the plus icon).
@@ -758,6 +814,59 @@ public class HomeScreen extends InputAdapter implements Screen {
             }
         }
     };
+    
+    private void showAboutAgileDialog() {
+        dialogHandler.showAboutDialog(
+                "AGILE v1.0.0\n\n" + 
+                "Celebrating the 40th anniversary of King's Quest!\n\n" + 
+                "To start, simply swipe or click to the right.\n\n" + 
+                "For legal reasons, you must import your own copy of the original Sierra games.\n" + 
+                "Most AGI Sierra games are still available for purchase online.\n" + 
+                "Check out gog.com and Steam.\n\n" + 
+                "Over 100 fan made AGI games and demos are included by default.\n\n" + 
+                "GitHub repo: https://github.com/lanceewing/agile-gdx\n\n",
+                new TextInputResponseHandler() {
+                    @Override
+                    public void inputTextResult(boolean success, String button) {
+                        if (success && !button.equals("OK")) {
+                            // State management.
+                            switch (button) {
+                                case "EXPORT":
+                                    exportState();
+                                    break;
+                                case "IMPORT":
+                                    importState();
+                                    break;
+                                case "CLEAR":
+                                    clearState();
+                                    break;
+                                case "RESET":
+                                    resetState();
+                                    break;
+                                default:
+                                    // Nothing to do.
+                                    break;
+                            }
+                        }
+                    }
+                });
+    }
+    
+    private void exportState() {
+        
+    }
+    
+    private void importState() {
+        
+    }
+    
+    private void clearState() {
+        
+    }
+    
+    private void resetState() {
+        
+    }
     
     private void importGame(AppConfigItem appConfigItem) {
         Gdx.app.postRunnable(new Runnable() {
@@ -810,7 +919,7 @@ public class HomeScreen extends InputAdapter implements Screen {
                                 appConfigMap.put(appConfigItem.getName(), appConfigItem);
                                 disposeCachedIcon(appConfigItem);
                                 updateHomeScreenButtonStages();
-                                showGamePage(appConfigItem);
+                                showGamePage(appConfigItem, false);
                             }
                         }
                     };
@@ -877,8 +986,8 @@ public class HomeScreen extends InputAdapter implements Screen {
         return 0;
     }
     
-    private void showGamePage(AppConfigItem appConfigItem) {
-        showGamePage(getGameIndex(appConfigItem), false);
+    private void showGamePage(AppConfigItem appConfigItem, boolean skipScroll) {
+        showGamePage(getGameIndex(appConfigItem), skipScroll);
     }
     
     private void showGamePage(int gameIndex, boolean skipScroll) {
@@ -891,7 +1000,7 @@ public class HomeScreen extends InputAdapter implements Screen {
         // Work out how far to move from far left to get to game's page.
         int gamesPerPage = pagedScrollPane.getGamesPerPage();
         float pageWidth = viewportManager.isPortrait()? 1130.0f : 1970.0f;
-        float newScrollX = pageWidth * (gameIndex / gamesPerPage);
+        float newScrollX = pageWidth * (gameIndex / gamesPerPage) + pageWidth;
         
         pagedScrollPane.setScrollX(newScrollX);
         pagedScrollPane.setLastScrollX(newScrollX);
@@ -969,11 +1078,18 @@ public class HomeScreen extends InputAdapter implements Screen {
         
         private void runGame() {
             AppConfigItem gameToRun = appConfigItem;
+            lastGameLaunched = gameToRun;
+            
             closeImmediately();
             
-            GameScreen gameScreen = agile.getGameScreen();
-            gameScreen.initGame(gameToRun, true);
-            agile.setScreen(gameScreen);
+            Gdx.app.postRunnable(new Runnable(){
+                @Override
+                public void run() {
+                    GameScreen gameScreen = agile.getGameScreen();
+                    gameScreen.initGame(gameToRun, true);
+                    agile.setScreen(gameScreen);
+                }
+            });
         }
         
         private void deleteGame() {
@@ -985,7 +1101,13 @@ public class HomeScreen extends InputAdapter implements Screen {
                 @Override
                 public void yes() {
                     int gameIndexBeforeClose = getGameIndex(gameToDelete);
-                    appConfigMap.remove(gameToDelete.getName());
+                    if (SIERRA_GAMES.contains(gameToDelete.getGameId().toLowerCase())) {
+                        gameToDelete.setFileType("UNK");
+                        gameToDelete.setFilePath("");
+                        disposeCachedIcon(gameToDelete);
+                    } else {
+                        appConfigMap.remove(gameToDelete.getName());
+                    }
                     // TODO: GWT needs to remove data from OPFS.
                     Gdx.app.postRunnable(new Runnable(){
                         @Override

@@ -51,7 +51,15 @@ public interface DialogHandler {
    * @param importTypeResponseHandler The handler to be invoked with the user's response.
    */
   public void promptForImportType(AppConfigItem appConfigItem, ImportTypeResponseHandler importTypeResponseHandler);
-
+  
+  /**
+   * Shows the About AGILE message dialog.
+   * 
+   * @param aboutMessage The About message to display.
+   * @param textInputResponseHandler Optional state management button response.
+   */
+  public void showAboutDialog(String aboutMessage, TextInputResponseHandler textInputResponseHandler);
+  
   /**
    * Returns true if a dialog is currently open.
    * 

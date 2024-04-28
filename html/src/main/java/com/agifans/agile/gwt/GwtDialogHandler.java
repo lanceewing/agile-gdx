@@ -42,10 +42,16 @@ public class GwtDialogHandler implements DialogHandler {
         gameFileMapEncoder = new GameFileMapEncoder();
         opfsGameFiles = new OPFSGameFiles();
         
+        initDialog();
+        
         // The same worker script is used for importing game data as is used for 
         // the interpreter but they are run in two different running web workers.
         worker = Worker.create("worker/worker.nocache.js");
     }
+    
+    private final native void initDialog()/*-{
+        this.dialog = new $wnd.Dialog();
+    }-*/;
 
     @Override
     public void confirm(String message, ConfirmResponseHandler confirmResponseHandler) {
@@ -60,8 +66,7 @@ public class GwtDialogHandler implements DialogHandler {
 
     private final native void showHtmlConfirmBox(String message, ConfirmResponseHandler confirmResponseHandler)/*-{
         var that = this;
-        var dialog = new $wnd.Dialog();
-        dialog.confirm(message).then(function (res) {
+        this.dialog.confirm(message).then(function (res) {
             if (res) {
                 confirmResponseHandler.@com.agifans.agile.ui.ConfirmResponseHandler::yes()();
             } else {
@@ -99,8 +104,7 @@ public class GwtDialogHandler implements DialogHandler {
     }
     
     private final native void showHtmlPromptForImportType(String title, String message, String[] options, PromptForOptionsResponseHandler promptForOptionsResponseHandler)/*-{
-        var dialog = new $wnd.Dialog();
-        dialog.promptForOption(title, message, options).then(function (res) {
+        this.dialog.promptForOption(title, message, options).then(function (res) {
             if (res) {
                 promptForOptionsResponseHandler.@com.agifans.agile.gwt.GwtDialogHandler.PromptForOptionsResponseHandler::selectedOptionResult(ZLjava/lang/String;)(true, res.option);
             } else {
@@ -346,8 +350,7 @@ public class GwtDialogHandler implements DialogHandler {
     
     private final native void showHtmlPromptBox(String message, String initialValue, TextInputResponseHandler textInputResponseHandler)/*-{
         var that = this;
-        var dialog = new $wnd.Dialog();
-        dialog.prompt(message, initialValue).then(function (res) {
+        this.dialog.prompt(message, initialValue).then(function (res) {
             if (res) {
                 textInputResponseHandler.@com.agifans.agile.ui.TextInputResponseHandler::inputTextResult(ZLjava/lang/String;)(true, res.prompt);
             } else {
@@ -369,9 +372,47 @@ public class GwtDialogHandler implements DialogHandler {
     }
     
     private final native void showHtmlMessageBox(String message)/*-{
-        var dialog = new $wnd.Dialog();
-        dialog.alert(message);
-        this.@com.agifans.agile.gwt.GwtDialogHandler::dialogOpen = false;
+        var that = this;
+        this.dialog.alert(message).then(function (res) {
+            that.@com.agifans.agile.gwt.GwtDialogHandler::dialogOpen = false;
+        });
+    }-*/;
+
+    @Override
+    public void showAboutDialog(String aboutMessage, TextInputResponseHandler textInputResponseHandler) {
+        Gdx.app.postRunnable(new Runnable() {
+            @Override
+            public void run() {
+                dialogOpen = true;
+                showHtmlAboutDialog(aboutMessage, textInputResponseHandler);
+            }
+        });
+    }
+    
+    private final native void showHtmlAboutDialog(String message, TextInputResponseHandler textInputResponseHandler)/*-{
+        var that = this;
+        message = message.replace(/(?:\r\n|\r|\n)/g, "<br>");
+        message = message.replace(/gog.com/g, "<a href='https://www.gog.com'  target='_blank'>gog.com</a>");
+        message = message.replace(/Steam/g, "<a href='https://store.steampowered.com'  target='_blank'>Steam</a>");
+        message = message.replace(/https:\/\/github.com\/lanceewing\/agile-gdx/g, "<a href='https://github.com/lanceewing/agile-gdx' target='_blank'>https://github.com/lanceewing/agile-gdx</a>");
+        this.dialog.alert('', { 
+                showStateButtons: false, 
+                template:  '<b>' + message + '</b>'
+            }).then(function (res) {
+                if (res) {
+                    if (res === true) {
+                       // OK button.
+                        textInputResponseHandler.@com.agifans.agile.ui.TextInputResponseHandler::inputTextResult(ZLjava/lang/String;)(true, "OK");
+                    }
+                    else {
+                        textInputResponseHandler.@com.agifans.agile.ui.TextInputResponseHandler::inputTextResult(ZLjava/lang/String;)(true, res);
+                    }
+                }
+                else {
+                    textInputResponseHandler.@com.agifans.agile.ui.TextInputResponseHandler::inputTextResult(ZLjava/lang/String;)(false, null);
+                }
+                that.@com.agifans.agile.gwt.GwtDialogHandler::dialogOpen = false;
+            });
     }-*/;
 
     @Override
