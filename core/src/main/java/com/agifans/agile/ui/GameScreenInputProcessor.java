@@ -528,6 +528,12 @@ public class GameScreenInputProcessor extends InputAdapter {
             if (!keyboardType.isPortrait()) {
                 keyboardType = KeyboardType.PORTRAIT_LOWER_CASE;
             }
+            
+            // For non-standard portrait sizes, where the keyboard would overlap the
+            // screen, we turn the keyboard off on resize.
+            if (((float)height/width) < 1.77) {
+                keyboardType = KeyboardType.OFF;
+            }
         } else if (keyboardType.isRendered()) {
             // If it wasn't previously landscape, then turn it off.
             if (!keyboardType.isLandscape()) {
