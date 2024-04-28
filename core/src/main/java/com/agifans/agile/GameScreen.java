@@ -331,8 +331,9 @@ public class GameScreen implements Screen {
         batch.setColor(c.r, c.g, c.b, 0.5f);
         if (viewportManager.isPortrait()) {
             // Portrait
-            batch.draw(joystickIcon, 20, 20);
-            batch.draw(fullScreenIcon, viewportManager.getWidth() - viewportManager.getWidth() / 2 - 48, 20);
+            batch.draw(fullScreenIcon, 20, 20);
+            batch.draw(joystickIcon, (viewportManager.getWidth() / 3) - 32, 20);
+            batch.draw(keyboardIcon, (viewportManager.getWidth() - (viewportManager.getWidth() / 3)) - 64, 20);
             batch.draw(backIcon, viewportManager.getWidth() - 116, 20);
         } else {
             // Landscape

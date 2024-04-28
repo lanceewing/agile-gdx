@@ -330,13 +330,17 @@ public class GameScreenInputProcessor extends InputAdapter {
             // Portrait.
             if (touchXY.y < 135) {
                 if (touchXY.x < 126) {
-                    joystickClicked = true;
+                    fullScreenClicked = true;
                 } else if (touchXY.x > (viewportManager.getWidth() - 126)) {
                     backArrowClicked = true;
                 } else {
-                    int midWidth = (int) (viewportManager.getWidth() - (viewportManager.getWidth() / 2));
-                    if ((touchXY.x > (midWidth - 63)) && (touchXY.x < (midWidth + 63))) {
-                        fullScreenClicked = true;
+                    float thirdPos = (viewportManager.getWidth() / 3);
+                    float twoThirdPos = (viewportManager.getWidth() - (viewportManager.getWidth() / 3));
+                    if ((touchXY.x > (thirdPos - 42)) && (touchXY.x < (thirdPos + 84))) {
+                        joystickClicked = true;
+                    }
+                    else if ((touchXY.x > (twoThirdPos - 84)) && (touchXY.x < (twoThirdPos + 42))) {
+                        keyboardClicked = true;
                     }
                 }
             }
