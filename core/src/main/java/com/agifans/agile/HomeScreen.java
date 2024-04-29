@@ -257,7 +257,7 @@ public class HomeScreen extends InputAdapter implements Screen {
 
         Button infoButton = buildButton("INFO", null, "png/info.png", 96, 96, null, null);
         currentPage.add().expandX();
-        currentPage.add(infoButton).pad(16, 0, 0, 16).align(Align.right).expandX();
+        currentPage.add(infoButton).pad(30, 0, 0, 20).align(Align.right).expandX();
         currentPage.row();
         currentPage.add().expandX();
         
