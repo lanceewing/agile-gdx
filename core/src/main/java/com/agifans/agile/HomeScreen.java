@@ -821,8 +821,7 @@ public class HomeScreen extends InputAdapter implements Screen {
                 "Celebrating the 40th anniversary of King's Quest!\n\n" + 
                 "To start, simply swipe or click to the right.\n\n" + 
                 "For legal reasons, you must import your own copy of the original Sierra games.\n" + 
-                "Most AGI Sierra games are still available for purchase online.\n" + 
-                "Check out gog.com and Steam.\n\n" + 
+                "Most are available on gog.com and Steam.\n\n" + 
                 "Over 100 fan made AGI games and demos are included by default.\n\n" + 
                 "GitHub repo: https://github.com/lanceewing/agile-gdx\n\n",
                 new TextInputResponseHandler() {
