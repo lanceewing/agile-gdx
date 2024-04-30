@@ -279,7 +279,7 @@ public class GameScreen implements Screen {
         float cameraXOffset = 0;
         float cameraYOffset = 0;
         float sidePaddingWidth = 0;
-        if (viewportManager.isLandscape()) {
+        if (viewportManager.doesScreenFitWidth()) {
             // Override default screen centering logic to allow for narrower screens, so 
             // that the joystick can be rendered as a decent size.
             float agiScreenWidth = (viewportManager.getHeight() * 1.32f);
@@ -324,7 +324,11 @@ public class GameScreen implements Screen {
         if (keyboardType.isRendered() || viewportManager.isPortrait()) {
             if (keyboardType.getTexture() != null) {
                 batch.setColor(c.r, c.g, c.b, keyboardType.getOpacity());
-                batch.draw(keyboardType.getTexture(), 0, keyboardType.getRenderOffset());
+                batch.draw(
+                        keyboardType.getTexture(), 
+                        0, keyboardType.getRenderOffset(), 
+                        keyboardType.getTexture().getWidth(), 
+                        keyboardType.getHeight());
             }
         } 
         

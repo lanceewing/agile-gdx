@@ -73,7 +73,14 @@ public class ViewportManager {
    * @param height The new screen height.
    */
   public void update(int width, int height) {
-    portrait = (height > (width / 1.32f));
+    // 1.13 when icons are no longer overlapping
+    // 1.00 square
+    // 0.80 where keyboard top matches screen base
+    //portrait = (height > (width / 1.32f));
+    //portrait = (height > (width / 1.00f));
+    
+    portrait = (height > (width / 0.80f));
+    
     getCurrentViewport().update(width, height, true);
   }
   
@@ -100,6 +107,14 @@ public class ViewportManager {
    */
   public boolean isLandscape() {
     return !portrait;
+  }
+  
+  public boolean doesScreenFitWidth() {
+    return !(getHeight() > (getWidth() / 1.32f));
+  }
+  
+  public int getScreenBase() {
+      return (int)(getHeight() - (getWidth() / 1.32));
   }
   
   /**

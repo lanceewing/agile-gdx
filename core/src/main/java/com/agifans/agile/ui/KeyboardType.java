@@ -23,7 +23,6 @@ public enum KeyboardType {
             "png/landscape_keyboard_lowercase.png",
             0.3f,
             110,
-            0,
             250,
             1421,
             0
@@ -39,7 +38,6 @@ public enum KeyboardType {
             "png/landscape_keyboard_uppercase.png",
             0.3f,
             110,
-            0,
             250,
             1421,
             0
@@ -55,7 +53,6 @@ public enum KeyboardType {
             "png/landscape_keyboard_punc_numbers.png",
             0.3f,
             110,
-            0,
             250,
             1421,
             0
@@ -71,7 +68,6 @@ public enum KeyboardType {
             "png/portrait_keyboard_lowercase.png",
             0.6f,
             135,
-            0,
             1,
             -1,
             0
@@ -87,7 +83,6 @@ public enum KeyboardType {
             "png/portrait_keyboard_uppercase.png",
             0.6f,
             135,
-            0,
             1,
             -1,
             0
@@ -103,18 +98,12 @@ public enum KeyboardType {
             "png/portrait_keyboard_punc_numbers.png",
             0.6f,
             135,
-            0,
             1,
             -1,
             0
           ),
     MOBILE_ON_SCREEN,
     OFF;
-
-    /**
-     * The vertical size of the keys in this KeyboardType.
-     */
-    private float vertKeySize;
 
     /**
      * The horizontal size of the keys in this KeyboardType.
@@ -142,11 +131,6 @@ public enum KeyboardType {
     private int renderOffset;
 
     /**
-     * The Y value above which the keyboard will be closed.
-     */
-    private int closeHeight;
-
-    /**
      * The X value at which the keyboard starts in the keyboard image.
      */
     private int xStart;
@@ -169,8 +153,6 @@ public enum KeyboardType {
      * @param opacity        The opacity of this KeyboardType.
      * @param renderOffset   Offset from the bottom of the screen that the keyboard
      *                       is rendered at.
-     * @param closeBuffer    Buffer over the keyboard above which a tap or click
-     *                       will close the keyboard.
      * @param xStart         The X value at which the keyboard starts in the
      *                       keyboard image.
      * @param activeWidth    The width of the active part of the keyboard image, or
@@ -178,7 +160,7 @@ public enum KeyboardType {
      * @param yStart         The Y value at which the keyboard starts in the
      *                       keyboard image.
      */
-    KeyboardType(Integer[][] keyMap, String keyboardImage, float opacity, int renderOffset, int closeBuffer,
+    KeyboardType(Integer[][] keyMap, String keyboardImage, float opacity, int renderOffset, 
             int xStart, int activeWidth, int yStart) {
         this.keyMap = keyMap;
         this.texture = new Texture(keyboardImage);
@@ -187,12 +169,9 @@ public enum KeyboardType {
         
         activeWidth = (activeWidth == -1 ? this.texture.getWidth() - this.xStart : activeWidth);
         
-        this.vertKeySize = ((float) (((float) this.texture.getHeight()) - (float) this.yStart)
-                / (float) this.keyMap.length);
         this.horizKeySize = ((float) activeWidth / (float) this.keyMap[0].length);
         this.opacity = opacity;
         this.renderOffset = renderOffset;
-        this.closeHeight = this.texture.getHeight() + renderOffset + closeBuffer;
         this.activeWidth = activeWidth;
     }
 
@@ -215,7 +194,10 @@ public enum KeyboardType {
      */
     public Integer getKeyCode(float x, float y) {
         Integer keyCode = null;
-        int keyRow = (int) ((texture.getHeight() - (y - yStart) + renderOffset) / vertKeySize);
+        float height = getHeight();
+        float vertKeySize = ((float) (((float) height) - (float) this.yStart) / (float) this.keyMap.length);
+        
+        int keyRow = (int) ((getHeight() - (y - yStart) + renderOffset) / vertKeySize);
 
         if (keyRow >= keyMap.length) {
             keyRow = keyMap.length - 1;
@@ -239,6 +221,30 @@ public enum KeyboardType {
         
         return keyCode;
     }
+    
+    /**
+     * Gets the height of the keyboard.
+     * 
+     * @return The current height of the keyboard.
+     */
+    public float getHeight() {
+        if (isLandscape()) {
+            return texture.getHeight();
+        } else {
+            ViewportManager viewportManager = ViewportManager.getInstance();
+            int keyboardHeight = viewportManager.getScreenBase() - getRenderOffset();
+            return Math.max(Math.min(keyboardHeight, texture.getHeight()), 365);
+        }
+    }
+    
+    /**
+     * Gets the Y value for the top of this KeyboardType.
+     * 
+     * @return The Y value for the top of this KeyboardType.
+     */
+    public float getTop() {
+        return (getRenderOffset() + getHeight());
+    }
 
     /**
      * Tests if the given X/Y position is within the bounds of this KeyboardTypes
@@ -252,7 +258,7 @@ public enum KeyboardType {
      */
     public boolean isInKeyboard(float x, float y) {
         if (isRendered()) {
-            boolean isInYBounds = (y < (texture.getHeight() + renderOffset) && (y > renderOffset));
+            boolean isInYBounds = (y < (getHeight() + renderOffset) && (y > renderOffset));
             boolean isInXBounds = ((x >= xStart) && (x < (xStart + activeWidth)));
             return isInYBounds && isInXBounds;
             
@@ -261,7 +267,7 @@ public enum KeyboardType {
             return false;
         }
     }
-
+    
     /**
      * @return The Texture holding the keyboard image for this KeyboardType.
      */
@@ -308,13 +314,6 @@ public enum KeyboardType {
      */
     public int getRenderOffset() {
         return renderOffset;
-    }
-
-    /**
-     * @return The height above which the keyboard will close.
-     */
-    public int getCloseHeight() {
-        return closeHeight;
     }
 
     /**
