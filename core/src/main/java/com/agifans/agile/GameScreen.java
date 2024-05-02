@@ -591,6 +591,7 @@ public class GameScreen implements Screen {
     public void initGame(AppConfigItem appConfigItem, boolean startedByUser) {
         this.appConfigItem = appConfigItem;
         this.startedByUser = startedByUser;
+        this.gameScreenInputProcessor.reset();
     }
     
     /**

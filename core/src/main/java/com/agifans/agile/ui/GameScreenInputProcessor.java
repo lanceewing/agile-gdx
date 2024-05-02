@@ -111,6 +111,13 @@ public class GameScreenInputProcessor extends InputAdapter {
     }
     
     /**
+     * Resets anything that needs resetting between multiple game executions.
+     */
+    public void reset() {
+        this.keyboardType = KeyboardType.OFF;
+    }
+    
+    /**
      * Called when the screen was touched or a mouse button was pressed. The button
      * parameter will be {@link Buttons#LEFT} on iOS.
      * 
