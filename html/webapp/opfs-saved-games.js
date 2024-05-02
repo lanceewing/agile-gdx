@@ -83,6 +83,9 @@ var OPFSSavedGames = function() {
         // Get the cached synchronous access handle.
         let syncAccessHandle = savedGameSyncAccessHandles[gameNum];
         
+        // Ensure that the game file is back to 0 bytes before we write the data.
+        syncAccessHandle.truncate(0);
+        
         // Write out the ArrayBuffer and then immediately flush.
         syncAccessHandle.write(savedGameData);
         syncAccessHandle.flush();
