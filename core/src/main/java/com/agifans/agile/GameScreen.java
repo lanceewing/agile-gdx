@@ -278,14 +278,15 @@ public class GameScreen implements Screen {
         // Render the AGI screen.
         float cameraXOffset = 0;
         float cameraYOffset = 0;
-        float sidePaddingWidth = 0;
+        float sidePaddingWidth = viewportManager.getSidePaddingWidth();
+        
         if (viewportManager.doesScreenFitWidth()) {
             // Override default screen centering logic to allow for narrower screens, so 
             // that the joystick can be rendered as a decent size.
-            float agiScreenWidth = (viewportManager.getHeight() * 1.32f);
-            float agiWidthRatio = (agiScreenWidth / ADJUSTED_WIDTH);
-            sidePaddingWidth = ((viewportManager.getWidth() - agiScreenWidth) / 2);
-            if (sidePaddingWidth < 232) {
+            float agiWidthRatio = (viewportManager.getAgiScreenWidth() / ADJUSTED_WIDTH);
+            if ((sidePaddingWidth > 64) && (sidePaddingWidth < 232)) {
+                // 232 = 2 * min width on sides.
+                // 64 = when icon on one side is perfectly centred.
                 float unadjustedXOffset = Math.min(232 - sidePaddingWidth, sidePaddingWidth);
                 cameraXOffset = (unadjustedXOffset / agiWidthRatio);
                 if (joystickAlignment.equals(JoystickAlignment.LEFT)) {
@@ -342,11 +343,20 @@ public class GameScreen implements Screen {
         } else {
             // Landscape
             if (cameraXOffset == 0) {
-                // Middle
-                batch.draw(joystickIcon, 16, viewportManager.getHeight() - 112);
-                batch.draw(fullScreenIcon, viewportManager.getWidth() - 112, viewportManager.getHeight() - 112);
-                batch.draw(backIcon, viewportManager.getWidth() - 112, 16);
-                batch.draw(keyboardIcon, 16, 0);
+                // Middle.
+                if ((viewportManager.getAgiScreenBase() > 0) || (sidePaddingWidth <= 64)) {
+                    // The area between full landscape and full portrait.
+                    float leftAdjustment = (viewportManager.getWidth() / 4) - 32;
+                    batch.draw(fullScreenIcon, ((viewportManager.getWidth() / 2) - 48) - leftAdjustment, 16);
+                    batch.draw(joystickIcon, ((viewportManager.getWidth() - (viewportManager.getWidth() / 3)) - 64) - leftAdjustment, 16);
+                    batch.draw(keyboardIcon, ((viewportManager.getWidth() - (viewportManager.getWidth() / 6)) - 80) - leftAdjustment, 16);
+                    batch.draw(backIcon, (viewportManager.getWidth() - 112) - leftAdjustment, 16);
+                } else {
+                    batch.draw(joystickIcon, 16, viewportManager.getHeight() - 112);
+                    batch.draw(fullScreenIcon, viewportManager.getWidth() - 112, viewportManager.getHeight() - 112);
+                    batch.draw(backIcon, viewportManager.getWidth() - 112, 16);
+                    batch.draw(keyboardIcon, 16, 0);
+                }
             } else if (cameraXOffset < 0) {
                 // Left
                 batch.draw(joystickIcon, 16, viewportManager.getHeight() - 324);
@@ -371,7 +381,7 @@ public class GameScreen implements Screen {
             if (viewportManager.isPortrait()) {
                 // Top of keyboard is: 765 + 135 = 900.
                 int joyWidth = 200;
-                int agiScreenBase = (int)(viewportManager.getHeight() - (viewportManager.getWidth() / 1.32));
+                int agiScreenBase = viewportManager.getAgiScreenBase();
                 int midBetweenKeybAndPic = ((agiScreenBase + 900) / 2);
                 portraitTouchpad.setSize(joyWidth, joyWidth);
                 portraitTouchpad.setY(midBetweenKeybAndPic - (joyWidth / 2));
@@ -394,27 +404,40 @@ public class GameScreen implements Screen {
                 joyY = portraitTouchpad.getKnobPercentY();
             } else {
                 // Landscape
-                float joyWidth = Math.min(Math.max((sidePaddingWidth * 2) - 32, 96), 200);
-                landscapeTouchpad.setSize(joyWidth, joyWidth);
-                landscapeTouchpad.getStyle().knob.setMinHeight(joyWidth * 0.6f);
-                landscapeTouchpad.getStyle().knob.setMinWidth(joyWidth * 0.6f);
-                landscapeTouchpad.setY(viewportManager.getHeight() - (viewportManager.getHeight() / 2) - (joyWidth / 2));
-                switch (joystickAlignment) {
-                    case OFF:
-                        break;
-                    case RIGHT:
-                        landscapeTouchpad.setX(1920 - joyWidth - 16);
-                        break;
-                    case MIDDLE:
-                        break;
-                    case LEFT:
-                        landscapeTouchpad.setX(16);
-                        break;
+                if ((viewportManager.getAgiScreenBase() > 0) || (sidePaddingWidth <= 64)) {
+                    int joyWidth = Math.max(Math.min(140 + viewportManager.getAgiScreenBase(), 216), 140);
+                    landscapeTouchpad.setSize(joyWidth, joyWidth);
+                    landscapeTouchpad.setY(16);
+                    landscapeTouchpad.setX(viewportManager.getWidth() - joyWidth - 16);
+                    landscapeTouchpad.getStyle().knob.setMinHeight(joyWidth * 0.6f);
+                    landscapeTouchpad.getStyle().knob.setMinWidth(joyWidth * 0.6f);
+                    landscapeTouchpadStage.act(delta);
+                    landscapeTouchpadStage.draw();
+                    joyX = landscapeTouchpad.getKnobPercentX();
+                    joyY = landscapeTouchpad.getKnobPercentY();
+                } else {
+                    float joyWidth = Math.min(Math.max((sidePaddingWidth * 2) - 32, 96), 200);
+                    landscapeTouchpad.setSize(joyWidth, joyWidth);
+                    landscapeTouchpad.getStyle().knob.setMinHeight(joyWidth * 0.6f);
+                    landscapeTouchpad.getStyle().knob.setMinWidth(joyWidth * 0.6f);
+                    landscapeTouchpad.setY(viewportManager.getHeight() - (viewportManager.getHeight() / 2) - (joyWidth / 2));
+                    switch (joystickAlignment) {
+                        case OFF:
+                            break;
+                        case RIGHT:
+                            landscapeTouchpad.setX(1920 - joyWidth - 16);
+                            break;
+                        case MIDDLE:
+                            break;
+                        case LEFT:
+                            landscapeTouchpad.setX(16);
+                            break;
+                    }
+                    landscapeTouchpadStage.act(delta);
+                    landscapeTouchpadStage.draw();
+                    joyX = landscapeTouchpad.getKnobPercentX();
+                    joyY = landscapeTouchpad.getKnobPercentY();
                 }
-                landscapeTouchpadStage.act(delta);
-                landscapeTouchpadStage.draw();
-                joyX = landscapeTouchpad.getKnobPercentX();
-                joyY = landscapeTouchpad.getKnobPercentY();
             }
             processJoystickInput(joyX, joyY);
         }

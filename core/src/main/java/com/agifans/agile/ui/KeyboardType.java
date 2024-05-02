@@ -232,7 +232,7 @@ public enum KeyboardType {
             return texture.getHeight();
         } else {
             ViewportManager viewportManager = ViewportManager.getInstance();
-            int keyboardHeight = viewportManager.getScreenBase() - getRenderOffset();
+            int keyboardHeight = viewportManager.getAgiScreenBase() - getRenderOffset();
             return Math.max(Math.min(keyboardHeight, texture.getHeight()), 365);
         }
     }
@@ -313,7 +313,16 @@ public enum KeyboardType {
      *         at.
      */
     public int getRenderOffset() {
-        return renderOffset;
+        if (isLandscape()) {
+            ViewportManager viewportManager = ViewportManager.getInstance();
+            if (viewportManager.getAgiScreenBase() > 0) {
+                return 135;
+            } else {
+                return renderOffset;
+            }
+        } else {
+            return renderOffset;
+        }
     }
 
     /**

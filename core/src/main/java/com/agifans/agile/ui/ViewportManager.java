@@ -76,9 +76,6 @@ public class ViewportManager {
     // 1.13 when icons are no longer overlapping
     // 1.00 square
     // 0.80 where keyboard top matches screen base
-    //portrait = (height > (width / 1.32f));
-    //portrait = (height > (width / 1.00f));
-    
     portrait = (height > (width / 0.80f));
     
     getCurrentViewport().update(width, height, true);
@@ -109,11 +106,45 @@ public class ViewportManager {
     return !portrait;
   }
   
+  /**
+   * Tests where the AGI screen exactly fits the width of the viewport.
+   * 
+   * @return
+   */
   public boolean doesScreenFitWidth() {
     return !(getHeight() > (getWidth() / 1.32f));
   }
   
-  public int getScreenBase() {
+  /**
+   * Calculates and returns the width of the AGI screen using the current 
+   * viewport height.
+   * 
+   * @return
+   */
+  public float getAgiScreenWidth() {
+      return (getHeight() * 1.32f);
+  }
+  
+  /**
+   * Calculates and returns the width of the padding either side of the AGI
+   * screen, when in landscape mode.
+   * 
+   * @return The width of the padding either side of the AGI screen.
+   */
+  public float getSidePaddingWidth() {
+      float sidePaddingWidth = 0;
+      if (doesScreenFitWidth()) {
+          sidePaddingWidth = ((getWidth() - getAgiScreenWidth()) / 2);
+      }
+      return sidePaddingWidth;
+  }
+  
+  /**
+   * Gets the Y value of the base of the AGI screen.
+   * 
+   * @return The Y value of the base of the AGI screen.
+   */
+  public int getAgiScreenBase() {
       return (int)(getHeight() - (getWidth() / 1.32));
   }
   

@@ -259,12 +259,21 @@ public class GameScreenInputProcessor extends InputAdapter {
         }
         else {
             // Landscape
-            agiY = 200 - Math.round((touchXY.y / viewportManager.getHeight()) * 200);
-            float agiWidth = (viewportManager.getHeight() * 1.32f);
-            float agiRatio = (agiWidth / 160);
-            float agiStart = (1920 / 2) - (agiWidth / 2);
-            float adjustedCameraXOffset = (cameraXOffset * (agiWidth / 264));
-            agiX = (int)(Math.round(((touchXY.x + adjustedCameraXOffset) - agiStart) / agiRatio));
+            if ((viewportManager.getAgiScreenBase() > 0) || (viewportManager.getSidePaddingWidth() <= 64)) {
+                // Landscape/Portrait hybrid mode.
+                agiX = Math.round((touchXY.x / viewportManager.getWidth()) * 160);
+                float agiHeight = (1920.0f / 1.32f);
+                float agiRatio = (agiHeight / 200);
+                float agiStart = (viewportManager.getHeight() - agiHeight);
+                agiY = 200 - Math.round((touchXY.y - agiStart) / agiRatio);
+            } else {
+                agiY = 200 - Math.round((touchXY.y / viewportManager.getHeight()) * 200);
+                float agiWidth = (viewportManager.getHeight() * 1.32f);
+                float agiRatio = (agiWidth / 160);
+                float agiStart = (1920 / 2) - (agiWidth / 2);
+                float adjustedCameraXOffset = (cameraXOffset * (agiWidth / 264));
+                agiX = (int)(Math.round(((touchXY.x + adjustedCameraXOffset) - agiStart) / agiRatio));
+            }
         }
         
         boolean agiMouseUpdated = false;
@@ -348,18 +357,43 @@ public class GameScreenInputProcessor extends InputAdapter {
                 // Landscape.
                 int screenTop = (int) viewportManager.getHeight();
                 if (cameraXOffset == 0) {
-                    // Screen in middle.
-                    if (touchXY.y > (screenTop - 104)) {
-                        if (touchXY.x < 112) {
-                            joystickClicked = true;
-                        } else if (touchXY.x > (viewportManager.getWidth() - 112)) {
-                            fullScreenClicked = true;
+                    if ((viewportManager.getAgiScreenBase() > 0) || (viewportManager.getSidePaddingWidth() <= 64)) {
+                        if (touchXY.y < 104) {
+                            float leftAdjustment = (viewportManager.getWidth() / 4) - 32;
+                            if ((touchXY.x >= ((viewportManager.getWidth() / 2) - 48) - leftAdjustment) && 
+                                (touchXY.x <= ((viewportManager.getWidth() / 2) + 48) - leftAdjustment)) {
+                                fullScreenClicked = true;
+                            }
+                            else 
+                            if ((touchXY.x >= ((viewportManager.getWidth() - (viewportManager.getWidth() / 3)) - 64) - leftAdjustment) && 
+                                (touchXY.x <= ((viewportManager.getWidth() - (viewportManager.getWidth() / 3)) + 32) - leftAdjustment)) {
+                                joystickClicked = true;
+                            }
+                            else
+                            if ((touchXY.x >= ((viewportManager.getWidth() - (viewportManager.getWidth() / 6)) - 80) - leftAdjustment) && 
+                                (touchXY.x <= ((viewportManager.getWidth() - (viewportManager.getWidth() / 6)) + 16) - leftAdjustment)) {
+                                keyboardClicked = true;
+                            }
+                            else
+                            if ((touchXY.x >= (viewportManager.getWidth() - 112) - leftAdjustment) && 
+                                (touchXY.x <= (viewportManager.getWidth() - 16) - leftAdjustment)) {
+                                backArrowClicked = true;
+                            }
                         }
-                    } else if (touchXY.y < 104) {
-                        if (touchXY.x > (viewportManager.getWidth() - 112)) {
-                            backArrowClicked = true;
-                        } else if (touchXY.x < 112) {
-                            keyboardClicked = true;
+                    } else {
+                        // Screen in middle.
+                        if (touchXY.y > (screenTop - 104)) {
+                            if (touchXY.x < 112) {
+                                joystickClicked = true;
+                            } else if (touchXY.x > (viewportManager.getWidth() - 112)) {
+                                fullScreenClicked = true;
+                            }
+                        } else if (touchXY.y < 104) {
+                            if (touchXY.x > (viewportManager.getWidth() - 112)) {
+                                backArrowClicked = true;
+                            } else if (touchXY.x < 112) {
+                                keyboardClicked = true;
+                            }
                         }
                     }
                 }
@@ -395,8 +429,15 @@ public class GameScreenInputProcessor extends InputAdapter {
             if (joystickClicked) {
                // Rotate the joystick screen alignment.
                joystickAlignment = joystickAlignment.rotateValue();
-               if (!viewportManager.isPortrait() && joystickAlignment.equals(JoystickAlignment.MIDDLE)) {
-                   joystickAlignment = joystickAlignment.rotateValue();
+               if (!viewportManager.isPortrait()) {
+                   if (joystickAlignment.equals(JoystickAlignment.MIDDLE)) {
+                       joystickAlignment = joystickAlignment.rotateValue();
+                   }
+                   if ((viewportManager.getAgiScreenBase() > 0) || (viewportManager.getSidePaddingWidth() <= 64)) {
+                       if (joystickAlignment.equals(JoystickAlignment.LEFT)) {
+                           joystickAlignment = joystickAlignment.rotateValue();
+                       }
+                   }
                }
             }
             
