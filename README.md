@@ -1,11 +1,11 @@
 # AGILE
-AGILE (GDX) is an AGI engine whose primary purpose is to run Sierra AGI games on the web!
+AGILE is an AGI engine whose primary purpose is to run Sierra AGI games on the web!
 
 https://agi.sierra.games
 
 Development began in November 2023, in hopes that it would be fully complete by the 10th May 1984, to coincide wih the 40 year anniversary of the release of King's Quest, the world's first animated graphic adventure game!
 
-AGI was the name of the adventure game interpreter used by Sierra On-Line to run the 3D animated adventure games that they released in the 1980s, which included games such as King's Quest 1/2/3/4, Space Quest 1/2, Police Quest, Leisure Suit Larry, Manhunter 1/2, Gold Rush, Donald Duck's Playground, Black Cauldron, and Mixed-Up Mother Goose. There were also well over 100 fan-made games made to run on the same AGI interpreter system, mostly written in the late 90s and early 2000s by Sierra On-Line fans.
+AGI was the name of the [Adventure Game Interpreter](https://en.wikipedia.org/wiki/Adventure_Game_Interpreter) used by Sierra On-Line to run the 3D animated adventure games that they released in the 1980s, which included games such as King's Quest 1/2/3/4, Space Quest 1/2, Police Quest, Leisure Suit Larry, Manhunter 1/2, Gold Rush, Donald Duck's Playground, Black Cauldron, and Mixed-Up Mother Goose. There were also well over 100 fan-made games made to run on the same AGI interpreter system, mostly written in the late 90s and early 2000s by Sierra On-Line fans.
 
 AGILE is an almost complete implementation that has attempted to align as close as possible to the original interpreter's behaviour.
 
@@ -46,8 +46,17 @@ Javascript is by default single threaded, which isn't compatible with how AGI bl
 
 For details of the original C# version, see here: https://github.com/lanceewing/agile
 
-## Credits
+## Credits and Acknowledgements
+This project would not have been possible without the following projects and their authors:
 
-TODO
+- [libgdx](https://libgdx.com/): The cross-platform game development framework.
+- [gdx-liftoff](https://github.com/libgdx/gdx-liftoff): Written by Tommy Ettinger. Used to generate the initial libgdx project boilerplate.
+- [JAGI](https://github.com/lanceewing/jagi): Originally written by the mysterious Dr Zoltan (real name not known). Extended by Lance Ewing and Mark Yu.
+- [gwt-webworker](https://gitlab.com/ManfredTremmel/gwt-webworker): Written by Manfred Trammel. The key to running libgdx gwt code in a web worker.
+- [gwt-jszip](https://github.com/ainslec/GWTJSZip): Originally written by Aki Miyazaki, extended by Chris Ainsley.
+- [jszip](https://github.com/Stuk/jszip): Written by Stuart Knightley. Used by AGILE to unzip imported games.
+- [GWT](https://www.gwtproject.org): Google Web Toolkit, used by libgdx to transpile the AGILE Java code to JavaScript.
+- [PieMenu](https://github.com/payne911/PieMenu): Written by Jérémi Grenier-Berthiaume. Used by AGILE to display the radial menu.
+- [ringbuf.js](https://github.com/padenot/ringbuf.js/blob/main/js/ringbuf.js): Written by Paul Adenot. Used for the keyboard event queue in AGILE.
 
-
+In addition to the above, I would also like to acknowledge the community of [sciprogramming.com](https://sciprogramming.com/) for their testing efforts, encouragement and helpful suggestions for improvement, including doomlazer, Charles, AGKorson, Collector, Kawa, russdanner and pmkelly.
