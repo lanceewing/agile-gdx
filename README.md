@@ -4,12 +4,12 @@
 
 https://agi.sierra.games
 
-Development on this web version of AGILE began in November 2023, in hopes that it would be fully complete by the 10th May 1984, to be a tribute to, and to coincide with, the 40 year anniversary of the release of King's Quest, the world's first animated graphic adventure game! 
+Development on this web version of AGILE began in November 2023, in hopes that it would be fully complete by the 10th May 1984, to be a tribute to, and to coincide with, the 40th anniversary of the release of King's Quest, the world's first animated graphic adventure game! 
 
 AGI was the name of the [Adventure Game Interpreter](https://en.wikipedia.org/wiki/Adventure_Game_Interpreter) written by [Sierra On-Line](https://en.wikipedia.org/wiki/Sierra_Entertainment) to run the 3D animated adventure games that they released in the 1980s (1984-1989), which included King's Quest 1/2/3/4, Space Quest 1/2, Police Quest, Leisure Suit Larry, Manhunter 1/2, Gold Rush, Donald Duck's Playground, Black Cauldron, and Mixed-Up Mother Goose. There are also over 100 fan-made games and demos that run on the same AGI interpreter system, mostly written in the late 90s and early 2000s by Sierra On-Line fans.
 
 ## Features
-- Intuitive familiar UI, with game import and selection screens.
+- Intuitive, familiar, mobile-like UI, with game import and selection screens. Swipe/click to the right:
   
 ![](img/title_page_web_desktop.jpg)           |![](img/games_page_web_desktop.jpg) 
 :-------------------------:|:-------------------------:
