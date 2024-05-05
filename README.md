@@ -11,8 +11,8 @@ AGI was the name of the [Adventure Game Interpreter](https://en.wikipedia.org/wi
 ## Features
 - Intuitive familiar UI, with game import and selection screens.
   
-![](img/title_page_web_desktop.jpg)           |![](img/games_page_web_desktop.jpg)           |  ![](img/kq1_web_desktop.jpg)
-:-------------------------:|:-------------------------:|:-------------------------:|
+![](img/title_page_web_desktop.jpg)           |![](img/games_page_web_desktop.jpg) 
+:-------------------------:|:-------------------------:
 
 - Supports importing the original IBM PC AGI v2 & v3 games, from either a folder or ZIP file.
 - Web version comes with over 100 fan-made games and demos already pre-packaged!
