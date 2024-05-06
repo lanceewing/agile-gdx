@@ -103,6 +103,13 @@ class Dialog {
 		this.elements.message.innerText = dialog.message;
 		this.elements.target = dialog.target || '';
 		this.elements.template.innerHTML = dialog.template || '';
+		
+		// If no message was provided, then the message element will be hidden.
+		if (dialog.message === '') {
+			this.elements.message.className = 'empty';
+		} else {
+			this.elements.message.className = '';
+		}
 
 		this.focusable = this.getFocusable();
 		this.hasFormData = this.elements.fieldset.elements.length > 0;

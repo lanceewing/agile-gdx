@@ -78,6 +78,10 @@ a {
 	transform: translateX(-50%);
 }
 
+:where([data-component*="dialog"] legend.empty) {
+	display: none;
+}
+
 :where([data-component*="dialog"] menu) {
 	gap: calc(var(--dlg-gap)/2);
 	justify-content: var(--dlg-menu-jc, flex-end);
