@@ -68,6 +68,7 @@ This project would not have been possible without the following projects and the
 - [GWT](https://www.gwtproject.org): Google Web Toolkit, used by libgdx to transpile the AGILE Java code to JavaScript.
 - [PieMenu](https://github.com/payne911/PieMenu): Written by Jérémi Grenier-Berthiaume. Used by AGILE to display the radial menu.
 - [ringbuf.js](https://github.com/padenot/ringbuf.js/blob/main/js/ringbuf.js): Written by Paul Adenot. Used for the keyboard event queue in AGILE.
+- [dialog.js](https://css-tricks.com/replace-javascript-dialogs-html-dialog-element/): Written by Mads Stoumann. Used for most of the dialogs.
 
 In addition to the above, I would also like to acknowledge the community of [sciprogramming.com](https://sciprogramming.com/) for their testing efforts, encouragement and helpful suggestions for improvement, including doomlazer, Charles, AGKorson, Collector, Kawa, russdanner and pmkelly.
 
