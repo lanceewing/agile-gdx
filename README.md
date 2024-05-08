@@ -4,7 +4,7 @@
 
 https://agi.sierra.games
 
-Development on this web version of AGILE began in November 2023, in hopes that it would be fully complete by the 10th May 1984, to be a tribute to, and to coincide with, the 40th anniversary of the release of King's Quest, the world's first animated graphic adventure game! 
+Development on this web version of AGILE began in November 2023, in hopes that it would be fully complete by the 10th May 2024, to be a tribute to, and to coincide with, the 40th anniversary of the release of [King's Quest](https://en.wikipedia.org/wiki/King%27s_Quest_I), the world's first animated graphic adventure game! 
 
 AGI was the name of the [Adventure Game Interpreter](https://en.wikipedia.org/wiki/Adventure_Game_Interpreter) written by [Sierra On-Line](https://en.wikipedia.org/wiki/Sierra_Entertainment) to run the 3D animated adventure games that they released in the 1980s (1984-1989), which included King's Quest 1/2/3/4, Space Quest 1/2, Police Quest, Leisure Suit Larry, Manhunter 1/2, Gold Rush, Donald Duck's Playground, Black Cauldron, and Mixed-Up Mother Goose. There are also over 100 fan-made games and demos that run on the same AGI interpreter system, mostly written in the late 90s and early 2000s by Sierra On-Line fans.
 
@@ -38,6 +38,8 @@ Start by going to https://agi.sierra.games. This will load the AGILE title scree
 
 The first page to the right has thumbnails for the original Sierra On-Line games. Notice that they are all faded out. This is to indicate that they are not imported yet. If you click on one of these, it will open a dialog telling you that you must import your own copy of the game for legal reasons. It also asks you if you would like to import from a ZIP file or a folder. After completing the import process, the thumbnail for the game will fully show, rather than being faded out. The game is now imported into the OPFS storage in your browser. If you click on the thumbnail again, it will run the game.
 
+In addition to supporting the import of original Sierra games, AGILE comes pre-packaged with over 100 fan-made AGI games and demos; simply swipe again to the right to see several pages of them. These are games that fans of Sierra On-Line built themselves to run on the same AGI interpreter system and so they will therefore run on AGILE. I have included them so that they and their authors can share in the 40th anniversary celebration.
+
 ## Game Screenshots
 
 ![](img/kq1_web_desktop.jpg)           |![](img/kq2_web_desktop.jpg)           |![](img/kq3_web_desktop.jpg)
@@ -68,6 +70,7 @@ This project would not have been possible without the following projects and the
 - [GWT](https://www.gwtproject.org): Google Web Toolkit, used by libgdx to transpile the AGILE Java code to JavaScript.
 - [PieMenu](https://github.com/payne911/PieMenu): Written by Jérémi Grenier-Berthiaume. Used by AGILE to display the radial menu.
 - [ringbuf.js](https://github.com/padenot/ringbuf.js/blob/main/js/ringbuf.js): Written by Paul Adenot. Used for the keyboard event queue in AGILE.
+- [dialog.js](https://css-tricks.com/replace-javascript-dialogs-html-dialog-element/): Written by Mads Stoumann. Used for most of the dialogs.
 
 In addition to the above, I would also like to acknowledge the community of [sciprogramming.com](https://sciprogramming.com/) for their testing efforts, encouragement and helpful suggestions for improvement, including doomlazer, Charles, AGKorson, Collector, Kawa, russdanner and pmkelly.
 
@@ -75,3 +78,5 @@ In addition to the above, I would also like to acknowledge the community of [sci
 As mentioned above, AGILE comes pre-packaged with over 100 fan-made AGI games and demos. For those games that do not have in-game credits, please refer to the following web page to see who the authors were:
 
 http://agiwiki.sierrahelp.com/index.php/Fan_AGI_Release_List_(Sortable)
+
+And finally, but certainly not least, a big thank you to our heroes who 40 years ago created King’s Quest. To Ken & Roberta Williams, Arthur Abraham, Charles Tingley, Greg Rowland, Ken MacNeill and Doug MacNeill: Thank you for bringing to life such an amazing and enduring concept, and a game and franchise that we will continue to remember for decades to come.
