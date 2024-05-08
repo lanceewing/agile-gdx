@@ -38,6 +38,8 @@ Start by going to https://agi.sierra.games. This will load the AGILE title scree
 
 The first page to the right has thumbnails for the original Sierra On-Line games. Notice that they are all faded out. This is to indicate that they are not imported yet. If you click on one of these, it will open a dialog telling you that you must import your own copy of the game for legal reasons. It also asks you if you would like to import from a ZIP file or a folder. After completing the import process, the thumbnail for the game will fully show, rather than being faded out. The game is now imported into the OPFS storage in your browser. If you click on the thumbnail again, it will run the game.
 
+In addition to supporting the import of original Sierra games, AGILE comes pre-packaged with over 100 fan-made AGI games and demos; simply swipe again to the right to see several pages of them. These are games that fans of Sierra On-Line built themselves to run on the same AGI interpreter system and so they will therefore run on AGILE. I have included them so that they and their authors can share in the 40th anniversary celebration.
+
 ## Game Screenshots
 
 ![](img/kq1_web_desktop.jpg)           |![](img/kq2_web_desktop.jpg)           |![](img/kq3_web_desktop.jpg)
