@@ -78,3 +78,5 @@ In addition to the above, I would also like to acknowledge the community of [sci
 As mentioned above, AGILE comes pre-packaged with over 100 fan-made AGI games and demos. For those games that do not have in-game credits, please refer to the following web page to see who the authors were:
 
 http://agiwiki.sierrahelp.com/index.php/Fan_AGI_Release_List_(Sortable)
+
+And finally, but certainly not least, a big thank you to our heroes who 40 years ago created King’s Quest. To Ken & Roberta Williams, Arthur Abraham, Charles Tingley, Greg Rowland, Ken MacNeill and Doug MacNeill: Thank you for bringing to life such an amazing and enduring concept, and a game and franchise that we will continue to remember for decades to come.
