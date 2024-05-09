@@ -23,7 +23,7 @@ AGI was the name of the [Adventure Game Interpreter](https://en.wikipedia.org/wi
 - Show Priority screen. Use <kbd>F12</kbd> to show, and ENTER/SPACE to exit.
 - Virtual keyboard for use by touch screen devices, such as mobile and tablets.
 - Virtual joystick as an alternative to using the arrow keys, also intended for touch screen devices.
-- Support for direct URL path access to fan-made games, e.g. [https://agi.sierra.games/#/id/ltec](https://agi.sierra.games/#/id/ltec)
+- Support for direct URL path access to individual fan-made games, e.g. [https://agi.sierra.games/#/id/ltec](https://agi.sierra.games/#/id/ltec)
 
 Most of the original Sierra On-Line games are still available for purchase online, so for legal reasons, AGILE does not come prepackaged with those games. You must have your own copy and use the import feature to load the game into AGILE. It supports importing from both a folder containing the game, or a ZIP file containing the game. After it has been imported, it will remain in your browser's storage so that you won't have to import it again.
 
