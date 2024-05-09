@@ -140,13 +140,6 @@ public class HomeScreen extends InputAdapter implements Screen {
         this.dialogHandler = dialogHandler;
 
         AppConfig appConfig = loadAppConfig();
-        appConfigMap = new TreeMap<String, AppConfigItem>();
-        for (AppConfigItem appConfigItem : appConfig.getApps()) {
-            appConfigMap.put(appConfigItem.getName(), appConfigItem);
-        }
-        
-        // Convert back from TreeMap, to guarantee ordering on first render.
-        appConfig = convertAppConfigItemMapToAppConfig(appConfigMap);
 
         buttonTextureMap = new HashMap<String, Texture>();
         skin = new Skin(Gdx.files.internal("data/uiskin.json"));
@@ -178,6 +171,18 @@ public class HomeScreen extends InputAdapter implements Screen {
         landscapeInputProcessor.addProcessor(this);
     }
     
+    private void addPromoGames(Map<String, AppConfigItem> appConfigMap) {
+        if (!appConfigMap.containsKey("Let Them Eat Cake")) {
+            AppConfigItem appConfigItem = new AppConfigItem();
+            appConfigItem.setGameId("LTEC");
+            appConfigItem.setName("Let Them Eat Cake");
+            appConfigItem.setDisplayName("Let Them Eat Cake");
+            appConfigItem.setFilePath("/games/ltec.zip");
+            appConfigItem.setFileType("ZIP");
+            appConfigMap.put(appConfigItem.getName(), appConfigItem);
+        }
+    }
+    
     private AppConfig loadAppConfig() {
         Json json = getJson();
         String appConfigJson = null;
@@ -192,8 +197,18 @@ public class HomeScreen extends InputAdapter implements Screen {
                 appConfigJson = DEFAULT_APP_CONFIG_JSON;
             }
         }
-        agile.getPreferences().putString(HOME_SCREEN_APP_LIST_PREF_NAME, appConfigJson);
-        return json.fromJson(AppConfig.class, appConfigJson);
+        
+        AppConfig appConfig = json.fromJson(AppConfig.class, appConfigJson);
+        appConfigMap = new TreeMap<String, AppConfigItem>();
+        for (AppConfigItem appConfigItem : appConfig.getApps()) {
+            appConfigMap.put(appConfigItem.getName(), appConfigItem);
+        }
+        
+        if (Gdx.app.getType().equals(ApplicationType.WebGL)) {
+            addPromoGames(appConfigMap);
+        }
+        
+        return saveAppConfigMap();
     }
     
     private Texture createWhitePixelTexture() {
@@ -708,11 +723,14 @@ public class HomeScreen extends InputAdapter implements Screen {
     /**
      * Converts the AppConfigItem Map to JSON and stores in the associated
      * preference.
+     * 
+     * @return The saved AppConfig.
      */
-    private void saveAppConfigMap() {
+    private AppConfig saveAppConfigMap() {
         AppConfig appConfig = convertAppConfigItemMapToAppConfig(appConfigMap);
         String appConfigJson = getJson().prettyPrint(appConfig);
         agile.getPreferences().putString(HOME_SCREEN_APP_LIST_PREF_NAME, appConfigJson);
+        return appConfig;
     }
 
     /**
