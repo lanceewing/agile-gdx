@@ -273,6 +273,7 @@ public class Detection {
         {"M---", "ISABEL","Isabella Coq - A Present For My Dad", "55c6819f2330c4d5d6459874c9f123d9"},
         {"----", "LPIRAT","Little Pirate (Demo 2 v0.6)", "437068efe4ec32d436da09d6f2ea56e1"},
         {"----", "LSTETY","Lost Eternity (v1.0)", "95f15c5632feb8a39e9ca3d9af35fcc9"},
+        {"----", "LTEC","Let Them Eat Cake (v1.7)", "6b4b582e1df93aff7e84b2a31699f084"},
         {"----", "MDQUST","MD Quest - The Search for Michiel (v0.10)", "2a6fcb21d2b5e4144c38ed817fabe8ee"},
         {"----", "MAALEA","Maale Adummin Quest", "ddfbeb33feb7cf78504fe4dba14ec63b"},
         {"----", "MONKEY","Monkey Man", "2322d03f997e8cc235d4578efff69cfa"},

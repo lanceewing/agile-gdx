@@ -617,6 +617,13 @@
 			"fileType": "ZIP"
 		},
 		{
+			"gameId": "LTEC",
+			"name": "Let Them Eat Cake",
+			"displayName": "Let Them Eat Cake",
+			"filePath": "/games/ltec.zip",
+			"fileType": "ZIP"
+		},
+		{
 			"gameId": "MDQUST",
 			"name": "MD Quest - The Search for Michiel",
 			"displayName": "MD Quest - The\nSearch for Michiel",
