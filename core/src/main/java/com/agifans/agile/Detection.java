@@ -274,6 +274,7 @@ public class Detection {
         {"----", "LPIRAT","Little Pirate (Demo 2 v0.6)", "437068efe4ec32d436da09d6f2ea56e1"},
         {"----", "LSTETY","Lost Eternity (v1.0)", "95f15c5632feb8a39e9ca3d9af35fcc9"},
         {"----", "LTEC","Let Them Eat Cake (v1.7)", "6b4b582e1df93aff7e84b2a31699f084"},
+        {"----", "LTEC","Let Them Eat Cake (v1.7.1)", "12b58ea1ea2fcdddef54a7bad660c006"},
         {"----", "MDQUST","MD Quest - The Search for Michiel (v0.10)", "2a6fcb21d2b5e4144c38ed817fabe8ee"},
         {"----", "MAALEA","Maale Adummin Quest", "ddfbeb33feb7cf78504fe4dba14ec63b"},
         {"----", "MONKEY","Monkey Man", "2322d03f997e8cc235d4578efff69cfa"},
