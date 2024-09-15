@@ -106,7 +106,7 @@ public class HomeScreen extends InputAdapter implements Screen {
     /**
      * Set containing the game IDs for all original Sierra AGI games.
      */
-    private static final Set<String> SIERRA_GAMES = new HashSet<>();
+    public static final Set<String> SIERRA_GAMES = new HashSet<>();
     static {
         SIERRA_GAMES.add("dp");
         SIERRA_GAMES.add("gr");

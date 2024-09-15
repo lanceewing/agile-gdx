@@ -4,6 +4,7 @@ import java.util.Map;
 
 import com.agifans.agile.Agile;
 import com.agifans.agile.AgileRunner;
+import com.agifans.agile.HomeScreen;
 import com.agifans.agile.PixelData;
 import com.agifans.agile.SavedGameStore;
 import com.agifans.agile.UserInput;
@@ -62,7 +63,21 @@ public class GwtAgileRunner extends AgileRunner {
     
     @Override
     public void start(AppConfigItem appConfigItem) {
-        String newURL = Window.Location.createUrlBuilder().setHash("/id/" + appConfigItem.getGameId().toLowerCase()).buildString();
+        String newURL = "";
+        if ((appConfigItem.getFilePath().startsWith("/games/") && ("ZIP".equals(appConfigItem.getFileType()))) || 
+             HomeScreen.SIERRA_GAMES.contains(appConfigItem.getGameId().toLowerCase())) {
+            // For embedded ZIP games, and original Sierra games, we use a URL path.
+            newURL = Window.Location.createUrlBuilder()
+                    .setHash(null)
+                    .setPath("/play/" + appConfigItem.getGameId().toLowerCase() + "/")
+                    .buildString();
+        } else {
+            // Otherwise use id hash.
+            newURL = Window.Location.createUrlBuilder()
+                    .setPath("/")
+                    .setHash("/id/" + appConfigItem.getGameId().toLowerCase())
+                    .buildString();
+        }
         updateURLWithoutReloading(newURL);
         
         // The game data files have been stored/cached in the OPFS. We load it from
@@ -85,7 +100,7 @@ public class GwtAgileRunner extends AgileRunner {
         GameFileMapEncoder gameFileMapEncoder = new GameFileMapEncoder();
         ArrayBuffer gameFileBuffer = gameFileMapEncoder.encodeGameFileMap(gameFileMap);
         
-        worker = Worker.create("worker/worker.nocache.js");
+        worker = Worker.create("/worker/worker.nocache.js");
         
         final MessageHandler webWorkerMessageHandler = new MessageHandler() {
             @Override
@@ -255,6 +270,7 @@ public class GwtAgileRunner extends AgileRunner {
         worker = null;
         
         String newURL = Window.Location.createUrlBuilder()
+                .setPath("/")
                 .setHash(null)
                 .buildString();
         updateURLWithoutReloading(newURL);

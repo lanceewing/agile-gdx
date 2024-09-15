@@ -33,18 +33,39 @@ public class GwtLauncher extends GwtApplication {
     public ApplicationListener createApplicationListener () {
         Map<String, String> argsMap = new HashMap<>();
         
-        // HTML5 version supports /id/ and /uri/ hash values, e.g. #/id/kq2
-        String hash = Window.Location.getHash().toLowerCase();
+        String urlPath = Window.Location.getPath();
         
-        if ((hash != null) && (hash.length() > 0)) {
-            if (hash.startsWith("#/id/") && !hash.endsWith("/")) {
-                String gameId = hash.substring(hash.lastIndexOf('/') + 1);
-                argsMap.put("id", gameId);
+        if ("/".equals(urlPath) || "".equals(urlPath)) {
+            // A game path was not included, so check for a hash instead.
+            // HTML5 version supports /id/ and /uri/ hash values, e.g. #/id/kq2
+            String hash = Window.Location.getHash().toLowerCase();
+            
+            if ((hash != null) && (hash.length() > 0)) {
+                if (hash.startsWith("#/id/") && !hash.endsWith("/")) {
+                    String gameId = hash.substring(hash.lastIndexOf('/') + 1);
+                    argsMap.put("id", gameId);
+                }
+                if (hash.startsWith("#/uri/") && !hash.endsWith("/")) {
+                    String gameUri = hash.substring(hash.lastIndexOf('/') + 1);
+                    argsMap.put("uri", gameUri);
+                }
             }
-            if (hash.startsWith("#/uri/") && !hash.endsWith("/")) {
-                String gameUri = hash.substring(hash.lastIndexOf('/') + 1);
-                argsMap.put("uri", gameUri);
+        } else {
+            String gameId = "";
+            
+            // If a path is included, assume it is to launch a game.
+            if (urlPath.startsWith("/play/")) {
+                gameId = urlPath.substring(6);
+            } else {
+                gameId = urlPath.substring(1);
             }
+            
+            // Check for and remove trailing slash
+            if (gameId.endsWith("/")) {
+                gameId = gameId.substring(0, gameId.lastIndexOf('/'));
+            }
+            
+            argsMap.put("id", gameId);
         }
         
         GwtDialogHandler gwtDialogHandler = new GwtDialogHandler();
@@ -56,7 +77,7 @@ public class GwtLauncher extends GwtApplication {
     
     @Override
     public Preloader.PreloaderCallback getPreloaderCallback() {
-        return createPreloaderPanel(GWT.getHostPageBaseURL() + "agile_title.png");
+        return createPreloaderPanel("/agile_title.png");
     }
 
     @Override
