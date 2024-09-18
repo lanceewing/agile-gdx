@@ -240,6 +240,9 @@ public class GwtDialogHandler implements DialogHandler {
                         // The game file map does not contain the minimum set of files.
                         openFileResponseHandler.openFileResult(false, null, null, null);
                     }
+                } else {
+                    // No files selected.
+                    openFileResponseHandler.openFileResult(false, null, null, null);
                 }
             }
         });

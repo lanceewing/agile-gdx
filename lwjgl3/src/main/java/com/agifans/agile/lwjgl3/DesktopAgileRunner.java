@@ -167,4 +167,9 @@ public class DesktopAgileRunner extends AgileRunner {
         
         return slug;
     }
+
+    @Override
+    public void cancelImport() {
+        // Nothing to do for Desktop.
+    }
 }

@@ -263,17 +263,21 @@ public class GwtAgileRunner extends AgileRunner {
         stopped = true;
     }
 
+    private void clearUrl() {
+        String newURL = Window.Location.createUrlBuilder()
+                .setPath("/")
+                .setHash(null)
+                .buildString();
+        updateURLWithoutReloading(newURL);
+    }
+    
     @Override
     public void reset() {
         // Resets to the original state, as if a game has not been previously run.
         stopped = false;
         worker = null;
         
-        String newURL = Window.Location.createUrlBuilder()
-                .setPath("/")
-                .setHash(null)
-                .buildString();
-        updateURLWithoutReloading(newURL);
+        clearUrl();
     }
 
     @Override
@@ -350,4 +354,9 @@ public class GwtAgileRunner extends AgileRunner {
 
         return slug;
     }-*/;
+
+    @Override
+    public void cancelImport() {
+        clearUrl();
+    }
 }

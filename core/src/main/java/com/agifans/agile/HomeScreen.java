@@ -900,6 +900,8 @@ public class HomeScreen extends InputAdapter implements Screen {
                     public void importTypeResult(boolean success, ImportType importType) {
                         if (success) {
                             importGameUsingOpenFileDialog(appConfigItem, importType);
+                        } else {
+                            agile.getAgileRunner().cancelImport();
                         }
                     }
                 });
@@ -961,6 +963,8 @@ public class HomeScreen extends InputAdapter implements Screen {
                         dialogHandler.promptForTextInput("Confirm name of AGI game", 
                                 gameName, textInputResponseHandler);
                     }
+                } else {
+                    agile.getAgileRunner().cancelImport();
                 }
             }
         });
