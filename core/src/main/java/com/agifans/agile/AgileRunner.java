@@ -185,4 +185,6 @@ public abstract class AgileRunner {
     public abstract boolean hasTouchScreen();
     
     public abstract boolean isMobile();
+    
+    public abstract String slugify(String input);
 }

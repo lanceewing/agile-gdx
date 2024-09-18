@@ -695,7 +695,8 @@ public class HomeScreen extends InputAdapter implements Screen {
      */
     public AppConfigItem getAppConfigItemByGameUri(String gameUri) {
         for (AppConfigItem appConfigItem : appConfigMap.values()) {
-            if (appConfigItem.getFilePath().equalsIgnoreCase(gameUri)) {
+            String uri = agile.getAgileRunner().slugify(appConfigItem.getName());
+            if (uri.equalsIgnoreCase(gameUri)) {
                 return appConfigItem;
             }
         }
@@ -812,15 +813,7 @@ public class HomeScreen extends InputAdapter implements Screen {
                     if ((appName != null) && (!appName.equals(""))) {
                         final AppConfigItem appConfigItem = appConfigMap.get(appName);
                         if (appConfigItem != null) {
-                            if ("UNK".equals(appConfigItem.getFileType())) {
-                                // Known game but hasn't yet been imported.
-                                importGame(appConfigItem);
-                            } else {
-                                lastGameLaunched = appConfigItem;
-                                GameScreen gameScreen = agile.getGameScreen();
-                                gameScreen.initGame(appConfigItem, true);
-                                agile.setScreen(gameScreen);
-                            }
+                            processGameSelection(appConfigItem);
                         } else if (appName.equals("INFO")) {
                             showAboutAgileDialog();
                         }
@@ -832,6 +825,18 @@ public class HomeScreen extends InputAdapter implements Screen {
             }
         }
     };
+    
+    public void processGameSelection(AppConfigItem appConfigItem) {
+        if ("UNK".equals(appConfigItem.getFileType())) {
+            // Known game but hasn't yet been imported.
+            importGame(appConfigItem);
+        } else {
+            lastGameLaunched = appConfigItem;
+            GameScreen gameScreen = agile.getGameScreen();
+            gameScreen.initGame(appConfigItem, true);
+            agile.setScreen(gameScreen);
+        }
+    }
     
     private void showAboutAgileDialog() {
         dialogHandler.showAboutDialog(

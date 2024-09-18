@@ -51,21 +51,21 @@ public class GwtLauncher extends GwtApplication {
                 }
             }
         } else {
-            String gameId = "";
+            String uri = "";
             
             // If a path is included, assume it is to launch a game.
             if (urlPath.startsWith("/play/")) {
-                gameId = urlPath.substring(6);
+                uri = urlPath.substring(6);
             } else {
-                gameId = urlPath.substring(1);
+                uri = urlPath.substring(1);
             }
             
             // Check for and remove trailing slash
-            if (gameId.endsWith("/")) {
-                gameId = gameId.substring(0, gameId.lastIndexOf('/'));
+            if (uri.endsWith("/")) {
+                uri = uri.substring(0, uri.lastIndexOf('/'));
             }
             
-            argsMap.put("id", gameId);
+            argsMap.put("uri", uri);
         }
         
         GwtDialogHandler gwtDialogHandler = new GwtDialogHandler();

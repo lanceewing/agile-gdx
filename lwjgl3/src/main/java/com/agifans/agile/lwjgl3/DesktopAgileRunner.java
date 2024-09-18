@@ -1,5 +1,7 @@
 package com.agifans.agile.lwjgl3;
 
+import java.text.Normalizer;
+import java.text.Normalizer.Form;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -143,5 +145,26 @@ public class DesktopAgileRunner extends AgileRunner {
     public boolean isMobile() {
         // Desktop/Java/LWJGL platform is obviously not mobile.
         return false;
+    }
+
+    @Override
+    public String slugify(String input) {
+        if ((input == null) | (input.isEmpty())) {
+            return "";
+        }
+        
+        // Make lower case and trim.
+        String slug = input.toLowerCase().trim();
+        
+        // Remove accents from characters.
+        slug = Normalizer.normalize(slug, Form.NFD).replaceAll("[\u0300-\u036f]", "");
+        
+        // Remove invalid chars.
+        slug = slug.replaceAll("[^a-z0-9\\s-]", "").trim();
+        
+        // Replace multiple spaces or hyphens with a single hyphen.
+        slug = slug.replaceAll("[\\s-]+", "-");
+        
+        return slug;
     }
 }

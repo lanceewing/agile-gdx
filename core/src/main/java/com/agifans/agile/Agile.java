@@ -79,11 +79,10 @@ public class Agile extends Game {
             }
         }
         
+        setScreen(homeScreen);
+        
         if (appConfigItem != null) {
-            gameScreen.initGame(appConfigItem, false);
-            setScreen(gameScreen);
-        } else {
-            setScreen(homeScreen);
+            homeScreen.processGameSelection(appConfigItem);
         }
         
         // Stop the Android back key from immediately exiting the app.
@@ -115,6 +114,15 @@ public class Agile extends Game {
      */
     public Preferences getPreferences() {
         return preferences;
+    }
+    
+    /**
+     * Gets the AgileRunner.
+     * 
+     * @return the AgileRunner.
+     */
+    public AgileRunner getAgileRunner() {
+        return agileRunner;
     }
     
     @Override

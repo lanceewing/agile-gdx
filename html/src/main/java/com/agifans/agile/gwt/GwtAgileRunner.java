@@ -69,7 +69,7 @@ public class GwtAgileRunner extends AgileRunner {
             // For embedded ZIP games, and original Sierra games, we use a URL path.
             newURL = Window.Location.createUrlBuilder()
                     .setHash(null)
-                    .setPath("/play/" + appConfigItem.getGameId().toLowerCase() + "/")
+                    .setPath("/play/" + slugify(appConfigItem.getName()) + "/")
                     .buildString();
         } else {
             // Otherwise use id hash.
@@ -326,5 +326,28 @@ public class GwtAgileRunner extends AgileRunner {
                 return false;
             }
         }
+    }-*/;
+
+    @Override
+    public String slugify(String input) {
+        return slugifyHtml(input);
+    }
+    
+    private native String slugifyHtml(String input) /*-{
+        if (!input) return '';
+
+        // Make lower case and trim.
+        var slug = input.toLowerCase().trim();
+
+        // Remove accents from characters.
+        slug = slug.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+
+        // Replace invalid chars with spaces.
+        slug = slug.replace(/[^a-z0-9\s-]/g, '').trim();
+
+        // Replace multiple spaces or hyphens with a single hyphen.
+        slug = slug.replace(/[\s-]+/g, '-');
+
+        return slug;
     }-*/;
 }
