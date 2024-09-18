@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>The Legendary Harry Soupsmith - A fan made Sierra AGI game</title>
+  <meta name="description" content="Play 'The Legendary Harry Soupsmith', a fan made AGI adventure game, directly in your browser, with AGILE, the web based Sierra On-Line Adventure Game Interpreter (AGI)." />
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta id="gameViewport" name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content">
+  <meta name="theme-color" content="#000000">
+  <link rel="manifest" href="/manifest.json" crossorigin="use-credentials" />
+  <link href="/styles.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+<div align="center" id="embed-html"></div>
+<script type="text/javascript" src="/dialog.js"></script>
+<script type="text/javascript" src="/jszip.min.js"></script>
+<script type="text/javascript" src="/html/html.nocache.js"></script>
+</body>
+
+<script>
+function handleMouseDown(evt) {
+  evt.preventDefault();
+  evt.stopPropagation();
+  window.focus();
+}
+
+function handleMouseUp(evt) {
+  evt.preventDefault();
+  evt.stopPropagation();
+}
+document.addEventListener('contextmenu', event => event.preventDefault());
+document.getElementById('embed-html').addEventListener('mousedown', handleMouseDown, false);
+document.getElementById('embed-html').addEventListener('mouseup', handleMouseUp, false);
+</script>
+</html>
