@@ -80,6 +80,13 @@ public class GwtAgileRunner extends AgileRunner {
         }
         updateURLWithoutReloading(newURL);
         
+        // Set title for the browser tab.
+        if (HomeScreen.SIERRA_GAMES.contains(appConfigItem.getGameId().toLowerCase())) {
+            Gdx.graphics.setTitle(appConfigItem.getName());
+        } else {
+            Gdx.graphics.setTitle(appConfigItem.getName() + " - A fan made Sierra AGI game");
+        }
+        
         // The game data files have been stored/cached in the OPFS. We load it from
         // there, using the gameUri as the identifier, and then pass it to the worker 
         // to decode.
@@ -278,6 +285,8 @@ public class GwtAgileRunner extends AgileRunner {
         worker = null;
         
         clearUrl();
+        
+        Gdx.graphics.setTitle("AGILE - The web-based Sierra On-Line Adventure Game Interpreter (AGI)");
     }
 
     @Override
