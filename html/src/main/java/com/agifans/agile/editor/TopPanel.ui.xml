@@ -1,0 +1,61 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder
+  xmlns:ui='urn:ui:com.google.gwt.uibinder'
+  xmlns:g='urn:import:com.google.gwt.user.client.ui'
+  xmlns:editor='urn:import:com.agifans.agile.editor'>
+
+  <g:HTMLPanel>
+  
+	<div class="gui_menu-bar-position menu-bar_menu-bar">
+	
+	  <div class="menu-bar_menu-bar-item">
+        <img id="logo_img" alt="AGILE" width="88" height="40" class="menu-bar_scratch-logo menu-bar_clickable" draggable="false" src="/agile_title.png"/>
+      </div>
+	
+      <g:MenuBar>
+        <g:MenuItem>
+          <img draggable="false" src="/editor/settings.svg" title="Settings"/>
+          <span class="menu-bar_collapsible-label"><span>Settings</span></span>
+          <img draggable="false" src="/editor/expand.svg"/>
+          <g:MenuBar vertical="true">
+            <g:MenuItem>Language</g:MenuItem>
+            <g:MenuItem>Color Mode</g:MenuItem>
+          </g:MenuBar>
+        </g:MenuItem>
+        <g:MenuItem>
+          <img draggable="false" src="/editor/file.svg" title="File"/>
+          <span class="menu-bar_collapsible-label"><span>File</span></span>
+          <img draggable="false" src="/editor/expand.svg"/>
+          <g:MenuBar vertical="true">
+            <g:MenuItem>New</g:MenuItem>
+            <g:MenuItem>Load from your computer</g:MenuItem>
+            <g:MenuItem>Save to your computer</g:MenuItem>
+          </g:MenuBar>
+        </g:MenuItem>
+        <g:MenuItem>
+          <img draggable="false" src="/editor/edit.svg" title="Edit"/>
+          <span class="menu-bar_collapsible-label"><span>Edit</span></span>
+          <img draggable="false" src="/editor/expand.svg"/>
+          <g:MenuBar vertical="true">
+            <g:MenuItem>Restore</g:MenuItem>
+            <g:MenuItem>Turn on Turbo Mode</g:MenuItem>
+          </g:MenuBar>
+        </g:MenuItem>
+      </g:MenuBar>
+	
+	  <div class="menu-bar_account-info-group">
+	    <div class="menu-bar_menu-bar-item"></div>
+	    <div class="menu-bar_menu-bar-item menu-bar_hoverable">
+	      <span>Join AGILE</span>
+	    </div>
+	    <div class="menu-bar_menu-bar-item menu-bar_hoverable">
+	      <span>Sign in</span>
+	      <div class="menu-bar_menu-bar-menu"></div>
+	    </div>
+	  </div>
+	
+	</div>
+    
+  </g:HTMLPanel>
+
+</ui:UiBinder>

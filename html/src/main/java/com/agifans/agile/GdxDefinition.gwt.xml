@@ -3,6 +3,7 @@
 <module rename-to="html">
   <source path="">
     <exclude name="worker/AgileWebWorker.java"/>
+    <exclude name="editor/Editor.java"/>
   </source>
   <inherits name="com.badlogic.gdx.backends.gdx_backends_gwt" />
   <inherits name="com.agifans.agile.Agile" />

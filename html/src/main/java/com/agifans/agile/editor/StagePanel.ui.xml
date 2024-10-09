@@ -1,0 +1,78 @@
+<ui:UiBinder
+	xmlns:ui='urn:ui:com.google.gwt.uibinder'
+	xmlns:g='urn:import:com.google.gwt.user.client.ui'
+	xmlns:editor='urn:import:com.agifans.agile.editor'>
+
+	<g:HTMLPanel>
+	
+		<div class="gui_stage-and-target-wrapper">
+		
+		    <div class="stage-wrapper_stage-wrapper" dir="ltr">
+		
+		        <div>
+		            <div class="stage-header_stage-header-wrapper">
+		                <div class="stage-header_stage-menu-wrapper">
+		
+		                    <div class="controls_controls-container">
+		                        <img class="green-flag_green-flag" draggable="false" src="/editor/green_flag.svg" title="Go"/>
+		                        <img class="stop-all_stop-all" draggable="false" src="/editor/red_stop.svg" title="Stop"/>
+		                    </div>
+		
+		                    <div class="stage-header_stage-size-row">
+		                        <div class="stage-header_stage-size-toggle-group">
+		                            <div class="toggle-buttons_row">
+		                                <button class="toggle-buttons_button" title="Switch to small stage"
+		                                    aria-label="Switch to small stage" aria-pressed="false">
+		                                    <img src="/editor/small_stage.svg" aria-hidden="true" class="stage-header_stage-button-icon" />
+		                                </button>
+		                                <button class="toggle-buttons_button" title="Switch to large stage"
+		                                    aria-label="Switch to large stage" aria-pressed="true">
+		                                    <img src="/editor/large_stage.svg" aria-hidden="true" class="stage-header_stage-button-icon" />
+		                                </button>
+		                            </div>
+		                        </div>
+		                        <div>
+		                            <span class="button_outlined-button stage-header_stage-button" role="button">
+		                                <div class="button_content">
+		                                    <img alt="Enter full screen mode" class="stage-header_stage-button-icon"
+		                                        draggable="false" src="/editor/full_screen.svg" title="Full Screen Control" />
+		                                </div>
+		                            </span>
+		                        </div>
+		                    </div>
+		
+		                </div>
+		            </div>
+		        </div>
+		
+		        <div class="stage-wrapper_stage-canvas-wrapper">
+		            <div class="stage_stage-wrapper">
+		
+		                <div class="stage_stage" style="width: 408px; height: 306px;">
+		                    <div align="center" id="embed-html"></div>
+		                    <div class="stage_monitor-wrapper">
+		                        <div class="monitor-list_monitor-list monitor-overlay" style="width: 408px; height: 306px;">
+		                            <div class="monitor-list_monitor-list-scaler" style="transform: scale(0.85, 0.85);"></div>
+		                        </div>
+		                    </div>
+		                    <div class="stage_frame-wrapper"></div>
+		                </div>
+		
+		                <div class="stage_stage-overlays">
+		                    <div class="stage_stage-bottom-wrapper" style="width: 408px; height: 306px;"></div>
+		                    <canvas class="stage_dragging-sprite" height="0" width="0"></canvas>
+		                </div>
+		            </div>
+		        </div>
+		
+		    </div>
+		
+		    <div class="gui_target-wrapper">
+		    
+			</div>
+	
+		</div>
+	
+	</g:HTMLPanel>
+  
+</ui:UiBinder>

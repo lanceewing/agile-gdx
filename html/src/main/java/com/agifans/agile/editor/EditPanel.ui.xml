@@ -1,0 +1,40 @@
+<ui:UiBinder
+  xmlns:ui='urn:ui:com.google.gwt.uibinder'
+  xmlns:g='urn:import:com.google.gwt.user.client.ui'
+  xmlns:editor='urn:import:com.agifans.agile.editor'>
+
+  <editor:ScrolledTabLayoutPanel ui:field="tabs" barUnit='PX' barHeight='44'>
+  
+    <editor:tab>
+      <editor:header size='7'><span>📜</span> Logics</editor:header>
+      <editor:LogicEditPanel ui:field="logicEditPanel" />
+    </editor:tab>
+    
+    <editor:tab>
+      <editor:header size='7'><span>🖼️</span> Pictures</editor:header>
+      <editor:PictureEditPanel ui:field="pictureEditPanel" />
+    </editor:tab>
+    
+    <editor:tab>
+      <editor:header size='7'><span>🚶‍♂️</span> Views</editor:header>
+      <g:Label>VIEW</g:Label>
+    </editor:tab>
+    
+    <editor:tab>
+      <editor:header size='7'><span>🔉</span> Sounds</editor:header>
+      <g:Label>SOUND</g:Label>
+    </editor:tab>
+    
+    <editor:tab>
+      <editor:header size='7'><span>👜</span> Objects</editor:header>
+      <g:Label>OBJECT</g:Label>
+    </editor:tab>
+    
+    <editor:tab>
+      <editor:header size='7'><span>💬</span> Words</editor:header>
+      <g:Label>WORDS</g:Label>
+    </editor:tab>
+    
+  </editor:ScrolledTabLayoutPanel>
+  
+</ui:UiBinder>

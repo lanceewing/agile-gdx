@@ -1,0 +1,29 @@
+<ui:UiBinder
+  xmlns:ui='urn:ui:com.google.gwt.uibinder'
+  xmlns:g='urn:import:com.google.gwt.user.client.ui'
+  xmlns:editor='urn:import:com.agifans.agile.editor'>
+
+  <g:DockLayoutPanel unit='PX'>
+  
+    <!-- Top menu, e.g. File, Settings, etc. -->
+    <g:north size='50'>
+      <editor:TopPanel ui:field='topPanel' />
+    </g:north>
+
+    <g:center>
+      <g:SplitLayoutPanel>
+
+		<g:center size='700'>
+		  <editor:EditPanel ui:field='editPanel' />
+        </g:center>
+
+        <g:east size='490'>
+          <editor:StagePanel ui:field='stagePanel' />
+        </g:east>
+        
+      </g:SplitLayoutPanel>
+    </g:center>
+    
+  </g:DockLayoutPanel>
+
+</ui:UiBinder>
