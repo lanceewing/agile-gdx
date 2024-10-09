@@ -40,15 +40,22 @@ public abstract class GameLoader {
         Game game = null;
                 
         // Use a dummy TextGraphics instance to render the "Loading" text in grand AGI fashion.
-        TextGraphics textGraphics = new TextGraphics(pixelData, null, null);
+        TextGraphics textGraphics = null;
+        if (pixelData != null) {
+            textGraphics = new TextGraphics(pixelData, null, null);
+        }
         try {
             if (gameFilesMap.containsKey("words.tok")) {
-                textGraphics.drawString(pixelData, "Loading... Please wait", 72, 88, 15, 0);
+                if (pixelData != null) {
+                    textGraphics.drawString(pixelData, "Loading... Please wait", 72, 88, 15, 0);
+                }
             }
             game = new Game(gameFilesMap);
         }
         finally {
-            textGraphics.clearLines(0, 24, 0);
+            if (pixelData != null) {
+                textGraphics.clearLines(0, 24, 0);
+            }
         }
         
         // Game detection logic and update windows title.
