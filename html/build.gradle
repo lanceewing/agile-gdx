@@ -17,7 +17,7 @@ gwt {
   minHeapSize = '1G'
 
   src = files(file('src/main/java')) // Needs to be in front of "modules" below.
-  modules 'com.agifans.agile.GdxDefinition','com.agifans.agile.AgileWebWorker'
+  modules 'com.agifans.agile.GdxDefinition','com.agifans.agile.AgileWebWorker','com.agifans.agile.AgileEditor'
   devModules 'com.agifans.agile.GdxDefinitionSuperdev'
   project.webAppDirName = 'webapp'
 
