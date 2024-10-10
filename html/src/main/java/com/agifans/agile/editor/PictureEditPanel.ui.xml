@@ -10,7 +10,6 @@
     <g:cell width="80px">
 	  <g:ScrollPanel ui:field="picturesScrollPanel">
         <g:VerticalPanel ui:field="picturesVerticalPanel">
-          <g:Label>Pictures</g:Label>
         </g:VerticalPanel>
       </g:ScrollPanel>
     </g:cell>

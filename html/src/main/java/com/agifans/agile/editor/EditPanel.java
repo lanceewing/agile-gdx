@@ -20,17 +20,15 @@ public class EditPanel extends ResizeComposite {
     @UiField
     PictureEditPanel pictureEditPanel;
     
+    private Game game;
+    
     public EditPanel() {
         initWidget(binder.createAndBindUi(this));
-        
-        
-    }
-    
-    public void loadGame(String gameId) {
-        
     }
     
     public void loadGame(Game game) {
+        this.game = game;
         
+        pictureEditPanel.loadPictures(game);
     }
 }

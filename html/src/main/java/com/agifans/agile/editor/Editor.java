@@ -7,7 +7,6 @@ import java.util.logging.Logger;
 
 import com.agifans.agile.agilib.Game;
 import com.agifans.agile.gwt.GwtGameLoader;
-import com.agifans.agile.gwt.GwtPixelData;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -64,5 +63,12 @@ public class Editor implements EntryPoint {
         
         logger.log(Level.INFO, "game: " + game);
         
+        logToJSConsole("game: " + (game == null? null : game.toString()));
+        
+        editPanel.loadGame(game);
     }
+    
+    private final native void logToJSConsole(String message)/*-{
+        console.log(message);
+    }-*/;
 }
