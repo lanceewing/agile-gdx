@@ -1,0 +1,29 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder
+  xmlns:ui='urn:ui:com.google.gwt.uibinder'
+  xmlns:g='urn:import:com.google.gwt.user.client.ui'
+  xmlns:editor='urn:import:com.agifans.agile.editor'>
+
+  <g:HTMLPanel>
+  
+	<div style="order: 1;">
+	
+	    <div class="selector_list-item sprite-selector-item_sprite-selector-item sprite-selector-item_is-selected">
+	
+	        <div class="sprite-selector-item_sprite-image-outer">
+	            <div class="sprite-selector-item_sprite-image-inner">
+	                <g:Image ui:field="pictureImage" />
+	            </div>
+	        </div>
+	        
+	        <div class="sprite-selector-item_sprite-info">
+	            <div class="sprite-selector-item_sprite-name">Picture 2</div>
+	        </div>
+	
+	    </div>
+	    
+	</div>
+
+  </g:HTMLPanel>
+
+</ui:UiBinder>

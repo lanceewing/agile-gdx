@@ -35,6 +35,10 @@ public class PictureEditPanel extends Composite {
     
     public PictureEditPanel() {
         initWidget(binder.createAndBindUi(this));
+        
+        picturesScrollPanel.addStyleName("picturesScrollPanel");
+        picturesVerticalPanel.addStyleName("picturesVerticalPanel");
+        horizontalPanel.addStyleName("picturesHorizonalPanel");
     }
     
     public void loadPictures(Game game) {
@@ -57,12 +61,14 @@ public class PictureEditPanel extends Composite {
                 }
                 
                 String imgDataUrl = convertPixelsToDataUrl(pixelArray, 160, 160);
-                String imgTag = "<img class=\"sprite-selector-item_sprite-image\" draggable=\"false\" src=\"" + 
-                        imgDataUrl + "\" />";
+                //String imgTag = "<img class=\"sprite-selector-item_sprite-image\" draggable=\"false\" src=\"" + 
+                //        imgDataUrl + "\" />";
                 
-                HTMLPanel htmlPanel = new HTMLPanel(imgTag);
+                //HTMLPanel htmlPanel = new HTMLPanel(imgTag);
                 
-                picturesVerticalPanel.add(htmlPanel);
+                PictureThumbnail thumbnail = new PictureThumbnail(imgDataUrl);
+                
+                picturesVerticalPanel.add(thumbnail);
             }
         }
         

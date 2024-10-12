@@ -7,7 +7,7 @@
 	
   <g:HorizontalPanel width="100%" ui:field="horizontalPanel">
   
-    <g:cell width="80px">
+    <g:cell width="120px">
 	  <g:ScrollPanel ui:field="picturesScrollPanel">
         <g:VerticalPanel ui:field="picturesVerticalPanel">
         </g:VerticalPanel>
