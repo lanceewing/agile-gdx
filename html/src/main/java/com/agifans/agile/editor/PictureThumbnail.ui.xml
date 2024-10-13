@@ -4,12 +4,14 @@
   xmlns:g='urn:import:com.google.gwt.user.client.ui'
   xmlns:editor='urn:import:com.agifans.agile.editor'>
 
+  <ui:with type="com.agifans.agile.editor.PictureThumbnailData" field="pictureThumbnailData"></ui:with>
+
   <g:HTMLPanel>
   
-	<div style="order: 1;">
+	<div>
 	
-	    <div class="selector_list-item sprite-selector-item_sprite-selector-item sprite-selector-item_is-selected">
-	
+	    <g:HTMLPanel ui:field="thumbnailPanel">
+
 	        <div class="sprite-selector-item_sprite-image-outer">
 	            <div class="sprite-selector-item_sprite-image-inner">
 	                <g:Image ui:field="pictureImage" />
@@ -17,10 +19,10 @@
 	        </div>
 	        
 	        <div class="sprite-selector-item_sprite-info">
-	            <div class="sprite-selector-item_sprite-name">Picture 2</div>
+	            <div class="sprite-selector-item_sprite-name">Picture <ui:text from="{pictureThumbnailData.getPictureNumber}" /></div>
 	        </div>
 	
-	    </div>
+	    </g:HTMLPanel>
 	    
 	</div>
 

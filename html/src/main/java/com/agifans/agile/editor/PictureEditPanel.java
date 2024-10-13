@@ -9,7 +9,6 @@ import com.google.gwt.typedarrays.shared.Uint8ClampedArray;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -45,6 +44,7 @@ public class PictureEditPanel extends Composite {
         this.game = game;
         
         Picture[] pictures = game.pictures;
+        int pictureNumber = 0;
         
         for (Picture picture : pictures) {
             if (picture != null) {
@@ -61,13 +61,11 @@ public class PictureEditPanel extends Composite {
                 }
                 
                 String imgDataUrl = convertPixelsToDataUrl(pixelArray, 160, 160);
-                //String imgTag = "<img class=\"sprite-selector-item_sprite-image\" draggable=\"false\" src=\"" + 
-                //        imgDataUrl + "\" />";
                 
-                //HTMLPanel htmlPanel = new HTMLPanel(imgTag);
-                
-                PictureThumbnail thumbnail = new PictureThumbnail(imgDataUrl);
-                
+                PictureThumbnail thumbnail = new PictureThumbnail(imgDataUrl, pictureNumber++);
+                if (pictureNumber == 1) {
+                    thumbnail.setSelected(true);
+                }
                 picturesVerticalPanel.add(thumbnail);
             }
         }
