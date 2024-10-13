@@ -6,26 +6,30 @@
 
   <ui:with type="com.agifans.agile.editor.picture.PictureThumbnailData" field="pictureThumbnailData"></ui:with>
 
-  <g:HTMLPanel>
-  
-	<div>
-	
-	    <g:HTMLPanel ui:field="thumbnailPanel">
+  <g:SimplePanel>
 
-	        <div class="sprite-selector-item_sprite-image-outer">
-	            <div class="sprite-selector-item_sprite-image-inner">
-	                <g:Image ui:field="pictureImage" />
-	            </div>
-	        </div>
-	        
-	        <div class="sprite-selector-item_sprite-info">
-	            <div class="sprite-selector-item_sprite-name">Picture <ui:text from="{pictureThumbnailData.getPictureNumber}" /></div>
-	        </div>
+	<g:FocusPanel ui:field="thumbnailLink">
 	
-	    </g:HTMLPanel>
+		<g:FlowPanel>
+	
+		    <g:HTMLPanel ui:field="thumbnailPanel">
+	
+		        <div class="sprite-selector-item_sprite-image-outer">
+		            <div class="sprite-selector-item_sprite-image-inner">
+		                <g:Image ui:field="pictureImage" />
+		            </div>
+		        </div>
+		        
+		        <div class="sprite-selector-item_sprite-info">
+		            <div class="sprite-selector-item_sprite-name">Picture <ui:text from="{pictureThumbnailData.getPictureNumber}" /></div>
+		        </div>
+		
+		    </g:HTMLPanel>
 	    
-	</div>
+	    </g:FlowPanel>
+	    
+	</g:FocusPanel>
 
-  </g:HTMLPanel>
+  </g:SimplePanel>
 
 </ui:UiBinder>

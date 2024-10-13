@@ -1,10 +1,13 @@
 package com.agifans.agile.editor.picture;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiFactory;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
@@ -15,14 +18,21 @@ public class PictureThumbnail extends Composite {
     private static final Binder binder = GWT.create(Binder.class);
 
     @UiField
+    FocusPanel thumbnailLink;
+    
+    @UiField
     HTMLPanel thumbnailPanel;
     
     @UiField
     Image pictureImage;
     
+    private PictureEditPanel pictureEditPanel;
+    
     private PictureThumbnailData pictureThumbnailData;
     
-    public PictureThumbnail(String dataUrl, int pictureNumber) {
+    public PictureThumbnail(PictureEditPanel pictureEditPanel, String dataUrl, int pictureNumber) {
+        this.pictureEditPanel = pictureEditPanel;
+        
         pictureThumbnailData = new PictureThumbnailData(pictureNumber);
         
         initWidget(binder.createAndBindUi(this));
@@ -45,5 +55,10 @@ public class PictureThumbnail extends Composite {
         } else {
             thumbnailPanel.removeStyleName("sprite-selector-item_is-selected");
         }
+    }
+    
+    @UiHandler("thumbnailLink")
+    public void onThumbnailClicked(ClickEvent event) {
+        pictureEditPanel.changeSelection(this);
     }
 }

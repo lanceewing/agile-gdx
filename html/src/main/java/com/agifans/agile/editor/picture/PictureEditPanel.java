@@ -28,6 +28,11 @@ public class PictureEditPanel extends Composite {
     VerticalPanel picturesVerticalPanel;
     
     /**
+     * Reference to the currently selected picture thumbnail.
+     */
+    private PictureThumbnail selectedThumbnail;
+    
+    /**
      * Current game whose pictures are being shown.
      */
     private Game game;
@@ -62,14 +67,21 @@ public class PictureEditPanel extends Composite {
                 
                 String imgDataUrl = convertPixelsToDataUrl(pixelArray, 160, 160);
                 
-                PictureThumbnail thumbnail = new PictureThumbnail(imgDataUrl, pictureNumber++);
+                PictureThumbnail thumbnail = new PictureThumbnail(this, imgDataUrl, pictureNumber++);
                 if (pictureNumber == 1) {
-                    thumbnail.setSelected(true);
+                    changeSelection(thumbnail);
                 }
                 picturesVerticalPanel.add(thumbnail);
             }
         }
-        
+    }
+    
+    public void changeSelection(PictureThumbnail thumbnail) {
+        if (selectedThumbnail != null) {
+            selectedThumbnail.setSelected(false);
+        }
+        thumbnail.setSelected(true);
+        selectedThumbnail = thumbnail;
     }
     
     private final native String convertPixelsToDataUrl(ArrayBufferView pixels, int width, int height)/*-{
