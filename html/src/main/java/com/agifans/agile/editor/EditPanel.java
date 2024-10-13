@@ -1,6 +1,7 @@
 package com.agifans.agile.editor;
 
 import com.agifans.agile.agilib.Game;
+import com.agifans.agile.editor.picture.PictureEditPanel;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;

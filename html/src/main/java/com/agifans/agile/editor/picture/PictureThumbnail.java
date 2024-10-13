@@ -1,4 +1,4 @@
-package com.agifans.agile.editor;
+package com.agifans.agile.editor.picture;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;

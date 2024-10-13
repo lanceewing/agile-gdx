@@ -1,4 +1,4 @@
-package com.agifans.agile.editor;
+package com.agifans.agile.editor.picture;
 
 public class PictureThumbnailData {
 

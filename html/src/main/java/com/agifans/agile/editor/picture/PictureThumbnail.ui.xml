@@ -2,9 +2,9 @@
 <ui:UiBinder
   xmlns:ui='urn:ui:com.google.gwt.uibinder'
   xmlns:g='urn:import:com.google.gwt.user.client.ui'
-  xmlns:editor='urn:import:com.agifans.agile.editor'>
+  xmlns:picture='urn:import:com.agifans.agile.editor.picture'>
 
-  <ui:with type="com.agifans.agile.editor.PictureThumbnailData" field="pictureThumbnailData"></ui:with>
+  <ui:with type="com.agifans.agile.editor.picture.PictureThumbnailData" field="pictureThumbnailData"></ui:with>
 
   <g:HTMLPanel>
   

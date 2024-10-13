@@ -1,4 +1,4 @@
-package com.agifans.agile.editor;
+package com.agifans.agile.editor.picture;
 
 import com.agifans.agile.agilib.Game;
 import com.agifans.agile.agilib.Picture;

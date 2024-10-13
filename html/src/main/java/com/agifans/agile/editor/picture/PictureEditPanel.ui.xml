@@ -3,7 +3,7 @@
 <ui:UiBinder 
 	xmlns:ui='urn:ui:com.google.gwt.uibinder'
 	xmlns:g='urn:import:com.google.gwt.user.client.ui'
-	xmlns:editor='urn:import:com.agifans.agile.editor'>
+	xmlns:picture='urn:import:com.agifans.agile.editor.picture'>
 	
   <g:HorizontalPanel width="100%" ui:field="horizontalPanel">
   
