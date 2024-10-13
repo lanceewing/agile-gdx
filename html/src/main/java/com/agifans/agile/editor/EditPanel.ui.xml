@@ -2,13 +2,14 @@
   xmlns:ui='urn:ui:com.google.gwt.uibinder'
   xmlns:g='urn:import:com.google.gwt.user.client.ui'
   xmlns:editor='urn:import:com.agifans.agile.editor'
-  xmlns:picture='urn:import:com.agifans.agile.editor.picture'>
+  xmlns:picture='urn:import:com.agifans.agile.editor.picture'
+  xmlns:logic='urn:import:com.agifans.agile.editor.logic'>
 
   <editor:ScrolledTabLayoutPanel ui:field="tabs" barUnit='PX' barHeight='44'>
   
     <editor:tab>
       <editor:header size='7'><span>📜</span> Logics</editor:header>
-      <editor:LogicEditPanel ui:field="logicEditPanel" />
+      <logic:LogicEditPanel ui:field="logicEditPanel" />
     </editor:tab>
     
     <editor:tab>
