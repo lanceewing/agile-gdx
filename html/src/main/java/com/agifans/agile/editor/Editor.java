@@ -61,10 +61,6 @@ public class Editor implements EntryPoint {
         gameLoader.fetchGameFiles("/games/ruby.zip", map -> gameFilesMap.putAll(map));
         Game game = gameLoader.loadGame(gameFilesMap);
         
-        logger.log(Level.INFO, "game: " + game);
-        
-        logToJSConsole("game: " + (game == null? null : game.toString()));
-        
         editPanel.loadGame(game);
     }
     

@@ -1,0 +1,35 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder
+  xmlns:ui='urn:ui:com.google.gwt.uibinder'
+  xmlns:g='urn:import:com.google.gwt.user.client.ui'
+  xmlns:view='urn:import:com.agifans.agile.editor.view'>
+
+  <ui:with type="com.agifans.agile.editor.view.ViewThumbnailData" field="viewThumbnailData"></ui:with>
+
+  <g:SimplePanel>
+
+	<g:FocusPanel ui:field="thumbnailLink">
+	
+		<g:FlowPanel>
+	
+		    <g:HTMLPanel ui:field="thumbnailPanel">
+	
+		        <div class="sprite-selector-item_sprite-image-outer">
+		            <div class="sprite-selector-item_sprite-image-inner">
+		                <g:Image ui:field="viewImage" />
+		            </div>
+		        </div>
+		        
+		        <div class="sprite-selector-item_sprite-info">
+		            <div class="sprite-selector-item_sprite-name">View <ui:text from="{viewThumbnailData.getViewNumber}" /></div>
+		        </div>
+		
+		    </g:HTMLPanel>
+	    
+	    </g:FlowPanel>
+	    
+	</g:FocusPanel>
+
+  </g:SimplePanel>
+
+</ui:UiBinder>

@@ -3,6 +3,7 @@
   xmlns:g='urn:import:com.google.gwt.user.client.ui'
   xmlns:editor='urn:import:com.agifans.agile.editor'
   xmlns:picture='urn:import:com.agifans.agile.editor.picture'
+  xmlns:view='urn:import:com.agifans.agile.editor.view'
   xmlns:logic='urn:import:com.agifans.agile.editor.logic'>
 
   <editor:ScrolledTabLayoutPanel ui:field="tabs" barUnit='PX' barHeight='44'>
@@ -19,7 +20,7 @@
     
     <editor:tab>
       <editor:header size='7'><span>🚶‍♂️</span> Views</editor:header>
-      <g:Label>VIEW</g:Label>
+      <view:ViewEditPanel ui:field="viewEditPanel" />
     </editor:tab>
     
     <editor:tab>

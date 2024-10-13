@@ -428,7 +428,8 @@ body {
 	color: white;
 }
 
-.picturesScrollPanel {
+.picturesScrollPanel,
+.viewsScrollPanel {
 	height: calc(100vh - 102px);
 	overflow-x: hidden !important;
 	overflow-y: scroll !important;
@@ -494,12 +495,14 @@ body {
     background: hsla(0, 100%, 100%, 1);
 }
 
-.pictureThumbnail {
+.pictureThumbnail, 
+.viewThumbnail {
 	width: 80px;
     height: 60px;
 }
 
-.picturesVerticalPanel .selector_list-item {
+.picturesVerticalPanel .selector_list-item,
+.viewsVerticalPanel .selector_list-item {
 	width: 90px;
 	height: 90px;
 }
