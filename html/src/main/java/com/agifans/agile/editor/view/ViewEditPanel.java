@@ -2,6 +2,8 @@ package com.agifans.agile.editor.view;
 
 import com.agifans.agile.agilib.Game;
 import com.agifans.agile.agilib.View;
+import com.agifans.agile.agilib.View.Cel;
+import com.agifans.agile.agilib.View.Loop;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.typedarrays.shared.ArrayBufferView;
 import com.google.gwt.typedarrays.shared.TypedArrays;
@@ -45,33 +47,37 @@ public class ViewEditPanel extends Composite {
         horizontalPanel.addStyleName("viewsHorizonalPanel");
     }
     
-    public void loadPictures(Game game) {
+    public void loadViews(Game game) {
         this.game = game;
         
         View[] views = game.views;
-        int pictureNumber = 0;
+        int viewNumber = 0;
         
         for (View view : views) {
             if (view != null) {
-                
-                
-    //                Uint8ClampedArray pixelArray = TypedArrays.createUint8ClampedArray(picClone.getVisualPixels().length * 4);
-    //                for (int index=0, pictureIndex=0; index < pixelArray.byteLength(); index += 4) {
-    //                    int rgba8888Colour = picClone.getVisualPixels()[pictureIndex++];
-    //                    pixelArray.set(index + 0, (rgba8888Colour >> 24) & 0xFF);
-    //                    pixelArray.set(index + 1, (rgba8888Colour >> 16) & 0xFF);
-    //                    pixelArray.set(index + 2, (rgba8888Colour >>  8) & 0xFF);
-    //                    pixelArray.set(index + 3, (rgba8888Colour >>  0) & 0xFF);
-    //                }
-    //                
-    //                String imgDataUrl = convertPixelsToDataUrl(pixelArray, 160, 160);
-    //                
-    //                PictureThumbnail thumbnail = new PictureThumbnail(this, imgDataUrl, pictureNumber++);
-    //                if (pictureNumber == 1) {
-    //                    changeSelection(thumbnail);
-    //                }
-    //                picturesVerticalPanel.add(thumbnail);
-                
+                if ((view.loops != null) && (!view.loops.isEmpty())) {
+                    Loop loop = view.loops.get(0);
+                    if ((loop.cels != null) && (!loop.cels.isEmpty())) {
+                        Cel cel = loop.cels.get(0);
+                        
+                        Uint8ClampedArray pixelArray = TypedArrays.createUint8ClampedArray(cel.getPixelData().length * 4);
+                        for (int index=0, viewIndex=0; index < pixelArray.byteLength(); index += 4) {
+                            int rgba8888Colour = cel.getPixelData()[viewIndex++];
+                            pixelArray.set(index + 0, (rgba8888Colour >> 24) & 0xFF);
+                            pixelArray.set(index + 1, (rgba8888Colour >> 16) & 0xFF);
+                            pixelArray.set(index + 2, (rgba8888Colour >>  8) & 0xFF);
+                            pixelArray.set(index + 3, (rgba8888Colour >>  0) & 0xFF);
+                        }
+                        
+                        String imgDataUrl = convertPixelsToDataUrl(pixelArray, cel.getWidth(), cel.getHeight());
+                        
+                        ViewThumbnail thumbnail = new ViewThumbnail(this, imgDataUrl, viewNumber++);
+                        if (viewNumber == 1) {
+                            changeSelection(thumbnail);
+                        }
+                        viewsVerticalPanel.add(thumbnail);
+                    }   
+                }
             }
         }
     }
