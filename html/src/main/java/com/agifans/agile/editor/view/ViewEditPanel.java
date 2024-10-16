@@ -59,6 +59,7 @@ public class ViewEditPanel extends Composite {
                     Loop loop = view.loops.get(0);
                     if ((loop.cels != null) && (!loop.cels.isEmpty())) {
                         Cel cel = loop.cels.get(0);
+                        int transparent = cel.getTransparentPixel();
                         
                         Uint8ClampedArray pixelArray = TypedArrays.createUint8ClampedArray(cel.getPixelData().length * 4);
                         for (int index=0, viewIndex=0; index < pixelArray.byteLength(); index += 4) {
@@ -66,12 +67,16 @@ public class ViewEditPanel extends Composite {
                             pixelArray.set(index + 0, (rgba8888Colour >> 24) & 0xFF);
                             pixelArray.set(index + 1, (rgba8888Colour >> 16) & 0xFF);
                             pixelArray.set(index + 2, (rgba8888Colour >>  8) & 0xFF);
-                            pixelArray.set(index + 3, (rgba8888Colour >>  0) & 0xFF);
+                            if (rgba8888Colour == transparent) {
+                                pixelArray.set(index + 3, 0x00);
+                            } else {
+                                pixelArray.set(index + 3, (rgba8888Colour >>  0) & 0xFF);
+                            }
                         }
                         
                         String imgDataUrl = convertPixelsToDataUrl(pixelArray, cel.getWidth(), cel.getHeight());
                         
-                        ViewThumbnail thumbnail = new ViewThumbnail(this, imgDataUrl, viewNumber++);
+                        ViewThumbnail thumbnail = new ViewThumbnail(this, imgDataUrl, viewNumber++, cel.getWidth(), cel.getHeight(), transparent);
                         if (viewNumber == 1) {
                             changeSelection(thumbnail);
                         }

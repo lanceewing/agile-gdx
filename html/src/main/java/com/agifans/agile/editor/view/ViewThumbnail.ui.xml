@@ -15,9 +15,11 @@
 		    <g:HTMLPanel ui:field="thumbnailPanel">
 	
 		        <div class="sprite-selector-item_sprite-image-outer">
-		            <div class="sprite-selector-item_sprite-image-inner">
+		            
+		            <g:SimplePanel ui:field="viewImageBackground">
 		                <g:Image ui:field="viewImage" />
-		            </div>
+		            </g:SimplePanel>
+		            
 		        </div>
 		        
 		        <div class="sprite-selector-item_sprite-info">
