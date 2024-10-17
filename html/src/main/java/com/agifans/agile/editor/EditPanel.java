@@ -35,6 +35,7 @@ public class EditPanel extends ResizeComposite {
     public void loadGame(Game game) {
         this.game = game;
         
+        logicEditPanel.loadLogics(game);
         pictureEditPanel.loadPictures(game);
         viewEditPanel.loadViews(game);
     }
