@@ -430,7 +430,8 @@ body {
 
 .picturesScrollPanel,
 .viewsScrollPanel,
-.logicsScrollPanel {
+.logicsScrollPanel,
+.soundsScrollPanel {
 	height: calc(100vh - 102px);
 	overflow-x: hidden !important;
 	overflow-y: scroll !important;
@@ -498,7 +499,8 @@ body {
 
 .pictureThumbnail, 
 .viewThumbnail,
-.logicThumbnail {
+.logicThumbnail,
+.soundThumbnail {
 	width: 80px;
     height: 60px;
     image-rendering: pixelated;
@@ -508,13 +510,14 @@ body {
     transform: translate(-50%, -50%);
 }
 
-.logicThumbnail {
+.logicThumbnail, .soundThumbnail {
 	background: hsla(215, 50%, 90%, 1);
 }
 
 .picturesVerticalPanel .selector_list-item,
 .viewsVerticalPanel .selector_list-item,
-.logicsVerticalPanel .selector_list-item {
+.logicsVerticalPanel .selector_list-item,
+.soundsVerticalPanel .selector_list-item {
 	width: 90px;
 	height: 90px;
 }

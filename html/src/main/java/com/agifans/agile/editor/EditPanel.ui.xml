@@ -4,7 +4,8 @@
   xmlns:editor='urn:import:com.agifans.agile.editor'
   xmlns:picture='urn:import:com.agifans.agile.editor.picture'
   xmlns:view='urn:import:com.agifans.agile.editor.view'
-  xmlns:logic='urn:import:com.agifans.agile.editor.logic'>
+  xmlns:logic='urn:import:com.agifans.agile.editor.logic'
+  xmlns:sound='urn:import:com.agifans.agile.editor.sound'>
 
   <editor:ScrolledTabLayoutPanel ui:field="tabs" barUnit='PX' barHeight='44'>
   
@@ -25,7 +26,7 @@
     
     <editor:tab>
       <editor:header size='7'><span>🔉</span> Sounds</editor:header>
-      <g:Label>SOUND</g:Label>
+      <sound:SoundEditPanel ui:field="soundEditPanel" />
     </editor:tab>
     
     <editor:tab>

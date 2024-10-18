@@ -3,6 +3,7 @@ package com.agifans.agile.editor;
 import com.agifans.agile.agilib.Game;
 import com.agifans.agile.editor.logic.LogicEditPanel;
 import com.agifans.agile.editor.picture.PictureEditPanel;
+import com.agifans.agile.editor.sound.SoundEditPanel;
 import com.agifans.agile.editor.view.ViewEditPanel;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -26,6 +27,9 @@ public class EditPanel extends ResizeComposite {
     @UiField
     ViewEditPanel viewEditPanel;
     
+    @UiField
+    SoundEditPanel soundEditPanel;
+    
     private Game game;
     
     public EditPanel() {
@@ -38,5 +42,6 @@ public class EditPanel extends ResizeComposite {
         logicEditPanel.loadLogics(game);
         pictureEditPanel.loadPictures(game);
         viewEditPanel.loadViews(game);
+        soundEditPanel.loadSounds(game);
     }
 }
