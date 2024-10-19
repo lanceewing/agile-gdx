@@ -42,7 +42,7 @@ public class PictureEditPanel extends Composite {
         
         picturesScrollPanel.addStyleName("picturesScrollPanel");
         picturesVerticalPanel.addStyleName("picturesVerticalPanel");
-        horizontalPanel.addStyleName("picturesHorizonalPanel");
+        horizontalPanel.addStyleName("picturesHorizontalPanel");
     }
     
     public void loadPictures(Game game) {

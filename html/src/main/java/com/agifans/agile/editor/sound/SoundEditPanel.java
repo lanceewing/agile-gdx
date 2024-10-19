@@ -39,7 +39,7 @@ public class SoundEditPanel extends Composite {
         
         soundsScrollPanel.addStyleName("soundsScrollPanel");
         soundsVerticalPanel.addStyleName("soundsVerticalPanel");
-        horizontalPanel.addStyleName("soundsHorizonalPanel");
+        horizontalPanel.addStyleName("soundsHorizontalPanel");
     }
     
     public void loadSounds(Game game) {

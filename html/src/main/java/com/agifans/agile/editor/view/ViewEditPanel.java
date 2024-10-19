@@ -44,7 +44,7 @@ public class ViewEditPanel extends Composite {
         
         viewsScrollPanel.addStyleName("viewsScrollPanel");
         viewsVerticalPanel.addStyleName("viewsVerticalPanel");
-        horizontalPanel.addStyleName("viewsHorizonalPanel");
+        horizontalPanel.addStyleName("viewsHorizontalPanel");
     }
     
     public void loadViews(Game game) {

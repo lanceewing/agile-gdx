@@ -436,6 +436,7 @@ body {
 	overflow-x: hidden !important;
 	overflow-y: scroll !important;
 	background: hsla(215, 50%, 90%, 1);
+	padding-top: 6px;
 }
 
 .selector_list-item {
@@ -511,10 +512,6 @@ body {
     transform: translate(-50%, -50%);
 }
 
-.logicThumbnail, .soundThumbnail {
-	background: hsla(215, 50%, 90%, 1);
-}
-
 .picturesVerticalPanel,
 .viewsVerticalPanel,
 .logicsVerticalPanel,
@@ -548,6 +545,11 @@ body {
     color: hsla(0, 100%, 100%, 1);
 }
 
+.sprite-selector-item_is-selected .logicThumbnail,
+.sprite-selector-item_is-selected .soundThumbnail {
+	background: #D9E3F2;
+}
+
 .sprite-selector-item_sprite-name, .sprite-selector-item_sprite-details {
     overflow: hidden;
     text-overflow: ellipsis;
@@ -558,4 +560,12 @@ body {
 .sprite-selector-item_sprite-image-inner {
 	margin: 5px;
 	height: 60px;
+}
+
+.logicsHorizonalPanel,
+.picturesHorizontalPanel,
+.viewsHorizontalPanel,
+.soundsHorizontalPanel {
+	background: hsla(215, 50%, 90%, 1);
+	padding: 0px !important;
 }

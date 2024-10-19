@@ -68,7 +68,8 @@ public class ViewThumbnail extends Composite {
         viewImage.getElement().getStyle().setPropertyPx("width", adjWidth);
         viewImage.getElement().getStyle().setPropertyPx("height", adjHeight);
         
-        String bgColour = "#" + StringUtils.padLeftZeros(Integer.toHexString(transparent), 8);
+        //String bgColour = "#" + StringUtils.padLeftZeros(Integer.toHexString(transparent), 8);
+        String bgColour = "#D9E3F2";
         viewImageBackground.addStyleName("sprite-selector-item_sprite-image-inner");
         viewImageBackground.getElement().getStyle().setBackgroundColor(bgColour);
     }
