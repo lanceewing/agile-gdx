@@ -435,6 +435,7 @@ body {
 	height: calc(100vh - 102px);
 	overflow-x: hidden !important;
 	overflow-y: scroll !important;
+	background: hsla(215, 50%, 90%, 1);
 }
 
 .selector_list-item {
@@ -514,12 +515,28 @@ body {
 	background: hsla(215, 50%, 90%, 1);
 }
 
+.picturesVerticalPanel,
+.viewsVerticalPanel,
+.logicsVerticalPanel,
+.soundsVerticalPanel {
+	margin-left: auto;
+	margin-right: auto;
+}
+
 .picturesVerticalPanel .selector_list-item,
 .viewsVerticalPanel .selector_list-item,
 .logicsVerticalPanel .selector_list-item,
 .soundsVerticalPanel .selector_list-item {
 	width: 90px;
 	height: 90px;
+}
+
+.picturesVerticalPanel .selector_list-item:hover,
+.viewsVerticalPanel .selector_list-item:hover,
+.logicsVerticalPanel .selector_list-item:hover,
+.soundsVerticalPanel .selector_list-item:hover {
+	background: white;
+	border: 2px solid var(--agile-colour);
 }
 
 .gui_body-wrapper * {
