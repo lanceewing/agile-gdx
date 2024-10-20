@@ -10,6 +10,7 @@ body {
 
 .gwt-TabLayoutPanelTab {
 	height: 33px;
+	width: 80px !important;
     margin-bottom: 0;
     border-radius: 1rem 1rem 0 0;
     border: 1px solid hsla(0, 0%, 0%, 0.15);
@@ -568,4 +569,15 @@ body {
 .soundsHorizontalPanel {
 	background: hsla(215, 50%, 90%, 1);
 	padding: 0px !important;
+	height: 100%;
+}
+
+.logicDetailPanel,
+.pictureDetailPanel,
+.viewDetailPanel,
+.soundDetailPanel {
+	background: white;
+	border-top-right-radius: 0.5rem;
+	border-bottom-right-radius: 0.5rem;
+	height: 100%;
 }

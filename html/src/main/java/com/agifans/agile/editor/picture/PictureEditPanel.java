@@ -11,6 +11,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class PictureEditPanel extends Composite {
@@ -26,6 +27,9 @@ public class PictureEditPanel extends Composite {
     
     @UiField
     VerticalPanel picturesVerticalPanel;
+    
+    @UiField
+    SimplePanel pictureDetailPanel;
     
     /**
      * Reference to the currently selected picture thumbnail.
@@ -43,6 +47,7 @@ public class PictureEditPanel extends Composite {
         picturesScrollPanel.addStyleName("picturesScrollPanel");
         picturesVerticalPanel.addStyleName("picturesVerticalPanel");
         horizontalPanel.addStyleName("picturesHorizontalPanel");
+        pictureDetailPanel.addStyleName("pictureDetailPanel");
     }
     
     public void loadPictures(Game game) {

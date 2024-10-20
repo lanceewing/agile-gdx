@@ -8,6 +8,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class SoundEditPanel extends Composite {
@@ -23,6 +24,9 @@ public class SoundEditPanel extends Composite {
     
     @UiField
     VerticalPanel soundsVerticalPanel;
+    
+    @UiField
+    SimplePanel soundDetailPanel;
     
     /**
      * Reference to the currently selected sound thumbnail.
@@ -40,6 +44,7 @@ public class SoundEditPanel extends Composite {
         soundsScrollPanel.addStyleName("soundsScrollPanel");
         soundsVerticalPanel.addStyleName("soundsVerticalPanel");
         horizontalPanel.addStyleName("soundsHorizontalPanel");
+        soundDetailPanel.addStyleName("soundDetailPanel");
     }
     
     public void loadSounds(Game game) {

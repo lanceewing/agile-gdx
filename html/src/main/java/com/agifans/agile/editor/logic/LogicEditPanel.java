@@ -8,6 +8,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class LogicEditPanel extends Composite {
@@ -23,6 +24,9 @@ public class LogicEditPanel extends Composite {
     
     @UiField
     VerticalPanel logicsVerticalPanel;
+    
+    @UiField
+    SimplePanel logicDetailPanel;
     
     /**
      * Reference to the currently selected logic thumbnail.
@@ -40,6 +44,7 @@ public class LogicEditPanel extends Composite {
         logicsScrollPanel.addStyleName("logicsScrollPanel");
         logicsVerticalPanel.addStyleName("logicsVerticalPanel");
         horizontalPanel.addStyleName("logicsHorizonalPanel");
+        logicDetailPanel.addStyleName("logicDetailPanel");
     }
     
     public void loadLogics(Game game) {

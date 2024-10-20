@@ -15,7 +15,9 @@
     </g:cell>
     
     <g:cell>
-      <g:Label>Edit area</g:Label>
+      <g:SimplePanel ui:field="soundDetailPanel">
+      
+      </g:SimplePanel>
     </g:cell>
 
   </g:HorizontalPanel>

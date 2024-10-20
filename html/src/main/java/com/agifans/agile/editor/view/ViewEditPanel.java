@@ -13,6 +13,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class ViewEditPanel extends Composite {
@@ -28,6 +29,9 @@ public class ViewEditPanel extends Composite {
     
     @UiField
     VerticalPanel viewsVerticalPanel;
+    
+    @UiField
+    SimplePanel viewDetailPanel;
     
     /**
      * Reference to the currently selected view thumbnail.
@@ -45,6 +49,7 @@ public class ViewEditPanel extends Composite {
         viewsScrollPanel.addStyleName("viewsScrollPanel");
         viewsVerticalPanel.addStyleName("viewsVerticalPanel");
         horizontalPanel.addStyleName("viewsHorizontalPanel");
+        viewDetailPanel.addStyleName("viewDetailPanel");
     }
     
     public void loadViews(Game game) {
