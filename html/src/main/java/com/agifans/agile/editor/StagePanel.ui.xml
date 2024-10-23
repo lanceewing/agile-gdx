@@ -47,21 +47,21 @@
 		
 		        <div class="stage-wrapper_stage-canvas-wrapper">
 		            <div class="stage_stage-wrapper">
-		
-		                <div class="stage_stage" style="width: 408px; height: 306px;">
-		                    <div align="center" id="embed-html"></div>
+		                <!-- style="width: 408px; height: 306px;" -->
+		                <g:HTMLPanel ui:field="stageWrapperPanel">
+		                <!-- div class="stage_stage"-->
+		                    <!-- div align="center" id="embed-html"></div -->
+		                    
+		                    <g:VerticalPanel ui:field="agileCanvasPanel"></g:VerticalPanel>
+		                    
 		                    <div class="stage_monitor-wrapper">
 		                        <div class="monitor-list_monitor-list monitor-overlay" style="width: 408px; height: 306px;">
 		                            <div class="monitor-list_monitor-list-scaler" style="transform: scale(0.85, 0.85);"></div>
 		                        </div>
 		                    </div>
 		                    <div class="stage_frame-wrapper"></div>
-		                </div>
-		
-		                <div class="stage_stage-overlays">
-		                    <div class="stage_stage-bottom-wrapper" style="width: 408px; height: 306px;"></div>
-		                    <canvas class="stage_dragging-sprite" height="0" width="0"></canvas>
-		                </div>
+		                <!-- /div -->
+		                </g:HTMLPanel>
 		            </div>
 		        </div>
 		

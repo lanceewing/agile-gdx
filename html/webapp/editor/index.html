@@ -12,5 +12,21 @@
 <script type="text/javascript" src="/dialog.js"></script>
 <script type="text/javascript" src="/jszip.min.js"></script>
 <script type="text/javascript" src="/editor/editor.nocache.js"></script>
+<!-- script type="text/javascript" src="/html/html.nocache.js"></script -->
 </body>
+<script>
+function handleMouseDown(evt) {
+  evt.preventDefault();
+  evt.stopPropagation();
+  window.focus();
+}
+
+function handleMouseUp(evt) {
+  evt.preventDefault();
+  evt.stopPropagation();
+}
+//document.addEventListener('contextmenu', event => event.preventDefault());
+//document.getElementById('embed-html').addEventListener('mousedown', handleMouseDown, false);
+//document.getElementById('embed-html').addEventListener('mouseup', handleMouseUp, false);
+</script>
 </html>

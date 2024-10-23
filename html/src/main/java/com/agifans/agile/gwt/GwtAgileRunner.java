@@ -64,7 +64,11 @@ public class GwtAgileRunner extends AgileRunner {
     @Override
     public void start(AppConfigItem appConfigItem) {
         String newURL = "";
-        if ((appConfigItem.getFilePath().startsWith("/games/") && ("ZIP".equals(appConfigItem.getFileType()))) || 
+        String currentUrlPath = Window.Location.getPath();
+        if (currentUrlPath.startsWith("/editor/")) {
+            // Do not change the URL in any way if it is the editor.
+            
+        } else if ((appConfigItem.getFilePath().startsWith("/games/") && ("ZIP".equals(appConfigItem.getFileType()))) || 
              HomeScreen.SIERRA_GAMES.contains(appConfigItem.getGameId().toLowerCase())) {
             // For embedded ZIP games, and original Sierra games, we use a URL path.
             newURL = Window.Location.createUrlBuilder()

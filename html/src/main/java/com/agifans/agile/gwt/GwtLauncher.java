@@ -4,7 +4,6 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.backends.gwt.GwtApplication;
 import com.badlogic.gdx.backends.gwt.GwtApplicationConfiguration;
 import com.badlogic.gdx.backends.gwt.preloader.Preloader;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Panel;
@@ -17,13 +16,41 @@ import com.agifans.agile.Agile;
 /** Launches the GWT application. */
 public class GwtLauncher extends GwtApplication {
     
+    private Panel rootPanel;
+    
+    private int initialWidth;
+    
+    private int initialHeight;
+    
+    public GwtLauncher() {
+    }
+    
+    public GwtLauncher(Panel rootPanel, int initialWidth, int initialHeight) {
+        this.rootPanel = rootPanel;
+        this.initialWidth = initialWidth;
+        this.initialHeight = initialHeight;
+    }
+    
     @Override
     public GwtApplicationConfiguration getConfig () {
         // Resizable application, uses available space in browser with no padding:
-        GwtApplicationConfiguration cfg = new GwtApplicationConfiguration(true);
-        cfg.padVertical = 0;
-        cfg.padHorizontal = 0;
-        return cfg;
+        //GwtApplicationConfiguration cfg = new GwtApplicationConfiguration(true);
+        //cfg.padVertical = 0;
+        //cfg.padHorizontal = 0;
+        if (rootPanel != null) {
+            // Editor mode.
+            GwtApplicationConfiguration cfg = new GwtApplicationConfiguration(initialWidth, initialHeight, false);
+            cfg.padVertical = 0;
+            cfg.padHorizontal = 0;
+            cfg.rootPanel = rootPanel;
+            return cfg;
+        } else {
+            // Normal non-editor mode.
+            GwtApplicationConfiguration cfg = new GwtApplicationConfiguration(true);
+            cfg.padVertical = 0;
+            cfg.padHorizontal = 0;
+            return cfg;
+        }
         // If you want a fixed size application, comment out the above resizable section,
         // and uncomment below:
         //return new GwtApplicationConfiguration(640, 480);

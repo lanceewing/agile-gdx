@@ -581,3 +581,7 @@ body {
 	border-bottom-right-radius: 0.5rem;
 	height: 100%;
 }
+
+.agileCanvasPanel canvas {
+	margin-bottom: -4px;
+}
