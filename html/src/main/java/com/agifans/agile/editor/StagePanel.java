@@ -5,10 +5,13 @@ import com.badlogic.gdx.backends.gwt.GwtGraphics;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.gwt.GwtApplication.LoadingListener;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
@@ -22,12 +25,17 @@ public class StagePanel extends ResizeComposite {
     private static final Binder binder = GWT.create(Binder.class);
 
     @UiField
+    FocusPanel playLink;
+    
+    @UiField
     VerticalPanel agileCanvasPanel;
     
     @UiField
     HTMLPanel stageWrapperPanel;
     
     private GwtGraphics graphics;
+    
+    private GwtLauncher agileLauncher;
     
     public StagePanel() {
         initWidget(binder.createAndBindUi(this));
@@ -38,15 +46,11 @@ public class StagePanel extends ResizeComposite {
         
         stageWrapperPanel.addStyleName("stage_stage");
         
-        GwtLauncher agileLauncher = new GwtLauncher(agileCanvasPanel, 480, 364);
+        agileLauncher = new GwtLauncher(agileCanvasPanel, 480, 364);
         agileLauncher.setLoadingListener(new LoadingListener() {
             public void beforeSetup() {}
             public void afterSetup() {
-                logToJSConsole("afterSetup called");
                 graphics = (GwtGraphics)Gdx.graphics;
-                if (graphics != null) {
-                    logToJSConsole("graphics is not null");
-                }
                 onResize();
             }
         });
@@ -55,7 +59,6 @@ public class StagePanel extends ResizeComposite {
     
     public void onResize() {
         if (graphics != null) {
-            logToJSConsole("calling setWindowedMode");
             graphics.setWindowedMode(
                     stageWrapperPanel.getOffsetWidth(), 
                     (int)(stageWrapperPanel.getOffsetWidth() / 1.32f));
@@ -75,5 +78,10 @@ public class StagePanel extends ResizeComposite {
                         (int)(stageWrapperPanel.getOffsetWidth() / 1.32f));
             }
         }
+    }
+    
+    @UiHandler("playLink")
+    public void onPlayButtonClicked(ClickEvent event) {
+        logToJSConsole("Play button clicked");
     }
 }

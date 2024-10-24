@@ -22,6 +22,10 @@ public class GwtLauncher extends GwtApplication {
     
     private int initialHeight;
     
+    private Boolean debugMode;
+    
+    private Agile agile;
+    
     public GwtLauncher() {
     }
     
@@ -29,6 +33,7 @@ public class GwtLauncher extends GwtApplication {
         this.rootPanel = rootPanel;
         this.initialWidth = initialWidth;
         this.initialHeight = initialHeight;
+        this.debugMode = true;
     }
     
     @Override
@@ -95,11 +100,21 @@ public class GwtLauncher extends GwtApplication {
             argsMap.put("uri", uri);
         }
         
+        if (Boolean.TRUE.equals(debugMode)) {
+            argsMap.put("debugMode", "true");
+        }
+        
         GwtDialogHandler gwtDialogHandler = new GwtDialogHandler();
     	GwtAgileRunner gwtAgileRunner = new GwtAgileRunner(
     	        new GwtUserInput(), new GwtWavePlayer(), new GwtSavedGameStore(),
     	        new GwtPixelData(), new GwtVariableData());
-        return new Agile(gwtAgileRunner, gwtDialogHandler, argsMap);
+    	agile = new Agile(gwtAgileRunner, gwtDialogHandler, argsMap);
+    	
+        return agile;
+    }
+    
+    public Agile getAgile() {
+        return agile;
     }
     
     @Override

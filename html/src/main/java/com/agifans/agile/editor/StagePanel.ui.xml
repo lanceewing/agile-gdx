@@ -14,7 +14,11 @@
 		                <div class="stage-header_stage-menu-wrapper">
 		
 		                    <div class="controls_controls-container">
-		                        <img class="green-flag_green-flag" draggable="false" src="/editor/green_flag.svg" title="Go"/>
+		                        <g:FocusPanel ui:field="playLink">
+		                            <g:HTMLPanel>
+		                                <img class="green-flag_green-flag" draggable="false" src="/editor/green_flag.svg" title="Go"/>
+		                            </g:HTMLPanel>
+		                        </g:FocusPanel>
 		                        <img class="stop-all_stop-all" draggable="false" src="/editor/red_stop.svg" title="Stop"/>
 		                    </div>
 		
@@ -47,11 +51,7 @@
 		
 		        <div class="stage-wrapper_stage-canvas-wrapper">
 		            <div class="stage_stage-wrapper">
-		                <!-- style="width: 408px; height: 306px;" -->
 		                <g:HTMLPanel ui:field="stageWrapperPanel">
-		                <!-- div class="stage_stage"-->
-		                    <!-- div align="center" id="embed-html"></div -->
-		                    
 		                    <g:VerticalPanel ui:field="agileCanvasPanel"></g:VerticalPanel>
 		                    
 		                    <div class="stage_monitor-wrapper">
@@ -59,8 +59,8 @@
 		                            <div class="monitor-list_monitor-list-scaler" style="transform: scale(0.85, 0.85);"></div>
 		                        </div>
 		                    </div>
+		                    
 		                    <div class="stage_frame-wrapper"></div>
-		                <!-- /div -->
 		                </g:HTMLPanel>
 		            </div>
 		        </div>

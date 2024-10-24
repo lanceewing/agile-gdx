@@ -270,11 +270,13 @@ public class HomeScreen extends InputAdapter implements Screen {
         int totalHorizPadding = 0;
         int horizPaddingUnit = 0;
 
-        Button infoButton = buildButton("INFO", null, "png/info.png", 96, 96, null, null);
-        currentPage.add().expandX();
-        currentPage.add(infoButton).pad(30, 0, 0, 20).align(Align.right).expandX();
-        currentPage.row();
-        currentPage.add().expandX();
+        if (!agile.inDebugMode()) {
+            Button infoButton = buildButton("INFO", null, "png/info.png", 96, 96, null, null);
+            currentPage.add().expandX();
+            currentPage.add(infoButton).pad(30, 0, 0, 20).align(Align.right).expandX();
+            currentPage.row();
+            currentPage.add().expandX();
+        }
         
         if (viewportManager.isLandscape()) {
             // Landscape.
@@ -303,70 +305,74 @@ public class HomeScreen extends InputAdapter implements Screen {
         // Set up first page, which is mainly empty.
         pagedScrollPane.addPage(currentPage);
         
-        currentPage = new Table().pad(0, sidePadding, 0, sidePadding);
-        currentPage.defaults().pad(0, horizPaddingUnit, 0, horizPaddingUnit);
-
-        // Add empty slot at the start that will always be present for adding a new game.
-        AppConfigItem addGameIcon = new AppConfigItem();
-        addGameIcon.setGameId("ADD_GAME");
-        addGameIcon.setFileType("ADD");
-        currentPage.add(buildAppButton(addGameIcon)).expand().fill();
-        pageItemCount++;
-        
-        // Add the original Sierra AGI games first, then the fan made games.
-        for (int loopCount=0; loopCount < 2; loopCount++) {
-            for (AppConfigItem appConfigItem : appConfig.getApps()) {
-                String gameId = appConfigItem.getGameId().toLowerCase();
-                if (((loopCount == 0) && (SIERRA_GAMES.contains(gameId))) ||
-                    ((loopCount == 1) && (!SIERRA_GAMES.contains(gameId)))) {
-                    // Every itemsPerPage apps, add a new page.
-                    if (pageItemCount == itemsPerPage) {
-                        pagedScrollPane.addPage(currentPage);
-                        pageItemCount = 0;
-                        currentPage = new Table().pad(0, sidePadding, 0, sidePadding);
-                        currentPage.defaults().pad(0, horizPaddingUnit, 0, horizPaddingUnit);
+        if (!agile.inDebugMode()) {
+            currentPage = new Table().pad(0, sidePadding, 0, sidePadding);
+            currentPage.defaults().pad(0, horizPaddingUnit, 0, horizPaddingUnit);
+    
+            // Add empty slot at the start that will always be present for adding a new game.
+            AppConfigItem addGameIcon = new AppConfigItem();
+            addGameIcon.setGameId("ADD_GAME");
+            addGameIcon.setFileType("ADD");
+            currentPage.add(buildAppButton(addGameIcon)).expand().fill();
+            pageItemCount++;
+            
+            // Add the original Sierra AGI games first, then the fan made games.
+            for (int loopCount=0; loopCount < 2; loopCount++) {
+                for (AppConfigItem appConfigItem : appConfig.getApps()) {
+                    String gameId = appConfigItem.getGameId().toLowerCase();
+                    if (((loopCount == 0) && (SIERRA_GAMES.contains(gameId))) ||
+                        ((loopCount == 1) && (!SIERRA_GAMES.contains(gameId)))) {
+                        // Every itemsPerPage apps, add a new page.
+                        if (pageItemCount == itemsPerPage) {
+                            pagedScrollPane.addPage(currentPage);
+                            pageItemCount = 0;
+                            currentPage = new Table().pad(0, sidePadding, 0, sidePadding);
+                            currentPage.defaults().pad(0, horizPaddingUnit, 0, horizPaddingUnit);
+                        }
+            
+                        // Every number of columns apps, add a new row to the current page.
+                        if ((pageItemCount % columns) == 0) {
+                            currentPage.row();
+                        }
+            
+                        currentPage.add(buildAppButton(appConfigItem)).expand().fill();
+            
+                        pageItemCount++;
                     }
-        
-                    // Every number of columns apps, add a new row to the current page.
-                    if ((pageItemCount % columns) == 0) {
-                        currentPage.row();
-                    }
-        
-                    currentPage.add(buildAppButton(appConfigItem)).expand().fill();
-        
-                    pageItemCount++;
                 }
             }
-        }
-
-        // Add the last page of apps.
-        if (pageItemCount <= itemsPerPage) {
-            AppConfigItem appConfigItem = new AppConfigItem();
-            for (int i = pageItemCount; i < itemsPerPage; i++) {
-                if ((i % columns) == 0) {
-                    currentPage.row();
-                }
-                currentPage.add(buildAppButton(appConfigItem)).expand().fill();
-            }
-            pagedScrollPane.addPage(currentPage);
-            if (pageItemCount == itemsPerPage) {
-                currentPage = new Table().pad(0, sidePadding, 0, sidePadding);
-                currentPage.defaults().pad(0, horizPaddingUnit, 0, horizPaddingUnit);
-                for (int i = 0; i < itemsPerPage; i++) {
+    
+            // Add the last page of apps.
+            if (pageItemCount <= itemsPerPage) {
+                AppConfigItem appConfigItem = new AppConfigItem();
+                for (int i = pageItemCount; i < itemsPerPage; i++) {
                     if ((i % columns) == 0) {
                         currentPage.row();
                     }
                     currentPage.add(buildAppButton(appConfigItem)).expand().fill();
                 }
                 pagedScrollPane.addPage(currentPage);
+                if (pageItemCount == itemsPerPage) {
+                    currentPage = new Table().pad(0, sidePadding, 0, sidePadding);
+                    currentPage.defaults().pad(0, horizPaddingUnit, 0, horizPaddingUnit);
+                    for (int i = 0; i < itemsPerPage; i++) {
+                        if ((i % columns) == 0) {
+                            currentPage.row();
+                        }
+                        currentPage.add(buildAppButton(appConfigItem)).expand().fill();
+                    }
+                    pagedScrollPane.addPage(currentPage);
+                }
             }
         }
 
         container.add(pagedScrollPane).expand().fill();
         
-        container.row();
-        container.add(paginationWidget).maxHeight(PAGINATION_HEIGHT).minHeight(PAGINATION_HEIGHT);
-        stage.addActor(paginationWidget);
+        if (!agile.inDebugMode()) {
+            container.row();
+            container.add(paginationWidget).maxHeight(PAGINATION_HEIGHT).minHeight(PAGINATION_HEIGHT);
+            stage.addActor(paginationWidget);
+        }
     }
     
     @Override
