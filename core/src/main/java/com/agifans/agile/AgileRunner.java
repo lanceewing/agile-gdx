@@ -193,4 +193,6 @@ public abstract class AgileRunner {
     public abstract String slugify(String input);
     
     public abstract void cancelImport();
+    
+    public abstract boolean isRunning();
 }

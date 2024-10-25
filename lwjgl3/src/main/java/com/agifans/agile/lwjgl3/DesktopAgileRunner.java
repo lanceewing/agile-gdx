@@ -45,7 +45,13 @@ public class DesktopAgileRunner extends AgileRunner {
     
     @Override
     public void start(Map<String, byte[]> gameFileMap) {
-        runGame(gameFileMap, new DesktopGameLoader(pixelData));
+        interpreterThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                runGame(gameFileMap, new DesktopGameLoader(pixelData));
+            }
+        });
+        interpreterThread.start();
     }
 
     @Override
@@ -125,6 +131,11 @@ public class DesktopAgileRunner extends AgileRunner {
     @Override
     public boolean hasStopped() {
         return ((interpreterThread != null) && !interpreterThread.isAlive());
+    }
+
+    @Override
+    public boolean isRunning() {
+        return (interpreterThread != null);
     }
 
     @Override

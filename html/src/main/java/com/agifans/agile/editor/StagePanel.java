@@ -94,7 +94,7 @@ public class StagePanel extends ResizeComposite {
         logToJSConsole("Play button clicked");
         
         Agile agile = agileLauncher.getAgile();
-        if (agile != null) {
+        if ((agile != null) && (!agile.getAgileRunner().isRunning())) {
             Game game = editPanel.getGame();
             if (game != null) {
                 GameScreen gameScreen = agile.getGameScreen();

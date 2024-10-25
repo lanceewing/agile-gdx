@@ -304,6 +304,11 @@ public class GwtAgileRunner extends AgileRunner {
     }
 
     @Override
+    public boolean isRunning() {
+        return (worker != null);
+    }
+
+    @Override
     public void saveScreenshot(Agile agile, AppConfigItem appConfigItem, Pixmap pixmap) {
         // TODO Auto-generated method stub
         
