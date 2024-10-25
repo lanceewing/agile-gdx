@@ -30,10 +30,16 @@ public class EditPanel extends ResizeComposite {
     @UiField
     SoundEditPanel soundEditPanel;
     
+    private StagePanel stagePanel;
+    
     private Game game;
     
     public EditPanel() {
         initWidget(binder.createAndBindUi(this));
+    }
+    
+    public void setStagePanel(StagePanel stagePanel) {
+        this.stagePanel = stagePanel;
     }
     
     public void loadGame(Game game) {
@@ -43,5 +49,9 @@ public class EditPanel extends ResizeComposite {
         pictureEditPanel.loadPictures(game);
         viewEditPanel.loadViews(game);
         soundEditPanel.loadSounds(game);
+    }
+    
+    public Game getGame() {
+        return game;
     }
 }

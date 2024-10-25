@@ -1,6 +1,8 @@
 package com.agifans.agile.editor;
 
-import com.agifans.agile.config.AppConfigItem;
+import com.agifans.agile.Agile;
+import com.agifans.agile.GameScreen;
+import com.agifans.agile.agilib.Game;
 import com.agifans.agile.gwt.GwtLauncher;
 import com.badlogic.gdx.backends.gwt.GwtGraphics;
 import com.badlogic.gdx.Gdx;
@@ -34,6 +36,8 @@ public class StagePanel extends ResizeComposite {
     @UiField
     HTMLPanel stageWrapperPanel;
     
+    private EditPanel editPanel;
+    
     private GwtGraphics graphics;
     
     private GwtLauncher agileLauncher;
@@ -56,6 +60,10 @@ public class StagePanel extends ResizeComposite {
             }
         });
         agileLauncher.onModuleLoad();
+    }
+    
+    public void setEditPanel(EditPanel editPanel) {
+        this.editPanel = editPanel;
     }
     
     public void onResize() {
@@ -85,9 +93,15 @@ public class StagePanel extends ResizeComposite {
     public void onPlayButtonClicked(ClickEvent event) {
         logToJSConsole("Play button clicked");
         
-        AppConfigItem appConfigItem = new AppConfigItem();
-        
-        agileLauncher.getAgile().getHomeScreen().processGameSelection(appConfigItem);
-        
+        Agile agile = agileLauncher.getAgile();
+        if (agile != null) {
+            Game game = editPanel.getGame();
+            if (game != null) {
+                GameScreen gameScreen = agile.getGameScreen();
+                gameScreen.initGame(null, true);
+                agile.setScreen(gameScreen);
+                agile.getAgileRunner().start(game.getGameFilesMap());
+            }
+        }
     }
 }

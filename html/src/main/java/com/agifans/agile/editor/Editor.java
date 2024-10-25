@@ -39,6 +39,8 @@ public class Editor implements EntryPoint {
         // Create the UI defined in Editor.ui.xml.
         DockLayoutPanel outer = binder.createAndBindUi(this);
         
+        
+        
         // Get rid of scrollbars, and clear out the window's built-in margin,
         // because we want to take advantage of the entire client area.
         Window.enableScrolling(false);
@@ -62,6 +64,14 @@ public class Editor implements EntryPoint {
         Game game = gameLoader.loadGame(gameFilesMap);
         
         editPanel.loadGame(game);
+    }
+    
+    public EditPanel getEditPanel() {
+        return editPanel;
+    }
+    
+    public StagePanel getStagePanel() {
+        return stagePanel;
     }
     
     private final native void logToJSConsole(String message)/*-{

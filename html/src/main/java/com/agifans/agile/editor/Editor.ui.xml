@@ -14,11 +14,11 @@
       <g:SplitLayoutPanel>
 
 		<g:center size='700'>
-		  <editor:EditPanel ui:field='editPanel' />
+		  <editor:EditPanel ui:field='editPanel' stagePanel="{stagePanel}" />
         </g:center>
 
         <g:east size='490'>
-          <editor:StagePanel ui:field='stagePanel' />
+          <editor:StagePanel ui:field='stagePanel' editPanel="{editPanel}" />
         </g:east>
         
       </g:SplitLayoutPanel>
