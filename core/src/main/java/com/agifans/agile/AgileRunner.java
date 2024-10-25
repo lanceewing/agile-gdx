@@ -1,5 +1,7 @@
 package com.agifans.agile;
 
+import java.util.Map;
+
 import com.agifans.agile.config.AppConfigItem;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -171,6 +173,8 @@ public abstract class AgileRunner {
     }
     
     public abstract void start(AppConfigItem appConfigItem);
+    
+    public abstract void start(Map<String, byte[]> gameFileMap);
     
     public abstract void animationTick();
     

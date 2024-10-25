@@ -75,6 +75,12 @@ public class Game {
         }
     }
     
+    public Map<String, byte[]> getGameFilesMap() {
+        // For now, we just return the original Map. In the future, this will call
+        // methods to encode the current state into the Map before returning.
+        return gameFilesMap;
+    }
+    
     private Logic[] loadLogics() {
         Logic[] logics = new Logic[256];
         for (short i=0; i<256; i++) {

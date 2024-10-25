@@ -44,6 +44,11 @@ public class DesktopAgileRunner extends AgileRunner {
     }
     
     @Override
+    public void start(Map<String, byte[]> gameFileMap) {
+        runGame(gameFileMap, new DesktopGameLoader(pixelData));
+    }
+
+    @Override
     public void animationTick() {
         synchronized (this) {
             notify();
@@ -59,6 +64,11 @@ public class DesktopAgileRunner extends AgileRunner {
         // but no reason we can't code it for Desktop as ell.
         Map<String, byte[]> gameFilesMap = new HashMap<>();
         gameLoader.fetchGameFiles(gameUri, map -> gameFilesMap.putAll(map));
+        
+        runGame(gameFilesMap, gameLoader);
+    }
+        
+   private void runGame(Map<String, byte[]> gameFilesMap, DesktopGameLoader gameLoader) {
         Game game = gameLoader.loadGame(gameFilesMap);
         
         // Create the Interpreter class that will run the AGI game.

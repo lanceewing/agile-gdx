@@ -1,5 +1,6 @@
 package com.agifans.agile.editor;
 
+import com.agifans.agile.config.AppConfigItem;
 import com.agifans.agile.gwt.GwtLauncher;
 import com.badlogic.gdx.backends.gwt.GwtGraphics;
 import com.badlogic.gdx.Gdx;
@@ -83,5 +84,10 @@ public class StagePanel extends ResizeComposite {
     @UiHandler("playLink")
     public void onPlayButtonClicked(ClickEvent event) {
         logToJSConsole("Play button clicked");
+        
+        AppConfigItem appConfigItem = new AppConfigItem();
+        
+        agileLauncher.getAgile().getHomeScreen().processGameSelection(appConfigItem);
+        
     }
 }

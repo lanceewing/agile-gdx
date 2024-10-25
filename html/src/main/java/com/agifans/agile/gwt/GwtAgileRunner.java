@@ -102,6 +102,11 @@ public class GwtAgileRunner extends AgileRunner {
         $wnd.history.pushState(newUrl, "", newUrl);
     }-*/;
     
+    @Override
+    public void start(Map<String, byte[]> gameFileMap) {
+        createWorker(gameFileMap);
+    }
+
     /**
      * Creates a new web worker to run the AGI game whose data files are in the given Map.
      * 
