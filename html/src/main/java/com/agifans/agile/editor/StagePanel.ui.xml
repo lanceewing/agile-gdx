@@ -19,6 +19,11 @@
 		                                <img class="green-flag_green-flag" draggable="false" src="/editor/green_flag.svg" title="Go"/>
 		                            </g:HTMLPanel>
 		                        </g:FocusPanel>
+		                        <g:FocusPanel ui:field="pauseLink">
+		                            <g:HTMLPanel>
+		                                <img class="yellow-pause_yellow-pause" draggable="false" src="/editor/yellow_pause.svg" title="Pause"/>
+		                            </g:HTMLPanel>
+		                        </g:FocusPanel>
 		                        <g:FocusPanel ui:field="stopLink">
 		                            <g:HTMLPanel>
 		                                <img class="stop-all_stop-all" draggable="false" src="/editor/red_stop.svg" title="Stop"/>
