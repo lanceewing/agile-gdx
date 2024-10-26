@@ -1,6 +1,7 @@
 package com.agifans.agile.editor;
 
 import com.agifans.agile.Agile;
+import com.agifans.agile.DebugInfo;
 import com.agifans.agile.GameScreen;
 import com.agifans.agile.agilib.Game;
 import com.agifans.agile.gwt.GwtLauncher;
@@ -34,6 +35,9 @@ public class StagePanel extends ResizeComposite {
     FocusPanel stopLink;
     
     @UiField
+    FocusPanel pauseLink;
+    
+    @UiField
     VerticalPanel agileCanvasPanel;
     
     @UiField
@@ -45,6 +49,8 @@ public class StagePanel extends ResizeComposite {
     
     private GwtLauncher agileLauncher;
     
+    private DebugInfo debugInfo;
+    
     public StagePanel() {
         initWidget(binder.createAndBindUi(this));
         
@@ -54,7 +60,9 @@ public class StagePanel extends ResizeComposite {
         
         stageWrapperPanel.addStyleName("stage_stage");
         
-        agileLauncher = new GwtLauncher(agileCanvasPanel, 480, 364);
+        debugInfo = new DebugInfo();
+        
+        agileLauncher = new GwtLauncher(agileCanvasPanel, 480, 364, debugInfo);
         agileLauncher.setLoadingListener(new LoadingListener() {
             public void beforeSetup() {}
             public void afterSetup() {
@@ -111,6 +119,18 @@ public class StagePanel extends ResizeComposite {
         Agile agile = agileLauncher.getAgile();
         if ((agile != null) && (agile.getAgileRunner().isRunning())) {
             agile.getAgileRunner().stop();
+        }
+    }
+    
+    @UiHandler("pauseLink")
+    public void onPauseButtonClicked(ClickEvent event) {
+        Agile agile = agileLauncher.getAgile();
+        if ((agile != null) && (agile.getAgileRunner().isRunning())) {
+            if (!agile.getAgileRunner().isPaused()) {
+                agile.getAgileRunner().pause();
+            } else {
+                agile.getAgileRunner().resume();
+            }
         }
     }
 }

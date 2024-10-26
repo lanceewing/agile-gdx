@@ -40,11 +40,6 @@ public class Agile extends Game {
     private Preferences preferences;
     
     /**
-     * Holds details about debugger state, when AGILE is running in the editor.
-     */
-    private DebugInfo debugInfo;
-    
-    /**
      * Constructor for Agile.
      * 
      * @param agileRunner 
@@ -81,10 +76,6 @@ public class Agile extends Game {
                 } else {
                     appConfigItem.setFileType("DIR");
                 }
-            }
-            
-            if (args.containsKey("debugMode")) {
-                debugInfo = new DebugInfo();
             }
         }
         
@@ -140,7 +131,7 @@ public class Agile extends Game {
      * @return true if AGILE is running in debug mode; otherwise false.
      */
     public boolean inDebugMode() {
-        return (debugInfo != null);
+        return (agileRunner.getDebugInfo() != null);
     }
     
     @Override

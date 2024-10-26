@@ -26,17 +26,21 @@ public abstract class AgileRunner {
     protected UserInput userInput;
     protected PixelData pixelData;
     protected VariableData variableData;
+    protected DebugInfo debugInfo;
     
     private long lastTime;
     private long deltaTime;
     
+    protected boolean paused;
+    
     public AgileRunner(UserInput userInput, WavePlayer wavePlayer, SavedGameStore savedGameStore, 
-            PixelData pixelData, VariableData variableData) {
+            PixelData pixelData, VariableData variableData, DebugInfo debugInfo) {
         this.userInput = userInput;
         this.wavePlayer = wavePlayer;
         this.savedGameStore = savedGameStore;
         this.pixelData = pixelData;
         this.variableData = variableData;
+        this.debugInfo = debugInfo;
         
         // The WavePlayer needs the VariableData interface so that it can set the sound 
         // end flag.
@@ -112,6 +116,15 @@ public abstract class AgileRunner {
     }
     
     /**
+     * Returns the DebugInfo implementation class instance in use by AGILE.
+     * 
+     * @return
+     */
+    public DebugInfo getDebugInfo() {
+        return debugInfo;
+    }
+    
+    /**
      * Invoked by the main UI thread to trigger an AGI tick. The first part, i.e. updating the
      * total ticks and the AGI game clock, is done within the UI thread. The actual animation tick
      * is done within the background thread/worker.
@@ -129,21 +142,23 @@ public abstract class AgileRunner {
         while (deltaTime > NANOS_PER_FRAME) {
             deltaTime -= NANOS_PER_FRAME;
             
-            // Regardless of whether we're already in an animation tick, we keep counting the number of Ticks.
-            int newTotalTicks = variableData.incrementTotalTicks();
-
-            // Tick is called 60 times a second, so every 60th call, the second clock ticks. We 
-            // deliberately do this outside of the main Tick block because some scripts wait for 
-            // the clock to reach a certain clock value, which will never happen if the block isn't
-            // updated outside of the Tick block.
-            if ((newTotalTicks % 60) == 0) {
-                updateGameClock();
+            if (!paused) {
+                // Regardless of whether we're already in an animation tick, we keep counting the number of Ticks.
+                int newTotalTicks = variableData.incrementTotalTicks();
+    
+                // Tick is called 60 times a second, so every 60th call, the second clock ticks. We 
+                // deliberately do this outside of the main Tick block because some scripts wait for 
+                // the clock to reach a certain clock value, which will never happen if the block isn't
+                // updated outside of the Tick block.
+                if ((newTotalTicks % 60) == 0) {
+                    updateGameClock();
+                }
+    
+                // The animation tick is the platform specific bit, as it needs to be run 
+                // outside of the UI thread, which is done differently depending on the 
+                // platform.
+                animationTick();
             }
-
-            // The animation tick is the platform specific bit, as it needs to be run 
-            // outside of the UI thread, which is done differently depending on the 
-            // platform.
-            animationTick();
         }
     }
     
@@ -170,6 +185,18 @@ public abstract class AgileRunner {
 
             variableData.setVar(Defines.SECONDS, 0);
         }
+    }
+    
+    public void pause() {
+        paused = true;
+    }
+    
+    public void resume() {
+        paused = false;
+    }
+    
+    public boolean isPaused() {
+        return paused;
     }
     
     public abstract void start(AppConfigItem appConfigItem);

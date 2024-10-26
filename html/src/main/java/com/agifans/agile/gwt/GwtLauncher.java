@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.agifans.agile.Agile;
+import com.agifans.agile.DebugInfo;
 
 /** Launches the GWT application. */
 public class GwtLauncher extends GwtApplication {
@@ -22,18 +23,18 @@ public class GwtLauncher extends GwtApplication {
     
     private int initialHeight;
     
-    private Boolean debugMode;
+    private DebugInfo debugInfo;
     
     private Agile agile;
     
     public GwtLauncher() {
     }
     
-    public GwtLauncher(Panel rootPanel, int initialWidth, int initialHeight) {
+    public GwtLauncher(Panel rootPanel, int initialWidth, int initialHeight, DebugInfo debugInfo) {
         this.rootPanel = rootPanel;
         this.initialWidth = initialWidth;
         this.initialHeight = initialHeight;
-        this.debugMode = true;
+        this.debugInfo = debugInfo;
     }
     
     @Override
@@ -100,14 +101,10 @@ public class GwtLauncher extends GwtApplication {
             argsMap.put("uri", uri);
         }
         
-        if (Boolean.TRUE.equals(debugMode)) {
-            argsMap.put("debugMode", "true");
-        }
-        
         GwtDialogHandler gwtDialogHandler = new GwtDialogHandler();
     	GwtAgileRunner gwtAgileRunner = new GwtAgileRunner(
     	        new GwtUserInput(), new GwtWavePlayer(), new GwtSavedGameStore(),
-    	        new GwtPixelData(), new GwtVariableData());
+    	        new GwtPixelData(), new GwtVariableData(), debugInfo);
     	agile = new Agile(gwtAgileRunner, gwtDialogHandler, argsMap);
     	
         return agile;

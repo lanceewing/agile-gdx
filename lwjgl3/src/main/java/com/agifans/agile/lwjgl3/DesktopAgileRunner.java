@@ -29,7 +29,7 @@ public class DesktopAgileRunner extends AgileRunner {
     
     public DesktopAgileRunner(UserInput userInput, WavePlayer wavePlayer, 
             SavedGameStore savedGameStore, PixelData pixelData, VariableData variableData) {
-        super(userInput, wavePlayer, savedGameStore, pixelData, variableData);
+        super(userInput, wavePlayer, savedGameStore, pixelData, variableData, null);
     }
 
     @Override

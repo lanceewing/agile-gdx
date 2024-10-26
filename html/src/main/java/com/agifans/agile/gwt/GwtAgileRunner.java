@@ -4,6 +4,7 @@ import java.util.Map;
 
 import com.agifans.agile.Agile;
 import com.agifans.agile.AgileRunner;
+import com.agifans.agile.DebugInfo;
 import com.agifans.agile.HomeScreen;
 import com.agifans.agile.PixelData;
 import com.agifans.agile.SavedGameStore;
@@ -55,10 +56,11 @@ public class GwtAgileRunner extends AgileRunner {
      * @param savedGameStore
      * @param pixelData
      * @param variableData
+     * @param debugInfo
      */
     public GwtAgileRunner(UserInput userInput, WavePlayer wavePlayer, SavedGameStore savedGameStore, 
-            PixelData pixelData, VariableData variableData) {
-        super(userInput, wavePlayer, savedGameStore, pixelData, variableData);
+            PixelData pixelData, VariableData variableData, DebugInfo debugInfo) {
+        super(userInput, wavePlayer, savedGameStore, pixelData, variableData, debugInfo);
     }
     
     @Override
@@ -272,6 +274,7 @@ public class GwtAgileRunner extends AgileRunner {
     public void stop() {
         // Ensure that any playing sound is stopped, and then kill off the web 
         // worker immediately.
+        paused = false;
         worker.terminate();
         stopCurrentSound();
         pixelData.clearState();
@@ -280,16 +283,19 @@ public class GwtAgileRunner extends AgileRunner {
     }
 
     private void clearUrl() {
-        String newURL = Window.Location.createUrlBuilder()
-                .setPath("/")
-                .setHash(null)
-                .buildString();
-        updateURLWithoutReloading(newURL);
+        if (debugInfo == null) {
+            String newURL = Window.Location.createUrlBuilder()
+                    .setPath("/")
+                    .setHash(null)
+                    .buildString();
+            updateURLWithoutReloading(newURL);
+        }
     }
     
     @Override
     public void reset() {
         // Resets to the original state, as if a game has not been previously run.
+        paused = false;
         stopped = false;
         worker = null;
         
