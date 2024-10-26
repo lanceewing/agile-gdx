@@ -19,7 +19,11 @@
 		                                <img class="green-flag_green-flag" draggable="false" src="/editor/green_flag.svg" title="Go"/>
 		                            </g:HTMLPanel>
 		                        </g:FocusPanel>
-		                        <img class="stop-all_stop-all" draggable="false" src="/editor/red_stop.svg" title="Stop"/>
+		                        <g:FocusPanel ui:field="stopLink">
+		                            <g:HTMLPanel>
+		                                <img class="stop-all_stop-all" draggable="false" src="/editor/red_stop.svg" title="Stop"/>
+		                            </g:HTMLPanel>
+		                        </g:FocusPanel>
 		                    </div>
 		
 		                    <div class="stage-header_stage-size-row">

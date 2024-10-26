@@ -31,6 +31,9 @@ public class StagePanel extends ResizeComposite {
     FocusPanel playLink;
     
     @UiField
+    FocusPanel stopLink;
+    
+    @UiField
     VerticalPanel agileCanvasPanel;
     
     @UiField
@@ -91,8 +94,6 @@ public class StagePanel extends ResizeComposite {
     
     @UiHandler("playLink")
     public void onPlayButtonClicked(ClickEvent event) {
-        logToJSConsole("Play button clicked");
-        
         Agile agile = agileLauncher.getAgile();
         if ((agile != null) && (!agile.getAgileRunner().isRunning())) {
             Game game = editPanel.getGame();
@@ -102,6 +103,14 @@ public class StagePanel extends ResizeComposite {
                 agile.setScreen(gameScreen);
                 agile.getAgileRunner().start(game.getGameFilesMap());
             }
+        }
+    }
+    
+    @UiHandler("stopLink")
+    public void onStopButtonClicked(ClickEvent event) {
+        Agile agile = agileLauncher.getAgile();
+        if ((agile != null) && (agile.getAgileRunner().isRunning())) {
+            agile.getAgileRunner().stop();
         }
     }
 }
