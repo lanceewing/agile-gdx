@@ -29,13 +29,16 @@ public class StagePanel extends ResizeComposite {
     private static final Binder binder = GWT.create(Binder.class);
 
     @UiField
-    FocusPanel playLink;
+    FocusPanel startLink;
     
     @UiField
     FocusPanel stopLink;
     
     @UiField
     FocusPanel pauseLink;
+    
+    @UiField
+    FocusPanel playLink;
     
     @UiField
     VerticalPanel agileCanvasPanel;
@@ -100,8 +103,8 @@ public class StagePanel extends ResizeComposite {
         }
     }
     
-    @UiHandler("playLink")
-    public void onPlayButtonClicked(ClickEvent event) {
+    @UiHandler("startLink")
+    public void onStartButtonClicked(ClickEvent event) {
         Agile agile = agileLauncher.getAgile();
         if ((agile != null) && (!agile.getAgileRunner().isRunning())) {
             Game game = editPanel.getGame();
@@ -128,7 +131,15 @@ public class StagePanel extends ResizeComposite {
         if ((agile != null) && (agile.getAgileRunner().isRunning())) {
             if (!agile.getAgileRunner().isPaused()) {
                 agile.getAgileRunner().pause();
-            } else {
+            }
+        }
+    }
+    
+    @UiHandler("playLink")
+    public void onPlayButtonClicked(ClickEvent event) {
+        Agile agile = agileLauncher.getAgile();
+        if ((agile != null) && (agile.getAgileRunner().isRunning())) {
+            if (agile.getAgileRunner().isPaused()) {
                 agile.getAgileRunner().resume();
             }
         }

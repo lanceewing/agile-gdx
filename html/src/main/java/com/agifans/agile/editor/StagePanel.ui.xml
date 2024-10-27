@@ -14,7 +14,7 @@
 		                <div class="stage-header_stage-menu-wrapper">
 		
 		                    <div class="controls_controls-container">
-		                        <g:FocusPanel ui:field="playLink">
+		                        <g:FocusPanel ui:field="startLink">
 		                            <g:HTMLPanel>
 		                                <img class="green-flag_green-flag" draggable="false" src="/editor/green_flag.svg" title="Go"/>
 		                            </g:HTMLPanel>
@@ -22,6 +22,11 @@
 		                        <g:FocusPanel ui:field="pauseLink">
 		                            <g:HTMLPanel>
 		                                <img class="yellow-pause_yellow-pause" draggable="false" src="/editor/yellow_pause.svg" title="Pause"/>
+		                            </g:HTMLPanel>
+		                        </g:FocusPanel>
+		                        <g:FocusPanel ui:field="playLink">
+		                            <g:HTMLPanel>
+		                                <img class="yellow-play_yellow-play" draggable="false" src="/editor/yellow_play.svg" title="Play"/>
 		                            </g:HTMLPanel>
 		                        </g:FocusPanel>
 		                        <g:FocusPanel ui:field="stopLink">
