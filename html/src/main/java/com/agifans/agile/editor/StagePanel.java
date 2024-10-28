@@ -8,8 +8,12 @@ import com.agifans.agile.gwt.GwtLauncher;
 import com.badlogic.gdx.backends.gwt.GwtGraphics;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.gwt.GwtApplication.LoadingListener;
+import com.badlogic.gdx.backends.gwt.preloader.Preloader;
+import com.badlogic.gdx.backends.gwt.preloader.Preloader.PreloaderCallback;
+import com.badlogic.gdx.backends.gwt.preloader.Preloader.PreloaderState;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.DivElement;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
@@ -69,7 +73,17 @@ public class StagePanel extends ResizeComposite {
         
         debugInfo = new DebugInfo();
         
-        agileLauncher = new GwtLauncher(agileCanvasPanel, 480, 364, debugInfo);
+        agileLauncher = new GwtLauncher(agileCanvasPanel, 480, 364, debugInfo) {
+            @Override
+            public Preloader.PreloaderCallback getPreloaderCallback() {
+                return new PreloaderCallback() {
+                    @Override
+                    public void error (String file) {}
+                    @Override
+                    public void update (PreloaderState state) {}
+                };
+            }
+        };
         agileLauncher.setLoadingListener(new LoadingListener() {
             public void beforeSetup() {}
             public void afterSetup() {
