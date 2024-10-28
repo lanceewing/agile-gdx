@@ -285,10 +285,18 @@ body {
     border-radius: 0.5rem;
     border: 0.0625rem solid hsla(0, 0%, 0%, 0.15);
     overflow: hidden;
-    background-color: #fff;
+    background-color: #222;
     touch-action: none;
     box-sizing: content-box !important;
     position: relative;
+    aspect-ratio: 1.32;
+}
+
+.gdx-preloader {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 
 .stage_monitor-wrapper, .stage_frame-wrapper, .stage_green-flag-overlay-wrapper {

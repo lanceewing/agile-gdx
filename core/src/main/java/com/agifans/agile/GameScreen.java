@@ -324,124 +324,131 @@ public class GameScreen implements Screen {
         
         // The keyboard is always render in portrait mode, as there is space for it,
         // but in landscape mode, it needs to be enabled via the keyboard icon.
-        if (keyboardType.isRendered() || viewportManager.isPortrait()) {
-            if (keyboardType.getTexture() != null) {
-                batch.setColor(c.r, c.g, c.b, keyboardType.getOpacity());
-                batch.draw(
-                        keyboardType.getTexture(), 
-                        0, keyboardType.getRenderOffset(), 
-                        keyboardType.getTexture().getWidth(), 
-                        keyboardType.getHeight());
+        if (!agile.inDebugMode()) {
+            if (keyboardType.isRendered() || viewportManager.isPortrait()) {
+                if (keyboardType.getTexture() != null) {
+                    batch.setColor(c.r, c.g, c.b, keyboardType.getOpacity());
+                    batch.draw(
+                            keyboardType.getTexture(), 
+                            0, keyboardType.getRenderOffset(), 
+                            keyboardType.getTexture().getWidth(), 
+                            keyboardType.getHeight());
+                }
             }
-        } 
+        }
         
         batch.setColor(c.r, c.g, c.b, 0.5f);
-        if (viewportManager.isPortrait()) {
-            // Portrait
-            batch.draw(fullScreenIcon, 20, 20);
-            batch.draw(joystickIcon, (viewportManager.getWidth() / 3) - 32, 20);
-            batch.draw(keyboardIcon, (viewportManager.getWidth() - (viewportManager.getWidth() / 3)) - 64, 20);
-            batch.draw(backIcon, viewportManager.getWidth() - 116, 20);
-        } else {
-            // Landscape
-            if (cameraXOffset == 0) {
-                // Middle.
-                if ((viewportManager.getAgiScreenBase() > 0) || (sidePaddingWidth <= 64)) {
-                    // The area between full landscape and full portrait.
-                    float leftAdjustment = (viewportManager.getWidth() / 4) - 32;
-                    batch.draw(fullScreenIcon, ((viewportManager.getWidth() / 2) - 48) - leftAdjustment, 16);
-                    batch.draw(joystickIcon, ((viewportManager.getWidth() - (viewportManager.getWidth() / 3)) - 64) - leftAdjustment, 16);
-                    batch.draw(keyboardIcon, ((viewportManager.getWidth() - (viewportManager.getWidth() / 6)) - 80) - leftAdjustment, 16);
-                    batch.draw(backIcon, (viewportManager.getWidth() - 112) - leftAdjustment, 16);
-                } else {
-                    batch.draw(joystickIcon, 16, viewportManager.getHeight() - 112);
+        
+        if (!agile.inDebugMode()) {
+            if (viewportManager.isPortrait()) {
+                // Portrait
+                batch.draw(fullScreenIcon, 20, 20);
+                batch.draw(joystickIcon, (viewportManager.getWidth() / 3) - 32, 20);
+                batch.draw(keyboardIcon, (viewportManager.getWidth() - (viewportManager.getWidth() / 3)) - 64, 20);
+                batch.draw(backIcon, viewportManager.getWidth() - 116, 20);
+            } else {
+                // Landscape
+                if (cameraXOffset == 0) {
+                    // Middle.
+                    if ((viewportManager.getAgiScreenBase() > 0) || (sidePaddingWidth <= 64)) {
+                        // The area between full landscape and full portrait.
+                        float leftAdjustment = (viewportManager.getWidth() / 4) - 32;
+                        batch.draw(fullScreenIcon, ((viewportManager.getWidth() / 2) - 48) - leftAdjustment, 16);
+                        batch.draw(joystickIcon, ((viewportManager.getWidth() - (viewportManager.getWidth() / 3)) - 64) - leftAdjustment, 16);
+                        batch.draw(keyboardIcon, ((viewportManager.getWidth() - (viewportManager.getWidth() / 6)) - 80) - leftAdjustment, 16);
+                        batch.draw(backIcon, (viewportManager.getWidth() - 112) - leftAdjustment, 16);
+                    } else {
+                        batch.draw(joystickIcon, 16, viewportManager.getHeight() - 112);
+                        batch.draw(fullScreenIcon, viewportManager.getWidth() - 112, viewportManager.getHeight() - 112);
+                        batch.draw(backIcon, viewportManager.getWidth() - 112, 16);
+                        batch.draw(keyboardIcon, 16, 0);
+                    }
+                } else if (cameraXOffset < 0) {
+                    // Left
+                    batch.draw(joystickIcon, 16, viewportManager.getHeight() - 324);
+                    batch.draw(fullScreenIcon, 16, viewportManager.getHeight() - 112);
+                    batch.draw(backIcon, 16, 16);
+                    batch.draw(keyboardIcon, 16, 228);
+                } else if (cameraXOffset > 0) {
+                    // Right
+                    batch.draw(joystickIcon, viewportManager.getWidth() - 112, viewportManager.getHeight() - 324);
                     batch.draw(fullScreenIcon, viewportManager.getWidth() - 112, viewportManager.getHeight() - 112);
                     batch.draw(backIcon, viewportManager.getWidth() - 112, 16);
-                    batch.draw(keyboardIcon, 16, 0);
+                    batch.draw(keyboardIcon, viewportManager.getWidth() - 112, 228);
                 }
-            } else if (cameraXOffset < 0) {
-                // Left
-                batch.draw(joystickIcon, 16, viewportManager.getHeight() - 324);
-                batch.draw(fullScreenIcon, 16, viewportManager.getHeight() - 112);
-                batch.draw(backIcon, 16, 16);
-                batch.draw(keyboardIcon, 16, 228);
-            } else if (cameraXOffset > 0) {
-                // Right
-                batch.draw(joystickIcon, viewportManager.getWidth() - 112, viewportManager.getHeight() - 324);
-                batch.draw(fullScreenIcon, viewportManager.getWidth() - 112, viewportManager.getHeight() - 112);
-                batch.draw(backIcon, viewportManager.getWidth() - 112, 16);
-                batch.draw(keyboardIcon, viewportManager.getWidth() - 112, 228);
             }
         }
         
         batch.end();
         
         // The joystick touch pad is updated and rendered via the Stage.
-        if (!joystickAlignment.equals(JoystickAlignment.OFF)) {
-            float joyX = 0;
-            float joyY = 0;
-            if (viewportManager.isPortrait()) {
-                // Top of keyboard is: 765 + 135 = 900.
-                int joyWidth = 200;
-                int agiScreenBase = viewportManager.getAgiScreenBase();
-                int midBetweenKeybAndPic = ((agiScreenBase + 900) / 2);
-                portraitTouchpad.setSize(joyWidth, joyWidth);
-                portraitTouchpad.setY(midBetweenKeybAndPic - (joyWidth / 2));
-                switch (joystickAlignment) {
-                    case OFF:
-                        break;
-                    case RIGHT:
-                        portraitTouchpad.setX(1080 - joyWidth - 20);
-                        break;
-                    case MIDDLE:
-                        portraitTouchpad.setX(viewportManager.getWidth() - viewportManager.getWidth() / 2 - (joyWidth / 2));
-                        break;
-                    case LEFT:
-                        portraitTouchpad.setX(20);
-                        break;
-                }
-                portraitTouchpadStage.act(delta);
-                portraitTouchpadStage.draw();
-                joyX = portraitTouchpad.getKnobPercentX();
-                joyY = portraitTouchpad.getKnobPercentY();
-            } else {
-                // Landscape
-                if ((viewportManager.getAgiScreenBase() > 0) || (sidePaddingWidth <= 64)) {
-                    int joyWidth = Math.max(Math.min(140 + viewportManager.getAgiScreenBase(), 216), 140);
-                    landscapeTouchpad.setSize(joyWidth, joyWidth);
-                    landscapeTouchpad.setY(16);
-                    landscapeTouchpad.setX(viewportManager.getWidth() - joyWidth - 16);
-                    landscapeTouchpad.getStyle().knob.setMinHeight(joyWidth * 0.6f);
-                    landscapeTouchpad.getStyle().knob.setMinWidth(joyWidth * 0.6f);
-                    landscapeTouchpadStage.act(delta);
-                    landscapeTouchpadStage.draw();
-                    joyX = landscapeTouchpad.getKnobPercentX();
-                    joyY = landscapeTouchpad.getKnobPercentY();
-                } else {
-                    float joyWidth = Math.min(Math.max((sidePaddingWidth * 2) - 32, 96), 200);
-                    landscapeTouchpad.setSize(joyWidth, joyWidth);
-                    landscapeTouchpad.getStyle().knob.setMinHeight(joyWidth * 0.6f);
-                    landscapeTouchpad.getStyle().knob.setMinWidth(joyWidth * 0.6f);
-                    landscapeTouchpad.setY(viewportManager.getHeight() - (viewportManager.getHeight() / 2) - (joyWidth / 2));
+        if (!agile.inDebugMode()) {
+            if (!joystickAlignment.equals(JoystickAlignment.OFF)) {
+                float joyX = 0;
+                float joyY = 0;
+                if (viewportManager.isPortrait()) {
+                    // Top of keyboard is: 765 + 135 = 900.
+                    int joyWidth = 200;
+                    int agiScreenBase = viewportManager.getAgiScreenBase();
+                    int midBetweenKeybAndPic = ((agiScreenBase + 900) / 2);
+                    portraitTouchpad.setSize(joyWidth, joyWidth);
+                    portraitTouchpad.setY(midBetweenKeybAndPic - (joyWidth / 2));
                     switch (joystickAlignment) {
                         case OFF:
                             break;
                         case RIGHT:
-                            landscapeTouchpad.setX(1920 - joyWidth - 16);
+                            portraitTouchpad.setX(1080 - joyWidth - 20);
                             break;
                         case MIDDLE:
+                            portraitTouchpad.setX(viewportManager.getWidth() - viewportManager.getWidth() / 2 - (joyWidth / 2));
                             break;
                         case LEFT:
-                            landscapeTouchpad.setX(16);
+                            portraitTouchpad.setX(20);
                             break;
                     }
-                    landscapeTouchpadStage.act(delta);
-                    landscapeTouchpadStage.draw();
-                    joyX = landscapeTouchpad.getKnobPercentX();
-                    joyY = landscapeTouchpad.getKnobPercentY();
+                    portraitTouchpadStage.act(delta);
+                    portraitTouchpadStage.draw();
+                    joyX = portraitTouchpad.getKnobPercentX();
+                    joyY = portraitTouchpad.getKnobPercentY();
+                } else {
+                    // Landscape
+                    if ((viewportManager.getAgiScreenBase() > 0) || (sidePaddingWidth <= 64)) {
+                        int joyWidth = Math.max(Math.min(140 + viewportManager.getAgiScreenBase(), 216), 140);
+                        landscapeTouchpad.setSize(joyWidth, joyWidth);
+                        landscapeTouchpad.setY(16);
+                        landscapeTouchpad.setX(viewportManager.getWidth() - joyWidth - 16);
+                        landscapeTouchpad.getStyle().knob.setMinHeight(joyWidth * 0.6f);
+                        landscapeTouchpad.getStyle().knob.setMinWidth(joyWidth * 0.6f);
+                        landscapeTouchpadStage.act(delta);
+                        landscapeTouchpadStage.draw();
+                        joyX = landscapeTouchpad.getKnobPercentX();
+                        joyY = landscapeTouchpad.getKnobPercentY();
+                    } else {
+                        float joyWidth = Math.min(Math.max((sidePaddingWidth * 2) - 32, 96), 200);
+                        landscapeTouchpad.setSize(joyWidth, joyWidth);
+                        landscapeTouchpad.getStyle().knob.setMinHeight(joyWidth * 0.6f);
+                        landscapeTouchpad.getStyle().knob.setMinWidth(joyWidth * 0.6f);
+                        landscapeTouchpad.setY(viewportManager.getHeight() - (viewportManager.getHeight() / 2) - (joyWidth / 2));
+                        switch (joystickAlignment) {
+                            case OFF:
+                                break;
+                            case RIGHT:
+                                landscapeTouchpad.setX(1920 - joyWidth - 16);
+                                break;
+                            case MIDDLE:
+                                break;
+                            case LEFT:
+                                landscapeTouchpad.setX(16);
+                                break;
+                        }
+                        landscapeTouchpadStage.act(delta);
+                        landscapeTouchpadStage.draw();
+                        joyX = landscapeTouchpad.getKnobPercentX();
+                        joyY = landscapeTouchpad.getKnobPercentY();
+                    }
                 }
+                processJoystickInput(joyX, joyY);
             }
-            processJoystickInput(joyX, joyY);
         }
     }
     
