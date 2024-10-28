@@ -9,6 +9,7 @@ import com.badlogic.gdx.backends.gwt.GwtGraphics;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.gwt.GwtApplication.LoadingListener;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
@@ -29,6 +30,9 @@ public class StagePanel extends ResizeComposite {
     private static final Binder binder = GWT.create(Binder.class);
 
     @UiField
+    DivElement stageWrapper;
+    
+    @UiField
     FocusPanel startLink;
     
     @UiField
@@ -44,7 +48,7 @@ public class StagePanel extends ResizeComposite {
     VerticalPanel agileCanvasPanel;
     
     @UiField
-    HTMLPanel stageWrapperPanel;
+    HTMLPanel agileCanvasWrapperPanel;
     
     private EditPanel editPanel;
     
@@ -61,7 +65,7 @@ public class StagePanel extends ResizeComposite {
         agileCanvasPanel.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
         agileCanvasPanel.addStyleName("agileCanvasPanel");
         
-        stageWrapperPanel.addStyleName("stage_stage");
+        agileCanvasWrapperPanel.addStyleName("stage_stage");
         
         debugInfo = new DebugInfo();
         
@@ -83,8 +87,8 @@ public class StagePanel extends ResizeComposite {
     public void onResize() {
         if (graphics != null) {
             graphics.setWindowedMode(
-                    stageWrapperPanel.getOffsetWidth(), 
-                    (int)(stageWrapperPanel.getOffsetWidth() / 1.32f));
+                    agileCanvasWrapperPanel.getOffsetWidth(), 
+                    (int)(agileCanvasWrapperPanel.getOffsetWidth() / 1.32f));
         }
     }
     
@@ -97,8 +101,8 @@ public class StagePanel extends ResizeComposite {
         public void onResize (ResizeEvent event) {
             if (graphics != null) {
                 graphics.setWindowedMode(
-                        stageWrapperPanel.getOffsetWidth(), 
-                        (int)(stageWrapperPanel.getOffsetWidth() / 1.32f));
+                        agileCanvasWrapperPanel.getOffsetWidth(), 
+                        (int)(agileCanvasWrapperPanel.getOffsetWidth() / 1.32f));
             }
         }
     }
@@ -113,6 +117,7 @@ public class StagePanel extends ResizeComposite {
                 gameScreen.initGame(null, true);
                 agile.setScreen(gameScreen);
                 agile.getAgileRunner().start(game.getGameFilesMap());
+                stageWrapper.addClassName("running");
             }
         }
     }
@@ -122,6 +127,7 @@ public class StagePanel extends ResizeComposite {
         Agile agile = agileLauncher.getAgile();
         if ((agile != null) && (agile.getAgileRunner().isRunning())) {
             agile.getAgileRunner().stop();
+            stageWrapper.removeClassName("running");
         }
     }
     
@@ -131,6 +137,7 @@ public class StagePanel extends ResizeComposite {
         if ((agile != null) && (agile.getAgileRunner().isRunning())) {
             if (!agile.getAgileRunner().isPaused()) {
                 agile.getAgileRunner().pause();
+                stageWrapper.addClassName("paused");
             }
         }
     }
@@ -141,6 +148,7 @@ public class StagePanel extends ResizeComposite {
         if ((agile != null) && (agile.getAgileRunner().isRunning())) {
             if (agile.getAgileRunner().isPaused()) {
                 agile.getAgileRunner().resume();
+                stageWrapper.removeClassName("paused");
             }
         }
     }

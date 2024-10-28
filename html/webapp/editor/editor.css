@@ -133,6 +133,10 @@ body {
     cursor: pointer;
 }
 
+.stage-wrapper_stage-wrapper.running .green-flag_green-flag {
+	background-color: #99FFD5 !important;
+}
+
 .yellow-pause_yellow-pause {
 	width: 2rem;
     height: 2rem;
@@ -143,6 +147,10 @@ body {
     -ms-user-select: none;
     user-select: none;
     cursor: pointer;
+}
+
+.stage-wrapper_stage-wrapper.paused .yellow-pause_yellow-pause {
+	display: none !important;
 }
 
 .yellow-pause_yellow-pause:hover,
@@ -162,6 +170,11 @@ body {
     -ms-user-select: none;
     user-select: none;
     cursor: pointer;
+    display: none;
+}
+
+.stage-wrapper_stage-wrapper.paused .yellow-play_yellow-play {
+	display: inline !important;
 }
 
 .stop-all_stop-all {

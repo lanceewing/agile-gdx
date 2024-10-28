@@ -7,7 +7,7 @@
 	
 		<div class="gui_stage-and-target-wrapper">
 		
-		    <div class="stage-wrapper_stage-wrapper" dir="ltr">
+		    <div class="stage-wrapper_stage-wrapper" dir="ltr" ui:field="stageWrapper">
 		
 		        <div>
 		            <div class="stage-header_stage-header-wrapper">
@@ -65,7 +65,7 @@
 		
 		        <div class="stage-wrapper_stage-canvas-wrapper">
 		            <div class="stage_stage-wrapper">
-		                <g:HTMLPanel ui:field="stageWrapperPanel">
+		                <g:HTMLPanel ui:field="agileCanvasWrapperPanel">
 		                    <g:VerticalPanel ui:field="agileCanvasPanel"></g:VerticalPanel>
 		                    
 		                    <div class="stage_monitor-wrapper">
