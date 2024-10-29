@@ -13,7 +13,6 @@ import com.badlogic.gdx.backends.gwt.preloader.Preloader.PreloaderCallback;
 import com.badlogic.gdx.backends.gwt.preloader.Preloader.PreloaderState;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.DivElement;
-import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
@@ -25,6 +24,7 @@ import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.ResizeComposite;
+import com.google.gwt.user.client.ui.SplitLayoutPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -49,10 +49,21 @@ public class StagePanel extends ResizeComposite {
     FocusPanel playLink;
     
     @UiField
+    FocusPanel smallStageLink;
+    
+    @UiField
+    FocusPanel largeStageLink;
+    
+    @UiField
+    FocusPanel fullScreenLink;
+    
+    @UiField
     VerticalPanel agileCanvasPanel;
     
     @UiField
     HTMLPanel agileCanvasWrapperPanel;
+    
+    private SplitLayoutPanel splitLayoutPanel;
     
     private EditPanel editPanel;
     
@@ -96,6 +107,10 @@ public class StagePanel extends ResizeComposite {
     
     public void setEditPanel(EditPanel editPanel) {
         this.editPanel = editPanel;
+    }
+    
+    public void setSplitLayoutPanel(SplitLayoutPanel splitLayoutPanel) {
+        this.splitLayoutPanel = splitLayoutPanel;
     }
     
     public void onResize() {
@@ -165,5 +180,20 @@ public class StagePanel extends ResizeComposite {
                 stageWrapper.removeClassName("paused");
             }
         }
+    }
+    
+    @UiHandler("smallStageLink")
+    public void onSmallStageButtonClicked(ClickEvent event) {
+        splitLayoutPanel.setWidgetSize(this, 320);
+    }
+    
+    @UiHandler("largeStageLink")
+    public void onLargeStageButtonClicked(ClickEvent event) {
+        splitLayoutPanel.setWidgetSize(this, 480);
+    }
+    
+    @UiHandler("fullScreenLink")
+    public void onFullScreenButtonClicked(ClickEvent event) {
+        
     }
 }

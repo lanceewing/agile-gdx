@@ -37,26 +37,21 @@
 		                    </div>
 		
 		                    <div class="stage-header_stage-size-row">
-		                        <div class="stage-header_stage-size-toggle-group">
-		                            <div class="toggle-buttons_row">
-		                                <button class="toggle-buttons_button" title="Switch to small stage"
-		                                    aria-label="Switch to small stage" aria-pressed="false">
-		                                    <img src="/editor/small_stage.svg" aria-hidden="true" class="stage-header_stage-button-icon" />
-		                                </button>
-		                                <button class="toggle-buttons_button" title="Switch to large stage"
-		                                    aria-label="Switch to large stage" aria-pressed="true">
-		                                    <img src="/editor/large_stage.svg" aria-hidden="true" class="stage-header_stage-button-icon" />
-		                                </button>
-		                            </div>
-		                        </div>
-		                        <div>
-		                            <span class="button_outlined-button stage-header_stage-button" role="button">
-		                                <div class="button_content">
-		                                    <img alt="Enter full screen mode" class="stage-header_stage-button-icon"
-		                                        draggable="false" src="/editor/full_screen.svg" title="Full Screen Control" />
-		                                </div>
-		                            </span>
-		                        </div>
+		                        <g:FocusPanel ui:field="smallStageLink">
+		                            <g:HTMLPanel>
+		                                <img class="small-stage_small-stage" draggable="false" src="/editor/small_stage.svg" title="Switch to small stage"/>
+		                            </g:HTMLPanel>
+		                        </g:FocusPanel>
+		                        <g:FocusPanel ui:field="largeStageLink">
+		                            <g:HTMLPanel>
+		                                <img class="large-stage_large-stage" draggable="false" src="/editor/large_stage.svg" title="Switch to large stage"/>
+		                            </g:HTMLPanel>
+		                        </g:FocusPanel>
+		                        <g:FocusPanel ui:field="fullScreenLink">
+		                            <g:HTMLPanel>
+		                                <img class="full-screen_full-screen" draggable="false" src="/editor/full_screen.svg" title="Full Screen Control"/>
+		                            </g:HTMLPanel>
+		                        </g:FocusPanel>
 		                    </div>
 		
 		                </div>
