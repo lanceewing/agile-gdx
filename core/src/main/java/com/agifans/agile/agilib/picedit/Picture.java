@@ -9,6 +9,9 @@ import com.agifans.agile.agilib.jagi.awt.Point;
 
 public class Picture extends Resource {
 
+    private static final int WIDTH = 160;
+    private static final int HEIGHT = 168;
+    
     /**
      * Holds the RGB values for the 16 EGA colours.
      */
@@ -729,6 +732,10 @@ public class Picture extends Resource {
      * @param y The Y position of the pixel.
      */
     public void putPixel(int x, int y) {
+        if ((x >= WIDTH) || (y >= HEIGHT)) {
+            return;
+        }
+        
         int index = (y << 7) + (y << 5) + x;
         
         if (editStatus.isVisualDrawEnabled()) {

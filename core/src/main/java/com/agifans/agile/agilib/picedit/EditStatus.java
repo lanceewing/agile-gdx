@@ -53,11 +53,6 @@ public class EditStatus {
     private boolean menuActive;
 
     private boolean priorityShowing;
-
-    /**
-     * The type of Sierra picture being edited.
-     */
-    private PictureType pictureType;
     
     /**
      * The picture resource currently being edited.
@@ -143,7 +138,6 @@ public class EditStatus {
         if (newPicture) {
             // These are the bits that get cleared for a new picture.
             priorityShowing = false;
-            pictureType = PictureType.AGI;
             fillType = FillType.NORMAL;
             backgroundEnabled = false;
             pictureName = null;
@@ -329,20 +323,13 @@ public class EditStatus {
         this.mousePoint = adjustPoint(mousePoint);
 
         // Calculate the corresponding priority band on the fly.
-        if (this.pictureType.equals(PictureType.SCI0)) {
-            // For SCI0, the top 42 lines are for priority 0. The other 14 bands
-            // get an even share of the 148 remaining lines (which, btw, doesn't
-            // divide evenly, so the bands are not even as then are in AGI).
-            this.priorityBand = ((int) ((getMouseY() - 42) / ((190 - 42) / 14))) + 1;
-        } else if (this.pictureType.equals(PictureType.AGI)) {
-            // For AGI it is evenly split, 168 lines split 14 ways.
-            this.priorityBand = (getMouseY() / 12) + 1;
+        // For AGI it is evenly split, 168 lines split 14 ways.
+        this.priorityBand = (getMouseY() / 12) + 1;
 
-            // Make sure priority band is 4 or above for AGI since the bottom
-            // four priority colours are reserved as control lines.
-            if (this.priorityBand < 4) {
-                this.priorityBand = 4;
-            }
+        // Make sure priority band is 4 or above for AGI since the bottom
+        // four priority colours are reserved as control lines.
+        if (this.priorityBand < 4) {
+            this.priorityBand = 4;
         }
     }
 
@@ -534,14 +521,6 @@ public class EditStatus {
         this.menuActive = menuActive;
     }
 
-    public PictureType getPictureType() {
-        return pictureType;
-    }
-
-    public void setPictureType(PictureType pictureType) {
-        this.pictureType = pictureType;
-    }
-
     public String getPictureName() {
         return this.pictureName;
     }
@@ -663,36 +642,20 @@ public class EditStatus {
 
         // PICEDIT screen is 320 pixels wide but AGI PICTURE is 160
         // pixels wide. So start by dividing x by 2.
-        if (pictureType.equals(PictureType.AGI)) {
-            x = x >> 1;
-        }
+        x = x >> 1;
 
-        // Now do the bounds checking. AGI PICTURE is 160x168. SCI0 is 320x190.
+        // Now do the bounds checking. AGI PICTURE is 160x168.
         if (x < 0) {
             x = 0;
         }
         if (y < 0) {
             y = 0;
         }
-        
-        switch (pictureType) {
-          case AGI:
-            if (x > 159) {
-              x = 159;
-            }
-            if (y > 167) {
-              y = 167;
-            }
-            break;
-            
-          case SCI0:
-            if (x > 319) {
-              x = 319;
-            }
-            if (y > 189) {
-              y = 189;
-            }
-            break;
+        if (x > 159) {
+          x = 159;
+        }
+        if (y > 167) {
+          y = 167;
         }
 
         // And finally we return the adjusted Point.
