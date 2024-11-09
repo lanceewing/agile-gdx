@@ -735,21 +735,41 @@ public class Picture extends Resource {
         if ((x >= WIDTH) || (y >= HEIGHT)) {
             return;
         }
-        
-        int index = (y << 7) + (y << 5) + x;
-        
         if (editStatus.isVisualDrawEnabled()) {
-            editStatus.getVisualScreen()[index] = colours[editStatus.getVisualColour()];
+            putVisualPixel(x, y);
         }
         if (editStatus.isPriorityDrawEnabled()) {
-            editStatus.getPriorityScreen()[index] = colours[editStatus.getPriorityColour()];
-            editStatus.getPriorityCodes()[index] = editStatus.getPriorityColour();
+            putPriorityPixel(x, y);
         }
     }
     
     /**
-     * Draw a line the most efficient way we can. Speed is preferred over
-     * removal of duplicated code.
+     * Draws a single pixel on the visual screen of the AGI picture.
+     * 
+     * @param x The X position of the pixel.
+     * @param y The Y position of the pixel.
+     */
+    public void putVisualPixel(int x, int y) {
+        int index = (y << 7) + (y << 5) + x;
+        
+        editStatus.getVisualScreen()[index] = colours[editStatus.getVisualColour()];
+    }
+    
+    /**
+     * Draws a single pixel on the priority screen of the AGI picture.
+     * 
+     * @param x The X position of the pixel.
+     * @param y The Y position of the pixel.
+     */
+    public void putPriorityPixel(int x, int y) {
+        int index = (y << 7) + (y << 5) + x;
+        
+        editStatus.getPriorityScreen()[index] = colours[editStatus.getPriorityColour()];
+        editStatus.getPriorityCodes()[index] = editStatus.getPriorityColour();
+    }
+    
+    /**
+     * Draws a line.
      * 
      * @param x1 Start X Coordinate.
      * @param y1 Start Y Coordinate.
@@ -757,7 +777,7 @@ public class Picture extends Resource {
      * @param y2 End Y Coordinate.
      */
     public final void drawLine(int x1, int y1, int x2, int y2) {
-        int x, y, index, endIndex, visualRGBCode, priorityRGBCode, priorityCode;
+        int x, y;
 
         // Vertical Line.
         if (x1 == x2) {
@@ -766,39 +786,8 @@ public class Picture extends Resource {
                 y1 = y2;
                 y2 = y;
             }
-
-            index = (y1 << 7) + (y1 << 5) + x1;
-            endIndex = (y2 << 7) + (y2 << 5) + x2;
-
-            if (editStatus.isVisualDrawEnabled()) {
-                if (editStatus.isPriorityDrawEnabled()) {
-                    // Vertical line on both visual and priority screens.
-                    visualRGBCode = colours[editStatus.getVisualColour()];
-                    priorityRGBCode = colours[editStatus.getPriorityColour()];
-                    priorityCode = editStatus.getPriorityColour();
-
-                    for (; index <= endIndex; index += 160) {
-                        editStatus.getVisualScreen()[index] = visualRGBCode;
-                        editStatus.getPriorityScreen()[index] = priorityRGBCode;
-                        editStatus.getPriorityCodes()[index] = priorityCode;
-                    }
-                } else {
-                    // Vertical line on only the visual screen.
-                    visualRGBCode = colours[editStatus.getVisualColour()];
-
-                    for (; index <= endIndex; index += 160) {
-                        editStatus.getVisualScreen()[index] = visualRGBCode;
-                    }
-                }
-            } else if (editStatus.isPriorityDrawEnabled()) {
-                // Vertical line on only the priority screen.
-                priorityRGBCode = colours[editStatus.getPriorityColour()];
-                priorityCode = editStatus.getPriorityColour();
-
-                for (; index <= endIndex; index += 160) {
-                    editStatus.getPriorityScreen()[index] = priorityRGBCode;
-                    editStatus.getPriorityCodes()[index] = priorityCode;
-                }
+            for (; y1 <= y2; y1++) {
+                putPixel(x1, y1);
             }
         }
         // Horizontal Line.
@@ -808,42 +797,11 @@ public class Picture extends Resource {
                 x1 = x2;
                 x2 = x;
             }
-
-            index = (y1 << 7) + (y1 << 5) + x1;
-            endIndex = (y2 << 7) + (y2 << 5) + x2;
-
-            if (editStatus.isVisualDrawEnabled()) {
-                if (editStatus.isPriorityDrawEnabled()) {
-                    // Horizontal line on both visual and priority screens.
-                    visualRGBCode = colours[editStatus.getVisualColour()];
-                    priorityRGBCode = colours[editStatus.getPriorityColour()];
-                    priorityCode = editStatus.getPriorityColour();
-
-                    for (; index <= endIndex; index++) {
-                        editStatus.getVisualScreen()[index] = visualRGBCode;
-                        editStatus.getPriorityScreen()[index] = priorityRGBCode;
-                        editStatus.getPriorityCodes()[index] = priorityCode;
-                    }
-                } else {
-                    // Horizontal line on only the visual screen.
-                    visualRGBCode = colours[editStatus.getVisualColour()];
-
-                    for (; index <= endIndex; index++) {
-                        editStatus.getVisualScreen()[index] = visualRGBCode;
-                    }
-                }
-            } else if (editStatus.isPriorityDrawEnabled()) {
-                // Horizontal line on only the priority screen.
-                priorityRGBCode = colours[editStatus.getPriorityColour()];
-                priorityCode = editStatus.getPriorityColour();
-
-                for (; index <= endIndex; index++) {
-                    editStatus.getPriorityScreen()[index] = priorityRGBCode;
-                    editStatus.getPriorityCodes()[index] = priorityCode;
-                }
+            for (; x1 <= x2; x1++) {
+                putPixel(x1, y1);
             }
-
         } else {
+            // Diagonal line
             int deltaX = x2 - x1;
             int deltaY = y2 - y1;
             int stepX = 1;
@@ -878,100 +836,27 @@ public class Picture extends Resource {
             x = x1;
             y = y1;
 
-            if (editStatus.isVisualDrawEnabled()) {
-                if (editStatus.isPriorityDrawEnabled()) {
-                    // Both visual and priority screens.
-                    visualRGBCode = colours[editStatus.getVisualColour()];
-                    priorityRGBCode = colours[editStatus.getPriorityColour()];
-                    priorityCode = editStatus.getPriorityColour();
+            putPixel(x, y);
 
-                    index = (y << 7) + (y << 5) + x;
-                    editStatus.getVisualScreen()[index] = visualRGBCode;
-                    editStatus.getPriorityScreen()[index] = priorityRGBCode;
-                    editStatus.getPriorityCodes()[index] = priorityCode;
-
-                    do {
-                        errorY = (errorY + deltaY);
-                        if (errorY >= detDelta) {
-                            errorY -= detDelta;
-                            y += stepY;
-                        }
-
-                        errorX = (errorX + deltaX);
-                        if (errorX >= detDelta) {
-                            errorX -= detDelta;
-                            x += stepX;
-                        }
-
-                        index = (y << 7) + (y << 5) + x;
-                        editStatus.getVisualScreen()[index] = visualRGBCode;
-                        editStatus.getPriorityScreen()[index] = priorityRGBCode;
-                        editStatus.getPriorityCodes()[index] = priorityCode;
-                        count--;
-                    } while (count > 0);
-
-                    index = (y << 7) + (y << 5) + x;
-                    editStatus.getVisualScreen()[index] = visualRGBCode;
-                    editStatus.getPriorityScreen()[index] = priorityRGBCode;
-                    editStatus.getPriorityCodes()[index] = priorityCode;
-
-                } else {
-                    // Only the visual screen.
-                    visualRGBCode = colours[editStatus.getVisualColour()];
-
-                    editStatus.getVisualScreen()[(y << 7) + (y << 5) + x] = visualRGBCode;
-
-                    do {
-                        errorY = (errorY + deltaY);
-                        if (errorY >= detDelta) {
-                            errorY -= detDelta;
-                            y += stepY;
-                        }
-
-                        errorX = (errorX + deltaX);
-                        if (errorX >= detDelta) {
-                            errorX -= detDelta;
-                            x += stepX;
-                        }
-
-                        editStatus.getVisualScreen()[(y << 7) + (y << 5) + x] = visualRGBCode;
-                        count--;
-                    } while (count > 0);
-
-                    editStatus.getVisualScreen()[(y << 7) + (y << 5) + x] = visualRGBCode;
+            do {
+                errorY = (errorY + deltaY);
+                if (errorY >= detDelta) {
+                    errorY -= detDelta;
+                    y += stepY;
                 }
-            } else if (editStatus.isPriorityDrawEnabled()) {
-                // Only the priority screen.
-                priorityRGBCode = colours[editStatus.getPriorityColour()];
-                priorityCode = editStatus.getPriorityColour();
 
-                index = (y << 7) + (y << 5) + x;
-                editStatus.getPriorityScreen()[index] = priorityRGBCode;
-                editStatus.getPriorityCodes()[index] = priorityCode;
+                errorX = (errorX + deltaX);
+                if (errorX >= detDelta) {
+                    errorX -= detDelta;
+                    x += stepX;
+                }
+
+                putPixel(x, y);
+                count--;
                 
-                do {
-                    errorY = (errorY + deltaY);
-                    if (errorY >= detDelta) {
-                        errorY -= detDelta;
-                        y += stepY;
-                    }
-
-                    errorX = (errorX + deltaX);
-                    if (errorX >= detDelta) {
-                        errorX -= detDelta;
-                        x += stepX;
-                    }
-
-                    index = (y << 7) + (y << 5) + x;
-                    editStatus.getPriorityScreen()[index] = priorityRGBCode;
-                    editStatus.getPriorityCodes()[index] = priorityCode;
-                    count--;
-                } while (count > 0);
-
-                index = (y << 7) + (y << 5) + x;
-                editStatus.getPriorityScreen()[index] = priorityRGBCode;
-                editStatus.getPriorityCodes()[index] = priorityCode;
-            }
+            } while (count > 0);
+            
+            putPixel(x, y);
         }
     }
 
@@ -1227,8 +1112,6 @@ public class Picture extends Resource {
     public void plotPattern(int patNum, int x, int y) {
         int circlePos = 0;
         int x1, y1, penSize, bitPos = splatterStart[patNum];
-        int visualRGBCode = (editStatus.isVisualDrawEnabled() ? colours[editStatus.getVisualColour()] : 0);
-        int priorityRGBCode = (editStatus.isPriorityDrawEnabled() ? colours[editStatus.getPriorityColour()] : 0);
         int patCode = editStatus.getBrushCode();
 
         penSize = (patCode & 7);
@@ -1252,47 +1135,27 @@ public class Picture extends Resource {
                 if ((patCode & 0x10) > 0) { /* Square */
                     if ((patCode & 0x20) > 0) {
                         if (((splatterMap[bitPos >> 3] >> (7 - (bitPos & 7))) & 1) > 0) {
-                            if (editStatus.isVisualDrawEnabled()) {
-                                editStatus.getVisualScreen()[(y1 << 7) + (y1 << 5) + x1] = visualRGBCode;
-                            }
-                            if (editStatus.isPriorityDrawEnabled()) {
-                                editStatus.getPriorityScreen()[(y1 << 7) + (y1 << 5) + x1] = priorityRGBCode;
-                            }
+                            putPixel(x1, y1);
                         }
                         bitPos++;
                         if (bitPos == 0xff) {
                             bitPos = 0;
                         }
                     } else {
-                        if (editStatus.isVisualDrawEnabled()) {
-                            editStatus.getVisualScreen()[(y1 << 7) + (y1 << 5) + x1] = visualRGBCode;
-                        }
-                        if (editStatus.isPriorityDrawEnabled()) {
-                            editStatus.getPriorityScreen()[(y1 << 7) + (y1 << 5) + x1] = priorityRGBCode;
-                        }
+                        putPixel(x1, y1);
                     }
                 } else { /* Circle */
                     if (((circles[patCode & 7][circlePos >> 3] >> (7 - (circlePos & 7))) & 1) > 0) {
                         if ((patCode & 0x20) > 0) {
                             if (((splatterMap[bitPos >> 3] >> (7 - (bitPos & 7))) & 1) > 0) {
-                                if (editStatus.isVisualDrawEnabled()) {
-                                    editStatus.getVisualScreen()[(y1 << 7) + (y1 << 5) + x1] = visualRGBCode;
-                                }
-                                if (editStatus.isPriorityDrawEnabled()) {
-                                    editStatus.getPriorityScreen()[(y1 << 7) + (y1 << 5) + x1] = priorityRGBCode;
-                                }
+                                putPixel(x1, y1);
                             }
                             bitPos++;
                             if (bitPos == 0xff) {
                                 bitPos = 0;
                             }
                         } else {
-                            if (editStatus.isVisualDrawEnabled()) {
-                                editStatus.getVisualScreen()[(y1 << 7) + (y1 << 5) + x1] = visualRGBCode;
-                            }
-                            if (editStatus.isPriorityDrawEnabled()) {
-                                editStatus.getPriorityScreen()[(y1 << 7) + (y1 << 5) + x1] = priorityRGBCode;
-                            }
+                            putPixel(x1, y1);
                         }
                     }
                     circlePos++;
