@@ -1,97 +1,79 @@
 package com.agifans.agile.agilib;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-
 import com.agifans.agile.VgaPalette;
-import com.agifans.agile.agilib.jagi.pic.PictureContext;
-import com.agifans.agile.agilib.jagi.pic.PictureException;
+import com.agifans.agile.agilib.picedit.EditStatus;
 
 /**
- * A wrapper around the JAGI Picture to provide the methods that AGILE needs.
+ * A wrapper around the PICEDIT Picture to provide the methods that AGILE needs.
  */
-public class Picture extends Resource {
+public class Picture extends com.agifans.agile.agilib.picedit.Picture {
     
     private static final int AGI256_PIC_SIZE = 160 * 168;
     
-    private com.agifans.agile.agilib.jagi.pic.Picture jagiPicture;
-    
-    private PictureContext jagiPictureContext;
-    
-    public Picture(com.agifans.agile.agilib.jagi.pic.Picture jagiPicture) {
-        this.jagiPicture = jagiPicture;
-        this.jagiPictureContext = new PictureContext();
+    public Picture() {
+        super();
     }
     
-    public Picture(InputStream is) throws IOException {
+    public Picture(byte[] rawData) {
+        super();
+        
         try {
-            // At this point, JAGI has already read the 5 byte header, i.e.
-            // 0x12 0x34, etc., which means that the InputStream does not contain
-            // the length. We therefore have to fully read the resource from 
-            // the InputStream so as to create the byte array required by
-            // the raw data for the AGI256 resource. 
-            int numOfBytesReads;
-            byte[] data = new byte[256];
-            ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-            while ((numOfBytesReads = is.read(data, 0, data.length)) != -1) {
-                buffer.write(data, 0, numOfBytesReads);
-            }
-            buffer.flush();
+            // Assume it is a normal AGI picture first.
+            decode(rawData);
             
-            // Check if the resource is of the length expected by an AGI256 picture.
-            if (buffer.size() == AGI256_PIC_SIZE) {
-                // If so, decode raw data as index values into the VGA palette.
-                decodeAGI256(buffer.toByteArray());
+        } catch(Exception e) {
+            e.printStackTrace();
+            
+            if (rawData.length == AGI256_PIC_SIZE) {
+                // This probably means that it is an AGI256 picture, so let's load
+                // the raw data instead, so that the AGILE interpreter can use it
+                // directly.// If so, decode raw data as index values into the VGA palette.
+                decodeAGI256(rawData);
             } else {
                 throw new RuntimeException("Failed to load AGI PICTURE. Bad AGI256 length.");
             }
-        } catch (IOException ioe) {
-            throw new RuntimeException("Failed to load AGI PICTURE.", ioe);
         }
     }
-
+    
     private void decodeAGI256(byte[] resourceRawData) {
-        int[] rgba8888Pixels = new int[AGI256_PIC_SIZE];
-        
+        int[] visualScreen = editStatus.getVisualScreen();
         for (int index=0; index < AGI256_PIC_SIZE; index++) {
-            rgba8888Pixels[index] = VgaPalette.colours[((int)resourceRawData[index]) & 0xFF];
+            visualScreen[index] = VgaPalette.colours[((int)resourceRawData[index]) & 0xFF];
         }
-        
-        jagiPictureContext = new PictureContext();
-        jagiPictureContext.setPictureData(rgba8888Pixels);
     }
     
+    /**
+     * Clones this Picture, which basically means that it starts with a clean EditStatus
+     * again and copies the picture code list.
+     * 
+     * @return The cloned Picture.
+     */
     public Picture clone() {
-        // It doesn't matter that we're using the same JAGI Picture. The actual
-        // drawing state is in the PictureContext, which will be a different
-        // instance. The JAGI Picture contains only the Vector of picture codes.
-        return new Picture(jagiPicture);
+        Picture clone = new Picture();
+        clone.getPictureCodes().addAll(this.pictureCodes);
+        clone.setPicturePosition(this.picturePosition);
+        return clone;
     }
     
-    public void drawPicture() {
-        drawPicture(jagiPictureContext);
-    }
-    
-    protected void drawPicture(PictureContext jagiPictureContext) {
-        try {
-            this.jagiPicture.draw(jagiPictureContext);
-        } catch (PictureException pe) {
-            throw new RuntimeException("Failed to draw JAGI Picture.", pe);
-        }
-    }
-    
-    public void overlayPicture(Picture picture) {
-        picture.drawPicture(jagiPictureContext);
+    /**
+     * Draws the given Picture on top of this Picture.
+     * 
+     * @param overlayPicture The Picture to draw on top of this Picture.
+     */
+    public void overlayPicture(Picture overlayPicture) {
+        EditStatus backupEditStatus = overlayPicture.getEditStatus();
+        overlayPicture.setEditStatus(editStatus);
+        overlayPicture.drawPicture();
+        overlayPicture.setEditStatus(backupEditStatus);
     }
     
     public int[] getVisualPixels() {
         // This int array is already RGBA8888 values.
-        return jagiPictureContext.getPictureData();
+        return editStatus.getVisualScreen();
     }
     
     public int[] getPriorityPixels() {
         // This int array has the priority values, 0, 1, 2, 3, ... (i.e. not RGBA8888)
-        return jagiPictureContext.getPriorityData();
+        return editStatus.getPriorityCodes();
     }
 }

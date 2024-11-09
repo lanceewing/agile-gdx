@@ -105,9 +105,6 @@ public class ResourceCache {
     }
 
     public PictureProvider getPictureProvider() {
-        if (pictureProvider == null) {
-            pictureProvider = new com.agifans.agile.agilib.jagi.pic.StandardPictureProvider();
-        }
         return pictureProvider;
     }
 
@@ -152,6 +149,8 @@ public class ResourceCache {
     public Picture getPicture(short resNumber) throws IOException, ResourceException, PictureException {
         Picture picture;
 
+        System.out.println("Loading picture: " + resNumber);
+        
         if (pictures == null) {
             pictures = new Picture[256];
         }

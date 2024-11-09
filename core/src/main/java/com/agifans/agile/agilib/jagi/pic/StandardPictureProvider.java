@@ -192,7 +192,7 @@ public class StandardPictureProvider implements PictureProvider {
         }
 
         in.close();
-        return new Picture(entries);
+        return new PictureImpl(entries);
     }
 
     /*

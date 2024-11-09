@@ -4,12 +4,11 @@ import java.io.IOException;
 import java.util.Map;
 
 import com.agifans.agile.agilib.AgileLogicProvider.AgileLogicWrapper;
+import com.agifans.agile.agilib.AgilePictureProvider.AgilePictureWrapper;
 import com.agifans.agile.agilib.AgileSoundProvider.AgileSoundWrapper;
 import com.agifans.agile.agilib.AgileViewProvider.AgileViewWrapper;
-import com.agifans.agile.agilib.jagi.pic.CorruptedPictureException;
 import com.agifans.agile.agilib.jagi.res.ResourceCache;
 import com.agifans.agile.agilib.jagi.res.ResourceException;
-import com.agifans.agile.agilib.jagi.res.ResourceProvider;
 
 /**
  * An adapter between the interface that AGILE expects and the JAGI library.
@@ -60,6 +59,7 @@ public class Game {
             resourceCache.setLogicProvider(new AgileLogicProvider());
             resourceCache.setSoundProvider(new AgileSoundProvider());
             resourceCache.setViewProvider(new AgileViewProvider());
+            resourceCache.setPictureProvider(new AgilePictureProvider());
             version = resourceCache.getVersion();
             v3GameSig = resourceCache.getV3GameSig();
             objects = new Objects(resourceCache.getObjects());
@@ -103,20 +103,9 @@ public class Game {
         Picture[] pictures = new Picture[256];
         for (short i=0; i<256; i++) {
             try {
-                Picture picture = new Picture(resourceCache.getPicture(i));
+                Picture picture = ((AgilePictureWrapper)resourceCache.getPicture(i)).getAgilePicture();
                 picture.index = i;
                 pictures[i] = picture;
-            } catch (CorruptedPictureException cpe) {
-                // This probably means that it is an AGI256 picture, so let's load
-                // the raw data instead, so that the AGILE interpreter can use it
-                // directly.
-                try {
-                    Picture picture = new Picture(resourceCache.getResourceProvider().open(ResourceProvider.TYPE_PICTURE, i));
-                    picture.index = i;
-                    pictures[i] = picture;
-                } catch (Exception e) {
-                    // Ignore. Perhaps it really is a PICTURE we can't deal with.
-                }
             } catch (Exception e) {
                 // Ignore. The PICTURE doesn't exist.
             }

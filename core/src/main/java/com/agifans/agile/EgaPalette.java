@@ -1,5 +1,7 @@
 package com.agifans.agile;
 
+import com.agifans.agile.util.StringUtils;
+
 /**
  * This class holds the 16 colours that make up the EGA palette.
  * 
@@ -24,7 +26,7 @@ public class EgaPalette {
     public final static int lightmagenta = 0xFF55FFFF;
     public final static int yellow = 0xFFFF55FF;
     public final static int white = 0xFFFFFFFF;
-
+    
     /**
      * Holds the RGBA8888 values for the 16 EGA colours.
      */
@@ -46,4 +48,14 @@ public class EgaPalette {
         yellow, 
         white
     };
+    
+    public static String toCssRgba(int rgbaColour) {
+    	return "#" + StringUtils.padLeftZeros(Integer.toHexString(rgbaColour), 8);
+    }
+    
+    /**
+     * Holds the display names of the 16 EGA colours.
+     */
+    public final static String[] COLOR_NAMES = { "Black", "Blue", "Green", "Cyan", "Red", "Magenta", "Brown", "Grey", "DarkGrey", "LightBlue", "LightGreen", "LightCyan", "Pink", "LightMagenta", "Yellow", "White" };
+
 }
