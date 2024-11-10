@@ -476,8 +476,6 @@ public class Picture extends Resource {
                         break;
                     default:
                         // An attempt to load a picture that is corrupt.
-                        System.out.printf("Unknown picture code : %X, index: %d, picturePosition: %d, pictureSize: %d\n", action, index, picturePosition, pictureCodes.size());
-                        System.exit(0);
                         break;
                 }
                 
