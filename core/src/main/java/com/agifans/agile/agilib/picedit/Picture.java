@@ -735,11 +735,15 @@ public class Picture extends Resource {
         if ((x >= WIDTH) || (y >= HEIGHT)) {
             return;
         }
+        
+        int index = (y << 7) + (y << 5) + x;
+        
         if (editStatus.isVisualDrawEnabled()) {
-            putVisualPixel(x, y);
+            editStatus.getVisualScreen()[index] = colours[editStatus.getVisualColour()];
         }
         if (editStatus.isPriorityDrawEnabled()) {
-            putPriorityPixel(x, y);
+            editStatus.getPriorityScreen()[index] = colours[editStatus.getPriorityColour()];
+            editStatus.getPriorityCodes()[index] = editStatus.getPriorityColour();
         }
     }
     
@@ -750,9 +754,25 @@ public class Picture extends Resource {
      * @param y The Y position of the pixel.
      */
     public void putVisualPixel(int x, int y) {
+        if ((x >= WIDTH) || (y >= HEIGHT)) {
+            return;
+        }
+        
         int index = (y << 7) + (y << 5) + x;
         
         editStatus.getVisualScreen()[index] = colours[editStatus.getVisualColour()];
+    }
+    
+    /**
+     * Gets the visual screen pixel at the given position.
+     * 
+     * @param x The X position of the pixel to get.
+     * @param y The Y position of the pixel to get.
+     * 
+     * @return The visual screen pixel at the given position.
+     */
+    public int getVisualPixel(int x, int y) {
+        return editStatus.getVisualScreen()[(y << 7) + (y << 5) + x];
     }
     
     /**
@@ -762,10 +782,26 @@ public class Picture extends Resource {
      * @param y The Y position of the pixel.
      */
     public void putPriorityPixel(int x, int y) {
+        if ((x >= WIDTH) || (y >= HEIGHT)) {
+            return;
+        }
+        
         int index = (y << 7) + (y << 5) + x;
         
         editStatus.getPriorityScreen()[index] = colours[editStatus.getPriorityColour()];
         editStatus.getPriorityCodes()[index] = editStatus.getPriorityColour();
+    }
+    
+    /**
+     * Gets the priority screen pixel at the given position.
+     * 
+     * @param x The X position of the pixel to get.
+     * @param y The Y position of the pixel to get.
+     * 
+     * @return The priority screen pixel at the given position.
+     */
+    public int getPriorityPixel(int x, int y) {
+        return editStatus.getPriorityScreen()[(y << 7) + (y << 5) + x];
     }
     
     /**
@@ -867,231 +903,189 @@ public class Picture extends Resource {
      * @param y the Y position to fill at.
      */
     public void fill(int x, int y) {
-        // If the fill colour is white then return immediately.
+        // If both visual and priority drawing is disabled, then return immediately.
+        if (!editStatus.isVisualDrawEnabled() && !editStatus.isPriorityDrawEnabled()) {
+            return;
+        }
+        // If the visual fill colour is white, then return immediately.
         if (editStatus.getVisualColour() == 15) {
             return;
         }
+        // If it is priority only fill, and fill colour is 4, then return immediately.
+        if (!editStatus.isVisualDrawEnabled() && (editStatus.getPriorityColour() == 4)) {
+            return;
+        }
 
-        int fillQueue[] = new int[8000];
-        int rpos = 0;
-        int spos = 0;
-        int index = (y << 7) + (y << 5) + x;
         int white = EgaPalette.white;
         int red = EgaPalette.red;
-        int[] fillColours = colours;
         
+        FastQueue queue = new FastQueue();
+        
+        // Visual and priority fill.
         if (editStatus.isVisualDrawEnabled()) {
             if (editStatus.isPriorityDrawEnabled()) {
-                // Fill both visual and priority.
-                int visualRGBCode = fillColours[editStatus.getVisualColour()];
-                int priorityRGBCode = fillColours[editStatus.getPriorityColour()];
-                int priorityCode = editStatus.getPriorityColour();
+                
+                // Enqueue the starting point.
+                queue.enqueue(x);
+                queue.enqueue(y);
+                
+                while (!queue.isEmpty()) {
+                    // Get next point from the queue.
+                    x = queue.dequeue();
+                    y = queue.dequeue();
 
-                fillQueue[spos++] = index;
-
-                while (rpos != spos) {
-
-                    index = fillQueue[rpos++];
-
-                    if (editStatus.getVisualScreen()[index] == white) {
-                        // Fill current position.
-                        editStatus.getVisualScreen()[index] = visualRGBCode;
-                        editStatus.getPriorityScreen()[index] = priorityRGBCode;
-                        editStatus.getPriorityCodes()[index] = priorityCode;
-
-                        int lineStartIndex = (index / 160) * 160;
-                        int lineEndIndex = lineStartIndex + 159;
-
-                        // Go west.
-                        int westIndex = index - 1;
-                        while ((westIndex >= lineStartIndex) && (editStatus.getVisualScreen()[westIndex] == white)) {
-                            westIndex--;
+                    // Check if we can fill at this point
+                    if (getVisualPixel(x, y) == white) {
+                        
+                        // Yes we can, so put the pixel.
+                        putPixel(x, y);
+                        
+                        // Check then enqueue the four points around the pixel.
+                        if ((x > 0) && (getVisualPixel(x - 1, y) == white)) {
+                            queue.enqueue(x - 1);
+                            queue.enqueue(y);
                         }
-
-                        // Go east
-                        int eastIndex = index + 1;
-                        while ((eastIndex <= lineEndIndex) && (editStatus.getVisualScreen()[eastIndex] == white)) {
-                            eastIndex++;
+                        if ((x < (WIDTH-1)) && (getVisualPixel(x + 1, y) == white)) {
+                            queue.enqueue(x + 1);
+                            queue.enqueue(y);
                         }
-
-                        // Draw line.
-                        westIndex++;
-                        eastIndex--;
-                        for (index = westIndex; index <= eastIndex; index++) {
-                            editStatus.getVisualScreen()[index] = visualRGBCode;
-                            editStatus.getPriorityScreen()[index] = priorityRGBCode;
-                            editStatus.getPriorityCodes()[index] = priorityCode;
+                        if ((y > 0) && (getVisualPixel(x, y - 1) == white)) {
+                            queue.enqueue(x);
+                            queue.enqueue(y - 1);
                         }
-
-                        int lastRGBColour = 0x80000000;
-
-                        // Test above.
-                        westIndex -= 160;
-                        eastIndex -= 160;
-                        if (westIndex > -1) {
-                            for (index = westIndex; index <= eastIndex; index++) {
-                                int rgbColour = editStatus.getVisualScreen()[index];
-                                if ((rgbColour == white) && (lastRGBColour != white)) {
-                                    fillQueue[spos++] = index;
-                                }
-                                lastRGBColour = rgbColour;
-                            }
-                        }
-
-                        // Test below.
-                        westIndex += 320;
-                        eastIndex += 320;
-                        lastRGBColour = 0x80000000;
-                        if (eastIndex < 26880) {
-                            for (index = westIndex; index <= eastIndex; index++) {
-                                int rgbColour = editStatus.getVisualScreen()[index];
-                                if ((rgbColour == white) && (lastRGBColour != white)) {
-                                    fillQueue[spos++] = index;
-                                }
-                                lastRGBColour = rgbColour;
-                            }
-                        }
-                    }
-                }
-            } else {
-                // Visual only fill.
-                int visualRGBCode = fillColours[editStatus.getVisualColour()];
-
-                fillQueue[spos++] = index;
-
-                while (rpos != spos) {
-
-                    index = fillQueue[rpos++];
-
-                    if (editStatus.getVisualScreen()[index] == white) {
-                        // Fill current position.
-                        editStatus.getVisualScreen()[index] = visualRGBCode;
-
-                        int lineStartIndex = (index / 160) * 160;
-                        int lineEndIndex = lineStartIndex + 159;
-
-                        // Go west.
-                        int westIndex = index - 1;
-                        while ((westIndex >= lineStartIndex) && (editStatus.getVisualScreen()[westIndex] == white)) {
-                            westIndex--;
-                        }
-
-                        // Go east
-                        int eastIndex = index + 1;
-                        while ((eastIndex <= lineEndIndex) && (editStatus.getVisualScreen()[eastIndex] == white)) {
-                            eastIndex++;
-                        }
-
-                        // Draw line.
-                        westIndex++;
-                        eastIndex--;
-                        for (index = westIndex; index <= eastIndex; index++) {
-                            editStatus.getVisualScreen()[index] = visualRGBCode;
-                        }
-
-                        int lastRGBColour = 0x80000000;
-
-                        // Test above.
-                        westIndex -= 160;
-                        eastIndex -= 160;
-                        if (westIndex > -1) {
-                            for (index = westIndex; index <= eastIndex; index++) {
-                                int rgbColour = editStatus.getVisualScreen()[index];
-                                if ((rgbColour == white) && (lastRGBColour != white)) {
-                                    fillQueue[spos++] = index;
-                                }
-                                lastRGBColour = rgbColour;
-                            }
-                        }
-
-                        // Test below.
-                        westIndex += 320;
-                        eastIndex += 320;
-                        lastRGBColour = 0x80000000;
-                        if (eastIndex < 26880) {
-                            for (index = westIndex; index <= eastIndex; index++) {
-                                int rgbColour = editStatus.getVisualScreen()[index];
-                                if ((rgbColour == white) && (lastRGBColour != white)) {
-                                    fillQueue[spos++] = index;
-                                }
-                                lastRGBColour = rgbColour;
-                            }
+                        if ((y < (HEIGHT-1)) && (getVisualPixel(x, y + 1) == white)) {
+                            queue.enqueue(x);
+                            queue.enqueue(y + 1);
                         }
                     }
                 }
             }
+            
+            // Visual only fill.
+            else {
+            
+                // Enqueue the starting point.
+                queue.enqueue(x);
+                queue.enqueue(y);
+                
+                while (!queue.isEmpty()) {
+                    // Get next point from the queue.
+                    x = queue.dequeue();
+                    y = queue.dequeue();
+
+                    // Check if we can fill at this point
+                    if (getVisualPixel(x, y) == white) {
+                        
+                        // Yes we can, so put the pixel.
+                        putVisualPixel(x, y);
+                        
+                        // Check then enqueue the four points around the pixel.
+                        if ((x > 0) && (getVisualPixel(x - 1, y) == white)) {
+                            queue.enqueue(x - 1);
+                            queue.enqueue(y);
+                        }
+                        if ((x < (WIDTH-1)) && (getVisualPixel(x + 1, y) == white)) {
+                            queue.enqueue(x + 1);
+                            queue.enqueue(y);
+                        }
+                        if ((y > 0) && (getVisualPixel(x, y - 1) == white)) {
+                            queue.enqueue(x);
+                            queue.enqueue(y - 1);
+                        }
+                        if ((y < (HEIGHT-1)) && (getVisualPixel(x, y + 1) == white)) {
+                            queue.enqueue(x);
+                            queue.enqueue(y + 1);
+                        }
+                    }
+                }
+            }
+        
+        // Priority only fill.
         } else if (editStatus.isPriorityDrawEnabled()) {
-            // Priority only fill.
-            int priorityRGBCode = fillColours[editStatus.getPriorityColour()];
-            int priorityCode = editStatus.getPriorityColour();
+            
+            // Enqueue the starting point.
+            queue.enqueue(x);
+            queue.enqueue(y);
+            
+            while (!queue.isEmpty()) {
+                // Get next point from the queue.
+                x = queue.dequeue();
+                y = queue.dequeue();
 
-            fillQueue[spos++] = index;
-
-            while (rpos != spos) {
-
-                index = fillQueue[rpos++];
-
-                if (editStatus.getPriorityScreen()[index] == red) {
-                    // Fill current position.
-                    editStatus.getPriorityScreen()[index] = priorityRGBCode;
-                    editStatus.getPriorityCodes()[index] = priorityCode;
-
-                    int lineStartIndex = (index / 160) * 160;
-                    int lineEndIndex = lineStartIndex + 159;
-
-                    // Go west.
-                    int westIndex = index - 1;
-                    while ((westIndex >= lineStartIndex) && (editStatus.getPriorityScreen()[westIndex] == red)) {
-                        westIndex--;
+                // Check if we can fill at this point
+                if (getPriorityPixel(x, y) == red) {
+                    
+                    // Yes we can, so put the pixel.
+                    putPriorityPixel(x, y);
+                    
+                    // Check then enqueue the four points around the pixel.
+                    if ((x > 0) && (getPriorityPixel(x - 1, y) == red)) {
+                        queue.enqueue(x - 1);
+                        queue.enqueue(y);
                     }
-
-                    // Go east
-                    int eastIndex = index + 1;
-                    while ((eastIndex <= lineEndIndex) && (editStatus.getPriorityScreen()[eastIndex] == red)) {
-                        eastIndex++;
+                    if ((x < (WIDTH-1)) && (getPriorityPixel(x + 1, y) == red)) {
+                        queue.enqueue(x + 1);
+                        queue.enqueue(y);
                     }
-
-                    // Draw line.
-                    westIndex++;
-                    eastIndex--;
-                    for (index = westIndex; index <= eastIndex; index++) {
-                        editStatus.getPriorityScreen()[index] = priorityRGBCode;
-                        editStatus.getPriorityCodes()[index] = priorityCode;
+                    if ((y > 0) && (getPriorityPixel(x, y - 1) == red)) {
+                        queue.enqueue(x);
+                        queue.enqueue(y - 1);
                     }
-
-                    int lastRGBColour = 0x80000000;
-
-                    // Test above.
-                    westIndex -= 160;
-                    eastIndex -= 160;
-                    if (westIndex > -1) {
-                        for (index = westIndex; index <= eastIndex; index++) {
-                            int rgbColour = editStatus.getPriorityScreen()[index];
-                            if ((rgbColour == red) && (lastRGBColour != red)) {
-                                fillQueue[spos++] = index;
-                            }
-                            lastRGBColour = rgbColour;
-                        }
-                    }
-
-                    // Test below.
-                    westIndex += 320;
-                    eastIndex += 320;
-                    lastRGBColour = 0x80000000;
-                    if (eastIndex < 26880) {
-                        for (index = westIndex; index <= eastIndex; index++) {
-                            int rgbColour = editStatus.getPriorityScreen()[index];
-                            if ((rgbColour == red) && (lastRGBColour != red)) {
-                                fillQueue[spos++] = index;
-                            }
-                            lastRGBColour = rgbColour;
-                        }
+                    if ((y < (HEIGHT-1)) && (getPriorityPixel(x, y + 1) == red)) {
+                        queue.enqueue(x);
+                        queue.enqueue(y + 1);
                     }
                 }
             }
         }
     }
 
+    /**
+     * Simple queue for storing queued points during AGI fill operation.
+     */
+    static class FastQueue {
+        
+        private static final int MAX_SIZE = 8000;
+        
+        private int[] data;
+        private int eIndex;
+        private int dIndex;
+        
+        FastQueue() {
+            data = new int[MAX_SIZE];
+            eIndex = 0;
+            dIndex = 0;
+        }
+        
+        void clear() {
+            eIndex = dIndex = 0;
+        }
+        
+        boolean isEmpty() {
+            return eIndex == dIndex;
+        }
+        
+        void enqueue(int val) {
+            if (eIndex + 1 == dIndex || (eIndex + 1 == MAX_SIZE && dIndex == 0)) {
+                throw new RuntimeException("Queue overflow");
+            }
+            data[eIndex++] = val;
+            if (eIndex == MAX_SIZE) {
+                eIndex = 0;
+            }
+        }
+        
+        int dequeue() {
+            if (dIndex == MAX_SIZE) {
+                dIndex = 0;
+            }
+            if (dIndex == eIndex) {
+                throw new RuntimeException("The queue is empty");
+            }
+            return data[dIndex++];
+        }
+    }
+    
     /** Circle Bitmaps */
     public static final short circles[][] = new short[][] { { 0x80 }, { 0xfc }, { 0x5f, 0xf4 }, { 0x66, 0xff, 0xf6, 0x60 }, { 0x23, 0xbf, 0xff, 0xff, 0xee, 0x20 }, { 0x31, 0xe7, 0x9e, 0xff, 0xff, 0xde, 0x79, 0xe3, 0x00 }, { 0x38, 0xf9, 0xf3, 0xef, 0xff, 0xff, 0xff, 0xfe, 0xf9, 0xf3, 0xe3, 0x80 }, { 0x18, 0x3c, 0x7e, 0x7e, 0x7e, 0xff, 0xff, 0xff, 0xff, 0xff, 0x7e, 0x7e, 0x7e, 0x3c, 0x18 } };
 

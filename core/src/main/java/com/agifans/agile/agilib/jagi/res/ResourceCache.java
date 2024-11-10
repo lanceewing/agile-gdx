@@ -149,8 +149,6 @@ public class ResourceCache {
     public Picture getPicture(short resNumber) throws IOException, ResourceException, PictureException {
         Picture picture;
 
-        System.out.println("Loading picture: " + resNumber);
-        
         if (pictures == null) {
             pictures = new Picture[256];
         }
