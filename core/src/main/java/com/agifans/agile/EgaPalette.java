@@ -26,6 +26,7 @@ public class EgaPalette {
     public final static int lightmagenta = 0xFF55FFFF;
     public final static int yellow = 0xFFFF55FF;
     public final static int white = 0xFFFFFFFF;
+    public final static int transparent = 0x00000000;
     
     /**
      * Holds the RGBA8888 values for the 16 EGA colours.

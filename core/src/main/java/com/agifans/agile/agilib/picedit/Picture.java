@@ -9,8 +9,8 @@ import com.agifans.agile.agilib.jagi.awt.Point;
 
 public class Picture extends Resource {
 
-    private static final int WIDTH = 160;
-    private static final int HEIGHT = 168;
+    public static final int WIDTH = 160;
+    public static final int HEIGHT = 168;
     
     /**
      * Holds the RGB values for the 16 EGA colours.
@@ -810,7 +810,7 @@ public class Picture extends Resource {
      * @param x2 End X Coordinate.
      * @param y2 End Y Coordinate.
      */
-    public final void drawLine(int x1, int y1, int x2, int y2) {
+    public void drawLine(int x1, int y1, int x2, int y2) {
         int x, y;
 
         // Vertical Line.
