@@ -3,13 +3,16 @@ package com.agifans.agile.editor.picture.picedit.gui.handler;
 import com.agifans.agile.agilib.picedit.EditStatus;
 import com.agifans.agile.editor.picture.picedit.PicEdit;
 import com.agifans.agile.editor.picture.picedit.picture.Picture;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyDownEvent;
+import com.google.gwt.event.dom.client.KeyDownHandler;
 
 /**
  * Handles processing of PICEDIT key pressed events.
  * 
  * @author Lance Ewing
  */
-public class KeyboardHandler implements KeyListener {
+public class KeyboardHandler implements KeyDownHandler {
 
     /**
      * The PICEDIT application component.
@@ -26,12 +29,13 @@ public class KeyboardHandler implements KeyListener {
     }
 
     /**
-     * Processes the given key pressed KeyEvent.
+     * Processes the given key down event.
      * 
-     * @param e the KeyEvent representing the key that was typed.
+     * @param e the KeyDownEvent representing the key that was pressed down.
      */
-    public void keyPressed(KeyEvent e) {
-        int key = e.getKeyCode();
+    @Override
+    public void onKeyDown(KeyDownEvent e) {
+        int key = e.getNativeKeyCode();
         EditStatus editStatus = application.getEditStatus();
         Picture picture = application.getPicture();
         
@@ -41,45 +45,29 @@ public class KeyboardHandler implements KeyListener {
             
         } else {
             // Handle picture buffer navigation keys.
-            if (key == KeyEvent.VK_HOME) {
+            if (key == KeyCodes.KEY_HOME) {
                 picture.moveToStartOfPictureBuffer();
             }
-            if (key == KeyEvent.VK_LEFT) {
+            if (key == KeyCodes.KEY_LEFT) {
                 picture.moveBackOnePictureAction();
             }
-            if (key == KeyEvent.VK_RIGHT) {
+            if (key == KeyCodes.KEY_RIGHT) {
                 picture.moveForwardOnePictureAction();
             }
-            if (key == KeyEvent.VK_UP) {
+            if (key == KeyCodes.KEY_UP) {
                 picture.moveBackOnePictureCode();
             }
-            if (key == KeyEvent.VK_DOWN) {
+            if (key == KeyCodes.KEY_DOWN) {
                 picture.moveForwardOnePictureCode();
             }
-            if (key == KeyEvent.VK_END) {
+            if (key == KeyCodes.KEY_END) {
                 picture.moveToEndOfPictureBuffer();
             }
         }
         
         // Handle picture action delete key.
-        if (key == KeyEvent.VK_DELETE) {
+        if (key == KeyCodes.KEY_DELETE) {
             picture.deleteSelectedPictureCodes();
         }
-    }
-
-    /**
-     * Invoked when a key is released.
-     * 
-     * @param e the key released event.
-     */
-    public void keyReleased(KeyEvent e) {
-    }
-
-    /**
-     * Invoked when a key is typed (pressed then released).
-     * 
-     * @param e the key typed event.
-     */
-    public void keyTyped(KeyEvent e) {
     }
 }

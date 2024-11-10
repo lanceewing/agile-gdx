@@ -72,6 +72,11 @@ public class PictureFrame extends DialogBox {
     private MouseHandler mouseHandler;
     
     /**
+     * The keyboard handler for this picture frame.
+     */
+    private KeyboardHandler keyboardHandler;
+    
+    /**
      * The initial default name for the picture prior to the first save.
      */
     private String defaultPictureName;
@@ -114,6 +119,9 @@ public class PictureFrame extends DialogBox {
         picturePanel.getOnScreenCanvas().addMouseUpHandler(mouseHandler);
         picturePanel.getOnScreenCanvas().addMouseDownHandler(mouseHandler);
         picturePanel.getOnScreenCanvas().addMouseOverHandler(mouseHandler);
+        
+        keyboardHandler = new KeyboardHandler(application);
+        picturePanel.getOnScreenCanvas().addKeyDownHandler(keyboardHandler);
         
         // Add the panel that holds the picture that is being edited.
         pictureScrollPanel = new ScrollPanel(picturePanel);
@@ -166,10 +174,6 @@ public class PictureFrame extends DialogBox {
                     break;
             }
         }
-    }
-    
-    public MouseHandler getMouseHandler() {
-    	return mouseHandler;
     }
     
     public EditStatus getEditStatus() {
