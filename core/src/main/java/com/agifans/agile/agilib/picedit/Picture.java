@@ -276,8 +276,6 @@ public class Picture extends Resource {
             }
         }
         
-        // TODO: Should we be drawing the picture when loading???? For AGILE???
-        this.drawPicture();
         editStatus.setTool(ToolType.NONE);
         editStatus.setUnsavedChanges(false);
         
