@@ -526,6 +526,14 @@ body {
 	padding-top: 6px;
 }
 
+.statusBarPanel {
+	background: hsla(215, 100%, 95%, 1);
+}
+
+.statusBarSection {
+	border: inset;
+}
+
 .selector_list-item {
     width: 5rem;
     height: 5rem;
@@ -678,4 +686,50 @@ body {
     flex-direction: column;
     padding-right: 0.5rem;
     flex-basis: 0;
+}
+
+.toolButton {
+    float: left;	
+}
+
+.colourButton {
+	height: 38px;
+	line-height: 30px;
+	border: 1px solid grey;
+	float: left;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.colourButton label {
+	padding-left: 10px;
+}
+
+.colourButtonPanel input {
+	margin-left: 10px;
+}
+
+.colourBg {
+	width: 38px;
+    display: inline-block;
+    margin-top: 4px;
+    text-align: center;
+}
+
+.toolFlowPanel, .colourPanel, .toolFillerPanel {
+	float: left;
+}
+
+.pictureCodeScrollPane {
+	background: white;
+}
+
+.toolbarPicturePanel {
+    background: hsla(215, 50%, 90%, 1);
+    width: 100%;
+}
+
+.brushChooserButton {
+	padding: 0 !important;
+	float: left;
 }
