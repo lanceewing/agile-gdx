@@ -109,11 +109,8 @@ public class MouseHandler implements
                 Point dialogPoint = new Point(eventPoint.x - 34, eventPoint.y - 34);
                 
                 // Pop up colour chooser.
-                ColourChooserDialog dialog = new ColourChooserDialog(dialogPoint);
+                ColourChooserDialog dialog = new ColourChooserDialog(dialogPoint, application.getPicture());
                 dialog.setVisible(true);
-                
-                // Process the chosen visual colour.
-                application.getPicture().processVisualColourChange(dialog.getChosenColour());
                 
                 // This helps to protect against clashes between wheel clicks and rotation.
                 wheelCounter = 0;

@@ -6,11 +6,13 @@ import com.agifans.agile.editor.picture.picedit.gui.frame.PictureFrame;
 import com.agifans.agile.editor.picture.picedit.gui.frame.PicturePanel;
 import com.agifans.agile.editor.picture.picedit.gui.toolbar.ToolPanel;
 import com.agifans.agile.editor.picture.picedit.picture.Picture;
-
+import com.google.gwt.animation.client.AnimationScheduler;
+import com.google.gwt.animation.client.AnimationScheduler.AnimationCallback;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SplitLayoutPanel;
+import com.google.gwt.user.client.ui.VerticalPanel;
 
 /**
  * The main class for the PICEDIT application.
@@ -45,33 +47,67 @@ public final class PicEdit extends DockLayoutPanel {
     public PicEdit() {
     	super(Unit.PX);
     	
+    	setWidth("100%");
+    	setHeight("100%");
+    	
+    	addStyleName("picEditLayoutPanel");
+    	
         activePictureFrame = new PictureFrame(this, 3, "Untitled");
         // TODO: Needs to be relative to the parent.
         //activePictureFrame.setPopupPosition(20, 20);
         
-        // Add the status bar above the picture.
-        statusBarPanel = new StatusBarPanel(this);
-        statusBarPanel.setPixelSize(320, 20);
-        addSouth(statusBarPanel, 320);
-        
-        DockLayoutPanel desktopPanel = new DockLayoutPanel(Unit.PX);
-
+               
         activePictureFrame.show();
         
         // Tool panel.
         toolPanel = new ToolPanel(this);
-        desktopPanel.addNorth(toolPanel, 32);
         
         pictureCodeScrollPane = new ScrollPanel(activePictureFrame.getPictureCodeList());
+        pictureCodeScrollPane.addStyleName("pictureCodeScrollPane");
+        pictureCodeScrollPane.setHeight("100%");
+        
+        VerticalPanel toolbarPicturePanel = new VerticalPanel();
+        toolbarPicturePanel.setHeight("100%");
+        toolbarPicturePanel.addStyleName("toolbarPicturePanel");
+        toolbarPicturePanel.add(toolPanel);
         
         SplitLayoutPanel centerSplitPanel = new SplitLayoutPanel();
-        centerSplitPanel.addWest(pictureCodeScrollPane, 240);
+        centerSplitPanel.addStyleName("pictureCenterSplitPanel");
+        centerSplitPanel.addWest(pictureCodeScrollPane, 150);
+        centerSplitPanel.add(toolbarPicturePanel);
+        
         // TODO: Add picture frame
 
         add(centerSplitPanel);
         
-        // Start a timer to preform regular screen repaints.
-        // TODO: Do we need the equivalent of this? : startRepaintTimer();
+        statusBarPanel = new StatusBarPanel(this);
+        statusBarPanel.setHeight("20px");
+        statusBarPanel.setWidth("100%");
+        addSouth(statusBarPanel, 20);
+        
+        // Start a timer to perform regular screen repaints.
+        repaintTimer(0);
+    }
+    
+    private long frameCount = 0;
+    
+    /**
+     * Starts a timer to trigger regular screen repaints. 
+     * 
+     * @param timestamp
+     */
+    public void repaintTimer(double timestamp) {
+        // Immediately request another invocation on the next animation frame.
+        AnimationScheduler.get().requestAnimationFrame(new AnimationCallback() {
+            @Override
+            public void execute(double timestamp) {
+                repaintTimer(timestamp);
+            }
+        });
+        
+        getPictureFrame().getPicturePanel().refresh();
+        toolPanel.update();
+        statusBarPanel.update();
     }
     
     /**
@@ -120,4 +156,8 @@ public final class PicEdit extends DockLayoutPanel {
         // TODO: Reintroduce.
         //getPictureFrame().resizeForZoomFactor(zoomFactor);
     }
+    
+    private final native void logToJSConsole(String message)/*-{
+        console.log(message);
+    }-*/;
 }

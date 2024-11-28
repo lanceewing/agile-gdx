@@ -2,6 +2,8 @@ package com.agifans.agile.editor.picture;
 
 import com.agifans.agile.agilib.Game;
 import com.agifans.agile.agilib.Picture;
+import com.agifans.agile.agilib.picedit.EditStatus;
+import com.agifans.agile.editor.picture.picedit.PicEdit;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.typedarrays.shared.ArrayBufferView;
 import com.google.gwt.typedarrays.shared.TypedArrays;
@@ -32,6 +34,11 @@ public class PictureEditPanel extends Composite {
     SimplePanel pictureDetailPanel;
     
     /**
+     * Reference to the PICEDIT Picture editor.
+     */
+    private PicEdit picedit;
+    
+    /**
      * Reference to the currently selected picture thumbnail.
      */
     private PictureThumbnail selectedThumbnail;
@@ -48,6 +55,10 @@ public class PictureEditPanel extends Composite {
         picturesVerticalPanel.addStyleName("picturesVerticalPanel");
         horizontalPanel.addStyleName("picturesHorizontalPanel");
         pictureDetailPanel.addStyleName("pictureDetailPanel");
+        
+        picedit = new PicEdit();
+        
+        pictureDetailPanel.add(picedit);
     }
     
     public void loadPictures(Game game) {
@@ -87,6 +98,25 @@ public class PictureEditPanel extends Composite {
         }
         thumbnail.setSelected(true);
         selectedThumbnail = thumbnail;
+        
+        if ((thumbnail.getPictureThumbnailData() != null) && 
+            (thumbnail.getPictureThumbnailData().getPictureNumber() != null)) {
+            
+            int selectedPicNum = Integer.parseInt(selectedThumbnail.getPictureThumbnailData().getPictureNumber());
+            
+            
+            Picture selectedPicture = game.pictures[selectedPicNum];
+            if (selectedPicture != null) {
+                // TODO: Change picture data being edited in PicEdit.
+                
+                com.agifans.agile.editor.picture.picedit.picture.Picture picture = 
+                        new com.agifans.agile.editor.picture.picedit.picture.Picture(selectedPicture);
+                
+                
+                picedit.getPictureFrame().setPicture(picture);
+            }
+            
+        }
     }
     
     private final native String convertPixelsToDataUrl(ArrayBufferView pixels, int width, int height)/*-{

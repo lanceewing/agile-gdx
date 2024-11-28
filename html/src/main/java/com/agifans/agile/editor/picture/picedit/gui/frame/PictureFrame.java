@@ -100,6 +100,7 @@ public class PictureFrame extends DialogBox {
      */
     public PictureFrame(final PicEdit application, int initialZoomFactor, String defaultPictureName) {
         this.application = application;
+        this.addStyleName("pictureFrameDialogBox");
         this.defaultPictureName = defaultPictureName;
         this.editStatus = new EditStatus();
         this.editStatus.setZoomFactor(initialZoomFactor);
@@ -182,6 +183,10 @@ public class PictureFrame extends DialogBox {
     
     public Picture getPicture() {
         return picture;
+    }
+    
+    public void setPicture(Picture picture) {
+        this.picture = picture;
     }
     
     public PicturePanel getPicturePanel() {

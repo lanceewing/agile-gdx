@@ -71,6 +71,13 @@ public class Picture extends com.agifans.agile.agilib.picedit.Picture {
      */
     private int lastSelectedPosition;
     
+    public Picture(com.agifans.agile.agilib.Picture picture) {
+        super();
+        pictureCodes.addAll(picture.getPictureCodes());
+        picturePosition = 0;
+        drawPicture();
+    }
+    
     /**
      * Constructor for Picture.
      * 

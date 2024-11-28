@@ -14,6 +14,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.ToggleButton;
 import com.google.gwt.user.client.ui.Widget;
@@ -29,23 +30,47 @@ public class BrushChooserDialog extends PopupPanel {
      * Holds the brush that the user clicked on.
      */
     private BrushType chosenBrush;
-
+    
+    /**
+     * The Picture that is being edited.
+     */
+    private Picture picture;
+    
     /**
      * Constructor for BrushChooserDialog.
      * 
      * @param button   The button wdget under which the dialog will be drawn.
-     * @param airBrush true if this is the air brush variant of the brush; otherwise
-     *                 false.
+     * @param airBrush true if this is the air brush variant of the brush; otherwise false.
+     * @param picture  The Picture that is being edited.
      */
-    public BrushChooserDialog(Widget button, final boolean airBrush) {
+    public BrushChooserDialog(Widget button, final boolean airBrush, Picture picture) {
+        this.picture = picture;
+        
         setModal(true);
-        setPixelSize(140, 140);
-        setPopupPosition(button.getAbsoluteLeft(), button.getAbsoluteTop());
+        setPixelSize(144, 144);
+        setPopupPosition(button.getAbsoluteLeft(), button.getAbsoluteTop() + button.getOffsetHeight());
+        addStyleName("brushChooserDialog");
 
         BrushChooserButtonPanel brushChooserButtonPanel = new BrushChooserButtonPanel(airBrush);
         add(brushChooserButtonPanel);
     }
 
+    /**
+     * Creates an image data URL for the given BrushType.
+     * 
+     * @param brushType The type of brush to create the data URL for.
+     * 
+     * @return The created data URL.
+     */
+    protected String createBrushDataUrl(BrushType brushType) {
+        Canvas canvas = Canvas.createIfSupported();
+        canvas.getCanvasElement().setWidth(34);
+        canvas.getCanvasElement().setHeight(34);
+        plotBrush(0, 0, brushType.getSize(), brushType.getShape().equals(BrushShape.SQUARE),
+                brushType.getTexture().equals(BrushTexture.SPRAY), canvas.getContext2d());
+        return canvas.toDataUrl();
+    }
+    
     /**
      * Plots a brush for the given parameters.
      * 
@@ -117,10 +142,10 @@ public class BrushChooserDialog extends PopupPanel {
          * Constructor for BrushChooserButtonPanel.
          */
         BrushChooserButtonPanel(boolean airBrush) {
-            setPixelSize(140, 140);
-
+            setPixelSize(144, 144);
+            addStyleName("brushChooserButtonPanel");
+            
             getElement().getStyle().setBackgroundColor(EgaPalette.toCssRgba(EgaPalette.grey));
-            getElement().getStyle().setOutlineStyle(OutlineStyle.RIDGE);
 
             if (airBrush) {
                 this.add(new BrushChooserButton(BrushType.CIRCLE_SPRAY_0));
@@ -166,22 +191,14 @@ public class BrushChooserDialog extends PopupPanel {
             
             private BrushType brushType;
 
-            private Canvas canvas;
-            
             BrushChooserButton(BrushType brushType) {
+                super(new Image(createBrushDataUrl(brushType)));
+                
                 this.brushType = brushType;
                 
                 setPixelSize(34, 34);
                 setTitle(brushType.getDisplayName());
-                
-                canvas = Canvas.createIfSupported();
-                canvas.getCanvasElement().setWidth(34);
-                canvas.getCanvasElement().setHeight(34);
-                
-                plotBrush(0, 0, brushType.getSize(), brushType.getShape().equals(BrushShape.SQUARE),
-                        brushType.getTexture().equals(BrushTexture.SPRAY), canvas.getContext2d());
-                
-                add(canvas);
+                addStyleName("brushChooserButton");
                 
                 addClickHandler(new BrushChooserClickHandler());
                 
@@ -202,6 +219,7 @@ public class BrushChooserDialog extends PopupPanel {
                 public void onClick(ClickEvent event) {
                     if (event.getNativeButton() == NativeEvent.BUTTON_LEFT) {
                         chosenBrush = brushType;
+                        picture.getEditStatus().setBrushCode(chosenBrush.getBrushCode());
                     }
                     BrushChooserDialog.this.hide();
                 }

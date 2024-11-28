@@ -9,6 +9,8 @@ import com.agifans.agile.util.StringUtils;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SimplePanel;
 
@@ -38,16 +40,16 @@ public class StatusBarPanel extends DockLayoutPanel {
         
     	this.picEdit = picEdit;
     	
-        SimplePanel fillerPanel = new SimplePanel();
-        add(fillerPanel);
-        
+    	addStyleName("statusBarPanel");
+    	
         toolNamePanel = new StatusBarSection(200, buildToolName(picEdit), "statusToolName");
         xPositionPanel = new StatusBarSection(75, buildXPosition(picEdit), "statusXPosition");
         yPositionPanel = new StatusBarSection(75, buildYPosition(picEdit), "statusYPosition");
         priBandPanel = new StatusBarSection(200, buildPriorityBand(picEdit), "statusPriorityBand");
         positionPanel = new StatusBarSection(200, buildBytePosition(picEdit), "statusBytePosition");
         
-        FlowPanel mainPanel = new FlowPanel();
+        HorizontalPanel mainPanel = new HorizontalPanel();
+        mainPanel.addStyleName("statusBarMainPanel");
         mainPanel.add(toolNamePanel);
         mainPanel.add(positionPanel);
         mainPanel.add(xPositionPanel);
@@ -55,14 +57,16 @@ public class StatusBarPanel extends DockLayoutPanel {
         mainPanel.add(priBandPanel);
         
         // Filler panel in the middle, everything else to the left.
-        add(new SimplePanel());
+        SimplePanel fillerPanel = new SimplePanel();
+        fillerPanel.addStyleName("statusBarPanelFiller");
+        add(fillerPanel);
         addWest(mainPanel, 750d);
     }
     
     public void update() {
     	toolNamePanel.setText(buildToolName(picEdit));
     	positionPanel.setText(buildBytePosition(picEdit));
-    	xPositionPanel.setText(buildBytePosition(picEdit));
+    	xPositionPanel.setText(buildXPosition(picEdit));
     	yPositionPanel.setText(buildYPosition(picEdit));
     	priBandPanel.setText(buildPriorityBand(picEdit));
     }

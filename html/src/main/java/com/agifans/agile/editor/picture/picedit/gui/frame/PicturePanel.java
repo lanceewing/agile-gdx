@@ -97,6 +97,10 @@ public class PicturePanel extends SimplePanel {
         setPixelSize(320 * editStatus.getZoomFactor(), Picture.HEIGHT * editStatus.getZoomFactor());
     }
     
+    public void setPicture(Picture picture) {
+        this.picture = picture;
+    }
+    
     public Canvas getOnScreenCanvas() {
         return onScreenCanvas;
     }

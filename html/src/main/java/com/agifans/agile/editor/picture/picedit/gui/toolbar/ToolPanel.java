@@ -12,6 +12,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.ToggleButton;
@@ -25,6 +26,16 @@ public class ToolPanel extends FlowPanel {
 
 	private PicEdit picEdit;
 	
+	private ToolButton lineButton;
+    private ToolButton shortLineButton;
+    private ToolButton stepLineButton;
+    private ToolButton fillButton;
+    private ToolButton airbrushButton;
+    private ToolButton brushButton;
+	
+    private ColourButtonPanel visualButton;
+    private ColourButtonPanel priorityButton;
+    
     /**
      * Constructor for ToolPanel.
      * 
@@ -33,15 +44,21 @@ public class ToolPanel extends FlowPanel {
     public ToolPanel(final PicEdit picEdit) {
     	this.picEdit = picEdit;
     	
-        ToolButton lineButton = new ToolButton("line.png", picEdit, ToolType.LINE);
-        ToolButton shortLineButton = new ToolButton("shortline.png", picEdit, ToolType.SHORTLINE);
-        ToolButton stepLineButton = new ToolButton("stepline.png", picEdit, ToolType.STEPLINE);
-        ToolButton fillButton = new ToolButton("fill.png", picEdit, ToolType.FILL);
-        ToolButton airbrushButton = new ToolButton("airbrush.png", picEdit, ToolType.AIRBRUSH);
-        ToolButton brushButton = new ToolButton("brush.png", picEdit, ToolType.BRUSH);
+    	setWidth("100%");
+    	setHeight("40px");
+    	
+    	addStyleName("toolPanel");
+    	
+        lineButton = new ToolButton("line.png", picEdit, ToolType.LINE);
+        shortLineButton = new ToolButton("shortline.png", picEdit, ToolType.SHORTLINE);
+        stepLineButton = new ToolButton("stepline.png", picEdit, ToolType.STEPLINE);
+        fillButton = new ToolButton("fill.png", picEdit, ToolType.FILL);
+        airbrushButton = new ToolButton("airbrush.png", picEdit, ToolType.AIRBRUSH);
+        brushButton = new ToolButton("brush.png", picEdit, ToolType.BRUSH);
         
         FlowPanel buttonContainer = new FlowPanel();
-        buttonContainer.setPixelSize(64,  192);
+        buttonContainer.addStyleName("toolFlowPanel");
+        buttonContainer.setHeight("40px");
         buttonContainer.add(lineButton);
         buttonContainer.add(shortLineButton);
         buttonContainer.add(stepLineButton);
@@ -50,16 +67,40 @@ public class ToolPanel extends FlowPanel {
         buttonContainer.add(brushButton);
         add(buttonContainer);
         
-        final FlowPanel colourPanel = new FlowPanel();
-        colourPanel.setPixelSize(64, 64);
-        ColourButtonPanel visualButton = new ColourButtonPanel(ColourType.VISUAL, picEdit);
+        FlowPanel colourPanel = new FlowPanel();
+        colourPanel.addStyleName("colourPanel");
+        colourPanel.setHeight("40px");
+        visualButton = new ColourButtonPanel(ColourType.VISUAL, picEdit);
+        visualButton.addStyleName("visualButton");
+        visualButton.addStyleName("colourButton");
         colourPanel.add(visualButton);
-        ColourButtonPanel priorityButton = new ColourButtonPanel(ColourType.PRIORITY, picEdit);
+        priorityButton = new ColourButtonPanel(ColourType.PRIORITY, picEdit);
+        priorityButton.addStyleName("priorityButton");
+        priorityButton.addStyleName("colourButton");
         colourPanel.add(priorityButton);
-        this.add(colourPanel);
+        add(colourPanel);
         
         // Filler for the rest.
-        add(new SimplePanel());
+        SimplePanel simplePanel = new SimplePanel();
+        simplePanel.addStyleName("toolFillerPanel");
+        simplePanel.setHeight("40px");
+        simplePanel.setWidth("100%");
+        simplePanel.add(new HTML("&nbsp;"));
+        add(simplePanel);
+    }
+    
+    /**
+     * Updates the state and re-renders.
+     */
+    public void update() {
+        lineButton.update();
+        shortLineButton.update();
+        stepLineButton.update();
+        fillButton.update();
+        airbrushButton.update();
+        brushButton.update();
+        visualButton.update();
+        priorityButton.update();
     }
     
     /**
@@ -68,6 +109,8 @@ public class ToolPanel extends FlowPanel {
      */
     class ColourButtonPanel extends FlowPanel {
         
+        private ColourButton colourButton;
+        
         /**
          * Constructor for ColourButtonPanel.
          * 
@@ -75,10 +118,14 @@ public class ToolPanel extends FlowPanel {
          * @param application The PicEdit application.
          */
         ColourButtonPanel(ColourType colourType, PicEdit application) {
-        	setPixelSize(64, 32);
-            ColourButton colourButton = new ColourButton(colourType, application);
+        	setWidth("80px");
+            colourButton = new ColourButton(colourType, application);
             colourButton.addStyleName("colourButtonPanel");
             add(colourButton);
+        }
+        
+        public void update() {
+            colourButton.update();
         }
     }
     
@@ -115,6 +162,15 @@ public class ToolPanel extends FlowPanel {
         }
         
         /**
+         * Gets the type of colour button.
+         * 
+         * @return The type of colour button.
+         */
+        public ColourType getColourType() {
+            return colourType;
+        }
+        
+        /**
          * Updates the checkbox label to reflect current state. The label is a span where the text
          * is the colour type display name and the background colour indicates the currently active
          * colour.
@@ -146,7 +202,7 @@ public class ToolPanel extends FlowPanel {
             }
             
          	setHTML(StringUtils.format(
-         			"<span style=\"color:{0};background-color:{1};\">{2}</span>", 
+         			"<span class=\"colourBg\" style=\"color:{0};background-color:{1};\">{2}</span>", 
          			foreground, background, colourType.getDisplayName().charAt(0)));
 
          	// Check the checkbox if the EditStatus indicates it should be checked. Note that
@@ -215,13 +271,8 @@ public class ToolPanel extends FlowPanel {
                                 picture.processVisualColourOff();
                             } else {
                                 // Pop up colour chooser.
-                                ColourChooserDialog dialog = new ColourChooserDialog(ColourButton.this);
+                                ColourChooserDialog dialog = new ColourChooserDialog(ColourButton.this, picture);
                                 dialog.show();
-                                
-                                // Process the chosen visual colour.
-                                if (dialog.getChosenColour() != -1) {
-                                    picture.processVisualColourChange(dialog.getChosenColour());
-                                }
                             }
                             break;
                         case PRIORITY:
@@ -231,13 +282,8 @@ public class ToolPanel extends FlowPanel {
                                 picture.processPriorityColourOff();
                             } else {
                                 // Pop up colour chooser.
-                                ColourChooserDialog dialog = new ColourChooserDialog(ColourButton.this);
+                                ColourChooserDialog dialog = new ColourChooserDialog(ColourButton.this, picture);
                                 dialog.show();
-                                
-                                // Process the chosen priority colour.
-                                if (dialog.getChosenColour() != -1) {
-                                    picture.processPriorityColourChange(dialog.getChosenColour());
-                                }
                             }
                             break;
                     }
@@ -268,6 +314,7 @@ public class ToolPanel extends FlowPanel {
         ToolButton(String iconImageName, PicEdit picEdit, ToolType tool) {
         	super(new Image("/editor/picedit/" + iconImageName));
         	
+        	addStyleName("toolButton");
             setPixelSize(32, 32);
             setTitle(tool.toString());
 
@@ -334,27 +381,47 @@ public class ToolPanel extends FlowPanel {
         
 		@Override
 		public void onClick(ClickEvent event) {
-            switch (toolButton.getTool()) {
+		    switch (toolButton.getTool()) {
                 case BRUSH:
                     // Pop up brush chooser.
-                    BrushChooserDialog brushDialog = new BrushChooserDialog(toolButton, false);
-                    brushDialog.setVisible(true);
-                    if (brushDialog.getChosenBrush() != null) {
-                    	picEdit.getEditStatus().setBrushCode(brushDialog.getChosenBrush().getBrushCode());
-                    }
+                    BrushChooserDialog brushDialog = new BrushChooserDialog(toolButton, false, picEdit.getPicture());
+                    brushDialog.show();
                     break;
+                    
                 case AIRBRUSH:
                     // Pop up brush chooser.
-                    BrushChooserDialog airBrushDialog = new BrushChooserDialog(toolButton, true);
-                    airBrushDialog.setVisible(true);
-                    if (airBrushDialog.getChosenBrush() != null) {
-                    	picEdit.getEditStatus().setBrushCode(airBrushDialog.getChosenBrush().getBrushCode());
-                    }
+                    BrushChooserDialog airBrushDialog = new BrushChooserDialog(toolButton, true, picEdit.getPicture());
+                    airBrushDialog.show();
+                    break;
+                    
+                default:
+                    // Process the selected tool.
+                    picEdit.getEditStatus().setTool(toolButton.getTool());
                     break;
             }
             
-            // Process the selected tool.
-            picEdit.getEditStatus().setTool(toolButton.getTool());
+            if (toolButton != lineButton) {
+                lineButton.setDown(false);
+            }
+            if (toolButton != shortLineButton) {
+                shortLineButton.setDown(false);
+            }
+            if (toolButton != stepLineButton) {
+                stepLineButton.setDown(false);
+            }
+            if (toolButton != airbrushButton) {
+                airbrushButton.setDown(false);
+            }
+            if (toolButton != brushButton) {
+                brushButton.setDown(false);
+            }
+            if (toolButton != fillButton) {
+                fillButton.setDown(false);
+            }
 		}
     }
+    
+    private final native void logToJSConsole(String message)/*-{
+        console.log(message);
+    }-*/;
 }
