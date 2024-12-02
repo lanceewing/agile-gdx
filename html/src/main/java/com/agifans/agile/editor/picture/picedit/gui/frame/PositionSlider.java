@@ -1,7 +1,5 @@
 package com.agifans.agile.editor.picture.picedit.gui.frame;
 
-import com.agifans.agile.editor.picture.picedit.gui.PictureCodeList;
-import com.agifans.agile.editor.picture.picedit.picture.Picture;
 import com.google.gwt.user.client.Event;
 
 /**
@@ -11,11 +9,9 @@ import com.google.gwt.user.client.Event;
 public class PositionSlider extends Slider {
 
     /**
-     * The picture whose position is being adjusted.
+     * The PictureFrame that this position slider is for.
      */
-    private Picture picture;
-    
-    private PictureCodeList pictureCodeList;
+    private PictureFrame pictureFrame;
     
     /**
      * The value when it last changed.
@@ -28,9 +24,8 @@ public class PositionSlider extends Slider {
      * @param picture
      * @param pictureCodeList 
      */
-    public PositionSlider(Picture picture, PictureCodeList pictureCodeList) {
-        this.picture = picture;
-        this.pictureCodeList = pictureCodeList;
+    public PositionSlider(PictureFrame pictureFrame) {
+        this.pictureFrame = pictureFrame;
         
         super.setMin(0);
         super.setStep(1);
@@ -55,11 +50,10 @@ public class PositionSlider extends Slider {
             
             if (newValue != lastValueChange) {
                 // This second check is so that we don't redraw picture if picture is already at the position.
-                if (newValue != picture.getPicturePosition()) {
-                    picture.setPicturePosition(newValue);
-                    picture.drawPicture();
-                    
-                    pictureCodeList.stateChanged();
+                if (newValue != pictureFrame.getPicture().getPicturePosition()) {
+                    pictureFrame.getPicture().setPicturePosition(newValue);
+                    pictureFrame.getPicture().drawPicture();
+                    pictureFrame.getPictureCodeList().stateChanged();
                 }
                 
                 lastValueChange = newValue;

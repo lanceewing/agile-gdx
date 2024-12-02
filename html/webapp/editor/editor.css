@@ -720,7 +720,7 @@ body {
 	float: left;
 }
 
-.pictureCodeScrollPane {
+.pictureCodeScrollPanel {
 	background: white;
 }
 
@@ -732,4 +732,21 @@ body {
 .brushChooserButton {
 	padding: 0 !important;
 	float: left;
+}
+
+.pictureFrame {
+    background: white;
+    z-index: 10;	
+}
+
+.pictureCenterSplitPanel {
+	height: calc(100% - 20px);
+}
+
+.navigationPanel {
+	background: white;
+}
+
+.pictureScrollPanel {
+	height: calc(100% - 32px);
 }

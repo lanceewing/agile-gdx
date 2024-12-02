@@ -9,13 +9,9 @@ import com.agifans.agile.editor.picture.picedit.gui.handler.MouseHandler;
 import com.agifans.agile.editor.picture.picedit.picture.Picture;
 
 import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
-import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.SimplePanel;
 
 /**
  * An internal picture frame to display in the desktop pane. There is one 
@@ -24,7 +20,7 @@ import com.google.gwt.user.client.ui.ScrollPanel;
  * 
  * @author Lance Ewing
  */
-public class PictureFrame extends DialogBox {
+public class PictureFrame extends SimplePanel {
 
     /**
      * The PicEdit application.
@@ -52,21 +48,6 @@ public class PictureFrame extends DialogBox {
     private Picture picture;
     
     /**
-     * The slider that sets the picture position.
-     */
-    private PositionSlider positionSlider;
-    
-    /**
-     * The back navigation button. Goes back one picture action.
-     */
-    private NavigationButton backButton;
-    
-    /**
-     * The forward navigation button. Goes forward one picture action.
-     */
-    private NavigationButton forwardButton;
-    
-    /**
      * The mouse handler for this picture frame.
      */
     private MouseHandler mouseHandler;
@@ -82,7 +63,7 @@ public class PictureFrame extends DialogBox {
     private String defaultPictureName;
     
     /**
-     * The JList of picture codes for this PictureFrames Picture.
+     * The list of picture codes for this PictureFrames Picture.
      */
     private PictureCodeList pictureCodeList;
     
@@ -100,18 +81,14 @@ public class PictureFrame extends DialogBox {
      */
     public PictureFrame(final PicEdit application, int initialZoomFactor, String defaultPictureName) {
         this.application = application;
-        this.addStyleName("pictureFrameDialogBox");
+        this.addStyleName("pictureFrame");
         this.defaultPictureName = defaultPictureName;
         this.editStatus = new EditStatus();
         this.editStatus.setZoomFactor(initialZoomFactor);
         this.picture = new Picture(editStatus);
         this.pictureCodeList = new PictureCodeList(picture);
         this.picture.addPictureChangeListener(pictureCodeList);
-        
-        setModal(false);
-        
         this.dockLayoutPanel = new DockLayoutPanel(Unit.PX);
-        
         this.picturePanel = new PicturePanel(editStatus, picture);
         
         mouseHandler = new MouseHandler(this, application);
@@ -128,53 +105,12 @@ public class PictureFrame extends DialogBox {
         pictureScrollPanel = new ScrollPanel(picturePanel);
         pictureScrollPanel.getElement().getStyle().setBackgroundColor(EgaPalette.toCssRgba(EgaPalette.grey));
         
-        // Picture scroll panel is in the middle of the dialog.
+        // Picture scroll panel is in the middle.
         dockLayoutPanel.add(pictureScrollPanel);
         
-        DockLayoutPanel bottomPanel = new DockLayoutPanel(Unit.PX);
-        backButton = new NavigationButton("Back24.gif", NavigationButtonType.BACK);
-        bottomPanel.addWest(backButton, 24);
-        forwardButton = new NavigationButton("Forward24.gif", NavigationButtonType.FORWARD);
-        bottomPanel.addEast(forwardButton, 24);
-        
-        positionSlider = new PositionSlider(picture, pictureCodeList);
-        bottomPanel.add(positionSlider);
-        
-        dockLayoutPanel.addSouth(bottomPanel, 24);
-        
         setPixelSize(320, 168 + 24);
-    }
-    
-    /**
-     * Buttons used for picture navigation.
-     */
-    class NavigationButton extends PushButton implements ClickHandler {
         
-        private NavigationButtonType type;
-        
-        NavigationButton(String iconImageName, NavigationButtonType type) {
-            super(new Image("/editor/picedit/" + iconImageName));
-            this.type = type;            
-            setPixelSize(24, 24);
-            addClickHandler(this);
-        }
-
-        /**
-         * Processes the navigation button clicks.
-         * 
-         * @param event The ClickEvent for the button click.
-         */
-        @Override
-        public void onClick(ClickEvent event) {
-            switch (type) {
-                case FORWARD:
-                    application.getPicture().moveForwardOnePictureAction();
-                    break;
-                case BACK:
-                    application.getPicture().moveBackOnePictureAction();
-                    break;
-            }
-        }
+        add(dockLayoutPanel);
     }
     
     public EditStatus getEditStatus() {
@@ -194,7 +130,7 @@ public class PictureFrame extends DialogBox {
     }
     
     public PositionSlider getPositionSlider() {
-        return positionSlider;
+        return application.getPositionSlider();
     }
     
     /**
@@ -205,19 +141,22 @@ public class PictureFrame extends DialogBox {
     public PictureCodeList getPictureCodeList() {
         return pictureCodeList;
     }
-    
+   
     /**
-     * Paints the PictureFrame.
+     * Updates the state and re-renders.
      */
-    public void paint() {
+    public void update() {
+        getPicturePanel().refresh();
+        
         // Update slider enabled status based on whether line is being drawn or not. Slider
         // cannot be used if line drawing is active.
-        positionSlider.setEnabled(!editStatus.isLineBeingDrawn());
-        forwardButton.setEnabled(!editStatus.isLineBeingDrawn());
-        backButton.setEnabled(!editStatus.isLineBeingDrawn());
+        getPositionSlider().setEnabled(!editStatus.isLineBeingDrawn());
+        
+        application.getForwardButton().setEnabled(!editStatus.isLineBeingDrawn());
+        application.getBackButton().setEnabled(!editStatus.isLineBeingDrawn());
         
         // Make sure the slider is up to date with the picture position.
-        positionSlider.setValue(picture.getPicturePosition());
+        getPositionSlider().setValue(picture.getPicturePosition());
         
         // Update the title to show the current picture name.
         StringBuilder title = new StringBuilder();
@@ -225,6 +164,6 @@ public class PictureFrame extends DialogBox {
           title.append("*");
         }
         title.append(defaultPictureName);
-        this.setTitle(title.toString());
+        setTitle(title.toString());
     }
 }

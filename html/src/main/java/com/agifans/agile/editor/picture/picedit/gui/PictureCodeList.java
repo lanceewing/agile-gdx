@@ -54,6 +54,8 @@ public class PictureCodeList extends CellList<PictureCode> implements PictureCha
         
         @Override
         public void render(Context context, PictureCode value, SafeHtmlBuilder sb) {
+            logToJSConsole("render() called.");
+            
             // Value can be null, so do a null check..
             if (value == null) {
               return;
@@ -183,6 +185,8 @@ public class PictureCodeList extends CellList<PictureCode> implements PictureCha
 
         setWidth("130px");
         
+        addStyleName("pictureCodeList");
+        
         // Set font to match what the Java PICEDIT uses.
         getElement().getStyle().setProperty("font-family", "monospace");
         getElement().getStyle().setColor("black");
@@ -232,6 +236,11 @@ public class PictureCodeList extends CellList<PictureCode> implements PictureCha
 //            deleteMenuItem.setEnabled(deleteEnabledStatus);
 //        }
 //    }
+    
+    public void redraw() {
+        logToJSConsole("redraw() called.");
+        super.redraw();
+    }
     
     /**
      * Completely refreshes the JList content.
@@ -413,4 +422,8 @@ public class PictureCodeList extends CellList<PictureCode> implements PictureCha
 //            }
 //        }
 //    }
+    
+    private static final native void logToJSConsole(String message)/*-{
+        console.log(message);
+    }-*/;
 }
