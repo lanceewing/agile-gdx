@@ -108,7 +108,7 @@ public class AnimatedObject implements Comparable<AnimatedObject> {
     public short xSize() { return (short)cel().getWidth(); }
 
     /**
-     * Y dimesion of the current cel.
+     * Y dimension of the current cel.
      */
     public short ySize() { return (short)cel().getHeight(); }
 
@@ -1198,6 +1198,11 @@ public class AnimatedObject implements Comparable<AnimatedObject> {
      * @param celNum The cel number within the current Loop to set the Cel to.
      */
     public void setCel(int celNum) {
+        if(celNum >= numberOfCels()) {
+            // celNum is out of bounds for the current view/loop
+            return;
+        } 
+        
         // Set the cel number. 
         this.currentCel = celNum;
 
@@ -1227,6 +1232,11 @@ public class AnimatedObject implements Comparable<AnimatedObject> {
      * @param loopNum The loop number within the current View to set the Loop to.
      */
     public void setLoop(int loopNum) {
+        if(loopNum >= numberOfLoops()) {
+            // loopNum is out of bounds for the current view
+            return;
+        } 
+
         this.currentLoop = loopNum;
 
         // If the current cel # is greater than the cel count for this loop, set
